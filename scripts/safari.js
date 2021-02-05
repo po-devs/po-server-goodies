@@ -3338,7 +3338,7 @@ function Safari() {
 
         return name ? name : "Missingno";
     }
-    function form(num, amt) {
+    function getForm(num, amt) {
         if (!(amt)) {
             amt = 1;
         }
@@ -3744,7 +3744,7 @@ function Safari() {
         },
         "710": {
             "name": "Snap Trap",
-            "learned": [form(618, 1)],
+            "learned": [getForm(618, 1)],
             "type": "Grass",
             "power": 35
         },
@@ -3756,19 +3756,19 @@ function Safari() {
         },
         "712": {
             "name": "Behemoth Blade",
-            "learned": [form(888, 1)],
+            "learned": [getForm(888, 1)],
             "type": "Steel",
             "power": 100
         },
         "713": {
             "name": "Behemoth Bash",
-            "learned": [form(889, 1)],
+            "learned": [getForm(889, 1)],
             "type": "Steel",
             "power": 100
         },
         "714": {
             "name": "Aura Wheel",
-            "learned": [877, form(877, 1)],
+            "learned": [877, getForm(877, 1)],
             "type": "Electric",
             "power": 110
         },
@@ -3786,7 +3786,7 @@ function Safari() {
         },
         "717": {
             "name": "Overdrive",
-            "learned": [849, form(849, 1)],
+            "learned": [849, getForm(849, 1)],
             "type": "Electric",
             "power": 80
         },
@@ -3810,7 +3810,7 @@ function Safari() {
         },
         "721": {
             "name": "Strange Steam",
-            "learned": [form(110, 1)],
+            "learned": [getForm(110, 1)],
             "type": "Fairy",
             "power": 90
         },
@@ -3840,7 +3840,7 @@ function Safari() {
         },
         "726": {
             "name": "Eternabeam",
-            "learned": [890, form(890, 1)],
+            "learned": [890, getForm(890, 1)],
             "type": "Dragon",
             "power": 160
         },
@@ -3852,7 +3852,7 @@ function Safari() {
         },
         "728": {
             "name": "Dynamax Cannon",
-            "learned": [890, form(890, 1)],
+            "learned": [890, getForm(890, 1)],
             "type": "Dragon",
             "power": 100
         },
@@ -17750,7 +17750,7 @@ function Safari() {
             case "bst": return isInRange(getBST(id), target);
             case "height": return isInRange(parseFloat(getHeight(id)), target);
             case "weight": return isInRange(parseFloat(getWeight(id)), target);
-            case "ability": return canHaveAbility(id, sys.abilityNum(target));
+            case "ability": return canHaveAbility(id, abilitynum(target));
             case "move": return canLearnMove(id, movenum(target));
             case "name": return pokePlain(id)[0].toLowerCase() === target.toLowerCase();
             case "fullname": return pokePlain(id).toLowerCase() === target.toLowerCase();
@@ -31556,7 +31556,7 @@ function Safari() {
         var trainerSprite = '<img src="' + base64trainers.alchemist + '">';
         
         var info = getInputPokemon(opt.replace("%25", "%")); // zygarde-10% gets html_escaped into -10%25
-        var eligible = { "201": { "cost": 1, "forms": [201, 65737, 131273, 196809, 262345, 327881, 393417, 458953, 524489, 590025, 655561, 721097, 786633, 852169, 917705, 983241, 1048777, 1114313, 1179849, 1245385, 1310921, 1376457, 1441993, 1507529, 1573065, 1638601, 1704137, 1769673], "pebble": true }, "412": { "cost": 1, "forms": [412, 65948, 131484], "pebble": true }, "422": { "cost": 1, "forms": [422, 65958], "pebble": true }, "423": { "cost": 1, "forms": [423, 65959], "pebble": true }, "550": { "cost": 1, "forms": [550, 66086], "pebble": true }, "585": { "cost": 1, "forms": [585, 66121, 131657, 197193], "pebble": true }, "586": { "cost": 1, "forms": [586, 66122, 131658, 197194], "pebble": true }, "666": { "cost": 1, "forms": [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778, 1180314, 1245850], "pebble": true }, "669": { "cost": 1, "forms": [669, 66205, 131741, 197277, 262813], "pebble": true }, "671": { "cost": 1, "forms": [671, 66207, 131743, 197279, 262815], "pebble": true }, "710": { "cost": 1, "forms": [710, 66246, 131782, 197318], "pebble": true }, "711": { "cost": 1, "forms": [711, 66247, 131783, 197319], "pebble": true }, "741": { "cost": 1, "forms": [741, 66277, 131813, 197349], "pebble": true }, "745": { "cost": 1, "forms": [745, 66281], "pebble": true }, "351": { "cost": 15, "forms": [351, 65887, 131423, 262495], "pebble": true }, "413": { "cost": 1, "forms": [413, 65949, 131485], "pebble": true }, "421": { "cost": 10, "forms": [421, 65957], "pebble": true }, "676": { "cost": 15, "forms": [676, 66212, 131748, 197284, 262820, 328356, 393892, 459428, 524964, 590500], "pebble": true }, "19": { "cost": 2, "forms": [19, 65555] }, "20": { "cost": 2, "forms": [20, 65556] }, "25": { "cost": 20, "forms": [25, 65561, 131097, 196633, 262169, 327705, 458777, 524313, 589849, 655385, 720921, 786457, 851993], "pebble": true }, "26": { "cost": 2, "forms": [26, 65562] }, "27": { "cost": 2, "forms": [27, 65563] }, "28": { "cost": 2, "forms": [28, 65564] }, "37": { "cost": 2, "forms": [37, 65573] }, "38": { "cost": 2, "forms": [38, 65574] }, "50": { "cost": 2, "forms": [50, 65586] }, "51": { "cost": 2, "forms": [51, 65587] }, "52": { "cost": 2, "forms": [52, 65588, form(52, 2)] }, "53": { "cost": 2, "forms": [53, 65589] }, "74": { "cost": 2, "forms": [74, 65610] }, "75": { "cost": 2, "forms": [75, 65611] }, "76": { "cost": 2, "forms": [76, 65612] }, "88": { "cost": 2, "forms": [88, 65624] }, "89": { "cost": 2, "forms": [89, 65625] }, "103": { "cost": 2, "forms": [103, 65639] }, "105": { "cost": 2, "forms": [105, 65641] }, "670": { "cost": 6, "forms": [670, 66206, 131742, 197278, 262814, 328350] }, "678": { "cost": 2, "forms": [678, 66214], "pebble": true }, "681": { "cost": 1, "forms": [681, 66217] }, "658": { "cost": 4, "forms": [658, 131730] }, "746": { "cost": 2, "forms": [746, 66282] }, "774": { "cost": 20, "forms": [774, 66310, 131846, 197382, 262918, 328454, 393990, 459526], "pebble": true }, "801": { "cost": 4, "forms": [801, 66337] }, "386": { "cost": 5, "forms": [386, 65922, 131458, 196994] }, "487": { "cost": 5, "forms": [487, 66023] }, "641": { "cost": 5, "forms": [641, 66177] }, "642": { "cost": 5, "forms": [642, 66178] }, "645": { "cost": 5, "forms": [645, 66181] }, "647": { "cost": 5, "forms": [647, 66183] }, "649": { "cost": 5, "forms": [649, 66185, 131721, 197257, 262793] }, "479": { "cost": 3, "forms": [479, 66015, 131551, 197087, 262623, 328159] }, "492": { "cost": 4, "forms": [492, 66028] }, "555": { "cost": 3, "forms": [555, 66091, form(555, 2)] }, "648": { "cost": 4, "forms": [648, 66184] }, "773": { "cost": 1, "forms": [773, 66309, 131845, 197381, 262917, 328453, 393989, 459525, 525061, 590597, 656133, 721669, 787205, 852741, 918277, 983813, 1049349, 1114885] }, "493": { "cost": 10, "forms": [493, 66029, 131565, 197101, 262637, 328173, 393709, 459245, 524781, 590317, 655853, 721389, 786925, 852461, 917997, 983533, 1049069, 1114605] }, "646": { "cost": 10, "forms": [646, 66182, 131718] }, "718": { "cost": 15, "forms": [718, 66254, 131790] }, "720": { "cost": 10, "forms": [720, 66256] }, "77": {"cost": 2, "forms": [77, form(77, 1)]}, "78": {"cost": 2, "forms": [78, form(78, 1)]}, "263": {"cost": 2, "forms": [263, form(263, 1)]}, "264": {"cost": 2, "forms": [264, form(264, 1)]}, "562": {"cost": 2, "forms": [562, form(562, 1)]}, "122": {"cost": 2, "forms": [122, form(122, 1)]}, "110": {"cost": 2, "forms": [110, form(110, 1)]}, "222": {"cost": 2, "forms": [222, form(222, 1)]}, "83": { "cost": 2, "forms": [83, 65619] }, "554": { "cost": 3, "forms": [554, 66090] }, "618": { "cost": 2, "forms": [618, 66154] }, "79": { "cost": 2, "forms": [79, 65615] }, "80": { "cost": 2, "forms": [80, 131152] }, "199": { "cost": 2, "forms": [199, 65735] }, "845": { "cost": 1, "forms": [845, 66381, 131917] }, "875": { "cost": 20, "forms": [875, 66411], "pebble": true }, "877": { "cost": 20, "forms": [877, 66413], "pebble": true }, "893": { "cost": 4, "forms": [893, 66429] }, "144": { "cost": 5, "forms": [144, 65680] }, "145": { "cost": 5, "forms": [145, 65681] }, "146": { "cost": 5, "forms": [146, 65682] } };
+        var eligible = { "201": { "cost": 1, "forms": [201, 65737, 131273, 196809, 262345, 327881, 393417, 458953, 524489, 590025, 655561, 721097, 786633, 852169, 917705, 983241, 1048777, 1114313, 1179849, 1245385, 1310921, 1376457, 1441993, 1507529, 1573065, 1638601, 1704137, 1769673], "pebble": true }, "412": { "cost": 1, "forms": [412, 65948, 131484], "pebble": true }, "422": { "cost": 1, "forms": [422, 65958], "pebble": true }, "423": { "cost": 1, "forms": [423, 65959], "pebble": true }, "550": { "cost": 1, "forms": [550, 66086], "pebble": true }, "585": { "cost": 1, "forms": [585, 66121, 131657, 197193], "pebble": true }, "586": { "cost": 1, "forms": [586, 66122, 131658, 197194], "pebble": true }, "666": { "cost": 1, "forms": [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778, 1180314, 1245850], "pebble": true }, "669": { "cost": 1, "forms": [669, 66205, 131741, 197277, 262813], "pebble": true }, "671": { "cost": 1, "forms": [671, 66207, 131743, 197279, 262815], "pebble": true }, "710": { "cost": 1, "forms": [710, 66246, 131782, 197318], "pebble": true }, "711": { "cost": 1, "forms": [711, 66247, 131783, 197319], "pebble": true }, "741": { "cost": 1, "forms": [741, 66277, 131813, 197349], "pebble": true }, "745": { "cost": 1, "forms": [745, 66281], "pebble": true }, "351": { "cost": 15, "forms": [351, 65887, 131423, 262495], "pebble": true }, "413": { "cost": 1, "forms": [413, 65949, 131485], "pebble": true }, "421": { "cost": 10, "forms": [421, 65957], "pebble": true }, "676": { "cost": 15, "forms": [676, 66212, 131748, 197284, 262820, 328356, 393892, 459428, 524964, 590500], "pebble": true }, "19": { "cost": 2, "forms": [19, 65555] }, "20": { "cost": 2, "forms": [20, 65556] }, "25": { "cost": 20, "forms": [25, 65561, 131097, 196633, 262169, 327705, 458777, 524313, 589849, 655385, 720921, 786457, 851993], "pebble": true }, "26": { "cost": 2, "forms": [26, 65562] }, "27": { "cost": 2, "forms": [27, 65563] }, "28": { "cost": 2, "forms": [28, 65564] }, "37": { "cost": 2, "forms": [37, 65573] }, "38": { "cost": 2, "forms": [38, 65574] }, "50": { "cost": 2, "forms": [50, 65586] }, "51": { "cost": 2, "forms": [51, 65587] }, "52": { "cost": 2, "forms": [52, 65588, getForm(52, 2)] }, "53": { "cost": 2, "forms": [53, 65589] }, "74": { "cost": 2, "forms": [74, 65610] }, "75": { "cost": 2, "forms": [75, 65611] }, "76": { "cost": 2, "forms": [76, 65612] }, "88": { "cost": 2, "forms": [88, 65624] }, "89": { "cost": 2, "forms": [89, 65625] }, "103": { "cost": 2, "forms": [103, 65639] }, "105": { "cost": 2, "forms": [105, 65641] }, "670": { "cost": 6, "forms": [670, 66206, 131742, 197278, 262814, 328350] }, "678": { "cost": 2, "forms": [678, 66214], "pebble": true }, "681": { "cost": 1, "forms": [681, 66217] }, "658": { "cost": 4, "forms": [658, 131730] }, "746": { "cost": 2, "forms": [746, 66282] }, "774": { "cost": 20, "forms": [774, 66310, 131846, 197382, 262918, 328454, 393990, 459526], "pebble": true }, "801": { "cost": 4, "forms": [801, 66337] }, "386": { "cost": 5, "forms": [386, 65922, 131458, 196994] }, "487": { "cost": 5, "forms": [487, 66023] }, "641": { "cost": 5, "forms": [641, 66177] }, "642": { "cost": 5, "forms": [642, 66178] }, "645": { "cost": 5, "forms": [645, 66181] }, "647": { "cost": 5, "forms": [647, 66183] }, "649": { "cost": 5, "forms": [649, 66185, 131721, 197257, 262793] }, "479": { "cost": 3, "forms": [479, 66015, 131551, 197087, 262623, 328159] }, "492": { "cost": 4, "forms": [492, 66028] }, "555": { "cost": 3, "forms": [555, 66091, getForm(555, 2)] }, "648": { "cost": 4, "forms": [648, 66184] }, "773": { "cost": 1, "forms": [773, 66309, 131845, 197381, 262917, 328453, 393989, 459525, 525061, 590597, 656133, 721669, 787205, 852741, 918277, 983813, 1049349, 1114885] }, "493": { "cost": 10, "forms": [493, 66029, 131565, 197101, 262637, 328173, 393709, 459245, 524781, 590317, 655853, 721389, 786925, 852461, 917997, 983533, 1049069, 1114605] }, "646": { "cost": 10, "forms": [646, 66182, 131718] }, "718": { "cost": 15, "forms": [718, 66254, 131790] }, "720": { "cost": 10, "forms": [720, 66256] }, "77": {"cost": 2, "forms": [77, getForm(77, 1)]}, "78": {"cost": 2, "forms": [78, getForm(78, 1)]}, "263": {"cost": 2, "forms": [263, getForm(263, 1)]}, "264": {"cost": 2, "forms": [264, getForm(264, 1)]}, "562": {"cost": 2, "forms": [562, getForm(562, 1)]}, "122": {"cost": 2, "forms": [122, getForm(122, 1)]}, "110": {"cost": 2, "forms": [110, getForm(110, 1)]}, "222": {"cost": 2, "forms": [222, getForm(222, 1)]}, "83": { "cost": 2, "forms": [83, 65619] }, "554": { "cost": 3, "forms": [554, 66090] }, "618": { "cost": 2, "forms": [618, 66154] }, "79": { "cost": 2, "forms": [79, 65615] }, "80": { "cost": 2, "forms": [80, 131152] }, "199": { "cost": 2, "forms": [199, 65735] }, "845": { "cost": 1, "forms": [845, 66381, 131917] }, "875": { "cost": 20, "forms": [875, 66411], "pebble": true }, "877": { "cost": 20, "forms": [877, 66413], "pebble": true }, "893": { "cost": 4, "forms": [893, 66429] }, "144": { "cost": 5, "forms": [144, 65680] }, "145": { "cost": 5, "forms": [145, 65681] }, "146": { "cost": 5, "forms": [146, 65682] } };
         if (!info.num) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Y'see, the " + finishName("philosopher") + " and " + finishName("philosopherpebble") + " are legendary artifacts with heavenly transmutation powers! They say it can even transform life itself!", safchan);
             safaribot.sendHtmlMessage(src, "Alchemist: So that's the thing, I'm eager to play around with those things. With those I believe I can completely reshape some Pokémon!", safchan);
@@ -31598,8 +31598,8 @@ function Safari() {
             }
         } else {
             var base = pokeInfo.species(info.num), eligible;
-            if (info.num == form(555, 2) || info.num == form(555, 3)) { // Galarian Darmanitan/Zen
-                eligible = {"555": {"cost": 3, "forms": [555, form(555, 2), form(555, 3)]}}
+            if (info.num == getForm(555, 2) || info.num == getForm(555, 3)) { // Galarian Darmanitan/Zen
+                eligible = {"555": {"cost": 3, "forms": [555, getForm(555, 2), getForm(555, 3)]}}
             }
             else {
             }
@@ -33912,7 +33912,7 @@ function Safari() {
             name2 = getRandomWord().toLowerCase();
 
             out = cap(name1.substr(0, Math.floor(name1.length/2)) + name2.substr(Math.floor(name2.length/2)));
-        } while ((/asshole|dick|pussy|bitch|porn|nigga|cock|gay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|anus|boner|tits|condom|rape/gi.test(out)) || getInputPokemon(out+"").num !== null || sys.moveNum(out) || sys.abilityNum(out));
+        } while ((/asshole|dick|pussy|bitch|porn|nigga|cock|gay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|anus|boner|tits|condom|rape/gi.test(out)) || getInputPokemon(out+"").num !== null || movenum(out) || abilitynum(out));
 
         if (out.length > 10) {
             out = out.substr(0, 10);
@@ -33923,9 +33923,9 @@ function Safari() {
         if (chance(0.33)) {
             return pokePlain(sys.rand(1, highestDexNum));
         } else if (chance(0.5)) {
-            return sys.move(sys.rand(1, 702)).split(/[\-\s]/).random();
+            return moveOff(sys.rand(1, 702)).split(/[\-\s]/).random();
         } else {
-            return sys.ability(sys.rand(1, 233)).split(" ").random();
+            return abilityOff(sys.rand(1, 233)).split(" ").random();
         }
     }
     function generateTeam(size, minBST, maxBST, maxLegends, useType, onlyEvolved, littlecup, noGen7, counterMon) {
@@ -36211,7 +36211,7 @@ function Safari() {
         }
         var diffMsg = "Basic";
         var opponents = [149, 248, 289, 373, 376, 445, 571, 635, 681, 706, 773, 784].concat(legendaries);
-        var potentialForms = [form(38), form(103), form(53), form(53, 2), form(110), form(76), form(89), form(26), form(105), form(20), form(51), 862, 863, 864, 865, 866, 867, 66256, 66184, 66028, 66336, 131872, 197408, 393695];
+        var potentialForms = [getForm(38), getForm(103), getForm(53), getForm(53, 2), getForm(110), getForm(76), getForm(89), getForm(26), getForm(105), getForm(20), getForm(51), 862, 863, 864, 865, 866, 867, 66256, 66184, 66028, 66336, 131872, 197408, 393695];
         if (difficulty == 2) {
             if (chance(0.5)) {
                 opponents = opponents.concat(megaPokemon);
@@ -36636,14 +36636,14 @@ function Safari() {
         if (h !== "???" && level <= 6) {
             hints.push("One of the types is '{0}'".format(h));
         }
-        hints.push("Can have the ability '{0}'".format(sys.ability(getPokeAbility(this.answerId, 0))));
+        hints.push("Can have the ability '{0}'".format(abilityOff(getPokeAbility(this.answerId, 0))));
         h = getPokeAbility(this.answerId, 1);
         if (h) {
-            hints.push("Can have the ability '{0}'".format(sys.ability(h)));
+            hints.push("Can have the ability '{0}'".format(abilityOff(h)));
         }
         h = getPokeAbility(this.answerId, 2);
         if (h) {
-            hints.push("Can have the ability '{0}'".format(sys.ability(h)));
+            hints.push("Can have the ability '{0}'".format(abilityOff(h)));
         }
         var maxMoves = level <= 2 ? 6 : 8;
         var moves = fetchMoves(this.answerId).shuffle().slice(0, maxMoves).map(moveOff);
@@ -37628,7 +37628,7 @@ function Safari() {
                 for (var k in par) {
                     if ((canHaveAbility(par[k],this.hazardAbilites[e])) && (usedAbilities.indexOf(this.hazardAbilites[e]) === -1)) {
                         if (obstacles.hasOwnProperty(e) && obstacles[e] > 0) {
-                            ab = sys.ability(this.hazardAbilites[e]);
+                            ab = abilityOff(this.hazardAbilites[e]);
                             obstacles[e] -= 1;
                             cleared[e]++;
                             if (obstacles[e] === 0 && e === this.treasureLocation) {
@@ -47759,8 +47759,8 @@ function Safari() {
         var trainerClasses = ["Actor", "Actress", "Aroma Lady", "Artist", "Athlete", "Backpacker", "Baker", "Baron", "Baroness", "Battle Girl", "Beauty", "Big Star", "Biker", "Bird Keeper", "Blackbelt", "Boarder", "Bodybuilder", "Boss", "Bug Catcher", "Bug Maniac", "Burglar", "Butler", "Cameraman", "Camper", "Casual Dude", "Casual Guy", "Celebrity", "Channeler", "Chaser", "Chef", "Child Star", "Clerk", "Clown", "Collector", "Comedian", "Commander", "Cool Beauty", "Cool Trainer", "Countess", "Cowgirl", "Crush Girl", "Cue Ball", "Cute Maniac", "Cyclist", "Dancer", "Delinquent", "Depot Agent", "Doctor", "Dragon Tamer", "Driver", "Duchess", "Duke", "Elder", "Electrifying Guy", "Engineer", "Expert", "Fairy Tale Girl", "Fare Prince", "Firebreather", "Fisherman", "Free Diver", "Fun Old Lady", "Fun Old Man", "Furisode Girl", "Future Girl", "Gambler", "Garçon", "Gardener", "Gentleman", "Glasses Man", "Grand Duchess", "Guitarist", "Hardheaded Girl", "Hex Maniac", "High-Tech Maniac", "Hiker", "Hiking Girl", "Hoopster", "Hunter", "Icy Guy", "Idol", "Infielder", "Interviewer", "Janitor", "Jogger", "Juggler", "Kimono Girl", "Kindler", "Lady", "Lass", "Linebacker", "Lone Wolf", "Lorekeeper", "Maid", "Marchioness", "Marquis", "Medium", "Monsieur", "Motorcyclist", "Movie Star", "Muddy Boy", "Musician", "Navigator", "Newscaster", "Ninja Boy", "Nurse", "Nursery Aide", "Officer", "Ordinary Guy", "Ordinary Lady", "Painter", "Parasol Lady", "Passionate Man", "Passionate Rider", "Picnic Girl", "Picnicker", "Pikachu Fan", "Pilot", "Poké Kid", "Pokéfan", "PokéManiac", "Pokémon Breeder", "Pokémon Ranger", "Preschooler", "Proprietor", "Psychic", "Punk Girl", "Punk Guy", "Rancher", "Reporter", "Rich Boy", "Rider", "Rising Star", "Rocker", "Rogue", "Roller Boy", "Roller Skater", "Rotation Girl", "Ruin Maniac", "Sage", "Sailor", "Schoolboy", "Schoolgirl", "Sci-Fi Maniac", "Scientist", "Scuba Diver", "Shady Guy", "Shocking Girl", "Sightseer", "Sim Trainer", "Skier", "Smasher", "Snagem Head", "Socialite", "Sootopolitan", "Spy", "Star Actor", "Steel Spirit", "Street Thug", "Striker", "Stubborn Boy", "Successor", "Suit Actor", "Super Nerd", "Suspicious Child", "Suspicious Lady", "Suspicious Woman", "Swimmer♀", "Swimmer", "Tamer", "Teacher", "The Riches", "Thug", "Tomboy", "Tourist", "Traveling Guy", "Traveling Lady", "Triathlete", "Tuber", "Unique Star", "Veteran", "Veteran Star", "Viscount", "Viscountess", "Waiter", "Waitress", "Wanderer", "Winstrate", "Worker", "Youngster"];
         
         while (Object.keys(gyms).length < 7) {
-            badge = sys.ability(sys.rand(1, 233)).split(" ").random() + " Badge";
-            name = sys.move(sys.rand(1, 702)).split(" ").concat(sys.move(sys.rand(1, 702)).split(" ")).shuffle().join("").toLowerCase().replace("-", "");
+            badge = abilityOff(sys.rand(1, 233)).split(" ").random() + " Badge";
+            name = moveOff(sys.rand(1, 702)).split(" ").concat(moveOff(sys.rand(1, 702)).split(" ")).shuffle().join("").toLowerCase().replace("-", "");
             l = name.length;
             i = sys.rand(0, l-2);
             name = cap(name.substr(i, sys.rand(i+2, name.length)));
@@ -50248,7 +50248,7 @@ function Safari() {
                     var e = 0;
                     for (var c = 1; c <= 621; c++) {
                         if (!safari.dataDumps2[title][c+""].Completed) {
-                            safaribot.sendMessage(src, "Enter data for " + sys.move(c) + " with " + "/enterdata2 " + title + ":" + c + ":[Categories].", safchan);
+                            safaribot.sendMessage(src, "Enter data for " + moveOff(c) + " with " + "/enterdata2 " + title + ":" + c + ":[Categories].", safchan);
                             e++;
                         }
                         if (e > 4) {
@@ -50258,14 +50258,14 @@ function Safari() {
                     return true;
                 }
                 var m;
-                if (sys.moveNum(info[1])) {
-                    m = sys.moveNum(info[1]);
+                if (movenum(info[1])) {
+                    m = movenum(info[1]);
                 }
                 else {
                     m = info[1];
                 }
-                var move = sys.move(m);
-                var moveNum = sys.moveNum(move);
+                var move = moveOff(m);
+                var moveNum = movenum(move);
                 if (!(moveNum >= 1)) {
                     safaribot.sendMessage(src, "There is no such move!", safchan);
                     return true;
