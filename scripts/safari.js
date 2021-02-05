@@ -28484,6 +28484,7 @@ function Safari() {
             break;
             case "pyramid":
             case "old triangle":
+            case "pyr":
                 this.pyramidQuest(src, args);
             break;
             case "piramyd":
@@ -31584,7 +31585,7 @@ function Safari() {
                     }
                     safaribot.sendHtmlMessage(src, readable(listForms), safchan);
                     if (pk === page.length-1) {
-                        var pageControls = (page.contains(keys[0]) ? "" : link("/quest philosopher:page:" + (pageNum-1), "«Previous»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest philosopher:page:" + (pageNum+1), "«Next»"));
+                        var pageControls = (page.contains(keys[0]) ? "" : link("/quest philosopher:page:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest philosopher:page:" + (pageNum+1), "«Next Page»"));
                         if (pageControls) {
                             safaribot.sendHtmlMessage(src, "", safchan);
                             safaribot.sendHtmlMessage(src, pageControls, safchan);
@@ -36156,7 +36157,7 @@ function Safari() {
             var trapDamage = (10 * this.level), finalTrapDamage;
             for (var a in nerfed) {
                 finalTrapDamage = trapDamage * nerfed[a];
-                this.sendAll(a + " suffered " + finalTrapDamage + " from the trap!");
+                this.sendAll(a.toCorrectCase() + " suffered " + finalTrapDamage + " from the trap!");
                 stamina[a] = -1 * finalTrapDamage;
             }
         }
