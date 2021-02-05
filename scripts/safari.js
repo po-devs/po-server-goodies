@@ -20276,8 +20276,8 @@ function Safari() {
                     dval = sys.rand(md.discountprice[0], md.discountprice[1]);
                     delim = md.delim ? md.delim : 10;
                 }
-                val = Math.max((out[t].silver ? md.silverPrice[0] : md.price[0]),Math.round(val / delim) * delim);
-                dval = Math.max((out[t].silver ? md.silverDiscount[0] : md.discountPrice[0]), Math.round(dval / delim) * delim);
+                val = Math.max((out[t].silver ? md.silverPrice[0] : md.price[0]), Math.round(val / delim) * delim);
+                dval = Math.max((out[t].silver ? md.silverDiscount[0] : md.discountprice[0]), Math.round(dval / delim) * delim);
                 amt = sys.rand(md.amt[0], md.amt[1]);
                 out[t].price = val;
                 out[t].discountprice = dval;
