@@ -11954,24 +11954,29 @@ function Safari() {
         if (!player.hasOwnProperty("notificationSources")) {
             player.notificationSources = [];
         }
-        player.notifications.push(
-            {
-                msg: message + " --- [" + d + "]",
-                seen: false,
-                source: fromWhere
+        try {
+            player.notifications.push(
+                {
+                    msg: message + " --- [" + d + "]",
+                    seen: false,
+                    source: fromWhere
+                }
+            );
+            while (player.notifications.length > 16) {
+                player.notifications.shift();
             }
-        );
-        while (player.notifications.length > 16) {
-            player.notifications.shift();
+            if (!(player.notificationSources.contains(fromWhere))) {
+                player.notificationSources.push(fromWhere);
+            }
+            this.saveGame(player);
+            if (mute) {
+                return;
+            }
+            this.notificationPing(player);
         }
-        if (!(player.notificationSources.contains(fromWhere))) {
-            player.notificationSources.push(fromWhere);
+        catch (e) {
+            safaribot.sendAll(e + " | Notification: " + message + " | fromWhere: " + fromWhere + " | player: " + player.id + " | player.notifications: " + JSON.stringify(player.notifications), staffchannel);
         }
-        this.saveGame(player);
-        if (mute) {
-            return;
-        }
-        this.notificationPing(player);
     };
     this.notificationPing = function(player) {
         var src = sys.id(player.id);
