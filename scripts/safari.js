@@ -30122,7 +30122,7 @@ function Safari() {
 					"dark":[572,497,425],
 					"barrier":[100,442,107]
 				};
-				var hazardAbilites = {
+				var hazardAbilities = {
 					"plants": [180],
 					"water": [33],
 					"boulder": [159],
@@ -30139,11 +30139,11 @@ function Safari() {
 				for (var x in hazardMoves) {
 					used = [];
 					entry = {"name": x, "autos": 0, "hits": 0};
-					for (var j = 0; j < hazardAbilites[x].length; j++) {
+					for (var j = 0; j < hazardAbilities[x].length; j++) {
 						for (var i = 0; i < team.length; i++) {
-							if (canHaveAbility(team[i], hazardAbilites[x][j])) {
+							if (canHaveAbility(team[i], hazardAbilities[x][j])) {
 								entry.autos += 1;
-								used.push(abilityOff(hazardAbilites[x][j]));
+								used.push(abilityOff(hazardAbilities[x][j]));
 								break;
 							}
 						}
