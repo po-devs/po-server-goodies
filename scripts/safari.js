@@ -668,7 +668,8 @@ function Safari() {
             },
             pyramid: {
                 cooldown: 0,
-                bonusStamina: 0
+                bonusStamina: 0,
+                hazards: []
             },
             baking: {
                 cooldown: 0
@@ -30107,6 +30108,93 @@ function Safari() {
         }
 
         switch (action) {
+            case "hazards":
+            	//define these higher up later to avoid duplicated data
+				var hazardMoves = {
+					"plants":[163,13,77],
+					"water":[57,181,593],
+					"boulder":[276,477,529],
+					"toxic":[432,54,239],
+					"pit":[19,438,81],
+					"ice":[498,257,503],
+					"flame":[56,410,16],
+					"electric":[50,324,435],
+					"dark":[572,497,425],
+					"barrier":[100,442,107]
+				};
+				var hazardAbilites = {
+					"plants": [180],
+					"water": [33],
+					"boulder": [159],
+					"toxic": [81],
+					"pit": [26],
+					"ice": [47],
+					"flame": [18],
+					"electric": [140],
+					"dark": [35],
+					"barrier": [151]
+				};
+				var hits = [], entry = {}, used = [], out = [];
+				var team = player.party.slice(0, 3);
+				for (var x in hazardMoves) {
+					used = [];
+					entry = {"name": x, "autos": 0, "hits": 0};
+					for (var j = 0; j < hazardAbilities[x].length; j++) {
+						for (var i = 0; i < team.length; i++) {
+							if (canHaveAbility(team[i], hazardAbilites[x][j])) {
+								entry.autos += 1;
+								used.push(abilityOff(hazardAbilites[x][j]));
+								break;
+							}
+						}
+					}
+					for (var j = 0; j < hazardMoves[x].length; j++) {
+						for (var i = 0; i < team.length; i++) {
+							if (canLearnMove(team[i], hazardMoves[x][j])) {
+								entry.hits += 1;
+								used.push(moveOff(hazardMoves[x][j]));
+								break;
+							}
+						}
+					}
+					if (used.length > 0 && entry.hits + entry.autos > 0) {
+						out.push("You can clear " + entry.hits + entry.autos + " " + entry.name + (entry.autos > 0 ? " (" + entry.autos + " automatically)" : "") + " using " + readable(used));
+					}
+				}
+				if (out.length > 0) {
+					for (var i = 0; i < out.length; i++) {
+						safaribot.sendMessage(src, out[i], safchan);
+					}
+				} else {
+					safaribot.sendMessage(src, "Your team cannot clear any hazards (possibly the worst pyramid team ever)", safchan);
+				}
+            	break;
+            case "ban":
+            	var opt = [];
+				var hazardMoves = {
+					"plants":[163,13,77],
+					"water":[57,181,593],
+					"boulder":[276,477,529],
+					"toxic":[432,54,239],
+					"pit":[19,438,81],
+					"ice":[498,257,503],
+					"flame":[56,410,16],
+					"electric":[50,324,435],
+					"dark":[572,497,425],
+					"barrier":[100,442,107]
+				};
+				opt = Object.keys(hazardMoves); //i'm super lazy
+				if (data.length < 2) {
+					safaribot.sendMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", true) + ".", safchan);
+					return;
+				}
+				var d = data[1].toLowerCase();
+				if (!(opt.contains(d))) {
+					safaribot.sendMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", true) + ". Valid hazards are " + readable(opt) + ".", safchan);
+					return;
+				}
+				player.quests.pyramid.hazard = [d];
+            	break;
             case "start":
             case "fossil":
                 var name = sys.name(src);
@@ -35474,6 +35562,11 @@ function Safari() {
         this.bannedHazard = pokeInfo.species(parseInt(this.parties[p1.id][2], 10));
         this.bannedHazard = ["plants", "water", "boulder", "toxic", "pit", "ice", "flame", "electric", "dark", "barrier"][this.bannedHazard % 10];
 
+		if (p1.quests.pyramid.hazard.length > 0) {
+			this.bannedHazard = p1.quests.pyramid.hazard[0]; //for now you can ban one hazard
+		}
+		this.bannedHazard = [this.bannedHazard]; //it's an array now
+
         this.sendToViewers("");
         this.sendToViewers(readable(this.fullNames, "and") + " are entering the Pyramid!");
         this.sendToViewers("");
@@ -37364,16 +37457,16 @@ function Safari() {
             "barrier":[100,442,107]
         };
         this.hazardAbilites = {
-            "plants": 180,
-            "water": 33,
-            "boulder": 159,
-            "toxic": 81,
-            "pit": 26,
-            "ice": 47,
-            "flame": 18,
-            "electric": 140,
-            "dark": 35,
-            "barrier": 151
+            "plants": [180],
+            "water": [33],
+            "boulder": [159],
+            "toxic": [81],
+            "pit": [26],
+            "ice": [47],
+            "flame": [18],
+            "electric": [140],
+            "dark": [35],
+            "barrier": [151]
         };
         this.validMoves = [];
         for (var c in this.hazardMoves) {
@@ -37431,7 +37524,7 @@ function Safari() {
                 break;
             }
             for (e = 0; e < order.length; e++) {
-                if (order[e] === blockedHazard) {
+                if (blockedHazard.contains(order[e])) {
                     continue;
                 }
                 val = sys.rand(1, maxsize);
@@ -37495,6 +37588,9 @@ function Safari() {
             formatted = [];
             this.shortcuts[p] = toShortcut(this.usableMoves[p].map(moveOff));
             for (m in this.hazardMoves) {
+            	if (this.pyr.bannedHazard.contains(m.toLoweCase())) {
+            		continue;
+            	}
                 hazList = [];
                 move = this.hazardMoves[m];
                 for (e = 0; e < move.length; e++) {
@@ -37666,22 +37762,24 @@ function Safari() {
                 id = alive[p];
                 par = this.pyr.parties[id];
                 for (var k in par) {
-                    if ((canHaveAbility(par[k],this.hazardAbilites[e])) && (usedAbilities.indexOf(this.hazardAbilites[e]) === -1)) {
-                        if (obstacles.hasOwnProperty(e) && obstacles[e] > 0) {
-                            ab = abilityOff(this.hazardAbilites[e]);
-                            obstacles[e] -= 1;
-                            cleared[e]++;
-                            if (obstacles[e] === 0 && e === this.treasureLocation) {
-                                treasureTo = id;
-                            }
-                            if (!effective.hasOwnProperty(e)) {
-                                effective[e] = [];
-                            }
-                            effective[e].push(pokePlain(par[k]) + "'s " + ab);
-                            usedAbilities.push(this.hazardAbilites[e]);
-                            break;
-                        }
-                    }
+                	for (var i = 0; i < this.hazardAbilites[e].length; i++) {
+						if ((canHaveAbility(par[k],this.hazardAbilites[e][i])) && (usedAbilities.indexOf(this.hazardAbilites[e][i]) === -1)) {
+							if (obstacles.hasOwnProperty(e) && obstacles[e] > 0) {
+								ab = abilityOff(this.hazardAbilites[e][i]);
+								obstacles[e] -= 1;
+								cleared[e]++;
+								if (obstacles[e] === 0 && e === this.treasureLocation) {
+									treasureTo = id;
+								}
+								if (!effective.hasOwnProperty(e)) {
+									effective[e] = [];
+								}
+								effective[e].push(pokePlain(par[k]) + "'s " + ab);
+								usedAbilities.push(this.hazardAbilites[e][i]);
+								break;
+							}
+						}
+					}
                 }
             }
             for (p = 0; p < alive.length; p++) {
