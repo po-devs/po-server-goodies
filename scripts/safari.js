@@ -30158,7 +30158,7 @@ function Safari() {
 						}
 					}
 					if (used.length > 0 && entry.hits + entry.autos > 0) {
-						out.push("You can clear " + entry.hits + entry.autos + " " + entry.name + (entry.autos > 0 ? " (" + entry.autos + " automatically)" : "") + " using " + readable(used));
+						out.push("You can clear " + (parseInt(entry.hits, 10) + parseInt(entry.autos, 10) + " " + entry.name + (entry.autos > 0 ? " (" + entry.autos + " automatically)" : "") + " using " + readable(used));
 					}
 				}
 				if (out.length > 0) {
