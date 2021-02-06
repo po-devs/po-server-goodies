@@ -49186,7 +49186,7 @@ function Safari() {
         }
         sys.appendToFile(crossLog, now() + "|||Hangman|||" + name.toCorrectCase() + "|||" + rew + "\n");
     };
-    this.leaderboardRewards = function(lb, lbInfo, lbName) {
+    this.leaderboardRewards = function(lb, lbInfo, lbName, reverse) {
         if (lb.length === 0) {
             return;
         }
@@ -49236,20 +49236,25 @@ function Safari() {
             }
             
             winners[p.name] = prizes[(p.pos <= 3 ? p.pos-1 : 3)];
+            
+            if (reverse)
+                winners[p.name] = winners[p.name].split(",").map(function(e) { return "-" + e }).join(",");
         }
         
-        safaribot.sendHtmlAll(toColor("<b>Top 10 players " + lbInfo.desc + ":</b>", "red"), safchan);
-        if (first.length) {
-            safaribot.sendHtmlAll("<b>1st Place:</b> " + readable(first), safchan);
-        }
-        if (second.length) {
-            safaribot.sendHtmlAll("<b>2nd Place:</b> " + readable(second), safchan);
-        }
-        if (third.length) {
-            safaribot.sendHtmlAll("<b>3rd Place:</b> " + readable(third), safchan);
-        }
-        if (rest.length) {
-            safaribot.sendHtmlAll("<b>4~10th:</b> " + rest.join(", "), safchan);
+        if (!reverse) {
+            safaribot.sendHtmlAll(toColor("<b>Top 10 players " + lbInfo.desc + ":</b>", "red"), safchan);
+            if (first.length) {
+                safaribot.sendHtmlAll("<b>1st Place:</b> " + readable(first), safchan);
+            }
+            if (second.length) {
+                safaribot.sendHtmlAll("<b>2nd Place:</b> " + readable(second), safchan);
+            }
+            if (third.length) {
+                safaribot.sendHtmlAll("<b>3rd Place:</b> " + readable(third), safchan);
+            }
+            if (rest.length) {
+                safaribot.sendHtmlAll("<b>4~10th:</b> " + rest.join(", "), safchan);
+            }
         }
         for (e in winners) {
             p = getAvatarOff(e);
@@ -49258,7 +49263,9 @@ function Safari() {
                 if (isPlaying(e)) {
                     safaribot.sendMessage(sys.id(e), "You " + out + " from the " + cap(lbInfo.alias) + " Leaderboard!", safchan);
                 }
-                this.inboxMessage(p, "You " + out + " from the " + cap(lbInfo.alias) + " Leaderboard!", isPlaying(e));
+                else {
+                    this.inboxMessage(p, "You " + out + " from the " + cap(lbInfo.alias) + " Leaderboard!", isPlaying(e));
+                }
                 rew = translateStuff(winners[e]);
                 sys.appendToFile(crossLog, now() + "|||" + lbInfo.alias.split(" ").map(cap).join(" ") + " Leaderboard|||" + p.id.toCorrectCase() + "|||" + rew + "\n");
             }
