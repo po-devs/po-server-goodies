@@ -30158,7 +30158,7 @@ function Safari() {
 						}
 					}
 					if (used.length > 0 && entry.hits + entry.autos > 0) {
-						out.push("You can clear " + (parseInt(entry.hits, 10) + parseInt(entry.autos, 10) + " " + entry.name + (entry.autos > 0 ? " (" + entry.autos + " automatically)" : "") + " using " + readable(used));
+						out.push("You can clear " + (parseInt(entry.hits, 10) + parseInt(entry.autos, 10)) + " " + entry.name + (entry.autos > 0 ? " (" + entry.autos + " automatically)" : "") + " using " + readable(used));
 					}
 				}
 				if (out.length > 0) {
@@ -30185,15 +30185,16 @@ function Safari() {
 				};
 				opt = Object.keys(hazardMoves); //i'm super lazy
 				if (data.length < 2) {
-					safaribot.sendMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", true) + ".", safchan);
+					safaribot.sendHtmlMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", true) + ".", safchan);
 					return;
 				}
 				var d = data[1].toLowerCase();
 				if (!(opt.contains(d))) {
-					safaribot.sendMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", true) + ". Valid hazards are " + readable(opt) + ".", safchan);
+					safaribot.sendHtmlMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", true) + ". Valid hazards are " + readable(opt) + ".", safchan);
 					return;
 				}
 				player.quests.pyramid.hazard = [d];
+				safaribot.sendHtmlMessage(src, "You will not encounter any " + player.quests.pyramid.hazard.join(" and ") + " during your next Pyramid run.", safchan);
             	break;
             case "start":
             case "fossil":
