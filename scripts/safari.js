@@ -32206,7 +32206,7 @@ function Safari() {
                     break;
                 }
                 
-                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + (player.firstCelebrityRun ? " and received prizes" : " and was NOT eligible for prizes") + "\n");
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + (player.firstCelebrityRun ? " and was eligible for prizes" : " and was not eligible for prizes") + "\n");
                 player.firstCelebrityRun = false;
                 safari.saveGame(player);
             }
