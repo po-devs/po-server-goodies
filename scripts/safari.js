@@ -9146,6 +9146,9 @@ function Safari() {
             if (ball === "lightning") {
                 player.records.catchLightning += 1;
             }
+            if (ball === "photo") {
+                player.records.catchPhoto += 1;
+            }
             if (ball === "mono") {
                 player.records.catchMono += 1;
             }
@@ -11761,7 +11764,7 @@ function Safari() {
         else if (commandData === "2") {
             sys.sendMessage(src, "*** Player Records | Page 2***", safchan);
             
-            var captures = "Caught {0} Pokémon in {1}, {2} in {3}, {4} in {5}, {6} in {7}, {8} in {9}, {10} in {11}, {12} in {13}, {14} in {15}, {16} in {17}, {18} in {19}, {20} in {21}, {22} in {23}, {24} in {25}, {26} in {27}, and {28} in {29}. Took {30}.".format(
+            var captures = "Caught {0} Pokémon in {1}, {2} in {3}, {4} in {5}, {6} in {7}, {8} in {9}, {10} in {11}, {12} in {13}, {14} in {15}, {16} in {17}, {18} in {19}, {20} in {21}, {22} in {23}, {24} in {25}, {26} in {27}, {28} in {29}, and {30} in {31}. Took {32}.".format(
                 addComma(rec.catchQuick),
                 es(finishName("quick")),
                 addComma(rec.catchClone),
@@ -11790,6 +11793,8 @@ function Safari() {
                 es(finishName("inver")),
                 addComma(rec.catchLevel),
                 es(finishName("level")),
+                addComma(rec.catchPhoto),
+                es(finishName("photo")),
                 addComma(rec.catchCherish),
                 es(finishName("cherish")),
                 plural(rec.photosTaken, "photograph")
