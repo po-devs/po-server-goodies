@@ -28524,6 +28524,7 @@ function Safari() {
                 this.fightLeague(src, args);
             break;
             case "celebrity":
+            case "celeb":
             case "celebrity death match":
                 this.celebrityMatch(src, args);
             break;
@@ -50096,7 +50097,7 @@ function Safari() {
                 if (commandData === "*") {
                     safaribot.sendMessage(src, "Type which player's Pyramid run to watch or unwatch with /watchpyr [name]!", safchan);
                 } else {
-                    var user = getAvatar(src);
+                    var user = sys.name(src).toLowerCase();
                     var player = getAvatarOff(commandData);
                     if (!(player)) {
                         safaribot.sendMessage(src, "No player named " + commandData + " found!", safchan);
@@ -50112,20 +50113,20 @@ function Safari() {
                         safaribot.sendMessage(src, player.id + " is not in the Pyramid!", safchan);
                         return true;
                     }
-                    if (getPyramid.isInPyramid(user.id)) {
+                    if (getPyramid.isInPyramid(user)) {
                         safaribot.sendMessage(src, "You can't watch this Pyramid run because you are in it!", safchan);
                         return true;
                     }
-                    if (!(getPyramid.viewers.contains(user.id))) {
+                    if (!getPyramid.viewers.contains(user)) {
                         //safaribot.sendMessage(src, "You are now watching " + player.id + "'s Pyramid run!", safchan);
-                        getPyramid.viewers.push(user.id);
+                        getPyramid.viewers.push(user);
                         getPyramid.sendToViewers(sys.name(src) + " is watching this Pyramid run!");
                         return true;
                     }
                     else {
                         //safaribot.sendMessage(src, "You are no longer watching " + player.id + "'s Pyramid run!", safchan);
                         getPyramid.sendToViewers(sys.name(src) + " stopped watching this Pyramid run!");
-                        getPyramid.viewers.splice(getPyramid.viewers.indexOf(user.id), 1);
+                        getPyramid.viewers.splice(getPyramid.viewers.indexOf(user), 1);
                         return true;
                     }
                 }
