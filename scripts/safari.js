@@ -49012,6 +49012,9 @@ function Safari() {
         if (!player) {
             return;
         }
+        if (player.locked) {
+            return;
+        }
         var rew, mushamt = 0, rareamt = 0, packamt = 0, megaamt = 0;
         switch (placing) {
             case 1:
@@ -49065,6 +49068,9 @@ function Safari() {
         if (!player) {
             return;
         }
+        if (player.locked) {
+            return;
+        }
         var rew, amt;
         switch (placing) {
             case 1:
@@ -49106,6 +49112,9 @@ function Safari() {
             if (!player) {
                 continue;
             }
+            if (player.locked) {
+                continue;
+            }
             this.costumeEXP(player, "winmafia", amt);
             famt = (this.hasCostumeSkill(player, "extraMafiaShady") ? 1.5 * amt : 1 * amt);
             player.balls.shady += Math.floor(famt);
@@ -49131,6 +49140,9 @@ function Safari() {
     this.hangmanPromo = function(name) {
         var player = getAvatarOff(name);
         if (!player) {
+            return;
+        }
+        if (player.locked) {
             return;
         }
         var rew = ["6@silver", "9@gacha", "2@gem", "1@form", "150@dust"].random();
