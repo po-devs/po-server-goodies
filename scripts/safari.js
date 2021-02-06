@@ -3293,6 +3293,16 @@ function Safari() {
         safaribot.sendMessage( src,"Move #" + num + ": " + name + ".",safchan );
         return;
     }
+    function getInputAbility(src, data) {
+        var num = parseInt(data, 10), name;
+        if (isNaN(num)) {
+            num = abilitynum(data);
+        }
+        name = abilityOff(num);
+
+        safaribot.sendMessage( src,"Ability #" + num + ": " + name + ".",safchan );
+        return;
+    }
     function getPokemonInfo(info) {
         var shiny = false, id = info;
 
@@ -30134,11 +30144,23 @@ function Safari() {
 					"dark": [35],
 					"barrier": [151]
 				};
+				var hazardNames = {
+					"plants": "Plant",
+					"water": "Water Stream",
+					"boulder": "Boulder",
+					"toxic": "Toxic Gas",
+					"pit": "Pit",
+					"ice": "Ice Pillar",
+					"flame": "Flamethrower",
+					"electric": "Mecha",
+					"dark": "Darkness",
+					"barrier": "Barrier"
+				};
 				var hits = [], entry = {}, used = [], out = [];
 				var team = player.party.slice(0, 3);
 				for (var x in hazardMoves) {
 					used = [];
-					entry = {"name": x, "autos": 0, "hits": 0};
+					entry = {"name": hazardNames[x], "autos": 0, "hits": 0};
 					for (var j = 0; j < hazardAbilities[x].length; j++) {
 						for (var i = 0; i < team.length; i++) {
 							if (canHaveAbility(team[i], hazardAbilities[x][j])) {
@@ -30171,29 +30193,32 @@ function Safari() {
             	break;
             case "ban":
             	var opt = [];
-				var hazardMoves = {
-					"plants":[163,13,77],
-					"water":[57,181,593],
-					"boulder":[276,477,529],
-					"toxic":[432,54,239],
-					"pit":[19,438,81],
-					"ice":[498,257,503],
-					"flame":[56,410,16],
-					"electric":[50,324,435],
-					"dark":[572,497,425],
-					"barrier":[100,442,107]
+				var hazardNames = {
+					"plants": "Plant",
+					"water": "Water Stream",
+					"boulder": "Boulder",
+					"toxic": "Toxic Gas",
+					"pit": "Pit",
+					"ice": "Ice Pillar",
+					"flame": "Flamethrower",
+					"electric": "Mecha",
+					"dark": "Darkness",
+					"barrier": "Barrier"
 				};
-				opt = Object.keys(hazardMoves); //i'm super lazy
+				opt = Object.keys(hazardNames); //i'm super lazy
 				if (data.length < 2) {
-					safaribot.sendHtmlMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", true) + ".", safchan);
+					safaribot.sendHtmlMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", false, true) + ".", safchan);
 					return;
 				}
 				var d = data[1].toLowerCase();
 				if (!(opt.contains(d))) {
-					safaribot.sendHtmlMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", true) + ". Valid hazards are " + readable(opt) + ".", safchan);
+					safaribot.sendHtmlMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", false, true) + ". Valid hazards are " + readable(opt.map(function(x) { return x + " (" + hazardNames[x] + ")" })) + ".", safchan);
 					return;
 				}
-				player.quests.pyramid.hazard = [d];
+				player.quests.pyramid.hazard.push(d);
+				if (player.quests.pyramid.hazard.length > 1) { //change this to larger amount later on
+					player.quests.pyramid.hazard.shift();
+				}
 				safaribot.sendHtmlMessage(src, "You will not encounter any " + player.quests.pyramid.hazard.join(" and ") + " during your next Pyramid run.", safchan);
             	break;
             case "start":
@@ -35776,6 +35801,8 @@ function Safari() {
             this.sendToViewers("You received a bonus " + plural(stmBonus, "Point") + " from your remaining stamina!");
         }
         var bonusMult = 1;
+        /*
+        remove bonus multiplier for now
         for (var i in this.parties) {
             for (var j in this.parties[i]) {
                 if (pyrBonusMons.contains(parseInt(this.parties[i][j], 10))) {
@@ -35783,6 +35810,7 @@ function Safari() {
                 }
             }
         }
+        */
         bonusMult = Math.round(bonusMult * 10) * 0.1
         if (bonusMult > 1) {
             this.sendToViewers("You received a bonus x" + toFixed(bonusMult, 1) + " from your Bonus Pokémon!");
@@ -50178,6 +50206,10 @@ function Safari() {
             }
             if (command === "movenum") {
                 getInputMove(src, commandData);
+                return true;
+            }
+            if (command === "abilitynum") {
+                getInputAbility(src, commandData);
                 return true;
             }
             if (command === "watch") {
