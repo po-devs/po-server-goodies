@@ -32028,14 +32028,14 @@ function Safari() {
                 }
                 
                 if (next >= 13) {
-                    player.firstCelebrityRun = false;
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> I have the great honor of saying that you have triumphed over all of the Celebrity Trainers today!", safchan);
                     sys.sendAll("", safchan);
                     safaribot.sendHtmlAll("<b>Announcer: " + name + " has defeated all 13 Celebrity Trainers (Difficulty: " + level + ")! Please congratulate our champion!</b>", safchan);
                     sys.sendAll("", safchan);
-                    sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity|||Difficulty: " + level + "|||Challenged with " + readable(player.party.map(poke)) + "|||Received " + plural(reward[1], reward[0]) + " by defeating " + next + " Trainers\n");
+                    sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity|||Difficulty: " + level + "|||Challenged with " + readable(player.party.map(poke)) + "|||" + (player.firstCelebrityRun ? "Received " + plural(reward[1], reward[0]) + " by defeating " + next + " Trainers" : "Was not eligible for prizes") + "\n");
                     var description = "Cleared " + player.celebrityRegion.toUpperCase() + " Celebrities on " + level.toUpperCase() + " (" + new Date(now()).toUTCString() + ")";
                     var ic = [253, 252, 251, 249, 258, 255][args.difficulty+1];
+                    player.firstCelebrityRun = false;
                     safari.awardMedal(
                         player,
                         {
@@ -32206,7 +32206,7 @@ function Safari() {
                     break;
                 }
                 
-                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + (player.firstCelebrityRun ? " and received prizes" : " and was NOT eligible for prizes") + "\n");
                 player.firstCelebrityRun = false;
                 safari.saveGame(player);
             }
