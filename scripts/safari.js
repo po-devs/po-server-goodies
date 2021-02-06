@@ -30139,7 +30139,7 @@ function Safari() {
 				for (var x in hazardMoves) {
 					used = [];
 					entry = {"name": x, "autos": 0, "hits": 0};
-					for (var j = 0; j < hazardAbilities[x].length; j++) {
+					for (var j = 0; j < hazardAbilites[x].length; j++) {
 						for (var i = 0; i < team.length; i++) {
 							if (canHaveAbility(team[i], hazardAbilites[x][j])) {
 								entry.autos += 1;
