@@ -17435,7 +17435,7 @@ function Safari() {
         ls = player.medals;
         ls.splice(index - 1, 1);
         ls.unshift(m);
-        safaribot.sendMessage(src, "You featured your medal: " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + "! It will now appear on your trainer screen!", safchan);
+        safaribot.sendHtmlMessage(src, "You featured your medal: " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + "! It will now appear on your trainer screen!", safchan);
         this.viewMedals(src);
         this.saveGame(player);
         return true;
@@ -17469,7 +17469,7 @@ function Safari() {
         m = player.medals[index - 1];
         ls = player.medals;
         ls.splice(index - 1, 1);
-        safaribot.sendMessage(src, "You discarded your medal: " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + ".", safchan);
+        safaribot.sendHtmlMessage(src, "You discarded your medal: " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + ".", safchan);
         
         //band-aid fix since im not sure what causes this yet, but it just happened and i can't replicate it
         player.medals = player.medals.filter(function(e) { return e !== null });
