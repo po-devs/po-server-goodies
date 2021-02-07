@@ -3016,6 +3016,21 @@ function Safari() {
         }
         return arr;
     }
+	function lookupMoveLearners(h) {
+		var outList = [];
+		if (safari.moveLearners.hasOwnProperty(h+"")) {
+			outList = safari.moveLearners[h+""];
+		} else {
+			for (var e = 1; e < highestDexNum - 1; e++) {
+				outList.push(e);
+			}
+			outList = outList.filter(function(x){
+				return (canLearnMove(x, h));
+			});
+			safari.moveLearners[h+""] = outList;
+		}
+		return outList;
+	}
     function compare(a,b) {
         if (a.sort < b.sort) {
             return -1;
@@ -30695,21 +30710,6 @@ function Safari() {
                             return false;
                         }
                     }
-                    function lookupMoveLearners(h) {
-                        var outList = [];
-                        if (safari.moveLearners.hasOwnProperty(h+"")) {
-                            outList = safari.moveLearners[h+""];
-                        } else {
-                            for (var e = 1; e < highestDexNum - 1; e++) {
-                                outList.push(e);
-                            }
-                            outList = outList.filter(function(x){
-                                return (canLearnMove(x, h));
-                            });
-                            safari.moveLearners[h+""] = outList;
-                        }
-                        return outList;
-                    }
                     var l = lookupMoveLearners(m), l2 = lookupMoveLearners(m2);
                     if (l.length > 220 || l.length < 15) {
                         return false;
@@ -36881,16 +36881,36 @@ function Safari() {
         if (h) {
             hints.push("Can have the ability '{0}'".format(abilityOff(h)));
         }
-        var maxMoves = level <= 2 ? 6 : 8;
-        var moves = fetchMoves(this.answerId).shuffle().slice(0, maxMoves).map(moveOff);
-        for (h = moves.length; h--; ) {
-            if (h >= 1) {
-                hints.push("Can have the moves '{0} and {1}'".format(moves[h], moves[h-1]));
-                h--;
-            } else {
-                hints.push("Can have the move '{0}'".format(moves[h]));
-            }
-        }
+        var moveHintAmount = level <= 2 ? 3 : 4;
+        var moves;
+        var movesHit = [];
+        var j, l = [], l2 = [], l3 = [];
+        for (var k = moveHintAmount; k--;) {
+        	j = 0;
+			while (j < 40) {
+				j++;
+				moves = fetchMoves(this.answerId).shuffle().slice(0, 2);
+				if (movesHit.contains(moves[0]) || movesHit.contains(moves[1])) {
+					continue;
+				}
+				l = lookupMoveLearners(moves[0]);
+				l2 = lookupMoveLearners(moves[1]);
+				if (l.length > 300 || l.length < 10) {
+					continue;
+				}
+				if (l2.length > 300 || l2.length < 10) {
+					continue;
+				}
+				var l3 = removeNonDuplicates(l.concat(l2));
+				if (l3.length > 95 || l3.length < 3) {
+					continue;
+				}
+				break;
+			}
+			movesHit.push(moves[0]);
+			movesHit.push(moves[1]);
+			hints.push("Can have the moves '{0} and {1}'".format(moveOff(moves[0]), moveOff(moves[1])));
+		}
         h = generation(this.answerId, true);
         hints.push("Is from the " + h + " region");
 
