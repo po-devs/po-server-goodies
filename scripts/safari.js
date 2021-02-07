@@ -15835,7 +15835,6 @@ function Safari() {
         extraBuyBonus: "Obtain extra patronage items from the market",
         tripleChance: "Odds of triple-cloning a Pokémon is increased",
         towerLoot: "Earn extra rewards from clearing Tower",
-        fasterArena: "Less cooldown after fighting Arena",
         extraTourRare: "Earn an extra Rare Candy from Tournaments",
         extraTourMega: "Earn an extra Mega Stone from winning a Tournament",
         extraScientistSilver: "Earn extra Silver from working as the Scientist's close personal aide",
@@ -37585,7 +37584,7 @@ function Safari() {
                 if (bonusUsed.length > 0) {
                     bonusMsg.push(p.toCorrectCase() + " defended with " + bonusUsed.map(typeIcon).join("/") + "-type Pokémon and healed +" + healamt + " stamina");
                     if (!(stamina[p])) {
-                    	stamina[p] = 0;
+                        stamina[p] = 0;
                     }
                     stamina[p] += healamt;
                 }
