@@ -37552,7 +37552,7 @@ function Safari() {
                     if (!(stamina[p])) {
                     	stamina[p] = 0;
                     }
-                    stamina[p] -= healamt;
+                    stamina[p] += healamt;
                 }
             }
         }
