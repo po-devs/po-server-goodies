@@ -10699,7 +10699,7 @@ function Safari() {
                     if (i >= medals.length) {
                         break;
                     }
-                    out += "<img src = '" + (medalIcons.hasOwnProperty(medals[i].icon + "") ? medalIcons[medals[i].icon + ""] : "item:" + medals[i].icon) + "' title='" + medals[i].desc + "'>";
+                    out += safari.getMedalSprite(medals[i].icon, medals[i].desc);
                 }
                 if (medals.length > 3) {
                     out += "</p><p>";
@@ -10707,7 +10707,7 @@ function Safari() {
                         if (i >= medals.length) {
                             break;
                         }
-                        out += "<img src = '" + (medalIcons.hasOwnProperty(medals[i].icon + "") ? medalIcons[medals[i].icon + ""] : "item:" + medals[i].icon) + "' title='" + medals[i].desc + "'>";
+                        out += safari.getMedalSprite(medals[i].icon, medals[i].desc);
                     }
                     out += "</p>"
                 }
@@ -17376,6 +17376,9 @@ function Safari() {
         });
         rafflePlayers.save();
     };
+    this.getMedalSprite = function(icon, desc) {
+        return "<img src='" + (medalIcons.hasOwnProperty(icon + "") ? medalIcons[icon] : "item:" + icon) + "' title='" + desc + "'>";
+    };
     /* Medals */
     this.viewMedals = function(src, target) {
         var out = [], m;
@@ -17404,7 +17407,7 @@ function Safari() {
 
         for (var i = 0; i < player.medals.length; i++) {
             m = player.medals[i];
-            out.push("#" + (i + 1) + ": <img src ='" + (medalIcons.hasOwnProperty(m.icon + "") ? medalIcons[m.icon+""] : "item:" + m.icon) + "'> "  + m.desc + " [" + link("/featuremedal " + (i + 1), "Feature") + "] [" + link("/removemedal " + (i + 1) + ":", "Permanently Discard", true) + "]");
+            out.push("#" + (i + 1) + ": " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + " [" + link("/featuremedal " + (i + 1), "Feature") + "] [" + link("/removemedal " + (i + 1), "Permanently Discard") + "]");
         }
         out.push("");
         for (var o in out) {
@@ -17432,7 +17435,7 @@ function Safari() {
         ls = player.medals;
         ls.splice(index - 1, 1);
         ls.unshift(m);
-        safaribot.sendMessage(src, "You featured your medal: " + m.desc + "! It will now appear on your trainer screen!", safchan);
+        safaribot.sendMessage(src, "You featured your medal: " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + "! It will now appear on your trainer screen!", safchan);
         this.viewMedals(src);
         this.saveGame(player);
         return true;
@@ -17455,7 +17458,8 @@ function Safari() {
             return;
         } 
         if (data.length < 2) {
-            safaribot.sendMessage(src, "Add 'confirm' after the ':' to confirm that you intend to discard this medal! WARNING: This will permanently delete the medal!", safchan);
+            safaribot.sendHtmlMessage(src, "You are about to PERMANENTLY discard your medal {0} {1}, {2} if you're sure you want to continue.".format(this.getMedalSprite(player.medals[index-1].icon, player.medals[index-1].desc), player.medals[index-1].desc, link("/removemedal " + index + ":confirm", "click here")), safchan);
+            //safaribot.sendMessage(src, "Add 'confirm' after the ':' to confirm that you intend to discard this medal! WARNING: This will permanently delete the medal!", safchan);
             return;
         }
         if (data[1] !== "confirm") {
@@ -17465,7 +17469,7 @@ function Safari() {
         m = player.medals[index - 1];
         ls = player.medals;
         ls.splice(index - 1, 1);
-        safaribot.sendMessage(src, "You discarded your medal: " + m.desc + ".", safchan);
+        safaribot.sendMessage(src, "You discarded your medal: " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + ".", safchan);
         
         //band-aid fix since im not sure what causes this yet, but it just happened and i can't replicate it
         player.medals = player.medals.filter(function(e) { return e !== null });
@@ -48536,7 +48540,7 @@ function Safari() {
             icon: icon
         }
         if (this.awardMedal(player, m)) {
-            safaribot.sendMessage(src, "You awarded " + player.id + " the medal: " + description + "!", safchan);
+            safaribot.sendMessage(src, "You awarded " + player.id.toCorrectCase() + " the medal: " + description + "!", safchan);
             if (sys.id(cd[0]))
                 safaribot.sendMessage(sys.id(cd[0]), sys.name(src) + " awarded you with the medal: " + description + "!", safchan);
         }
