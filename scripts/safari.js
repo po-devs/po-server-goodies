@@ -36325,11 +36325,9 @@ function Safari() {
                 choice = attackers[id];
                 avi = getAvatarOff(id);
 
+				var playerBonus = [10, 100];
                 if ((type2(choice)) === "???" && (avi.costume === "flower")) {
                     playerBonus = [30, 120];
-                    if (pyrBonusMons.contains(choice)) {
-                        playerBonus = [60, 160];
-                    }
                 }
                 if (pyrBonusMons.contains(choice % 65536)) {
                     playerBonus[0] += 35;
