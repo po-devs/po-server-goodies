@@ -36417,7 +36417,7 @@ function Safari() {
         for (var p in parties) {
             this.shortcuts[p] = toShortcut(parties[p].map(poke));
             this.distractingStrong[p] = false;
-            this.individualmsg[p] = "Send one of your Pokémon to help: " + pyrLink(this.shortcuts[p]) + (p == pyramidRef.leader ? " | You can instead run away with " + link("/pyr flee") + " at the cost of " + (8 + 5 * level) + " stamina!" : " | You can " + link("/pyr distract", "Distract") + " to attempt to draw the Pokémon's attack, although it may fail if you've distracted recently.");
+            this.individualmsg[p] = "Send one of your Pokémon to help: " + pyrLink(this.shortcuts[p]) + (p == pyramidRef.leader ? " | You can instead run away with " + link("/pyr flee") + " at the cost of " + (8 + 5 * level) + " stamina!" : " | You can " + link("/pyr distract", "Distract") + " to attempt to draw the Pokémon's attack, although it may fail if you've distracted recently and it will cause you to deal less damage.");
         }
 
         var difficulty = 1;
@@ -36557,7 +36557,10 @@ function Safari() {
                 playerBonus[0] *= 1.25;
                 playerBonus[1] *= 1.25;
             }
-
+			if (this.distractingStrong[attackerNames[i]]) {
+                playerBonus[0] *= 0.75;
+                playerBonus[1] *= 0.75;
+			}
             res = calcDamage(m, opp, playerBonus, false, false, getCherished(m, name));
             if (this.opponentHP > 0) {
                 this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the {3}!".format(attackerNames[p].toCorrectCase(), poke(m), toColor(res.power[0], "blue"), (this.isRevealed ? poke(opp) : "hidden Pokémon")));
