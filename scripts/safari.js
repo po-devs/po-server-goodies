@@ -48394,21 +48394,27 @@ function Safari() {
                     case "Best Catcher": switch (p.pos) {
                         case 1: ic = 300; break; case 2: ic = 285; break; case 3: ic = 291; break;
                     }
+                    break;
                     case "Arena Tycoon": switch (p.pos) {
                         case 1: ic = 300; break; case 2: ic = 285; break; case 3: ic = 291; break; 
                     }
+                    break;
                     case "Contest Champion": switch (p.pos) {
                         case 1: ic = 299; break; case 2: ic = 281; break; case 3: ic = 287; break; 
                     }
+                    break;
                     case "Pyramid Adventurer": switch (p.pos) {
                         case 1: ic = 299; break; case 2: ic = 281; break; case 3: ic = 287; break; 
                     }
+                    break;
                     case "Photographer": switch (p.pos) {
                         case 1: ic = 301; break; case 2: ic = 280; break; case 3: ic = 303; break; 
                     }
+                    break;
                     case "Collector Fanatic": switch(p.pos) {
                         case 1: ic = 302; break; case 2: ic = 282; break; case 3: ic = 292; break;
                     }
+                    break;
                 }
                 
                 m.icon = ic;
