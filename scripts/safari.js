@@ -36418,7 +36418,7 @@ function Safari() {
         for (var p in parties) {
             this.shortcuts[p] = toShortcut(parties[p].map(poke));
             this.distractingStrong[p] = false;
-            this.individualmsg[p] = "Send one of your Pokémon to help: " + pyrLink(this.shortcuts[p]) + (p == pyramidRef.leader ? " | You can instead run away with " + link("/pyr flee") + " at the cost of " + (8 + 5 * level) + " stamina!" : " | You can " + link("/pyr distract", "Distract") + " to attempt to draw the Pokémon's attack, although it may fail if you've distracted recently and it will cause you to deal less damage.");
+            this.individualmsg[p] = "Send one of your Pokémon to help: " + pyrLink(this.shortcuts[p]) + (p == pyramidRef.leader ? " | You can instead run away with " + link("/pyr flee") + " at the cost of " + (8 + 5 * level) + " stamina!" : "") + " | You can " + link("/pyr distract", "Distract") + " to attempt to draw the Pokémon's attack, although it may fail if you've distracted recently and it will cause you to deal less damage.";
         }
 
         var difficulty = 1;
@@ -37459,7 +37459,7 @@ function Safari() {
         this.bonusTypes = [randomSample(typeChances)];
         var type_2 = randomSample(typeChances);
         var j = 0;
-        while (type_2 !== this.bonusTypes[0]) {
+        while (type_2 == this.bonusTypes[0]) {
         	j++;
         	if (j > 16) {
         		break;
@@ -37482,7 +37482,7 @@ function Safari() {
 		var self = this;
         this.sendAll("");
         this.sendAll("Room {0}-{1}: As soon as you enter the room, you see a Pokémon in the shadows using {2}. They then look at you and prepare another attack!".format(level, roomNum, toColor(this.firstAtk, "blue") + " and " + toColor(this.secondAtk, "blue")));
-        this.sendAll("Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(function(x) {return typeIcon[x] + " (" + self.bonusTypesObj[x] + ")"}), "or") + " will heal your Pokémon and give bonus points!");
+        this.sendAll("Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(function(x) {return typeIcon(x) + " (" + self.bonusTypesObj[x] + ")"}), "or") + " will heal your Pokémon and give bonus points!");
         this.sendIndividuals();
         this.sendAll("");
     }
