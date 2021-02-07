@@ -15801,6 +15801,7 @@ function Safari() {
         extraBuyBonus: "Obtain extra patronage items from the market",
         tripleChance: "Odds of triple-cloning a Pokémon is increased",
         towerLoot: "Earn extra rewards from clearing Tower",
+        fasterArena: "Less cooldown after fighting Arena",
         extraTourRare: "Earn an extra Rare Candy from Tournaments",
         extraTourMega: "Earn an extra Mega Stone from winning a Tournament",
         extraScientistSilver: "Earn extra Silver from working as the Scientist's close personal aide",
