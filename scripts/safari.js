@@ -48390,11 +48390,17 @@ function Safari() {
                 r = ("#" + p.pos + " ");
                 outDesc = r + w;
                 m.desc = outDesc + " " + date;
-                switch (w) { // we're seriously running out of unique sprites here, base64-ing in some ingame ribbons might be a decent and more aesthetic alternative
-                    case "Best Catcher": case "Arena Tycoon": switch (p.pos) {
+                switch (w) {
+                    case "Best Catcher": switch (p.pos) {
+                        case 1: ic = 300; break; case 2: ic = 285; break; case 3: ic = 291; break;
+                    }
+                    case "Arena Tycoon": switch (p.pos) {
                         case 1: ic = 300; break; case 2: ic = 285; break; case 3: ic = 291; break; 
                     }
-                    case "Contest Champion": case "Pyramid Adventurer": switch (p.pos) {
+                    case "Contest Champion": switch (p.pos) {
+                        case 1: ic = 299; break; case 2: ic = 281; break; case 3: ic = 287; break; 
+                    }
+                    case "Pyramid Adventurer": switch (p.pos) {
                         case 1: ic = 299; break; case 2: ic = 281; break; case 3: ic = 287; break; 
                     }
                     case "Photographer": switch (p.pos) {
