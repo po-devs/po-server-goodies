@@ -17392,7 +17392,6 @@ function Safari() {
             out.push("<b>" + player.id + "'s Medals: </b>");
         } else {
             player = getAvatarOff(sys.name(src));
-            out.push("");
             out.push("<b>Your Medals: </b>(" + player.medals.length + "/" + medalCap + ")");
             out.push("<b>" + toColor("Note:", "red") + "</b> Your top 6 medals are featured in your party. Once you reach " + medalCap + " medals, you cannot receive any more until you discard some.");
         }
@@ -17409,10 +17408,12 @@ function Safari() {
             m = player.medals[i];
             out.push("#" + (i + 1) + ": " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + " [" + link("/featuremedal " + (i + 1), "Feature") + "] [" + link("/removemedal " + (i + 1), "Permanently Discard") + "]");
         }
-        out.push("");
+
+        sys.sendMessage(src, "", safchan);
         for (var o in out) {
             safaribot.sendHtmlMessage(src, out[o], safchan);
         }
+        sys.sendMessage(src, "", safchan);
         return true;
     };
     this.featureMedal = function(src, name, data) {
@@ -31826,7 +31827,7 @@ function Safari() {
                     if (pk === page.length-1) {
                         var pageControls = (page.contains(keys[0]) ? "" : link("/quest philosopher:page:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest philosopher:page:" + (pageNum+1), "«Next Page»"));
                         if (pageControls) {
-                            safaribot.sendHtmlMessage(src, "", safchan);
+                            sys.sendMessage(src, "", safchan);
                             safaribot.sendHtmlMessage(src, pageControls, safchan);
                         }
                     }
