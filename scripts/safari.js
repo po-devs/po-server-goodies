@@ -55770,6 +55770,7 @@ function Safari() {
                                     }
                                     if (val > 0) {
                                         player.money += val;
+                                        player.money = Math.min(player.money, moneyCap);
                                         rewardName.push("$" + val);
                                     }
                                 } else if (amt > 0) {
