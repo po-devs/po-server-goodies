@@ -36140,7 +36140,7 @@ function Safari() {
         }
         if (commandData == "distract") {
         	this.distractingStrong[player.id] = true;
-			this.sendAll(toColor("{0} is going to use distract the Pokémon!".format(player.id.toCorrectCase()), "crimson"));
+			this.sendAll(toColor("{0} is going to distract the Pokémon!".format(player.id.toCorrectCase()), "crimson"));
 			return;
         }
         this.choices[player.id] = commandData;
