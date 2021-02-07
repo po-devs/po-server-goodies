@@ -35632,14 +35632,12 @@ function Safari() {
         this.distractedStrong[p2.id] = 0;
         this.distractedStrong[p3.id] = 0;
 
-        this.bannedHazard = pokeInfo.species(parseInt(this.parties[p1.id][2], 10));
-        this.bannedHazard = ["plants", "water", "boulder", "toxic", "pit", "ice", "flame", "electric", "dark", "barrier"][this.bannedHazard % 10];
+        /*this.bannedHazard = pokeInfo.species(parseInt(this.parties[p1.id][2], 10));
+        this.bannedHazard = ["plants", "water", "boulder", "toxic", "pit", "ice", "flame", "electric", "dark", "barrier"][this.bannedHazard % 10];*/
 
+		this.bannedHazard = ["sand","barrier","target"];
 		if (p1.quests.pyramid.hazards.length > 0) {
 			this.bannedHazard = p1.quests.pyramid.hazards || []; //for now you can ban three hazards
-		}
-		if (!(Array.isArray(this.bannedHazard))) {
-			this.bannedHazard = [this.bannedHazard];
 		}
 		
         this.sendToViewers("");
