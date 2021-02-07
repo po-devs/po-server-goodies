@@ -35636,7 +35636,10 @@ function Safari() {
         this.bannedHazard = ["plants", "water", "boulder", "toxic", "pit", "ice", "flame", "electric", "dark", "barrier"][this.bannedHazard % 10];
 
 		if (p1.quests.pyramid.hazards.length > 0) {
-			this.bannedHazard = p1.quests.pyramid.hazards; //for now you can ban three hazards
+			this.bannedHazard = p1.quests.pyramid.hazards || []; //for now you can ban three hazards
+		}
+		if (!(Array.isArray(this.bannedHazard))) {
+			this.bannedHazard = [this.bannedHazard];
 		}
 		
         this.sendToViewers("");
@@ -37720,7 +37723,7 @@ function Safari() {
             formatted = [];
             this.shortcuts[p] = toShortcut(this.usableMoves[p].map(moveOff));
             for (m in this.hazardMoves) {
-            	if (this.pyr.bannedHazard.contains(m.toLoweCase())) {
+            	if (this.pyr.bannedHazard.contains(m.toLowerCase())) {
             		continue;
             	}
                 hazList = [];
