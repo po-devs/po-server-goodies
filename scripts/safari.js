@@ -30254,9 +30254,9 @@ function Safari() {
                 	}
                 	hitAny = true;
                 	if (targets[x] > 1) {
-						safaribot.sendMessage(src, typeIcon(x) + " is somewhat covered.", safchan);
+						safaribot.sendHtmlMessage(src, typeIcon(x) + " is somewhat covered.", safchan);
                 	} else {
-						safaribot.sendMessage(src, typeIcon(x) + toColor(" is not covered at all.", "red"), safchan);
+						safaribot.sendHtmlMessage(src, typeIcon(x) + toColor(" is not covered at all.", "red"), safchan);
                 	}
                 }
                 if (!hitAny) {
