@@ -30140,7 +30140,7 @@ function Safari() {
 					"boulder": [159,37],
 					"toxic": [81,30],
 					"pit": [26],
-					"ice": [47],
+					"ice": [47,115],
 					"flame": [18, 21],
 					"electric": [140,101],
 					"dark": [35],
@@ -30229,6 +30229,40 @@ function Safari() {
 				}
 				safaribot.sendHtmlMessage(src, "You will not encounter any " + player.quests.pyramid.hazards.join(" and ") + " during your next Pyramid run.", safchan);
             	break;
+            case "bonus":
+                safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: According to legend, you'll have better fortune if you bring one of these Pokémon to the Pyramid: " + readable(pyrBonusMons.map(poke)) + ".", safchan);
+                safaribot.sendHtmlMessage(src, "It is said that these Pokémon fight as though they had 35 more of each stat, deal 25% more damage in statue and strong rooms, and take 20% less damage in defense rooms!", safchan);
+                break;
+            case "horde":
+				var team = player.party.slice(0, 3);
+				var allTypes = Object.keys(effectiveness);
+				var targets = {};
+				var eff, eff2;
+				for (var j = 0; j < allTypes.length; j++) {
+					targets[allTypes[j]] = 0;
+					for (var i = 0; i < team.length; i++) {
+						eff = safari.checkEffective(type1(team[i]), type2(team[i]), allTypes[j], "???");
+						eff2 = safari.checkEffective(allTypes[j], "???", type1(team[i]), type2(team[i]));
+						targets[allTypes[j]] = Math.max(targets[allTypes[j]], eff / eff2);
+					}
+				}
+                safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: If the three Pokémon in your party were to enter a horde battle, here's the types you might miss:", safchan);
+                var hitAny = false;
+                for (var x in targets) {
+                	if (targets[x] > 2) {
+                		continue;
+                	}
+                	hitAny = true;
+                	if (targets[x] > 1) {
+						safaribot.sendMessage(src, typeIcon(x) + " is somewhat covered.", safchan);
+                	} else {
+						safaribot.sendMessage(src, typeIcon(x) + toColor(" is not covered at all.", "red"), safchan);
+                	}
+                }
+                if (!hitAny) {
+					safaribot.sendMessage(src, "... none. That's got to be the best horde combo I've ever seen.", safchan);
+                }
+                break;
             case "start":
             case "fossil":
                 var name = sys.name(src);
@@ -30265,7 +30299,6 @@ function Safari() {
                     safaribot.sendMessage(src, "You already have invited " + readable(invited, "and") + " to join you in the pyramid quest! Please wait for them to accept your invitation!", safchan);
                     return;
                 }
-                safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: According to legend, you'll have better fortune if you bring one of these Pokémon to the Pyramid: " + readable(pyrBonusMons.map(poke)) + ".", safchan);
                 if (player.party.length < 3) {
                     safaribot.sendMessage(src, "You need to have a party of 3 Pokémon to enter the Pyramid!", safchan);
                     return;
@@ -30461,6 +30494,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: Welcome to the Pyramid, a place for those looking for a thrilling challenge!", safchan);
                 safaribot.sendHtmlMessage(src, "Pyramid Guide: To learn more about the Pyramid, type " + link("/quest pyramid:help") + "! To enter the Pyramid, pay $" + addComma(cost) + " and invite 2 other players with " + link("/quest pyramid:start:Name1:Name2", null, true) + " to join you!", safchan);
                 safaribot.sendHtmlMessage(src, "Pyramid Guide: If you have " + an(finishName("fossil")) + ", you can type " + link("/quest pyramid:fossil:Name1:Name2", null, true) + " to use it instead of paying $" + addComma(cost) + ". ", safchan);
+                safaribot.sendHtmlMessage(src, "Pyramid Guide: For more information about the pyramid, you can check " + readable([link("/quest pyramid:bonus", "Bonus Pokémon"), link("/quest pyramid:hazards", "Hazards"), link("/quest pyramid:ban", "Banned Hazards"), link("/quest pyramid:horde", "Horde Calculator")]) + ".", safchan);
                 sys.sendMessage(src, "", safchan);
         }
     };
@@ -35592,6 +35626,11 @@ function Safari() {
         this.parties[p1.id] = p1.party.slice(0, 3);
         this.parties[p2.id] = p2.party.slice(0, 3);
         this.parties[p3.id] = p3.party.slice(0, 3);
+        
+        this.distractedStrong = {};
+        this.distractedStrong[p1.id] = 0;
+        this.distractedStrong[p2.id] = 0;
+        this.distractedStrong[p3.id] = 0;
 
         this.bannedHazard = pokeInfo.species(parseInt(this.parties[p1.id][2], 10));
         this.bannedHazard = ["plants", "water", "boulder", "toxic", "pit", "ice", "flame", "electric", "dark", "barrier"][this.bannedHazard % 10];
@@ -36099,6 +36138,11 @@ function Safari() {
         if (this.validInput && !this.validInput(player.id, commandData)) {
             return;
         }
+        if (commandData == "distract") {
+        	this.distractingStrong[player.id] = true;
+			this.sendAll(toColor("{0} is going to use distract the Pokémon!".format(player.id.toCorrectCase()), "crimson"));
+			return;
+        }
         this.choices[player.id] = commandData;
         if (this.postInput && this.postInput(src, commandData)) {
             return;
@@ -36221,18 +36265,19 @@ function Safari() {
         this.hordePower = [22 + level * 12, 100 + level * 24];
 
         this.treasures = {
-            starpiece: { chance: 3 * level, item: "starpiece", amount: 1 },
-            bignugget: { chance: 1 * level, item: "bignugget", amount: 1 },
+            starpiece: { chance: (1.8 + (2.1 * level)), item: "starpiece", amount: 1 },
+            bignugget: { chance: 1.1 * level, item: "bignugget", amount: 1 },
             bait: { chance: 20, item: "bait", amount: 2 * level },
             gacha: { chance: 14, item: "gacha", amount: 2 * level },
-            dust: { chance: 15, item: "dust", amount: 9 * level },
+            dust: { chance: 16, item: "dust", amount: 9 * level },
+            rare: { chance: (1 + (0.5 * level)), item: "rare", amount: 1},
             safari: { chance: 15, item: "safari", amount: 3 * level },
             great: { chance: 12, item: "great", amount: level },
             pnkapricorn: { chance: 9, item: "pnkapricorn", amount: 2 * level },
             redapricorn: { chance: 10, item: "redapricorn", amount: level },
-            rock: { chance: 12, item: "rock", amount: 4 * level },
+            rock: { chance: 10, item: "rock", amount: 4 * level },
             pearl: { chance: 10, item: "pearl", amount: 1 * level },
-            stardust: { chance: 7, item: "stardust", amount: 1 * level }
+            stardust: { chance: 9, item: "stardust", amount: 1 * level }
         };
         this.treasureHolder = null;
         if (chance(0.2 + this.level * 0.06)) {
@@ -36280,8 +36325,9 @@ function Safari() {
                         playerBonus = [60, 160];
                     }
                 }
-                if (pyrBonusMons.contains(choice)) {
-                    playerBonus = [50, 140];
+                if (pyrBonusMons.contains(choice % 65536)) {
+                    playerBonus[0] += 35;
+                    playerBonus[1] += 35;
                 }
 
                 res = calcDamage(choice, opp, playerBonus, this.hordePower, false, getCherished(choice, id));
@@ -36364,11 +36410,14 @@ function Safari() {
         PyramidRoom.call(this, pyramidRef);
         this.level = level;
         this.attacks = 0;
+        this.distractingStrong = {};
+        
 
         var parties = pyramidRef.parties;
         for (var p in parties) {
             this.shortcuts[p] = toShortcut(parties[p].map(poke));
-            this.individualmsg[p] = "Send one of your Pokémon to help: " + pyrLink(this.shortcuts[p]) + (p == pyramidRef.leader ? " | You can instead run away with " + link("/pyr flee") + " at the cost of " + (8 + 5 * level) + " stamina!" : "");
+            this.distractingStrong[p] = false;
+            this.individualmsg[p] = "Send one of your Pokémon to help: " + pyrLink(this.shortcuts[p]) + (p == pyramidRef.leader ? " | You can instead run away with " + link("/pyr flee") + " at the cost of " + (8 + 5 * level) + " stamina!" : " | You can " + link("/pyr distract", "Distract") + " to attempt to draw the Pokémon's attack, although it may fail if you've distracted recently.");
         }
 
         var difficulty = 1;
@@ -36434,14 +36483,14 @@ function Safari() {
         }
 
         this.treasures = {
-            egg: { chance: 1 * level, item: "egg", amount: 1 },
-            bignugget: { chance: 1 + level, item: "bignugget", amount: 1 },
+            egg: { chance: (1 + (1.1 * level)), item: "egg", amount: 1 },
+            bignugget: { chance: (0.2 + (1.3 * level)), item: "bignugget", amount: 1 },
             bait: { chance: 14, item: "bait", amount: 5 * level },
             dust: { chance: 12, item: "dust", amount: 14 * level },
             grnapricorn: { chance: 15, item: "grnapricorn", amount: 2 * level },
-            redapricorn: { chance: 12, item: "redapricorn", amount: Math.floor((5 + (1.5 * level))) },
-            pnkapricorn: { chance: 15, item: "pnkapricorn", amount: 2 * level },
-            bigpearl: { chance: 4, item: "bigpearl", amount: level }
+            redapricorn: { chance: 14, item: "redapricorn", amount: Math.floor((5 + (1.5 * level))) },
+            pnkapricorn: { chance: 17, item: "pnkapricorn", amount: 2 * level },
+            bigpearl: { chance: 4.4, item: "bigpearl", amount: level }
         };
 
         this.sendAll("");
@@ -36456,7 +36505,7 @@ function Safari() {
         this.sendIndividuals();
     };
     StrongRoom.prototype.validInput = function(id, commandData) {
-        return (["run", "runaway", "run away", "flee"].contains(commandData) && id === this.pyr.leader) || this.pokeInParty(id, commandData);
+        return (["run", "runaway", "run away", "flee"].contains(commandData) && id === this.pyr.leader) || this.pokeInParty(id, commandData) || (commandData == "distract");
     };
     StrongRoom.prototype.postInput = function(src, commandData) {
         if (sys.name(src).toLowerCase() === this.pyr.leader && ["run", "runaway", "run away", "flee"].contains(commandData)) {
@@ -36504,9 +36553,9 @@ function Safari() {
             else {
                 playerBonus = [15 + 15 * this.level, 80 + 20 * this.level];
             }
-            if (pyrBonusMons.contains(m)) {
-                playerBonus[0] *= 1.15;
-                playerBonus[1] *= 1.15;
+            if (pyrBonusMons.contains(m % 65536)) {
+                playerBonus[0] *= 1.25;
+                playerBonus[1] *= 1.25;
             }
 
             res = calcDamage(m, opp, playerBonus, false, false, getCherished(m, name));
@@ -36542,13 +36591,27 @@ function Safari() {
         }
 
         if (defeated) {
-            var pointsRange = [45 + 30 * this.level, 28 + 18 * this.level, 5 + 5 * this.level, 1 + 2 * this.level, -12 - 8 * this.level];
+            var pointsRange = [45 + 32 * this.level, 28 + 18 * this.level, 5 + 5 * this.level, 1 + 2 * this.level, -12 - 8 * this.level];
             var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)];
             this.sendAll("<b>{0}</b>'s HP dropped to 0! The {0} has fainted! Points gained: {1}".format(poke(opp), plural(points, "Point")));
             this.pyr.updateStatus(points, stamina);
             this.passed = true;
+            for (var x in this.distractedStrong) {
+            	if (this.pyr.distractedStrong[x] > 0) {
+					this.pyr.distractedStrong[x] = Math.max(this.pyr.distractedStrong[x] - 7, 0);
+            	}
+            }
         } else {
-            var target = attackerNames.random();
+        	var targetable = {};
+        	for (var i = 0; i < attackerNames.length; i++) {
+        		targetable[attackerNames[i]] = 6;
+        		if (this.distractingStrong[attackerNames[i]]) {
+        			var successRate = Math.max(6, 42 - this.pyr.distractedStrong[attackerNames[i]]);
+        			targetable[attackerNames[i]] = successRate;
+        			this.pyr.distractedStrong[attackerNames[i]] += 23;
+        		}
+        	}
+            var target = randomSample(targetable);
             m = choices[target];
             var dmg = Math.round(this.opponentPower * safari.checkEffective(type1(opp), type2(opp), type1(m), type2(m)));
             stamina[target] = -(dmg);
@@ -36590,14 +36653,14 @@ function Safari() {
         this.treasureGoal = Math.round(this.hp * (1.45 - this.level * 0.07));
 
         this.treasures = {
-            pack: { chance: 1 * level, item: "pack", amount: 1 },
-            spray: { chance: 2 + level, item: "spray", amount: 1 },
+            pack: { chance: (0.5 + (1.1 * level)), item: "pack", amount: 1 },
+            spray: { chance: (0.5 + (1.3 * level)), item: "spray", amount: 1 },
             starpiece: { chance: 3 + level, item: "starpiece", amount: 1 },
-            silver: { chance: 14, item: "silver", amount: level },
-            redapricorn: { chance: 18, item: "redapricorn", amount: Math.floor(3 + level/2) },
-            blkapricorn: { chance: 17, item: "blkapricorn", amount: 1 * level },
-            bluapricorn: { chance: 17, item: "bluapricorn", amount: 1 * level },
-            rock: { chance: 21, item: "rock", amount: 10 * level },
+            silver: { chance: 20, item: "silver", amount: (2 + level) },
+            redapricorn: { chance: 18 - level, item: "redapricorn", amount: Math.floor(3 + level/2) },
+            blkapricorn: { chance: 17 - level, item: "blkapricorn", amount: 1 * level },
+            bluapricorn: { chance: 17 - level, item: "bluapricorn", amount: 1 * level },
+            rock: { chance: 21 - level, item: "rock", amount: 10 * level },
             stardust: { chance: 8, item: "stardust", amount: 1 * level }
         };
 
@@ -36635,8 +36698,8 @@ function Safari() {
             else {
                 pow = sys.rand(130 + this.level * 15, 240 + this.level * 37);
             }
-            if (pyrBonusMons.contains(m)) {
-                pow *= 1.15;
+            if (pyrBonusMons.contains(m % 65536)) {
+                pow *= 1.25;
             }
 
             dmg = Math.round(pow * safari.checkEffective(type1(m), type2(m), this.types[0], this.types[1], this.types[2]));
@@ -37182,9 +37245,10 @@ function Safari() {
         this.treasures = {
             rare: { chance: 1 * level, item: "rare", amount: 1 },
             spray: { chance: 1 + level, item: "spray", amount: 1 },
+            mega: { chance: (-0.1 + (0.05 * level)), item: "mega", amount: 1 },
             money: { chance: 3, item: "money", amount: 240 * level },
             money2: { chance: 12, item: "money", amount: 150 * level },
-            silver: { chance: 7, item: "silver", amount: 1 * level },
+            silver: { chance: 7, item: "silver", amount: (1 + 1 * level) },
             gacha: { chance: 12, item: "gacha", amount: 3 * level },
             great: { chance: 10, item: "great", amount: 3 * level },
             redapricorn: { chance: 9, item: "redapricorn", amount: 2 + level },
@@ -37254,9 +37318,9 @@ function Safari() {
             else {
                 playerBonus = [10, 100];
             }
-            if (pyrBonusMons.contains(m)) {
-                playerBonus[0] *= 2;
-                playerBonus[1] *= 2;
+            if (pyrBonusMons.contains(m % 65536)) {
+                playerBonus[0] += 35;
+                playerBonus[1] += 35;
             }
 
             res = calcDamage(m, opp, playerBonus, this.trainerPower, this.inverted, getCherished(m, id));
@@ -37358,27 +37422,42 @@ function Safari() {
 
         this.treasures = {
             rare: { chance: 1 * level, item: "rare", amount: 1 },
-            gem: { chance: 3 * level, item: "gem", amount: 1 },
-            silver: { chance: 7, item: "silver", amount: 1 * level },
-            bait: { chance: 13, item: "bait", amount: 2 * level },
-            great: { chance: 13, item: "great", amount: 2 * level },
-            blkapricorn: { chance: 13, item: "blkapricorn", amount: 1 * level },
+            gem: { chance: (2 + (2 * level)), item: "gem", amount: (level > 4 ? 2 : 1) },
+            silver: { chance: 7 + (level), item: "silver", amount: (3 + 1 * level) },
+            bait: { chance: 13 - level, item: "bait", amount: 2 * level },
+            great: { chance: 13 - level, item: "great", amount: 2 * level },
+            blkapricorn: { chance: 13 - level, item: "blkapricorn", amount: 1 * level },
             quick: { chance: 11, item: "quick", amount: 1 * level },
-            rock: { chance: 10, item: "rock", amount: 10 * level },
-            stardust: { chance: 6, item: "stardust", amount: 1 * level }
+            rock: { chance: 10 - level, item: "rock", amount: 10 * level },
+            stardust: { chance: 4, item: "stardust", amount: 1 * level }
         };
-        var typeChances = {"Normal":18,"Fighting":20.25,"Flying":18.25,"Poison":15.75,"Ground":19.5,"Rock":23,"Bug":20.25,"Ghost":15.5,"Steel":9.5,"Fire":16.5,"Water":17,"Grass":23,"Electric":16.25,"Psychic":21.5,"Ice":24.75,"Dragon":19,"Dark":19.5,"Fairy":16.25};
+        var typeChances = {"Normal":30,"Fighting":20,"Flying":11,"Poison":40,"Ground":20,"Rock":36,"Bug":36,"Ghost":3.5,"Steel":0,"Fire":10,"Water":7,"Grass":12,"Electric":9,"Psychic":40,"Ice":34,"Dragon":6,"Dark":7,"Fairy":0};
         this.bonusTypes = [randomSample(typeChances)];
         var type_2 = randomSample(typeChances);
-        if (type_2 !== this.bonusTypes[0]) {
-            this.bonusTypes.push(type_2);
+        var j = 0;
+        while (type_2 !== this.bonusTypes[0]) {
+        	j++;
+        	if (j > 16) {
+        		break;
+        	}
+        	type_2 = randomSample(typeChances);
+        }
+		this.bonusTypes.push(type_2);
+		
+        var restoreAmt = {"Normal": 10, "Poison": 8, "Rock": 8, "Fighting": 5, "Fire": 3, "Water": 2, "Grass": 4, "Psychic": 10, "Dark": 3, "Ghost": 1.5, "Dragon": 2, "Electric": 3, "Bug": 7, "Ground": 4, "Ice": 10, "Flying": 3};
+        
+        this.bonusTypesHeal = this.bonusTypes.map(function(x) {return Math.max(1, Math.floor((restoreAmt[x] * 0.2) * (4 + level)))});
+        
+        this.bonusTypesObj = {};
+        for (var i = 0; i < this.bonusTypes.length; i++) {
+        	this.bonusTypesObj[this.bonusTypes[i]] = this.bonusTypesHeal[i];
         }
 
-        this.midmsg = "Choose a Pokémon to defend from the next attack (Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(typeIcon), "or") + " will give bonus points!)!";
+        this.midmsg = "Choose a Pokémon to defend from the next attack (Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(typeIcon), "or") + " will heal you and give bonus points!)!";
 
         this.sendAll("");
         this.sendAll("Room {0}-{1}: As soon as you enter the room, you see a Pokémon in the shadows using {2}. They then look at you and prepare another attack!".format(level, roomNum, toColor(this.firstAtk, "blue") + " and " + toColor(this.secondAtk, "blue")));
-        this.sendAll("Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(typeIcon), "or") + " will give bonus points!");
+        this.sendAll("Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(function(x) {return typeIcon[x] + " (" + this.bonusTypesObj[x] + ")"}), "or") + " will heal your Pokémon and give bonus points!");
         this.sendIndividuals();
         this.sendAll("");
     }
@@ -37420,10 +37499,15 @@ function Safari() {
                 }
             } else {
                 hit.push(p.toCorrectCase());
-                stamina[p] = -(dmg * (3 + 6 * this.level));
+                var amt = -(dmg * (3 + 6 * this.level));
+                if (pyrBonusMons.contains(m % 65536)) {
+                	amt = Math.ceil(amt * 1.8);
+                }
+                stamina[p] = amt;
             }
             if (dmg <= 1) {
                 bonusUsed = [];
+                var healamt = 0;
                 for (var l = this.bonusTypes.length; l--; ) {
                     if (hasType(m, this.bonusTypes[l])) {
                         if (dmg === 1) {
@@ -37432,10 +37516,12 @@ function Safari() {
                             bonusPoints++;
                         }
                         bonusUsed.push(this.bonusTypes[l]);
+                        healamt = Math.max(healamt, this.bonusTypesObj[this.bonusTypes[l]]);
                     }
                 }
                 if (bonusUsed.length > 0) {
-                    bonusMsg.push(p.toCorrectCase() + " defended with " + bonusUsed.map(typeIcon).join("/") + "-type Pokémon");
+                    bonusMsg.push(p.toCorrectCase() + " defended with " + bonusUsed.map(typeIcon).join("/") + "-type Pokémon and healed +" + healamt + " stamina");
+                    stamina[p] += healamt;
                 }
             }
         }
@@ -37500,7 +37586,7 @@ function Safari() {
 			"boulder": [159,37],
 			"toxic": [81,30],
 			"pit": [26],
-			"ice": [47],
+			"ice": [47,115],
 			"flame": [18, 21],
 			"electric": [140,101],
 			"dark": [35],
@@ -37534,7 +37620,9 @@ function Safari() {
             "flame": "Flamethrowers",
             "electric": "Mechas",
             "dark": "Darkness",
-            "barrier": "Barriers"
+            "barrier": "Barriers",
+            "sand": "Sandstorms",
+            "target": "Flying Targets"
         };
         var e, val, max = sys.rand(3 +  Math.floor(level * 1.3), 5 + Math.floor(level * (sys.rand(0, 0.3) + 1.4))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0, i = 0;
 
@@ -48071,21 +48159,9 @@ function Safari() {
         permObj.add("elite", JSON.stringify(elite));
     };
     this.pyrBonusMons = function() {
-        var out = [];
-        var i = 0, cap = 0, min = 360;
-        var exempt = [145, 257, 260, 384, 681, 635, 699, 801];
-        for (var loop = 1000; loop > 0; loop--) {
-            i = sys.rand(1, highestDexNum);
-            cap = Math.max(480 + (140 * Math.random()), 480 + (140 * Math.random()));
-            if (exempt.contains(i) || getBST(i) > cap || getBST(i) < min) {
-                continue;
-            }
-            out.push(i);
-            if (out.length > 7) {
-                break;
-            }
-        }
-        pyrBonusMons = out;
+        var possible = [663, 426, 332, 381, 380, 121, 184, 282, 530, 230, 442, 609, 699, 144, 145, 715, 785, 212, 38, 395, 485, 635, 787, 479, 6, 368, 330, 284, 445, 3, 169, 303, 473, 452, 189, 687, 365, 658, 880];
+        possible = possible.shuffle().slice(0, 8);
+        pyrBonusMons = possible;
         permObj.add("pyrBonusMons", JSON.stringify(pyrBonusMons));
     };
     this.pyrBonusMonsManual = function(str) {
@@ -48106,7 +48182,6 @@ function Safari() {
         currentDay = ((today - 1) % 7) + 1;
         if (week != permObj.get("currentWeek")) {
             this.renewLeague();
-            //this.pyrBonusMons();
             permObj.add("currentWeek", week);
             
             var old = {}, e, lbInfo;
@@ -55749,6 +55824,7 @@ function Safari() {
                     if (mercy > 0) {
                         permObj.add("loginDaysDown", 0);
                     }
+                    this.pyrBonusMons();
                 }
                 else {
                     safari.dayCareStep(1);
