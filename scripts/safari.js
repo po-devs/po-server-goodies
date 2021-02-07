@@ -15826,6 +15826,7 @@ function Safari() {
         superChef: "Your skills as a Chef are dramatically increased",
         extendedMushroom: "Mushroom effect lasts longer",
         berryCatcher:"Wild Pokémon hold berries more often",
+        fasterArena:"Lower cooldown after battling the Arena",
         bakingDiscount:"Enter the Baking Quest for half the price",
         battleBoost: "Fight against NPCs better in autobattles",
         reducedCatchFailCD: "Faster recovery from a bad Pokéball throw",
