@@ -30582,22 +30582,24 @@ function Safari() {
                 ind = Math.floor(Math.random() * 4);
             }
             var kinds = {
-                "start": 20,
-                "contains": 20,
-                "evolved": 8,
-                "evolves": 6,
+                "start": 21,
+                "contains": 21,
+                "evolved": 6,
+                "evolves": 4,
                 "evolveNewType": 16,
+                "evolvedChangeType": 12,
                 "canMega": 5,
-                "stat": 9,
-                "moves": 50
+                "stat": 12,
+                "moves": 48
             };
             var kindsinteract = {
                 "effective": 20,
-                "noletters": 22,
+                "noletters": 42,
                 "sameregion": 56,
                 "samecolor": 50,
-                "sametype": 18,
-                "bsthigher": 6
+                "sametype": 7,
+                "weaknesses": 14,
+                "bsthigher": 4
             };
             var otherind = 0;
             if (kind == "interact") {
@@ -30690,6 +30692,35 @@ function Safari() {
                     strength = 20;
                     outText = "{0} can evolve into a Pokémon with a different type combination.";
                     break;
+                case "evolvedChangeType":
+                    if (!(answer[ind] in devolutions)) {
+                        return false;
+                    }
+                    var evolvePoke, hit = false, hold;
+                    var evo = devolutions[answer[ind]].evo;
+                    if (Array.isArray(evo)) {
+                        evolvePoke = evo;
+                    } else {
+                        evolvePoke = [evo];
+                    }
+                    for (var i = 0; i < evolvePoke.length; i++) {
+                        hold = evolvePoke[i];
+                        if (type1(hold) == type1(answer[ind]) && type2(hold) == type2(answer[ind])) {
+                            continue;
+                        }
+                        hit = true;
+                    }
+                    if (!hit) {
+                        return false;
+                    }
+                    for (var i = 0; i < clues.length; i++) {
+                        if (ind == clues[i].ind && (clues[i].kind == "evolved" || clues[i].kind == "evolvedChangeType")) {
+                            return false;
+                        }
+                    }
+                    strength = 19;
+                    outText = "{0} is evolve from a Pokémon with a different type combination.";
+                    break;
                 case "evolved":
                     if (answer[ind] in devolutions) {
                         value = true;
@@ -30699,7 +30730,7 @@ function Safari() {
                         outText = "{0} is not evolved.";
                     }
                     for (var i = 0; i < clues.length; i++) {
-                        if (ind == clues[i].ind && clues[i].kind == "evolved") {
+                        if (ind == clues[i].ind && (clues[i].kind == "evolved" || clues[i].kind == "evolvedChangeType")) {
                             return false;
                         }
                     }
@@ -30710,6 +30741,9 @@ function Safari() {
                         value = true;
                     } else {
                         return false; //do not supply "cannot mega" clue
+                    }
+                    if ([382, 383].contains(answer[ind])) {
+                    	return false;
                     }
                     for (var i = 0; i < clues.length; i++) {
                         if (ind == clues[i].ind && clues[i].kind == "canMega") {
@@ -30739,6 +30773,11 @@ function Safari() {
                     if (l.length == 1) {
                         value = ["HP","Attack","Defense","Special Attack","Special Defense","Speed"][l[0]];
                         strength = 5;
+                        if (["Attack", "Speed"].contains(value)) {
+                        	strength = 4;
+                        } else {
+                        	strength = 8;
+                        }
                     } else {
                         value = ["two", "three", "four", "five", "six"][l.length - 2];
                         value = value + " stats tied";
@@ -30769,7 +30808,7 @@ function Safari() {
                     if (l3.length > l.length - 7 || l3.length > l2.length - 7) { //make sure neither move is very insignificant
                         return false;
                     }
-                    strength = l3.length > 100 ? 2 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 10 : l3.length > 20 ? 15 : 25)));
+                    strength = l3.length > 100 ? 2 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 12 : l3.length > 20 ? 19 : 28)));
                     //strength = 16;
                     value = [m, m2];
                     outText = "{0} can learn " + moveOff(m) + " and " + moveOff(m2) + ".";
@@ -30785,12 +30824,12 @@ function Safari() {
                         return false;
                     }
                     if (amt > 1) {
-                        value = "has a type advantage";
-                        strength = 16;
+                        value = "is super-effective";
+                        strength = 15;
                     }
                     if (amt < 1 && amt > 0) {
-                        value = "has a type disadvantage";
-                        strength = 14;
+                        value = "is not very effective";
+                        strength = 13;
                     }
                     if (amt <= 0) {
                         value = "faces an immunity";
@@ -30813,7 +30852,7 @@ function Safari() {
                         }
                     }
                     value = "no letters in common";
-                    strength = 20;
+                    strength = 19;
                     outText = "{0} has " + value + " with {1}.";
                     break;
                 case "sameregion":
@@ -30850,7 +30889,7 @@ function Safari() {
                     break;
                 case "sametype":
                     for (var i = 0; i < clues.length; i++) {
-                        if (clues[i].kind == "sametype" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
+                        if ((clues[i].kind == "sametype" || clues[i].kind == "weaknesses") && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
                             return false;
                         }
                     }
@@ -30866,6 +30905,63 @@ function Safari() {
                     strength = 26;
                     outText = "{0} has a type in common with {1}.";
                     break;
+                case "weaknesses":
+                    for (var i = 0; i < clues.length; i++) {
+                        if ((clues[i].kind == "sametype" || clues[i].kind == "weaknesses") && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
+                            return false;
+                        }
+                    }
+                    var pk11 = type1(parseInt(answer[ind], 10));
+                    var pk12 = type2(parseInt(answer[ind], 10));
+                    var pk21 = type1(parseInt(answer[otherind], 10));
+                    var pk22 = type2(parseInt(answer[otherind], 10));
+                    
+                    var res = chance(0.5) ? true : false;
+                    
+                    function getWeaknesses(t1, t2, resists) {
+                    	var hit = [], value;
+                    	for (var x in effectiveness) {
+                    		value = 1;
+                    		if (effectiveness[x].hasOwnProperty(t1)) {
+                    			value *= effectiveness[x][t1];
+							}
+                    		if (effectiveness[x].hasOwnProperty(t2)) {
+                    			value *= effectiveness[x][t2];
+							}
+							if (resists) {             				
+								if (value < 1) {
+									hit.push(x);
+								}
+							} else {                    				
+								if (value > 1) {
+									hit.push(x);
+								}
+							}
+                    	}
+                    	return hit;
+                    }
+                    
+                    var weak1 = getWeaknesses(pk11, pk12, res);
+                    var weak2 = getWeaknesses(pk21, pk22, res);
+                    var l = removeNonDuplicates(weak1.concat(weak2)).length;
+                    
+                    if (l == 0) {
+                    	return false;
+                    }
+
+					if (l == 1) {                    
+						if (res) {
+							outText = "{0} has 1 " + (res ? "resistance " : "weakness") + " in common with {1}.";
+						}
+					} else {
+						if (res) {
+							outText = "{0} has " + l + " " + (res ? "resistances" : "weaknesses") + " in common with {1}.";
+						}
+					}
+                    strength = 23;
+                    
+                    value = "weakness";
+                    break;
                 case "bsthigher":
                     for (var i = 0; i < clues.length; i++) {
                         if (clues[i].kind == "bsthigher" && ((ind == clues[i].ind || otherind == clues[i].otherind) || (otherind == clues[i].ind || ind == clues[i].otherind))) {
@@ -30879,7 +30975,17 @@ function Safari() {
                         return false;
                     }
                     value = "greater stat total";
-                    strength = 12;
+                    if (pk2 < 330) {
+						strength = 4;
+                    } else if (pk2 < 420) {
+						strength = 7;
+                    } else if (pk2 < 480) {
+						strength = 10;
+                    } else if (pk2 < 520) {
+						strength = 12;
+                    } else {
+						strength = 15;
+                    }
                     outText = "{0} has a " + value + " than {1}.";
                     break;
                 case "dualtypes":
