@@ -30223,11 +30223,11 @@ function Safari() {
 					safaribot.sendHtmlMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", false, true) + ". Valid hazards are " + readable(opt.map(function(x) { return x + " (" + hazardNames[x] + ")" })) + ".", safchan);
 					return;
 				}
-				player.quests.pyramid.hazard.push(d);
-				if (player.quests.pyramid.hazard.length > 3) { //change this to larger amount later on
-					player.quests.pyramid.hazard.shift();
+				player.quests.pyramid.hazards.push(d);
+				if (player.quests.pyramid.hazards.length > 3) { //change this to larger amount later on
+					player.quests.pyramid.hazards.shift();
 				}
-				safaribot.sendHtmlMessage(src, "You will not encounter any " + player.quests.pyramid.hazard.join(" and ") + " during your next Pyramid run.", safchan);
+				safaribot.sendHtmlMessage(src, "You will not encounter any " + player.quests.pyramid.hazards.join(" and ") + " during your next Pyramid run.", safchan);
             	break;
             case "start":
             case "fossil":
@@ -35596,8 +35596,8 @@ function Safari() {
         this.bannedHazard = pokeInfo.species(parseInt(this.parties[p1.id][2], 10));
         this.bannedHazard = ["plants", "water", "boulder", "toxic", "pit", "ice", "flame", "electric", "dark", "barrier"][this.bannedHazard % 10];
 
-		if (p1.quests.pyramid.hazard.length > 0) {
-			this.bannedHazard = p1.quests.pyramid.hazard; //for now you can ban three hazards
+		if (p1.quests.pyramid.hazards.length > 0) {
+			this.bannedHazard = p1.quests.pyramid.hazards; //for now you can ban three hazards
 		}
 		
         this.sendToViewers("");
