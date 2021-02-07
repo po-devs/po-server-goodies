@@ -1769,7 +1769,8 @@ function Safari() {
     var isBaited = false;
     var resolvingThrows = false;
     var catchTierChance = [0.20, 0.18, 0.14, 0.10, 0.065, 0.0275];
-
+    var tiers = ["SM LC", "SM PU", "SM NU", "SM LU", "SM UU", "SM OU", "SM Ubers"];
+    
     /* Leaderboard Variables */
     var celebrityPKs = {};
     var recentPlayers = {};
@@ -8394,6 +8395,21 @@ function Safari() {
     this.isInTheme = function(id, name) {
         return (((contestThemes[name].include.contains(id)) && this.validForTheme(id, name)) || (contestThemes[name].alter && contestThemes[name].alter.contains(id)) || ((contestThemes[name].morning && contestThemes[name].morning.contains(id)) ||(contestThemes[name].night && contestThemes[name].night.contains(id)) ||(contestThemes[name].afternoon && contestThemes[name].afternoon.contains(id)) ||(contestThemes[name].evening && contestThemes[name].evening.contains(id)) || (contestThemes[name].hasOwnProperty("day"+currentDay) && contestThemes[name]["day"+currentDay].contains(id))));
     };
+    this.getTier = function(pokeId) {
+        if (ultraPokes.hasOwnProperty(pokeId+"")) {
+            return ultraPokes[pokeId+""].tier;
+        }
+        for (var x = 0; x < tiers.length; x++) {
+            if (sys.isPokeBannedFromTier && !sys.isPokeBannedFromTier(pokeId, tiers[x])) {
+                return tiers[x];
+            }
+        }
+        
+        return "SM LC";
+    };
+    this.getTierChance = function(pokeId) {
+        return catchTierChance[tiers.indexOf(safari.getTier(pokeId))] || 0.02;
+    };
     this.getRulesMod = function(player, pokeId, rules, pColor) {
         var type_1 = type1(pokeId),
             type_2 = type2(pokeId),
@@ -8752,18 +8768,7 @@ function Safari() {
             }
         }
 
-        var tiers = ["SM LC", "SM PU", "SM NU", "SM LU", "SM UU", "SM OU", "SM Ubers"];
-        var tierChance = 0.02;
-
-        for (var x = 0; x < tiers.length; x++) {
-            if (sys.isPokeBannedFromTier && !sys.isPokeBannedFromTier(wild, tiers[x])) {
-                tierChance = catchTierChance[x];
-                break;
-            }
-        }
-        if (ultraPokes.hasOwnProperty(wild+"")) {
-            tierChance = catchTierChance[tiers.indexOf(ultraPokes[wild+""].tier)] || 0.02;
-        }
+        var tierChance = safari.getTierChance(wild);
         
         var leader = parseInt(player.party[0], 10);
         var species = pokeInfo.species(leader);
@@ -16076,7 +16081,7 @@ function Safari() {
             return;
         }
 
-        if (cantBecause(src, reason, ["contest", "auction", "battle", "event", "pyramid"])) {
+        if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid"])) {
             return;
         }
 
@@ -16311,7 +16316,7 @@ function Safari() {
             }
         }
 
-        var restrictions = ["contest", "auction", "battle", "event", "pyramid", "tutorial"];
+        var restrictions = ["auction", "battle", "event", "pyramid", "tutorial"];
         //Allow selling of pokemon that are not the lead if the rest of the party doesn't matter at that point
         if (player.party[0] === id && countRepeated(player.pokemon, id) === 1) {
             safaribot.sendHtmlMessage(src, "You can't sell your active Pokémon!", safchan);
@@ -28791,7 +28796,7 @@ function Safari() {
                     return;
                 }
                 //Tutorial blocked earlier
-                if (cantBecause(src, "finish this quest", ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
+                if (cantBecause(src, "finish this quest", ["auction", "battle", "event", "pyramid", "baking"])) {
                     return;
                 }
 
@@ -29017,7 +29022,7 @@ function Safari() {
                 return;
             }
             //Tutorial blocked earlier
-            if (cantBecause(src, "finish this quest", ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
+            if (cantBecause(src, "finish this quest", ["auction", "battle", "event", "pyramid", "baking"])) {
                 return;
             }
             
@@ -29274,7 +29279,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arena Clerk: Sorry, we need to clean out the stadium before we can host more battles. Please return at a later point in time!", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
+        if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid", "baking"])) {
             return;
         }
         if (contestCooldown <= 35) {
@@ -29381,7 +29386,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: You want to challenge the Battle Tower again already? Please take a rest while our trainers are preparing their teams, you will be able to challenge again in " + timeLeftString(player.quests.tower.cooldown) + "!", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
+        if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid", "baking"])) {
             return;
         }
         if (opt !== "start") {
@@ -29879,7 +29884,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Baking Administrator: Sorry, but we're putting out a fire in the Kitchen right now!", safchan);
                     return;
                 }
-                if (cantBecause(src, "start a Baking quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
+                if (cantBecause(src, "start a Baking quest", ["auction", "battle", "event", "pyramid", "baking"])) {
                     return;
                 }
                 if (player.balls.deluxe > 0) {
@@ -29939,7 +29944,7 @@ function Safari() {
                     safaribot.sendMessage(src, "You can only enter the Kitchen after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
                     return;
                 }
-                if (cantBecause(src, "join a Baking quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
+                if (cantBecause(src, "join a Baking quest", ["auction", "battle", "event", "pyramid", "baking"])) {
                     return;
                 }
                 var invites = [];
@@ -30306,7 +30311,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: Sorry, it seems the Pharaoh's Curse is preventing access to the Pyramid right now. Please return at a later point in time!", safchan);
                     return;
                 }
-                if (cantBecause(src, "start a Pyramid quest", ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
+                if (cantBecause(src, "start a Pyramid quest", ["auction", "battle", "event", "pyramid", "baking"])) {
                     return;
                 }
                 if (pyramidRequests.hasOwnProperty(player.id)) {
@@ -30364,7 +30369,7 @@ function Safari() {
                     safaribot.sendMessage(src, "You can only enter the Pyramid after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
                     return;
                 }
-                if (cantBecause(src, "join a Pyramid quest", ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
+                if (cantBecause(src, "join a Pyramid quest", ["auction", "battle", "event", "pyramid", "baking"])) {
                     return;
                 }
                 var invites = [];
@@ -31903,7 +31908,7 @@ function Safari() {
             return;
         }
 
-        if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
+        if (cantBecause(src, "finish this quest", ["auction", "battle", "event", "pyramid", "baking"])) {
             return;
         }
 
@@ -32000,7 +32005,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Announcer: Sorry, all the celebrities are out playing golf right now. Try coming back later!", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
+        if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid", "baking"])) {
             return;
         }
         if (contestCooldown <= 0) {
@@ -32796,7 +32801,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: I'm terribly sorry, but the Elite Four is currently attending to an important event at the Pokémon League Headquarters!", safchan);
                 return;
             }
-            if (cantBecause(src, reason, ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
+            if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid", "baking"])) {
                 return;
             }
             if (contestCooldown <= 35) {
@@ -32865,7 +32870,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: I'm terribly sorry, but all gyms are currently closed due to an important event at the Pokémon League Headquarters!", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
+        if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid", "baking"])) {
             return;
         }
         if (contestCooldown <= 35) {
@@ -50968,7 +50973,7 @@ function Safari() {
                     }
                 }
                 safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + statsmsg, safchan);
-                safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +".", safchan);
+                safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Tier: " + safari.getTier(info.num) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +".", safchan);
                 if (efmsg !== "") {
                     safaribot.sendHtmlMessage(src, efmsg, safchan);
                 }
