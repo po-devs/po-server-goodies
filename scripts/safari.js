@@ -37529,7 +37529,7 @@ function Safari() {
                 hit.push(p.toCorrectCase());
                 var amt = -(dmg * (3 + 6 * this.level));
                 if (pyrBonusMons.contains(m % 65536)) {
-                    amt = Math.ceil(amt * 1.8);
+                    amt = Math.ceil(amt * 0.8);
                 }
                 stamina[p] = amt;
             }
@@ -37549,7 +37549,10 @@ function Safari() {
                 }
                 if (bonusUsed.length > 0) {
                     bonusMsg.push(p.toCorrectCase() + " defended with " + bonusUsed.map(typeIcon).join("/") + "-type Pokémon and healed +" + healamt + " stamina");
-                    stamina[p] += healamt;
+                    if (!(stamina[p])) {
+                    	stamina[p] = 0;
+                    }
+                    stamina[p] -= healamt;
                 }
             }
         }
