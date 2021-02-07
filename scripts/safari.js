@@ -195,7 +195,7 @@ function Safari() {
         "173": base64Ribbons.earthRibbon,
         
         // unused
-        "999": base64Ribbons.legendRibbon,
+        "999": base64Ribbons.legendRibbon
     };
     var playerTemplate = {
         id: "",
