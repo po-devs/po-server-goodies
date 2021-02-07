@@ -30124,25 +30124,29 @@ function Safari() {
 					"plants":[163,13,77],
 					"water":[57,181,593],
 					"boulder":[276,477,529],
-					"toxic":[432,54,239],
+					"toxic":[432,54,318],
 					"pit":[19,438,81],
 					"ice":[498,257,503],
 					"flame":[56,410,16],
 					"electric":[50,324,435],
 					"dark":[572,497,425],
-					"barrier":[100,442,107]
+					"barrier":[100,442,107],
+					"sand":[599,722,239],
+					"target":[512,636,129]
 				};
 				var hazardAbilities = {
-					"plants": [180],
+					"plants": [180, 102],
 					"water": [33],
-					"boulder": [159],
-					"toxic": [81],
+					"boulder": [159,37],
+					"toxic": [81,30],
 					"pit": [26],
 					"ice": [47],
-					"flame": [18],
-					"electric": [140],
+					"flame": [18, 21],
+					"electric": [140,101],
 					"dark": [35],
-					"barrier": [151]
+					"barrier": [151],
+					"sand":[8,146],
+					"target":[28,97]
 				};
 				var hazardNames = {
 					"plants": "Plant",
@@ -30154,7 +30158,9 @@ function Safari() {
 					"flame": "Flamethrower",
 					"electric": "Mecha",
 					"dark": "Darkness",
-					"barrier": "Barrier"
+					"barrier": "Barrier",
+					"sand": "Sandstorm",
+					"target": "Flying Target"
 				};
 				var hits = [], entry = {}, used = [], out = [];
 				var team = player.party.slice(0, 3);
@@ -30203,7 +30209,9 @@ function Safari() {
 					"flame": "Flamethrower",
 					"electric": "Mecha",
 					"dark": "Darkness",
-					"barrier": "Barrier"
+					"barrier": "Barrier",
+					"sand": "Sandstorm",
+					"target": "Flying Target"
 				};
 				opt = Object.keys(hazardNames); //i'm super lazy
 				if (data.length < 2) {
@@ -30216,7 +30224,7 @@ function Safari() {
 					return;
 				}
 				player.quests.pyramid.hazard.push(d);
-				if (player.quests.pyramid.hazard.length > 1) { //change this to larger amount later on
+				if (player.quests.pyramid.hazard.length > 3) { //change this to larger amount later on
 					player.quests.pyramid.hazard.shift();
 				}
 				safaribot.sendHtmlMessage(src, "You will not encounter any " + player.quests.pyramid.hazard.join(" and ") + " during your next Pyramid run.", safchan);
@@ -35589,10 +35597,9 @@ function Safari() {
         this.bannedHazard = ["plants", "water", "boulder", "toxic", "pit", "ice", "flame", "electric", "dark", "barrier"][this.bannedHazard % 10];
 
 		if (p1.quests.pyramid.hazard.length > 0) {
-			this.bannedHazard = p1.quests.pyramid.hazard[0]; //for now you can ban one hazard
+			this.bannedHazard = p1.quests.pyramid.hazard; //for now you can ban three hazards
 		}
-		this.bannedHazard = [this.bannedHazard]; //it's an array now
-
+		
         this.sendToViewers("");
         this.sendToViewers(readable(this.fullNames, "and") + " are entering the Pyramid!");
         this.sendToViewers("");
@@ -37474,28 +37481,32 @@ function Safari() {
         this.movesChosen = {};
 
         this.hazardMoves = {
-            "plants":[163,13,77],
-            "water":[57,181,593],
-            "boulder":[276,477,529],
-            "toxic":[432,54,239],
-            "pit":[19,438,81],
-            "ice":[498,257,503],
-            "flame":[56,410,16],
-            "electric":[50,324,435],
-            "dark":[572,497,425],
-            "barrier":[100,442,107]
+			"plants":[163,13,77],
+			"water":[57,181,593],
+			"boulder":[276,477,529],
+			"toxic":[432,54,318],
+			"pit":[19,438,81],
+			"ice":[498,257,503],
+			"flame":[56,410,16],
+			"electric":[50,324,435],
+			"dark":[572,497,425],
+			"barrier":[100,442,107],
+			"sand":[599,722,239],
+			"target":[512,636,129]
         };
-        this.hazardAbilites = {
-            "plants": [180],
-            "water": [33],
-            "boulder": [159],
-            "toxic": [81],
-            "pit": [26],
-            "ice": [47],
-            "flame": [18],
-            "electric": [140],
-            "dark": [35],
-            "barrier": [151]
+        this.hazardAbilities = {
+			"plants": [180, 102],
+			"water": [33],
+			"boulder": [159,37],
+			"toxic": [81,30],
+			"pit": [26],
+			"ice": [47],
+			"flame": [18, 21],
+			"electric": [140,101],
+			"dark": [35],
+			"barrier": [151],
+			"sand":[8,146],
+			"target":[28,97]
         };
         this.validMoves = [];
         for (var c in this.hazardMoves) {
@@ -37791,10 +37802,10 @@ function Safari() {
                 id = alive[p];
                 par = this.pyr.parties[id];
                 for (var k in par) {
-                	for (var i = 0; i < this.hazardAbilites[e].length; i++) {
-						if ((canHaveAbility(par[k],this.hazardAbilites[e][i])) && (usedAbilities.indexOf(this.hazardAbilites[e][i]) === -1)) {
+                	for (var i = 0; i < this.hazardAbilities[e].length; i++) {
+						if ((canHaveAbility(par[k],this.hazardAbilities[e][i])) && (usedAbilities.indexOf(this.hazardAbilities[e][i]) === -1)) {
 							if (obstacles.hasOwnProperty(e) && obstacles[e] > 0) {
-								ab = abilityOff(this.hazardAbilites[e][i]);
+								ab = abilityOff(this.hazardAbilities[e][i]);
 								obstacles[e] -= 1;
 								cleared[e]++;
 								if (obstacles[e] === 0 && e === this.treasureLocation) {
@@ -37804,7 +37815,7 @@ function Safari() {
 									effective[e] = [];
 								}
 								effective[e].push(pokePlain(par[k]) + "'s " + ab);
-								usedAbilities.push(this.hazardAbilites[e][i]);
+								usedAbilities.push(this.hazardAbilities[e][i]);
 								break;
 							}
 						}
