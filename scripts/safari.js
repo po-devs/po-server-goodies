@@ -37458,9 +37458,10 @@ function Safari() {
 
         this.midmsg = "Choose a Pokémon to defend from the next attack (Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(typeIcon), "or") + " will heal you and give bonus points!)!";
 
+		var self = this;
         this.sendAll("");
         this.sendAll("Room {0}-{1}: As soon as you enter the room, you see a Pokémon in the shadows using {2}. They then look at you and prepare another attack!".format(level, roomNum, toColor(this.firstAtk, "blue") + " and " + toColor(this.secondAtk, "blue")));
-        this.sendAll("Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(function(x) {return typeIcon[x] + " (" + this.bonusTypesObj[x] + ")"}), "or") + " will heal your Pokémon and give bonus points!");
+        this.sendAll("Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(function(x) {return typeIcon[x] + " (" + self.bonusTypesObj[x] + ")"}), "or") + " will heal your Pokémon and give bonus points!");
         this.sendIndividuals();
         this.sendAll("");
     }
