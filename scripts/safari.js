@@ -2578,10 +2578,10 @@ function Safari() {
             return;
         }
         if (!cantBecause) {
-            if (contestCount > 0) {
+            /*if (contestCount > 0) {
                 safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during a contest!", safchan);
                 return false;
-            }
+            }*/
             if (safari.isBattling(sys.name(src))) {
                 safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during a battle!", safchan);
                 return;
@@ -28832,7 +28832,7 @@ function Safari() {
                     return;
                 }
                 if (stopQuests.collector) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Sorry, I am buried in Pokémon right now. Please return at a later point in time!", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Sorry, I am buried in Pokémon right now. Like, literally buried. Please help.", safchan);
                     return;
                 }
                 //Tutorial blocked earlier
