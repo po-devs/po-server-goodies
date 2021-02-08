@@ -31366,7 +31366,7 @@ function Safari() {
                 return;
             }
             if (!d2) {
-                safaribot.sendHtmlMessage(src alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}? Or you could browse through {1} I guess. I'll just... wait for... your choice... over here... zzz".format(link("/quest idol:showunlocks:", "name of the Pokémon", true), link("/quest idol:showunlocks:all", "all of them")), safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}? Or you could browse through {1} I guess. I'll just... wait for... your choice... over here... zzz".format(link("/quest idol:showunlocks:", "name of the Pokémon", true), link("/quest idol:showunlocks:all", "all of them")), safchan);
                 return;
             }
             
