@@ -31382,7 +31382,7 @@ function Safari() {
             
             if (d2 === "all") {
                 var keys = Object.keys(skillUnlocks[pid]).sort(function(a, b) { return parseInt(a) - parseInt(b) });
-                var displayLimit = 10
+                var displayLimit = 10,
                     pageNum = Math.abs(parseInt(data[1])) || 0;
                 var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit); // maybe turn this whole thing into a function
                 
