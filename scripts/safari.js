@@ -31286,7 +31286,16 @@ function Safari() {
         var isBasicSkill = function(key) {
             return key.indexOf("basic") === 0;
         };
-        
+        var retSkillData = function(pokeId, key, label) {
+            var skillDescription = getSkillDescription(key);
+            if (skillDescription) {
+                var skill = skillData[key];
+                return link("/quest idol:activate:" + pokeId + ":" + key, skill.name) + " (" + skillDescription + ". Max Uses: " + skill.uses + ")" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>" : "");
+            }
+            else {
+                return "";
+            }
+        };
         var d1 = data.length > 0 ? data[0] : "*",
             d2 = data.length > 1 ? data[1] : "",
             d3 = data.length > 2 ? data[2] : "",
@@ -31369,16 +31378,6 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}? Or you could browse through {1} I guess. I'll just... wait for... your choice... over here... zzzzzzz...".format(link("/quest idol:showunlocks:[Pokémon Name]", "name of the Pokémon", true), link("/quest idol:showunlocks:all", "all of them")), safchan);
                 return;
             }
-            
-            var retSkillData = function(pokeId, key, label) {
-                if (key in skillData) {
-                    var skill = skillData[key];
-                    return link("/quest idol:activate:" + pokeId + ":" + key, skill.name) + " (" + skill.description.format(skill.rate[0], skill.rate[1], skill.rate2[0], skill.rate2[1]) + ". Max Uses: " + skill.uses + ")" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>" : "");
-                }
-                else {
-                    return "";
-                }
-            };
             
             if (d2 === "all") {
                 var keys = Object.keys(skillUnlocks[pid]).sort(function(a, b) { return parseInt(a) - parseInt(b) });
@@ -34519,7 +34518,14 @@ function Safari() {
         }
         return out;
     }
-
+    function getSkillDescription(key) {
+        if (key in skillData) {
+            var skill = skillData[key];
+            return skill.description.format(skill.rate[0], skill.rate[1], skill.rate2[0], skill.rate2[1]);
+        }
+        return false;
+    }
+    
     var bakingData = {
         "apricorns": {
             "redapricorn": {
