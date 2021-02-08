@@ -31286,11 +31286,11 @@ function Safari() {
         var isBasicSkill = function(key) {
             return key.indexOf("basic") === 0;
         };
-        var retSkillData = function(pokeId, key, label) {
+        var retSkillData = function(pokeId, key, action, label) {
             var skillDescription = getSkillDescription(key);
             if (skillDescription) {
                 var skill = skillData[key];
-                return link("/quest idol:activate:" + pokeId + ":" + key, skill.name) + " (" + skillDescription + ". Max Uses: " + skill.uses + ")" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>" : "");
+                return "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + key, skill.name) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>" : "");
             }
             else {
                 return "";
@@ -31440,11 +31440,11 @@ function Safari() {
                 return;
             }
             
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Here's the list of Basic skills that any Pokémon of that type can learn!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Here's the list of <b>Basic skills</b> that any Pokémon of that type can learn!", safchan);
             
             for (var i = 0; i < Object.keys(skillData).length; i++) {
                 if (isBasicSkill(Object.keys(skillData)[i])) {
-                    safaribot.sendHtmlMessage(src, "-" + retSkillData("[Pokémon Name]", Object.keys(skillData)[i]), safchan);
+                    safaribot.sendHtmlMessage(src, "-" + retSkillData("[Pokémon Name]", Object.keys(skillData)[i], "unlock"), safchan);
                 }
             }
         }
