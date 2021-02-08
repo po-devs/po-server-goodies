@@ -30729,7 +30729,7 @@ function Safari() {
                         return false; //do not supply "cannot mega" clue
                     }
                     if ([382, 383].contains(parseInt(answer[ind]))) {
-                    	return false;
+                        return false;
                     }
                     for (var i = 0; i < clues.length; i++) {
                         if (ind == clues[i].ind && clues[i].kind == "canMega") {
@@ -30760,9 +30760,9 @@ function Safari() {
                         value = ["HP","Attack","Defense","Special Attack","Special Defense","Speed"][l[0]];
                         strength = 5;
                         if (["Attack", "Speed"].contains(value)) {
-                        	strength = 4;
+                            strength = 4;
                         } else {
-                        	strength = 8;
+                            strength = 8;
                         }
                     } else {
                         value = ["two", "three", "four", "five", "six"][l.length - 2];
@@ -30905,26 +30905,26 @@ function Safari() {
                     var res = chance(0.5) ? true : false;
                     
                     function getWeaknesses(t1, t2, resists) {
-                    	var hit = [], value;
-                    	for (var x in effectiveness) {
-                    		value = 1;
-                    		if (effectiveness[x].hasOwnProperty(t1)) {
-                    			value *= effectiveness[x][t1];
-							}
-                    		if (effectiveness[x].hasOwnProperty(t2)) {
-                    			value *= effectiveness[x][t2];
-							}
-							if (resists) {             				
-								if (value < 1) {
-									hit.push(x);
-								}
-							} else {                    				
-								if (value > 1) {
-									hit.push(x);
-								}
-							}
-                    	}
-                    	return hit;
+                        var hit = [], value;
+                        for (var x in effectiveness) {
+                            value = 1;
+                            if (effectiveness[x].hasOwnProperty(t1)) {
+                                value *= effectiveness[x][t1];
+                            }
+                            if (effectiveness[x].hasOwnProperty(t2)) {
+                                value *= effectiveness[x][t2];
+                            }
+                            if (resists) {                             
+                                if (value < 1) {
+                                    hit.push(x);
+                                }
+                            } else {                                    
+                                if (value > 1) {
+                                    hit.push(x);
+                                }
+                            }
+                        }
+                        return hit;
                     }
                     
                     var weak1 = getWeaknesses(pk11, pk12, res);
@@ -30932,14 +30932,14 @@ function Safari() {
                     var l = removeNonDuplicates(weak1.concat(weak2)).length;
                     
                     if (l == 0) {
-                    	return false;
+                        return false;
                     }
 
-					if (l == 1) {                    
+                    if (l == 1) {                    
                         outText = "{0} has 1 " + (res ? "resistance " : "weakness") + " in common with {1}.";
-					} else {
+                    } else {
                         outText = "{0} has " + l + " " + (res ? "resistances" : "weaknesses") + " in common with {1}.";
-					}
+                    }
                     strength = 23;
                     
                     value = "weakness";
@@ -30958,15 +30958,15 @@ function Safari() {
                     }
                     value = "greater stat total";
                     if (pk2 < 330) {
-						strength = 4;
+                        strength = 4;
                     } else if (pk2 < 420) {
-						strength = 7;
+                        strength = 7;
                     } else if (pk2 < 480) {
-						strength = 10;
+                        strength = 10;
                     } else if (pk2 < 520) {
-						strength = 12;
+                        strength = 12;
                     } else {
-						strength = 15;
+                        strength = 15;
                     }
                     outText = "{0} has a " + value + " than {1}.";
                     break;
