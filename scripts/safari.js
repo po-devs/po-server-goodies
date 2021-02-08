@@ -37981,7 +37981,9 @@ function Safari() {
             "flame": "Flamethrower",
             "electric": "Mecha",
             "dark": "Darkness",
-            "barrier": "Barrier"
+            "barrier": "Barrier",
+            "sand": "Sandstorm",
+            "target": "Flying Target",
         };
         this.hazardPlural = {
             "plants": "Plants",
