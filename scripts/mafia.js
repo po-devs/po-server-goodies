@@ -9381,7 +9381,7 @@ function Mafia(mafiachan) {
         }
 
 		var updaterList = ["Miki Sayaka"]; //temporarily allow updating for debugging / who else codes this anymore
-        if (!this.isMafiaSuperAdmin(src) || (updaterList.contains(sys.name(src)))) {
+        if (!(this.isMafiaSuperAdmin(src) || (updaterList.contains(sys.name(src))))) {
             throw ("no valid command");
 		}
         if (command === "updateafter") {
