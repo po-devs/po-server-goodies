@@ -16257,7 +16257,7 @@ function Safari() {
         }
         
         if (confirmed && totalPayment > 0) {
-            safaribot.sendMessage(src, "You sold your {0} {1} for a total of ${2}! You now have ${3]!".format(sellNum, info.name, addComma(totalPayment), addComma(player.money)), safchan);
+            safaribot.sendMessage(src, "You sold your {0} {1} for a total of ${2}! You now have ${3}!".format(sellNum, info.name, addComma(totalPayment), addComma(player.money)), safchan);
         }
         else {
             var confirmCommand = "/turbosell " + (info.shiny ? "*":"") + pokePlain(info.id) + ":" + sellNum + ":confirm";
