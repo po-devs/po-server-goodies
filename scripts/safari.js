@@ -31446,14 +31446,14 @@ function Safari() {
                 return;
             }
             
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! With this skill by your side, you and your Pokémon will be a shining star!", safchan);
-            safaribot.sendHtmlMessage(src, "Idol: I guarantee it, or my name isn't \"Idol\"!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! With this skill by your side, you and your Pokémon will be a shining star! I guarantee it, or my name isn't \"Idol\"!", safchan);
+            sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: W-wait, my name isn't really \"Idol\" is it? What IS my name? I-I... Oh no...", safchan);
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: There she goes again" + link("/quest idol:youfounditcongratsicantbelievethis", "."), safchan);
         }
         else if (d1 === "youfounditcongratsicantbelievethis") {
-            safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Think you're clever eh? The thing is, unlike my cousin, I'm very much aware that I'm a nameless fictional character in a chat-based game. " + link("/quest idol:thisisthefinalstep", "«...Next?»"), safchan);
+            safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Think you're clever eh? The thing is, unlike my cousin, I'm very much aware that I'm a nameless fictional character in a chat-based game. Do you think you're safe there, in the real world? " + link("/quest idol:thisisthefinalstep", "«...Next?»"), safchan);
         }
         else if (d1 === "thisisthefinalstep") {
             sys.sendHtmlMessage(src, "<font size=10><b>" + toColor("YOU CANNOT ESCAPE", "red") + "</b></font>", safchan);
