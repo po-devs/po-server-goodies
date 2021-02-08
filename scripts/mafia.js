@@ -5630,7 +5630,7 @@ function Mafia(mafiachan) {
                                                 }
                                             }
                                             if ("max" in piece) {
-                                                hold = piece.set[0];
+                                                hold = piece.max[0];
                                                 if (typeof hold === "string") {
                                                     if (hold.slice(0,5) === "self:") {
                                                         hold = hold.slice(5);
@@ -5645,12 +5645,12 @@ function Mafia(mafiachan) {
                                                         }
                                                     }
                                                 }
-                                                if (!(isNaN(hold)) && (!(isNaN(piece.set[1])))) { //Do not change this to an ELSE statement
-                                                    total = Math.min(hold * piece.set[1], total);
+                                                if (!(isNaN(hold)) && (!(isNaN(piece.max[1])))) { //Do not change this to an ELSE statement
+                                                    total = Math.min(hold * piece.max[1], total);
                                                 }
                                             }
                                             if ("min" in piece) {
-                                                hold = piece.set[0];
+                                                hold = piece.min[0];
                                                 if (typeof hold === "string") {
                                                     if (hold.slice(0,5) === "self:") {
                                                         hold = hold.slice(5);
@@ -5665,8 +5665,8 @@ function Mafia(mafiachan) {
                                                         }
                                                     }
                                                 }
-                                                if (!(isNaN(hold)) && (!(isNaN(piece.set[1])))) { //Do not change this to an ELSE statement
-                                                    total = Math.max(hold * piece.set[1], total);
+                                                if (!(isNaN(hold)) && (!(isNaN(piece.min[1])))) { //Do not change this to an ELSE statement
+                                                    total = Math.max(hold * piece.min[1], total);
                                                 }
                                             }
                                             obj.memory[entry] = total;
@@ -9380,6 +9380,18 @@ function Mafia(mafiachan) {
             return;
         }
 
+		var updaterList = ["Miki Sayaka"]; //temporarily allow updating for debugging / who else codes this anymore
+        if (!this.isMafiaSuperAdmin(src) || (updaterList.contains(sys.id(src)))) {
+            throw ("no valid command");
+		}
+        if (command === "updateafter") {
+            msg(src, "Mafia will update after the game");
+            mafia.needsUpdating = true;
+            if (mafia.state == "blank" && !mafia.distributeEvent) {
+                runUpdate();
+            }
+            return;
+        }
         if (!this.isMafiaSuperAdmin(src))
             throw ("no valid command");
 
@@ -9461,14 +9473,6 @@ function Mafia(mafiachan) {
             }
             var silent = (command === "sremove");
             mafia.themeManager.remove(src, commandData, silent);
-            return;
-        }
-        if (command === "updateafter") {
-            msg(src, "Mafia will update after the game");
-            mafia.needsUpdating = true;
-            if (mafia.state == "blank" && !mafia.distributeEvent) {
-                runUpdate();
-            }
             return;
         }
         if (command === "event") {
