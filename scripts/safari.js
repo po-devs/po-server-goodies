@@ -31366,14 +31366,14 @@ function Safari() {
                 return;
             }
             if (!d2) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}? Or you could browse through {1} I guess. I'll just... wait for... your choice... over here... zzzzzzz...".format(link("/quest idol:showunlocks:", "name of the Pokémon", true), link("/quest idol:showunlocks:all", "all of them")), safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}? Or you could browse through {1} I guess. I'll just... wait for... your choice... over here... zzzzzzz...".format(link("/quest idol:showunlocks:[Pokémon Name]", "name of the Pokémon", true), link("/quest idol:showunlocks:all", "all of them")), safchan);
                 return;
             }
             
-            var retSkillData = function(pokeId, key) {
+            var retSkillData = function(pokeId, key, label) {
                 if (key in skillData) {
                     var skill = skillData[key];
-                    return link("/quest idol:activate:" + pokeId + ":" + key, skill.name) + " (" + skill.description.format(skill.rate[0], skill.rate[1], skill.rate2[0], skill.rate2[1]) + ". Max Uses: " + skill.uses + ") <b>" + (isBasicSkill[key] ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>";
+                    return link("/quest idol:activate:" + pokeId + ":" + key, skill.name) + " (" + skill.description.format(skill.rate[0], skill.rate[1], skill.rate2[0], skill.rate2[1]) + ". Max Uses: " + skill.uses + ")" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>" : "");
                 }
                 else {
                     return "";
@@ -31439,6 +31439,14 @@ function Safari() {
             if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
                 safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry, this feature isn't ready yet. Check back another time!", safchan);
                 return;
+            }
+            
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Here's the list of Basic skills that any Pokémon of that type can learn!", safchan);
+            
+            for (var i = 0; i < Object.keys(skillData).length; i++) {
+                if (isBasicSkill(Object.keys(skillData)[i])) {
+                    safaribot.sendHtmlMessage(src, "-" + retSkillData("[Pokémon Name]", Object.keys(skillData)[i]), safchan);
+                }
             }
         }
         else if (d1 === "showallspecial") {
