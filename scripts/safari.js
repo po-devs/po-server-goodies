@@ -16257,7 +16257,7 @@ function Safari() {
         }
         
         if (confirmed && totalPayment > 0) {
-            safaribot.sendMessage(src, "You sold your {0} {1} for a total of ${2}!".format(sellNum, info.name, addComma(totalPayment)), safchan);
+            safaribot.sendMessage(src, "You sold your {0} {1} for a total of ${2}! You now have ${3]!".format(sellNum, info.name, addComma(totalPayment), addComma(player.money)), safchan);
         }
         else {
             var confirmCommand = "/turbosell " + (info.shiny ? "*":"") + pokePlain(info.id) + ":" + sellNum + ":confirm";
@@ -16304,7 +16304,7 @@ function Safari() {
             }
         }
         if (out.length > 0) {
-            safaribot.sendHtmlMessage(src, "You sold your " + readable(out, "and") + " for a total of $" + addComma(cashout) + "!", safchan);
+            safaribot.sendHtmlMessage(src, "You sold your " + readable(out, "and") + " for a total of $" + addComma(cashout) + "! You now have $" + addComma(player.money) + "!", safchan);
         }
         this.saveGame(player);
     };
@@ -29163,7 +29163,7 @@ function Safari() {
                 if (randomNum in wildForms) {
                     randomNum = pokeInfo.calcForme(randomNum, sys.rand(1, wildForms[randomNum] + 1));
                 }
-            } while (bst > 600 || isLegendary(randomNum) || [772, 773].contains(randomNum));
+            } while (bst > 600 || isRare(randomNum) || [772, 773].contains(randomNum));
         }
 
         var bstRange = [ 175, 211, 251, 301, 351, 391, 431, 481, 511, 525, 536, 581 ], ind;
@@ -30738,7 +30738,7 @@ function Safari() {
                     } else {
                         return false; //do not supply "cannot mega" clue
                     }
-                    if ([382, 383].contains(answer[ind])) {
+                    if ([382, 383].contains(parseInt(answer[ind]))) {
                     	return false;
                     }
                     for (var i = 0; i < clues.length; i++) {
