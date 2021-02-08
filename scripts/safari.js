@@ -31294,12 +31294,11 @@ function Safari() {
         if (!d1 || d1 === "*") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: I bet you've ever wondered how to make your Pokémon stronger!", safchan);
             safaribot.sendHtmlMessage(src, "Idol: Well, you're in luck because I'm an expert when it comes to identifying the shining talents of Pokémon.", safchan);
-            safaribot.sendHtmlMessage(src, "Idol: With a little help from my cousin, I can help the right Pokémon learn incredible new skills!", safchan);
             safaribot.sendHtmlMessage(src, "Idol: Perhaps you're {0}? Or what say we {1}?".format(link("/quest idol:about1", "wondering what this is about"), link("/quest idol:menu", "get started immediately")), safchan);
         }
         else if (d1 === "about1") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You see, EVERY Pokémon has powerful skills hidden deep within. If you bring me some {0} and {1}, I can unlock and activate these skills for your Pokémon!".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
-            safaribot.sendHtmlMessage(src, "Idol: Have you ever wondered how the {0} and {1} are so strong, or can activate special effects during battle? With a little help from me, of course!".format(link("/quest celeb", "Celebrities"), link("/quest league", "League Trainers")), safchan);
+            safaribot.sendHtmlMessage(src, "Idol: Have you ever wondered how the {0} and {1} are so strong, or are able to activate special effects during battle? With a little help from me, of course!".format(link("/quest celeb", "Celebrities"), link("/quest league", "League Trainers")), safchan);
             safaribot.sendHtmlMessage(src, "Idol: But, I'm not alone. In order to tap into the magical power of the Shards, I have my cousin here to assist me!", safchan);
             safaribot.sendHtmlMessage(src, "Idol: ...? Wait, where is she? Don't tell me she fell asleep again... {0}".format(link("/quest idol:about2", "«Next»")), safchan);
         }
