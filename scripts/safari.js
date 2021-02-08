@@ -30693,21 +30693,10 @@ function Safari() {
                     if (!(answer[ind] in devolutions)) {
                         return false;
                     }
-                    var evolvePoke, hit = false, hold;
-                    var evo = devolutions[answer[ind]].evo;
-                    if (Array.isArray(evo)) {
-                        evolvePoke = evo;
-                    } else {
-                        evolvePoke = [evo];
-                    }
-                    for (var i = 0; i < evolvePoke.length; i++) {
-                        hold = evolvePoke[i];
-                        if (type1(hold) == type1(answer[ind]) && type2(hold) == type2(answer[ind])) {
-                            continue;
-                        }
-                        hit = true;
-                    }
-                    if (!hit) {
+
+                    var devo = devolutions[answer[ind]];
+
+                    if (type1(answer[ind]) == type1(devo) && type2(answer[ind]) == type2(devo)) {
                         return false;
                     }
                     for (var i = 0; i < clues.length; i++) {
@@ -30716,7 +30705,7 @@ function Safari() {
                         }
                     }
                     strength = 19;
-                    outText = "{0} is evolve from a Pokémon with a different type combination.";
+                    outText = "{0} is evolved from a Pokémon with a different type combination.";
                     break;
                 case "evolved":
                     if (answer[ind] in devolutions) {
@@ -30947,13 +30936,9 @@ function Safari() {
                     }
 
 					if (l == 1) {                    
-						if (res) {
-							outText = "{0} has 1 " + (res ? "resistance " : "weakness") + " in common with {1}.";
-						}
+                        outText = "{0} has 1 " + (res ? "resistance " : "weakness") + " in common with {1}.";
 					} else {
-						if (res) {
-							outText = "{0} has " + l + " " + (res ? "resistances" : "weaknesses") + " in common with {1}.";
-						}
+                        outText = "{0} has " + l + " " + (res ? "resistances" : "weaknesses") + " in common with {1}.";
 					}
                     strength = 23;
                     
@@ -31279,6 +31264,7 @@ function Safari() {
         // TODO: Show active skills when using /party
         // deprecate pokeskillsArr, use player.pokeskills as an object going forward for more concise/less obfuscated data storage and accessibility purposes
         // make sure to SAVE PERMOBJ after a skill unlock, and saveGame(player) after a skill activation
+        // explain that abilities do not stack
         var player = getAvatar(src);
         
         if (!player.pokeskills || Array.isArray(player.pokeskills)) {
@@ -31296,9 +31282,14 @@ function Safari() {
             return;
         }
         
+        var isBasicSkill = function(key) {
+            return key.indexOf("basic") === 0;
+        };
+        
         var d1 = data.length > 0 ? data[0] : "*",
             d2 = data.length > 1 ? data[1] : "",
-            d3 = data.length > 2 ? data[2] : "";
+            d3 = data.length > 2 ? data[2] : "",
+            d4 = data.length > 3 ? data[3] : "";
         
         if (!d1 || d1 === "*") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: I bet you've ever wondered how to make your Pokémon stronger!", safchan);
@@ -31357,15 +31348,76 @@ function Safari() {
             safaribot.sendHtmlMessage(src, link("/quest idol:showallspecial", "«List of Special Skills»") + " " + link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
         else if (d1 === "aboutbattle") {
-            if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
-                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry, this feature isn't ready yet. Check back another time!", safchan);
-                return;
-            }
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Skills are passive benefits that apply when that Pokémon is in your party during a Rotation Battle. Some skills will benefit not just the skill owner, but also the entire party.", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: Party skills like these will work even if they are not among the 3 Pokémon you chose for that particular battle. However, they stop working if that Pokémon has fainted.", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: Note that multiples of the same skill do not stack! If you have multiples of the same Basic skill, and one is boosted due to being a single-typed Pokémon, the boosted version will take precedence, and party order will also determine which of the same skill is used first.", safchan);
+            safaribot.sendHtmlMessage(src, link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
         else if (d1 === "showunlocks") {
             if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
                 safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry, this feature isn't ready yet. Check back another time!", safchan);
                 return;
+            }
+            
+            var pid = player.idnum;
+            
+            if (!pid in skillUnlocks) {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... it doesn't seem like you have any skills unlocked yet...", safchan);
+                return;
+            }
+            if (!d2) {
+                safaribot.sendHtmlMessage(src alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}? Or you could browse through {1} I guess. I'll just... wait for... your choice... over here... zzz".format(link("/quest idol:showunlocks:", "name of the Pokémon", true), link("/quest idol:showunlocks:all", "all of them")), safchan);
+                return;
+            }
+            
+            var retSkillData = function(pokeId, key) {
+                if (key in skillData) {
+                    var skill = skillData[key];
+                    return link("/quest idol:activate:" + poke(pokeId) + ":" + key, skill.name) + " (" + skill.description.format(skill.rate[0], skill.rate[1], skill.rate2[0], skill.rate2[1]) + ". Max Uses: " + skill.uses + ") <b>" + (isBasicSkill[key] ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>";
+                }
+                else {
+                    return "";
+                }
+            };
+            
+            if (d2 === "all") {
+                
+            }
+            else {
+                var mon = getInputPokemon(d2).num,
+                    species;
+                
+                if (!mon) {
+                    safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... what's a " + d2 + "? How am I supposed to help you with a Pokémon that doesn't exist?", safchan);
+                    return;
+                }
+                
+                species = pokeInfo.species(mon);
+                
+                if (!mon in skillUnlocks[pid] && !species in skillUnlocks[pid]) {
+                    safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You haven't <i>*yawn*</i> unlocked any skills for " + poke(mon) + " yet...", safchan);
+                }
+                
+                /*
+                skillUnlocks = {
+                    pid: {
+                        species_num: {
+                            "basic1": {},
+                            "basic2": {}
+                        }
+                        specific_forme: {
+                            "special": {}
+                        }
+                    }
+                }
+                */
+                
+                if (species in skillUnlocks[pid]) {
+                    // for skill in skillUnlocks[pid][species], sendHtmlMessage(retSkillData(species, skillUnlocks[pid][species][key]))
+                }
+                if (mon in skillUnlocks[pid]) {
+                    // sendHtmlMessage(retSkillData(mon, mon))
+                }
             }
         }
         else if (d1 === "showallbasic") {
@@ -31385,6 +31437,8 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry, this feature isn't ready yet. Check back another time!", safchan);
                 return;
             }
+            
+            // if no d4, list all basic skills for that species + special skills for that mon
         }
         else if (d1 === "activate") {
             if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
