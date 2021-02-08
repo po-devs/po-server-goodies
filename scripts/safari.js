@@ -31874,7 +31874,10 @@ function Safari() {
             safaribot.sendMessage(src, "You received " + readable(rew.gained) + ".", safchan);
             player.records.transmutationsMade += rec.transmutation || 0;
             if (rec.cooldown > 0) {
-                player.quests.alchemist.cooldown = Math.max(player.quests.alchemist.cooldown, now() + hours(rec.cooldown)); 
+                player.quests.alchemist.cooldown = Math.max(
+                    player.quests.alchemist.cooldown,
+                    now() + Math.round(hours(rec.cooldown) * (1 - safari.getFortune(player, "questcd", 0, "alchemist")))
+                ); 
             }
             if (rec.records) {
                 for (e in rec.records) {
