@@ -31352,12 +31352,12 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Idol: So for example, Bulbasaur is a Grass and Poison-type, therefore it can unlock and activate both the Basic Grass-type skill, and the Basic Poison-type skill.", safchan);
             safaribot.sendHtmlMessage(src, "Idol: You might think that Pokémon with only a single type are disadvantaged since they can learn fewer Basic skills. But worry not! Pokémon with only one type will be able to unlock and activate a <b>stronger version of their type's skill</b>!", safchan);
             safaribot.sendHtmlMessage(src, "Idol: Unlocking a Basic skill for a Pokémon will unlock it for all Pokémon of the same species. That means if you unlock the Basic Fairy-type skill for Floette-Yellow, all the other Floette formes including Floette-Eternal will be able to activate it!", safchan);
-            safaribot.sendHtmlMessage(src, link("/quest idol:showallbasic", "«List of Basic Skills»") + " " link("/quest idol:menu", "«Back to Menu»"), safchan);
+            safaribot.sendHtmlMessage(src, link("/quest idol:showallbasic", "«List of Basic Skills»") + " " + link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
         else if (d1 === "aboutspecial") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Special skills are skills that only certain Pokémon of a certain forme can learn! These Special skills likely contain battle effects that you won't be able to get from Basic skills.", safchan);
             safaribot.sendHtmlMessage(src, "Idol: Unlocking a Special skill for a Pokémon will only unlock it for the specific forme that has that skill. For example, if you unlock the Special skill that Floette-Eternal has, only Floette-Eternal can activate it. All other Floette formes cannot access that Special skill and will only have the Basic Fairy-type skill.", safchan);
-            safaribot.sendHtmlMessage(src, link("/quest idol:showallspecial", "«List of Special Skills»") + " " link("/quest idol:menu", "«Back to Menu»"), safchan);
+            safaribot.sendHtmlMessage(src, link("/quest idol:showallspecial", "«List of Special Skills»") + " " + link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
         else if (d1 === "aboutbattle") {
             
