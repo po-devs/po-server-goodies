@@ -91,6 +91,7 @@ function Safari() {
 
     var globalWildItems = {};
     var skillData = {};
+    var skillUnlocks = {};
 
     var currentDay = 1;
 
@@ -845,7 +846,7 @@ function Safari() {
             deadline: 0,
             limit: 0
         },
-        pokeskills: [],
+        pokeskills: {},
         pokeskillsArr: [
             /*
                 example
@@ -31275,25 +31276,118 @@ function Safari() {
         }
     };
     this.idolQuest = function(src, data) {
+        // TODO: Show active skills when using /party
+        // deprecate pokeskillsArr, use player.pokeskills as an object going forward for more concise/less obfuscated data storage and accessibility purposes
+        // make sure to SAVE PERMOBJ after a skill unlock, and saveGame(player) after a skill activation
         var player = getAvatar(src);
+        
+        if (!player.pokeskills || Array.isArray(player.pokeskills)) {
+            player.pokeskills = {};
+            this.saveGame(player);
+        }
         if (cantBecause(src, "start a quest", ["tutorial"])) {
             return;
         }
         var trainerSprite = '<img src="' + base64trainers.idol + '">';
+        var alchemistSprite = '<img src="' + base64trainers.alchemist + '">';
+        
         if (stopQuests.idol) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry! The show's on hold. Come back another time!", safchan);
             return;
         }
-        var d1 = (data.length > 0 ? data[0] : "*");
-        switch (d1) {
+        if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: We're undergoing renovations right now, please come back another time!", safchan);
+            return;
+        }
+        var d1 = data.length > 0 ? data[0] : "*",
+            d2 = data.length > 1 ? data[1] : "",
+            d3 = data.length > 2 ? data[2] : "";
+        
+        if (!d1 || d1 === "*") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: I bet you've ever wondered how to make your Pokémon stronger!", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: Well, you're in luck because I'm an expert when it comes to identifying the shining talents of Pokémon.", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: With a little help from my cousin, I can help the right Pokémon learn incredible new skills!", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: Perhaps you're {0}? Or what say we {1}?".format(link("/quest idol:about1", "wondering how this works"), link("/quest idol:menu", "get started immediately")), safchan);
+        }
+        else if (d1 === "about1") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You see, EVERY Pokémon has powerful skills hidden deep within. If you bring me some {0} and {1}, I can unlock and activate these skills for your Pokémon!".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
+            safaribot.sendHtmlMessage(src, "Idol: Have you ever wondered how the {0} and {1} are so strong, or can activate special effects during battle? With a little help from me, of course!".format(link("/quest celeb", "Celebrities"), link("/quest league", "League Trainers")), safchan);
+            safaribot.sendHtmlMessage(src, "Idol: But, I'm not alone. In order to tap into the magical power of the Shards, I have my cousin here to assist me!", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: ...? Wait, where is she? Don't tell me she fell asleep again... {0}".format(link("/quest idol:about2", "«Next»")), safchan);
+        }
+        else if (d1 === "about2") {
+            var c = ["Norman", "Champion Cynthia", "Sabrina", "Jasmine", "Bruno", "Champion Alder"].random();
+            safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Zzz... hmm? Oh, yes, I am here. I'm totally not asleep.", safchan);
+            safaribot.sendHtmlMessage(src, "Alchemist: I'm just... <i>*yawn*</i>... a bit tired from staying up all night making potions. You will not believe how quickly that " + c + " can go through them...", safchan);
+            safaribot.sendHtmlMessage(src, "Alchemist: So, you wanna learn more about hidden Pokémon skills, eh? {0}".format(link("/quest idol:menu", "«Next»")), safchan);    
+        }
+        else if (d1 === "menu") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: What can we do for you today?", safchan);
+            safaribot.sendHtmlMessage(src, link("/quest idol:aboutunlock", "- Tell me about unlocking skills"), safchan);
+            safaribot.sendHtmlMessage(src, link("/quest idol:aboutactivate", "- Tell me about activating skills"), safchan);
+            safaribot.sendHtmlMessage(src, link("/quest idol:aboutbasic", "- Tell me about Basic skills"), safchan); // explain that it applies to all members of that species
+            safaribot.sendHtmlMessage(src, link("/quest idol:aboutspecial", "- Tell me about Special skills"), safchan);
+            safaribot.sendHtmlMessage(src, link("/quest idol:aboutbattle", "- Tell me how exactly this works during a battle"), safchan);
+            
+            sys.sendMessage(src, "", safchan);
+
+            safaribot.sendHtmlMessage(src, link("/quest idol:showunlocks", "- Show me which skills I've unlocked"), safchan); // option to enter specific pokemon, show whole list (paginate) if none whole list
+            safaribot.sendHtmlMessage(src, link("/quest idol:unlock", "- I want to unlock a skill!"), safchan);
+            safaribot.sendHtmlMessage(src, link("/quest idol:activate", "- I want to activate a skill!"), safchan);
+        }
+        else if (d1 === "aboutunlock") {
+            safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Ya see, every Pokémon species has their skills locked to begin with. By bringing us some {0} and {1}, we can <b>permanently unlock some of their skills</b>.".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's right, an <b>unlock</b> is permanent. Note than when we unlock a skill, it only applies to <b>that particular skill for that particular Pokémon species</b> (except for Special skills).", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Unlocking a skill won't do anything for you by itself though. After you unlock a skill, you will gain the option of <b>{0}</b> it. THAT's where the real magic happens!".format(link("/quest idol:aboutactivate", "activating")), safchan);
+            safaribot.sendHtmlMessage(src, link("/quest idol:menu", "«Back to Menu»"), safchan);
+        }
+        else if (d1 === "aboutactivate") {
+            safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: If you wanna actually make use of a skill in battle, you've gotta activate it. It's not free though, we'll need the power of some {0} and {1} first. Then, we can activate that skill for a <b>limited number of uses</b>.".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's right, <b>activation</b> is temporary. After a skill is activated, it will only work <b>a certain number of times</b>. Those Shards don't have unlimited energy you know! If you want to use a skill again after it has run out, you'll have to bring us more Shards to activate it again.", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Of course, you can't just activate any skill you want. Only skills that you've already <b>{0}</b> can be activated.".format(link("/quest idol:aboutunlock", "unlocked")), safchan);
+            safaribot.sendHtmlMessage(src, link("/quest idol:menu", "«Back to Menu»"), safchan);
+        }
+        else if (d1 === "aboutbasic") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Basic skills are skills that every Pokémon of a certain type can learn! That means there are 18 different Basic skills in total, one for each type.", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: So for example, Bulbasaur is a Grass and Poison-type, therefore it can unlock and activate both the Basic Grass-type skill, and the Basic Poison-type skill.", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: You might think that Pokémon with only a single type are disadvantaged since they can learn fewer Basic skills. But worry not! Pokémon with only one type will be able to unlock and activate a <b>stronger version of their type's skill</b>!", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: Unlocking a Basic skill for a Pokémon will unlock it for all Pokémon of the same species. That means if you unlock the Basic Fairy-type skill for Floette-Yellow, all the other Floette formes including Floette-Eternal will be able to activate it!", safchan);
+            safaribot.sendHtmlMessage(src, link("/quest idol:showallbasic", "«List of Basic Skills»") + " " link("/quest idol:menu", "«Back to Menu»"), safchan);
+        }
+        else if (d1 === "aboutspecial") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Special skills are skills that only certain Pokémon of a certain forme can learn! These Special skills likely contain battle effects that you won't be able to get from Basic skills.", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: Unlocking a Special skill for a Pokémon will only unlock it for the specific forme that has that skill. For example, if you unlock the Special skill that Floette-Eternal has, only Floette-Eternal can activate it. All other Floette formes cannot access that Special skill and will only have the Basic Fairy-type skill.", safchan);
+            safaribot.sendHtmlMessage(src, link("/quest idol:showallspecial", "«List of Special Skills»") + " " link("/quest idol:menu", "«Back to Menu»"), safchan);
+        }
+        else if (d1 === "aboutbattle") {
+            
+        }
+        else if (d1 === "showunlock") {
+            
+        }
+        else if (d1 === "showallbasic") {
+            
+        }
+        else if (d1 === "showallspecial") {
+            
+        }
+        else if (d1 === "unlock") {
+            
+        }
+        else if (d1 === "activate") {
+            
+        }
+        else {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Huh, that doesn't seem to be something I can help you with, sorry!", safchan);
+            return;
+        }
+
+        /*switch (d1) {
             case "*":
             case "":
             case "help":
             case null:
-                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: I bet you're wondering how to use some secret moves!", safchan);
-                safaribot.sendHtmlMessage(src, "Idol: Well, I'm an expert when it comes to identifying the talents of Pokémon.", safchan);
-                safaribot.sendHtmlMessage(src, "Idol: With a little help from my cousin, I can help the right Pokémon learn incredible new abilities!", safchan);
-                safaribot.sendHtmlMessage(src, "Idol: Type " + link("/quest idol:alchemist") + " to see what I'm talking about.", safchan);
+                
                 return;
             case "alchemist":
                 var d2 = (data.length > 1 ? data[1] : "*");
@@ -31528,7 +31622,7 @@ function Safari() {
                             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry! That Pokémon does not have any unlockable skills at the moment!", safchan);
                         }
                 }
-        }
+        }*/
     };
     this.arboristQuest = function(src, data) {
         var player = getAvatar(src);
@@ -55310,6 +55404,7 @@ function Safari() {
         recentPlayers = parseFromPerm("recentPlayers", {});
         globalWildItems = parseFromPerm("globalWildItems", {});
         skillData = parseFromPerm("skillData", {});
+        skillUnlocks = parseFromPerm("skillUnlocks", {});
         safari.detectiveData = parseFromPerm("detectiveData", {});
         safari.moveLearners = parseFromPerm("moveLearners", {});
         
