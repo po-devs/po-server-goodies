@@ -31361,12 +31361,12 @@ function Safari() {
             
             var pid = player.idnum;
             
-            if (!pid in skillUnlocks) {
+            if (!skillUnlocks.hasOwnProperty(pid)) {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... it doesn't seem like you have any skills unlocked yet...", safchan);
                 return;
             }
             if (!d2) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}? Or you could browse through {1} I guess. I'll just... wait for... your choice... over here... zzz".format(link("/quest idol:showunlocks:", "name of the Pokémon", true), link("/quest idol:showunlocks:all", "all of them")), safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}? Or you could browse through {1} I guess. I'll just... wait for... your choice... over here... zzzzzzz...".format(link("/quest idol:showunlocks:", "name of the Pokémon", true), link("/quest idol:showunlocks:all", "all of them")), safchan);
                 return;
             }
             
@@ -31394,7 +31394,7 @@ function Safari() {
                 
                 species = pokeInfo.species(mon);
                 
-                if (!mon in skillUnlocks[pid] && !species in skillUnlocks[pid]) {
+                if (!skillUnlocks[pid].hasOwnProperty(mon) && !skillUnlocks[pid].hasOwnProperty(species)) {
                     safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You haven't <i>*yawn*</i> unlocked any skills for " + poke(mon) + " yet...", safchan);
                 }
                 
