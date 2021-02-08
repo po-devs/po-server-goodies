@@ -29322,10 +29322,6 @@ function Safari() {
         if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid", "baking"])) {
             return;
         }
-        if (contestCooldown <= 35) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "You cannot battle right before a contest is about to start!", safchan);
-            return;
-        }
 
         var npc = arenaOpponents[opt];
         if (!npc) {
@@ -32950,10 +32946,6 @@ function Safari() {
             if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid", "baking"])) {
                 return;
             }
-            if (contestCooldown <= 35) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You cannot battle right before a contest is about to start!", safchan);
-                return;
-            }
             if (player.party.length < 3) {
                 safaribot.sendMessage(src, "League Guide: You need at least 3 Pokémon in your party to challenge the Elite Four!", safchan);
                 return;
@@ -33017,10 +33009,6 @@ function Safari() {
             return;
         }
         if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid", "baking"])) {
-            return;
-        }
-        if (contestCooldown <= 35) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You cannot battle right before a contest is about to start!", safchan);
             return;
         }
 
