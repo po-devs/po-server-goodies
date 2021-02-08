@@ -31295,10 +31295,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry! The show's on hold. Come back another time!", safchan);
             return;
         }
-        if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: We're undergoing renovations right now, please come back another time!", safchan);
-            return;
-        }
+        
         var d1 = data.length > 0 ? data[0] : "*",
             d2 = data.length > 1 ? data[1] : "",
             d3 = data.length > 2 ? data[2] : "";
@@ -31307,7 +31304,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: I bet you've ever wondered how to make your Pokémon stronger!", safchan);
             safaribot.sendHtmlMessage(src, "Idol: Well, you're in luck because I'm an expert when it comes to identifying the shining talents of Pokémon.", safchan);
             safaribot.sendHtmlMessage(src, "Idol: With a little help from my cousin, I can help the right Pokémon learn incredible new skills!", safchan);
-            safaribot.sendHtmlMessage(src, "Idol: Perhaps you're {0}? Or what say we {1}?".format(link("/quest idol:about1", "wondering how this works"), link("/quest idol:menu", "get started immediately")), safchan);
+            safaribot.sendHtmlMessage(src, "Idol: Perhaps you're {0}? Or what say we {1}?".format(link("/quest idol:about1", "wondering what this is about"), link("/quest idol:menu", "get started immediately")), safchan);
         }
         else if (d1 === "about1") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You see, EVERY Pokémon has powerful skills hidden deep within. If you bring me some {0} and {1}, I can unlock and activate these skills for your Pokémon!".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
@@ -31323,17 +31320,17 @@ function Safari() {
         }
         else if (d1 === "menu") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: What can we do for you today?", safchan);
-            safaribot.sendHtmlMessage(src, link("/quest idol:aboutunlock", "- Tell me about unlocking skills"), safchan);
-            safaribot.sendHtmlMessage(src, link("/quest idol:aboutactivate", "- Tell me about activating skills"), safchan);
-            safaribot.sendHtmlMessage(src, link("/quest idol:aboutbasic", "- Tell me about Basic skills"), safchan); // explain that it applies to all members of that species
-            safaribot.sendHtmlMessage(src, link("/quest idol:aboutspecial", "- Tell me about Special skills"), safchan);
-            safaribot.sendHtmlMessage(src, link("/quest idol:aboutbattle", "- Tell me how exactly this works during a battle"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutunlock", "Tell me about unlocking skills"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutactivate", "Tell me about activating skills"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutbasic", "Tell me about Basic skills"), safchan); // explain that it applies to all members of that species
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutspecial", "Tell me about Special skills"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutbattle", "Tell me how exactly this works during a battle"), safchan);
             
             sys.sendMessage(src, "", safchan);
 
-            safaribot.sendHtmlMessage(src, link("/quest idol:showunlocks", "- Show me which skills I've unlocked"), safchan); // option to enter specific pokemon, show whole list (paginate) if none whole list
-            safaribot.sendHtmlMessage(src, link("/quest idol:unlock", "- I want to unlock a skill!"), safchan);
-            safaribot.sendHtmlMessage(src, link("/quest idol:activate", "- I want to activate a skill!"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks", "Show me which skills I've unlocked"), safchan); // option to enter specific pokemon, show whole list (paginate) if none whole list
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:unlock", "I want to unlock a skill!"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:activate", "I want to activate a skill!"), safchan);
         }
         else if (d1 === "aboutunlock") {
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Ya see, every Pokémon species has their skills locked to begin with. By bringing us some {0} and {1}, we can <b>permanently unlock some of their skills</b>.".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
@@ -31360,22 +31357,40 @@ function Safari() {
             safaribot.sendHtmlMessage(src, link("/quest idol:showallspecial", "«List of Special Skills»") + " " + link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
         else if (d1 === "aboutbattle") {
-            
+            if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry, this feature isn't ready yet. Check back another time!", safchan);
+                return;
+            }
         }
-        else if (d1 === "showunlock") {
-            
+        else if (d1 === "showunlocks") {
+            if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry, this feature isn't ready yet. Check back another time!", safchan);
+                return;
+            }
         }
         else if (d1 === "showallbasic") {
-            
+            if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry, this feature isn't ready yet. Check back another time!", safchan);
+                return;
+            }
         }
         else if (d1 === "showallspecial") {
-            
+            if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry, this feature isn't ready yet. Check back another time!", safchan);
+                return;
+            }
         }
         else if (d1 === "unlock") {
-            
+            if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry, this feature isn't ready yet. Check back another time!", safchan);
+                return;
+            }
         }
         else if (d1 === "activate") {
-            
+            if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry, this feature isn't ready yet. Check back another time!", safchan);
+                return;
+            }
         }
         else {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Huh, that doesn't seem to be something I can help you with, sorry!", safchan);
