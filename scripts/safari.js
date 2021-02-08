@@ -31373,7 +31373,7 @@ function Safari() {
             var retSkillData = function(pokeId, key) {
                 if (key in skillData) {
                     var skill = skillData[key];
-                    return link("/quest idol:activate:" + poke(pokeId) + ":" + key, skill.name) + " (" + skill.description.format(skill.rate[0], skill.rate[1], skill.rate2[0], skill.rate2[1]) + ". Max Uses: " + skill.uses + ") <b>" + (isBasicSkill[key] ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>";
+                    return link("/quest idol:activate:" + pokeId + ":" + key, skill.name) + " (" + skill.description.format(skill.rate[0], skill.rate[1], skill.rate2[0], skill.rate2[1]) + ". Max Uses: " + skill.uses + ") <b>" + (isBasicSkill[key] ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>";
                 }
                 else {
                     return "";
@@ -31381,7 +31381,22 @@ function Safari() {
             };
             
             if (d2 === "all") {
+                var keys = Object.keys(skillUnlocks[pid]).sort(function(a, b) { return parseInt(a) - parseInt(b) });
+                var displayLimit = 10
+                    pageNum = Math.abs(parseInt(data[1])) || 0;
+                var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit); // maybe turn this whole thing into a function
                 
+                for (var i = 0; i < page.length; i++) {
+                    safaribot.sendHtmlMessage(src, "-" + link("/quest idol:activate:" + page[i], poke(page[i])), safchan);
+                    
+                    if (i === page.length-1) {
+                        var pageControls = (page.contains(keys[0]) ? "" : link("/quest idol:showunlocks:all:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest idol:showunlocks:all:" + (pageNum+1), "«Next Page»"));
+                        if (pageControls) {
+                            sys.sendMessage(src, "", safchan);
+                            safaribot.sendHtmlMessage(src, pageControls, safchan);
+                        }
+                    }
+                }
             }
             else {
                 var mon = getInputPokemon(d2).num,
