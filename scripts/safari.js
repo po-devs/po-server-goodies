@@ -31333,6 +31333,7 @@ function Safari() {
                 return "";
             }
         };
+        
         var d1 = data.length > 0 ? data[0] : "*",
             d2 = data.length > 1 ? data[1] : "",
             d3 = data.length > 2 ? data[2] : "",
@@ -31385,7 +31386,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Basic skills are skills that every Pokémon of a certain type can learn! That means there are 18 different Basic skills in total, one for each type.", safchan);
             safaribot.sendHtmlMessage(src, "Idol: So for example, Bulbasaur is a Grass and Poison-type, therefore it can unlock and activate both the Basic Grass-type skill, and the Basic Poison-type skill.", safchan);
             safaribot.sendHtmlMessage(src, "Idol: You might think that Pokémon with only a single type are disadvantaged since they can learn fewer Basic skills. But worry not! Pokémon with only one type will be able to unlock and activate a <b>stronger version of their type's skill</b>!", safchan);
-            safaribot.sendHtmlMessage(src, "Idol: Unlocking a Basic skill for a Pokémon will unlock it for all Pokémon of the same species. That means if you unlock the Basic Fairy-type skill for Floette-Yellow, all the other Floette formes including Floette-Eternal will be able to activate it!", safchan);
+            //safaribot.sendHtmlMessage(src, "Idol: Unlocking a Basic skill for a Pokémon will unlock it for all Pokémon of the same species. That means if you unlock the Basic Fairy-type skill for Floette-Yellow, all the other Floette formes including Floette-Eternal will be able to activate it!", safchan);
             safaribot.sendHtmlMessage(src, link("/quest idol:showallbasic", "«List of Basic Skills»") + " " + link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
         else if (d1 === "aboutspecial") {
@@ -31435,39 +31436,30 @@ function Safari() {
                 }
             }
             else {
-                var mon = getInputPokemon(d2).num,
-                    species;
+                var mon = getInputPokemon(d2).num;
                 
                 if (!mon) {
                     safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... what's a " + d2 + "? How am I supposed to help you with a Pokémon that doesn't exist?", safchan);
                     return;
                 }
                 
-                species = pokeInfo.species(mon);
-                
-                if (!skillUnlocks[pid].hasOwnProperty(mon) && !skillUnlocks[pid].hasOwnProperty(species)) {
+                if (!skillUnlocks[pid].hasOwnProperty(mon)) {
                     safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You haven't <i>*yawn*</i> unlocked any skills for " + poke(mon) + " yet...", safchan);
                 }
                 
                 /*
                 skillUnlocks = {
                     pid: {
-                        species_num: {
+                        poke_id: {
                             "basic1": {},
-                            "basic2": {}
-                        }
-                        specific_forme: {
                             "special": {}
                         }
                     }
                 }
                 */
                 
-                if (species in skillUnlocks[pid]) {
-                    // for skill in skillUnlocks[pid][species], sendHtmlMessage(retSkillData(species, skillUnlocks[pid][species][key]))
-                }
                 if (mon in skillUnlocks[pid]) {
-                    // sendHtmlMessage(retSkillData(mon, mon))
+                    // for skill in skillUnlocks[pid][mon], sendHtmlMessage(retSkillData(species, skillUnlocks[pid][species][key]))
                 }
             }
         }
@@ -31497,7 +31489,42 @@ function Safari() {
                 return;
             }
             
-            // if no d4, list all basic skills for that species + special skills for that mon
+            if (!d2) {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}?".format(link("/quest idol:unlock:[Pokémon Name]", "name of the Pokémon", true)), safchan);
+                return;
+            }
+            
+            var mon = getInputPokemon(d2).num;
+            
+            if (!mon) {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... what's a " + d2 + "? How am I supposed to help you with a Pokémon that doesn't exist?", safchan);
+                return;
+            }
+            
+            var canUnlock = getUnlockableSkills(mon, player.idnum);
+            var isUnlocked = getUnlockedSkills(mon, player.idnum);
+            
+            if (canUnlock.length === 0 && isUnlocked.length === 0) {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... weird... this Pokémon doesn't seem to have any unlockable skills at all? Maybe you should throw it away.", safchan);
+                return;
+            }
+            if (canUnlock.length === 0) {
+                safaribot.sendMessage(src, alchemistSprite + "Alchemist: You've already unlocked all the skills this Pokémon can learn, maybe you wanna {0} them instead?".format(link("/quest idol:activate:" + mon, "activate")), safchan);
+                return;
+            }
+            
+            if (!d3) {
+                // show unlockable skills;
+                return;
+            }
+            if (!canUnlock.contains(d3)) { // TODO: function to map skill name to key
+                safaribot.sendMessage(src, alchemistSprite + "Alchemist: Heyyy... that's not a skill this Pokémon can learn.", safchan);
+                return;
+            }
+
+            sys.sendMessage(src, canUnlock + " && " + isUnlocked, safchan);
+            // show skill info and cost, link :confirm parameter as d4
+            // check shard cost, take items, saveplayer, add to skillUnlocks, add to permObj
         }
         else if (d1 === "activate") {
             if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
@@ -34562,7 +34589,37 @@ function Safari() {
         }
         return false;
     }
-    
+    function getUnlockableSkills(pokeId, playerId) {
+        var ret = [];
+        var playerUnlocks = skillUnlocks[playerId] || {};
+        for (var skill in skillData) {
+            if (pokeId in playerUnlocks && skill in playerUnlocks[pokeId]) {
+                continue;
+            }
+            if (isBasicSkill(skill)) {
+                var skillType = skill.slice(5);
+                if (skillType === type1(pokeId) || skillType === type2(pokeId)) {
+                    ret.push(skill);
+                }
+            }
+            else if (skill == pokeId) {
+                ret.push(skill);
+            }
+        }
+        
+        return ret;
+    }
+    function getUnlockedSkills(pokeId, playerId) {
+        var ret = [];
+        var playerUnlocks = skillUnlocks[playerId] || {};
+        for (var skill in skillData) {
+            if (pokeId in playerUnlocks && skill in playerUnlocks[pokeId]) {
+                ret.push(skill);
+            }
+        }
+        
+        return ret;
+    }
     var bakingData = {
         "apricorns": {
             "redapricorn": {
