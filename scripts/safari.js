@@ -36033,7 +36033,7 @@ function Safari() {
         if (this.finished) {
             return;
         }
-        if (this.ticks % 6 !== 0) {
+        if (this.ticks % 7 !== 0) {
             if (this.ticks % 3 === 0) {
                 if (!(this.movingRoom || this.turn < 1) || this.movingFloor) {
                     return;
