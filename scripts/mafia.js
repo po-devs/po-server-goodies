@@ -5075,16 +5075,13 @@ function Mafia(mafiachan) {
                                 continue;
                             }
                             if ((compareMode == "equal" && player.memory[stat] == value) || (compareMode == "greater" && player.memory[stat] >= value) || (compareMode == "less" && player.memory[stat] <= value)) {
-                                msg = msg.replace(/~Command~/g, o.action).replace(/~Stat~/g, stat).replace(/~Required~/g, value).replace(/~Amount~/g, player.memory[stat]);
-                                gamemsg(player.name, msg );
                                 if (consume) {
                                     player.memory[stat] = (player.memory[stat] - value);
-                                }
-                            }
-                            else {
-                                failmsg = failmsg.replace(/~Command~/g, o.action).replace(/~Stat~/g, stat).replace(/~Required~/g, value).replace(/~Amount~/g, player.memory[stat]);
-                                gamemsg(player.name, failmsg );
-                                continue;
+                                } else {
+									failmsg = failmsg.replace(/~Command~/g, o.action).replace(/~Stat~/g, stat).replace(/~Required~/g, value).replace(/~Amount~/g, player.memory[stat]);
+									gamemsg(player.name, failmsg);
+									continue;
+								}
                             }
                         }
                         if (!Action.noFollow) {
@@ -5523,26 +5520,28 @@ function Mafia(mafiachan) {
 									if (dFailMsg !== "") {
 										gamemsg(player.name, dFailMsg);
 									}
-                                } else if (mafia.removeTargets(target, true, onlyUser, actionList)) {
-                                    /* warn role / teammates... No args because messes up very easily */
-                                    var teamMsg = "teammsg" in Action ? Action.teammsg : "Your teammate was too busy with the ~Distracter~ during the night, you decided not to ~Action~ anyone during the night!";
-                                    var dUserMsg = "distractUserMsg" in Action ? Action.distractUserMsg : "";
-									if (dUserMsg !== "") {
-										gamemsg(player.name, dUserMsg.replace("~Target~", target.name));
+                                } else {
+                                	if (mafia.removeTargets(target, true, onlyUser, actionList)) {
+										/* warn role / teammates... No args because messes up very easily */
+										var teamMsg = "teammsg" in Action ? Action.teammsg : "Your teammate was too busy with the ~Distracter~ during the night, you decided not to ~Action~ anyone during the night!";
+										var dUserMsg = "distractUserMsg" in Action ? Action.distractUserMsg : "";
+										if (dUserMsg !== "") {
+											gamemsg(player.name, dUserMsg.replace("~Target~", target.name));
+										}
+										if ("night" in target.role.actions) {
+											for (var action in target.role.actions.night) {
+												if (!target.role.actions.night[action].ignoreDistract) {
+													var team = getTeam(target.role, target.role.actions.night[action].common);
+													for (var x in team) {
+														if (team[x] != target.name) {
+															gamemsg(team[x], formatArgs(teamMsg.replace(/~Action~/g, action), nightargs));
+														}
+													}
+												}
+											}
+										}
 									}
-                                    if ("night" in target.role.actions) {
-                                        for (var action in target.role.actions.night) {
-                                            if (!target.role.actions.night[action].ignoreDistract) {
-                                                var team = getTeam(target.role, target.role.actions.night[action].common);
-                                                for (var x in team) {
-                                                    if (team[x] != target.name) {
-                                                        gamemsg(team[x], formatArgs(teamMsg.replace(/~Action~/g, action), nightargs));
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+								}
                             }
                             else if (command == "memory") {
                                 var data = Action.setMemory, piece, val, total, hold, isInteger = false;
