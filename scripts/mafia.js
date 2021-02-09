@@ -5074,14 +5074,13 @@ function Mafia(mafiachan) {
                             if (!(player.memory[stat])) {
                                 continue;
                             }
-                            if ((compareMode == "equal" && player.memory[stat] == value) || (compareMode == "less" && player.memory[stat] > value) || (compareMode == "greater" && player.memory[stat] < value)) {
+                            if ((compareMode == "equal" && player.memory[stat] !== value) || (compareMode == "less" && player.memory[stat] > value) || (compareMode == "greater" && player.memory[stat] < value)) {
                                 if (consume) {
                                     player.memory[stat] = (player.memory[stat] - value);
-                                } else {
-									failmsg = failmsg.replace(/~Command~/g, o.action).replace(/~Stat~/g, stat).replace(/~Required~/g, value).replace(/~Amount~/g, player.memory[stat]);
-									gamemsg(player.name, failmsg);
-									continue;
-								}
+                                }
+								failmsg = failmsg.replace(/~Command~/g, o.action).replace(/~Stat~/g, stat).replace(/~Required~/g, value).replace(/~Amount~/g, player.memory[stat]);
+								gamemsg(player.name, failmsg);
+								continue;
                             }
                         }
                         if (!Action.noFollow) {
