@@ -5074,7 +5074,7 @@ function Mafia(mafiachan) {
                             if (!(player.memory[stat])) {
                                 continue;
                             }
-                            if ((compareMode == "equal" && player.memory[stat] == value) || (compareMode == "greater" && player.memory[stat] >= value) || (compareMode == "less" && player.memory[stat] <= value)) {
+                            if ((compareMode == "equal" && player.memory[stat] == value) || (compareMode == "less" && player.memory[stat] > value) || (compareMode == "greater" && player.memory[stat] < value)) {
                                 if (consume) {
                                     player.memory[stat] = (player.memory[stat] - value);
                                 } else {
