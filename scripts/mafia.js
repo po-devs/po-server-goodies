@@ -5071,7 +5071,7 @@ function Mafia(mafiachan) {
                             if (isNaN(value)) {
                                 value = 1;
                             }
-                            if (!(player.memory[stat])) {
+                            if (!(player.memory.hasOwnProperty(stat))) {
                                 continue;
                             }
                             if ((compareMode == "equal" && player.memory[stat] !== value) || (compareMode == "less" && player.memory[stat] > value) || (compareMode == "greater" && player.memory[stat] < value)) {
