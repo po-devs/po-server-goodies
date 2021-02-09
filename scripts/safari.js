@@ -6444,7 +6444,7 @@ function Safari() {
                 return 0;
             }
         }
-        return sys.pokeAbility(pokeNum, num);
+        return sys.pokeAbility(pokeNum, num) || 0;
     }
     function canHaveAbility(num, abilityNum) {
         return [0,1,2].map(function(x) { return getPokeAbility(num, x); }).contains(abilityNum);
@@ -30579,13 +30579,15 @@ function Safari() {
                 ind = Math.floor(Math.random() * 4);
             }
             var kinds = {
-                "start": 21,
-                "contains": 21,
+                "start": 24,
+                "contains": 24,
                 "evolved": 6,
                 "evolves": 4,
                 "evolveNewType": 16,
                 "evolvedChangeType": 12,
                 "canMega": 5,
+                "prime": 2,
+                "fewerabilities": 1,
                 "stat": 12,
                 "moves": 48
             };
@@ -30722,6 +30724,24 @@ function Safari() {
                     }
                     strength = 3;
                     break;
+                case "fewerAbilities":
+                    for (var i = 0; i < clues.length; i++) {
+                        if (clues[i].kind == "fewerAbilities") {
+                            return false;
+                        }
+                    }
+                    var l = [], m = [0, 1, 2], amt;
+                    for (i = 0; i < m.length; i++) {
+                    	if (getPokeAbility(answer[ind], m[i])) {
+                    		amt++;
+                    	}
+                    }
+                    if (amt == 3) {
+                    	return false;
+                    }
+                    strength = 16;
+                    outText = "{0} has fewer than three legal abilities.";
+                    break;
                 case "canMega":
                     if (answer[ind] in megaEvolutions) {
                         value = true;
@@ -30795,10 +30815,27 @@ function Safari() {
                         return false;
                     }
                     strength = l3.length > 100 ? 2 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 12 : l3.length > 20 ? 19 : 28)));
-                    //strength = 16;
                     value = [m, m2];
                     outText = "{0} can learn " + moveOff(m) + " and " + moveOff(m2) + ".";
                     break;
+                case "prime":
+                	function isPrime(num) {
+						for (var i = 2; i < num; i++)
+							if (num % i === 0) return false;
+						return num > 1;
+					}
+                    for (var i = 0; i < clues.length; i++) {
+                        if (clues[i].kind == "prime") {
+                            return false;
+                        }
+                    }
+					if (!(isPrime(parseInt(answer[ind], 10)))) {
+						return false;
+					}
+					value = "prime";
+                    outText = "{0}'s dex number is prime.";
+                    strength = 19;
+                	break;
                 case "effective":
                     for (var i = 0; i < clues.length; i++) {
                         if (clues[i].kind == "effective" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
@@ -36792,8 +36829,8 @@ function Safari() {
 
         this.opponentList = opponents;
         this.opponent = this.opponentList.random();
-        this.opponentHP = 410 + 150 * level;
-        this.opponentPower = 13 + 4 * level;
+        this.opponentHP = 420 + 180 * level;
+        this.opponentPower = 12 + Math.floor(4.2 * level);
         this.isRevealed = false;
         if ([151, 571].contains(this.opponent)) {
             this.disguise = this.opponentList.random();
@@ -36996,7 +37033,7 @@ function Safari() {
             }
         }
         this.revealedTypes = [this.types[0]];
-        this.hp = 1080 + 200 * level;
+        this.hp = 1080 + 240 * level;
         this.maxhp = this.hp;
         this.dealt = {};
         this.treasureGoal = Math.round(this.hp * (1.45 - this.level * 0.07));
@@ -37082,7 +37119,7 @@ function Safari() {
                 }
             }
 
-            var pointsRange = [45 + 32 * this.level, 25 + 16 * this.level, 10 + 6 * this.level, 3 + 2 * this.level, -3 - 5 * this.level, -7 - 9 * this.level];
+            var pointsRange = [48 + 32 * this.level, 25 + 16 * this.level, 15 + 6 * this.level, 3 + 2 * this.level, -3 - 5 * this.level, -7 - 9 * this.level];
             var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)];
             this.sendAll("The {0}-type statue's HP dropped to 0! The statue was destroyed! Points gained: {1}".format(this.types.map(typeIcon).join(" / "), plural(points, "Point")));
             if (totalDealt >= this.treasureGoal) {
@@ -37100,7 +37137,7 @@ function Safari() {
             }
 
             var staminaStr = [], members = this.pyr.names, id;
-            var averageDamage = Math.floor(7 + (1.4 * this.level));
+            var averageDamage = Math.floor(11 + (1.2 * this.level));
             if (isNaN(averageDamage)) {
                 averageDamage = 10;
             }
@@ -37115,8 +37152,8 @@ function Safari() {
                 if (this.pyr.stamina[id] <= 0) {
                     continue;
                 }
-                var val = (parseInt(10 * (turnDealt[id]/turnDamage), 10) * 0.1);
-                dmg = parseInt(Math.round(parseInt(averageDamage, 10) * parseInt(10 * (1 - ((val) - 0.5)), 10) * 0.1), 10);
+                var val = (Math.round(10 * (turnDealt[id]/turnDamage), 10) * 0.1);
+                dmg = Math.round(averageDamage * (1 - (val - 0.5)));
                 if (isNaN(dmg)) {
                     dmg = 15;
                 }
@@ -37262,7 +37299,21 @@ function Safari() {
         h = getBST(this.answerId);
         hints.push("BST is between {0} and {1}".format(h - sys.rand(0, 45), h + sys.rand(1, 45)));
         if (this.answerId in evolutions) {
-            hints.push("Can evolve");
+        	var evolvePoke = evolutions[this.answerId].evo;
+        	evolvePoke = Array.isArray(evolvePoke) ? evolvePoke : [evolvePoke];
+        	var hit = false, hold;
+			for (var i = 0; i < evolvePoke.length; i++) {
+				hold = evolvePoke[i];
+				if (type1(hold) == type1(this.answerId) && type2(hold) == type2(this.answerId)) {
+					continue;
+				}
+				hit = true;
+			}
+        	if (hit) {
+				hints.push("Can evolve into a Pokémon with a different type combination");
+        	} else {
+				hints.push("Can evolve");
+			}
         } else {
             hints.push("Can't evolve");
         }
@@ -37715,7 +37766,7 @@ function Safari() {
                 if (res.power[0] < res.power[1]) {
                     oppScore++;
                 }
-                stamina[id] -= (4 + this.level);
+                stamina[id] -= (5 + this.level);
             }
         }
 
@@ -37728,13 +37779,13 @@ function Safari() {
                 getTreasure(id, reward);
             }
         } else {
-            stamina[id] -= 3 + this.level;
+            stamina[id] -= Math.floor(3.5 + (this.level * 1.25));
             this.sendAll("{3} couldn't beat {0}! Final score {2} x {1}".format(this.trainerName, "<b>" + score + "</b>", "<b>" + oppScore + "</b>", name));
         }
         if (oppScore > 1) {
-            stamina[id] -= 16 + 4 * this.level;
+            stamina[id] -= 15 + (5 * this.level);
         }
-        points = [-10 - 6 * this.level, 0, 28 + 18 * this.level, 52 + 36 * this.level][score];
+        points = [-10 - 6 * this.level, 0, 28 + 18 * this.level, 56 + 37 * this.level][score];
         if (stamina[id] === 0) {
             delete stamina[id];
         }
@@ -37999,7 +38050,9 @@ function Safari() {
             "sand": "Sandstorms",
             "target": "Flying Targets"
         };
-        var e, val, max = sys.rand(3 +  Math.floor(level * 1.3), 5 + Math.floor(level * (sys.rand(0, 0.3) + 1.4))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0, i = 0;
+        var e, val, max = sys.rand(Math.floor(3.2 +  (level * 1.35)), Math.floor(5.3 + (level * ((Math.random() * 0.4) + 1.5)))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0, i = 0;
+
+		max = Math.min(10 + level, max);
 
         var blockedHazard = this.pyr.bannedHazard;
 
@@ -38010,10 +38063,10 @@ function Safari() {
             if (x > max * 0.5) {
                 cont = false;
             }
-            if ((maxsize <= 7) && (chance(0.85 - level))) {
+            if ((maxsize <= 8) && (chance(0.95 - (0.1 * level)))) {
                 cont = false;
             }
-            if (i > 30) {
+            if (i > 60) {
                 cont = false;
             }
         }
@@ -38125,7 +38178,7 @@ function Safari() {
             this.treasureLocation = Object.keys(this.hazards).random();
         }
 
-        var known = Math.min((Math.floor(( level * 0.9 ) + sys.rand(3, Math.ceil( level*1.2 )))),count-(2 + Math.floor( level * 0.34))), unknown = sys.rand(Math.ceil(level*0.7), level), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
+        var known = Math.min((Math.floor(( level * 0.9 ) + sys.rand(3, Math.ceil( level*1.2 )))),count-(2 + Math.floor( level * 0.34))), unknown = sys.rand(Math.ceil(level*0.75), level + 1), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
         hazList = Object.keys(display);
         var revealed = {};
         total = 0;
