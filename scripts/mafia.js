@@ -5671,7 +5671,8 @@ function Mafia(mafiachan) {
                                             }
                                             obj.memory[entry] = total;
 											if ((data.hasOwnProperty("silent")) && (!data.silent)) {
-												var m = data.hasOwnProperty(msg) ? data.msg : "~Target~'s ~Memory~ is now ~Value~!";
+												var m = data.hasOwnProperty("msg") ? data.msg : "~Target~'s ~Memory~ is now ~Value~!";
+												var m2 = data.hasOwnProperty("targetmsg") ? data.targetmsg : "~Target~'s ~Memory~ is now ~Value~!";
 												var args = {
 													"Memory": entry,
 													"Target": target.name,
@@ -5679,6 +5680,7 @@ function Mafia(mafiachan) {
 													"Value": obj.memory[entry]
 												};
 												gamemsg(player.name, formatArgs(m, args));
+												gamemsg(target.name, formatArgs(m2, args));
 											}
                                             break;
                                     }
