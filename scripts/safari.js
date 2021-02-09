@@ -31324,7 +31324,7 @@ function Safari() {
             var skillDescription = getSkillDescription(key);
             if (skillDescription) {
                 var skill = skillData[key];
-                return "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + key, skill.name, setmsg) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>" : "");
+                return "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>" : "");
             }
             else {
                 return "";
@@ -37206,7 +37206,7 @@ function Safari() {
                     continue;
                 }
                 stamina[id] = (-1 * averageDamage);
-                staminaStr.push(id.toCorrectCase() + " -" + dmg);
+                staminaStr.push(id.toCorrectCase() + " -" + averageDamage);
             }
 
             this.sendAll("The statue's HP is now at {0}! Stamina lost: {1}".format(toColor(this.hp, "blue"), staminaStr.join(", ")));
