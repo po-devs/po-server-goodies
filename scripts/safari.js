@@ -30597,7 +30597,7 @@ function Safari() {
                 "sameregion": 56,
                 "samecolor": 50,
                 "sametype": 7,
-                "weaknesses": 14,
+                "weaknesses": 9,
                 "bsthigher": 4
             };
             var otherind = 0;
