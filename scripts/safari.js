@@ -36616,11 +36616,11 @@ function Safari() {
 
         this.level = level;
 
-        var size = this.startingSize = 8 + level * 2, p;
-        var minBST = 130 + 50 * level;
+        var size = this.startingSize = 8 + level, p;
+        var minBST = 130 + 60 * level;
         while (this.horde.length < size) {
             p = sys.rand(1, highestDexNum);
-            if (!isLegendary(p) && getBST(p) >= minBST) {
+            if ((!isLegendary(p) || level == 7) && getBST(p) >= minBST) {
                 this.horde.push(p);
             }
         }
@@ -36647,20 +36647,21 @@ function Safari() {
             }
         }
 
-        this.hordePower = [22 + level * 12, 100 + level * 24];
+        this.hordePower = [22 + level * 18, 100 + level * 36];
 
         this.treasures = {
-            starpiece: { chance: (1.8 + (2.1 * level)), item: "starpiece", amount: 1 },
-            bignugget: { chance: 1.1 * level, item: "bignugget", amount: 1 },
+            starpiece: { chance: (3 + (2.1 * level)), item: "starpiece", amount: 1 },
+            bignugget: { chance: (-2 + (1.1 * level)), item: "bignugget", amount: 1 },
+            crystal: { chance: (-4 + (1.7 * level)), item: "bignugget", amount: 1 },
             bait: { chance: 20, item: "bait", amount: 2 * level },
             gacha: { chance: 14, item: "gacha", amount: 2 * level },
             dust: { chance: 16, item: "dust", amount: 9 * level },
-            rare: { chance: (1 + (0.5 * level)), item: "rare", amount: 1},
+            rare: { chance: (2 + (0.5 * level)), item: "rare", amount: 1},
             safari: { chance: 15, item: "safari", amount: 3 * level },
             great: { chance: 12, item: "great", amount: level },
-            pnkapricorn: { chance: 9, item: "pnkapricorn", amount: 2 * level },
-            redapricorn: { chance: 10, item: "redapricorn", amount: level },
-            rock: { chance: 10, item: "rock", amount: 4 * level },
+            pnkapricorn: { chance: 12 - level, item: "pnkapricorn", amount: 2 * level },
+            redapricorn: { chance: 12 - level, item: "redapricorn", amount: level },
+            rock: { chance: 14 - level, item: "rock", amount: 4 * level },
             pearl: { chance: 10, item: "pearl", amount: 1 * level },
             stardust: { chance: 9, item: "stardust", amount: 1 * level }
         };
@@ -36731,7 +36732,7 @@ function Safari() {
                     }
                     defeated[id].push("{0} ({1} x {2})".format(toColor(poke(opp), "blue"), res.power[0], res.power[1]));
                     this.horde.splice(m, 1);
-                    points += 3 + (1.1 * this.level);
+                    points += 3 + (1.5 * this.level);
                     if (this.treasureHolder !== null && m === this.treasureHolder) {
                         treasurePoke = opp;
                         treasureWinner = id;
@@ -36767,6 +36768,8 @@ function Safari() {
                 this.sendAll("The <b>{0}</b> defeated by {1} dropped something! <b>{1}</b> found {2}!".format(poke(treasurePoke), addFlashTag(treasureWinner.toCorrectCase()), toColor(treasureName(this.treasureHeld), "blue")), true);
                 getTreasure(treasureWinner, this.treasureHeld);
             }
+        } else {
+        	points += (10 * level);
         }
         if (this.horde.length > 0) {
             var averageDamage = Math.ceil((this.horde.length / this.startingSize) * ((this.level + 2) * 28)), c;
@@ -36866,14 +36869,16 @@ function Safari() {
         }
 
         this.treasures = {
-            egg: { chance: (1 + (1.1 * level)), item: "egg", amount: 1 },
-            bignugget: { chance: (0.2 + (1.3 * level)), item: "bignugget", amount: 1 },
-            bait: { chance: 14, item: "bait", amount: 5 * level },
-            dust: { chance: 12, item: "dust", amount: 14 * level },
-            grnapricorn: { chance: 15, item: "grnapricorn", amount: 2 * level },
-            redapricorn: { chance: 14, item: "redapricorn", amount: Math.floor((5 + (1.5 * level))) },
-            pnkapricorn: { chance: 17, item: "pnkapricorn", amount: 2 * level },
-            bigpearl: { chance: 4.4, item: "bigpearl", amount: level }
+            egg: { chance: (1 + (1 * level)), item: "egg", amount: 1 },
+            bignugget: { chance: (-0.5 + (1.3 * level)), item: "bignugget", amount: 1 },
+            sunshard: { chance: (-0.3 + (1.2 * level)), item: "sunshard", amount: 1 },
+            moonshard: { chance: (-0.3 + (1.2 * level)), item: "moonshard", amount: 1 },
+            bait: { chance: 16, item: "bait", amount: 5 * level },
+            dust: { chance: 14, item: "dust", amount: 14 * level },
+            grnapricorn: { chance: 21 - level, item: "grnapricorn", amount: 2 * level },
+            redapricorn: { chance: 19 - level, item: "redapricorn", amount: Math.floor((5 + (1.5 * level))) },
+            pnkapricorn: { chance: 20 - level, item: "pnkapricorn", amount: 2 * level },
+            bigpearl: { chance: 7, item: "bigpearl", amount: level }
         };
 
         this.sendAll("");
@@ -36977,7 +36982,7 @@ function Safari() {
         }
 
         if (defeated) {
-            var pointsRange = [45 + 32 * this.level, 28 + 18 * this.level, 5 + 5 * this.level, 1 + 2 * this.level, -12 - 8 * this.level];
+            var pointsRange = [50 + 35 * this.level, 30 + 18 * this.level, 5 + 5 * this.level, 1 + 2 * this.level, -12 - 8 * this.level];
             var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)];
             this.sendAll("<b>{0}</b>'s HP dropped to 0! The {0} has fainted! Points gained: {1}".format(poke(opp), plural(points, "Point")));
             this.pyr.updateStatus(points, stamina);
@@ -37137,27 +37142,13 @@ function Safari() {
             }
 
             var staminaStr = [], members = this.pyr.names, id;
-            var averageDamage = Math.floor(11 + (1.2 * this.level));
-            if (isNaN(averageDamage)) {
-                averageDamage = 10;
-            }
-            if (this.maxhp * 0.2 >= this.hp) {
-                averageDamage = averageDamage*0.67;
-            }
-            if (this.maxhp * 0.1 >= this.hp) {
-                averageDamage = averageDamage*0.5;
-            }
+            var averageDamage = Math.floor(11 + (1.25 * this.level));
             for (p in members) {
                 id = members[p];
                 if (this.pyr.stamina[id] <= 0) {
                     continue;
                 }
-                var val = (Math.round(10 * (turnDealt[id]/turnDamage), 10) * 0.1);
-                dmg = Math.round(averageDamage * (1 - (val - 0.5)));
-                if (isNaN(dmg)) {
-                    dmg = 15;
-                }
-                stamina[id] = (-1 * dmg);
+                stamina[id] = (-1 * averageDamage);
                 staminaStr.push(id.toCorrectCase() + " -" + dmg);
             }
 
