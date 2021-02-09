@@ -30732,12 +30732,12 @@ function Safari() {
                     }
                     var l = [], m = [0, 1, 2], amt;
                     for (i = 0; i < m.length; i++) {
-                    	if (getPokeAbility(answer[ind], m[i])) {
-                    		amt++;
-                    	}
+                        if (getPokeAbility(answer[ind], m[i])) {
+                            amt++;
+                        }
                     }
                     if (amt == 3) {
-                    	return false;
+                        return false;
                     }
                     strength = 16;
                     outText = "{0} has fewer than three legal abilities.";
@@ -30819,23 +30819,23 @@ function Safari() {
                     outText = "{0} can learn " + moveOff(m) + " and " + moveOff(m2) + ".";
                     break;
                 case "prime":
-                	function isPrime(num) {
-						for (var i = 2; i < num; i++)
-							if (num % i === 0) return false;
-						return num > 1;
-					}
+                    function isPrime(num) {
+                        for (var i = 2; i < num; i++)
+                            if (num % i === 0) return false;
+                        return num > 1;
+                    }
                     for (var i = 0; i < clues.length; i++) {
                         if (clues[i].kind == "prime") {
                             return false;
                         }
                     }
-					if (!(isPrime(parseInt(answer[ind], 10)))) {
-						return false;
-					}
-					value = "prime";
+                    if (!(isPrime(parseInt(answer[ind], 10)))) {
+                        return false;
+                    }
+                    value = "prime";
                     outText = "{0}'s dex number is prime.";
                     strength = 19;
-                	break;
+                    break;
                 case "effective":
                     for (var i = 0; i < clues.length; i++) {
                         if (clues[i].kind == "effective" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
@@ -31320,19 +31320,17 @@ function Safari() {
             return;
         }
         
-        var isBasicSkill = function(key) {
-            return key.indexOf("basic") === 0;
-        };
-        var retSkillData = function(pokeId, key, action, label) {
+        var retSkillData = function(pokeId, key, action, label, setmsg) {
             var skillDescription = getSkillDescription(key);
             if (skillDescription) {
                 var skill = skillData[key];
-                return "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + key, skill.name) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>" : "");
+                return "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>" : "");
             }
             else {
                 return "";
             }
         };
+        
         var d1 = data.length > 0 ? data[0] : "*",
             d2 = data.length > 1 ? data[1] : "",
             d3 = data.length > 2 ? data[2] : "",
@@ -31385,7 +31383,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Basic skills are skills that every Pokémon of a certain type can learn! That means there are 18 different Basic skills in total, one for each type.", safchan);
             safaribot.sendHtmlMessage(src, "Idol: So for example, Bulbasaur is a Grass and Poison-type, therefore it can unlock and activate both the Basic Grass-type skill, and the Basic Poison-type skill.", safchan);
             safaribot.sendHtmlMessage(src, "Idol: You might think that Pokémon with only a single type are disadvantaged since they can learn fewer Basic skills. But worry not! Pokémon with only one type will be able to unlock and activate a <b>stronger version of their type's skill</b>!", safchan);
-            safaribot.sendHtmlMessage(src, "Idol: Unlocking a Basic skill for a Pokémon will unlock it for all Pokémon of the same species. That means if you unlock the Basic Fairy-type skill for Floette-Yellow, all the other Floette formes including Floette-Eternal will be able to activate it!", safchan);
+            //safaribot.sendHtmlMessage(src, "Idol: Unlocking a Basic skill for a Pokémon will unlock it for all Pokémon of the same species. That means if you unlock the Basic Fairy-type skill for Floette-Yellow, all the other Floette formes including Floette-Eternal will be able to activate it!", safchan);
             safaribot.sendHtmlMessage(src, link("/quest idol:showallbasic", "«List of Basic Skills»") + " " + link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
         else if (d1 === "aboutspecial") {
@@ -31435,39 +31433,30 @@ function Safari() {
                 }
             }
             else {
-                var mon = getInputPokemon(d2).num,
-                    species;
+                var mon = getInputPokemon(d2).num;
                 
                 if (!mon) {
                     safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... what's a " + d2 + "? How am I supposed to help you with a Pokémon that doesn't exist?", safchan);
                     return;
                 }
                 
-                species = pokeInfo.species(mon);
-                
-                if (!skillUnlocks[pid].hasOwnProperty(mon) && !skillUnlocks[pid].hasOwnProperty(species)) {
+                if (!skillUnlocks[pid].hasOwnProperty(mon)) {
                     safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You haven't <i>*yawn*</i> unlocked any skills for " + poke(mon) + " yet...", safchan);
                 }
                 
                 /*
                 skillUnlocks = {
                     pid: {
-                        species_num: {
+                        poke_id: {
                             "basic1": {},
-                            "basic2": {}
-                        }
-                        specific_forme: {
                             "special": {}
                         }
                     }
                 }
                 */
                 
-                if (species in skillUnlocks[pid]) {
-                    // for skill in skillUnlocks[pid][species], sendHtmlMessage(retSkillData(species, skillUnlocks[pid][species][key]))
-                }
                 if (mon in skillUnlocks[pid]) {
-                    // sendHtmlMessage(retSkillData(mon, mon))
+                    // for skill in skillUnlocks[pid][mon], sendHtmlMessage(retSkillData(species, skillUnlocks[pid][species][key]))
                 }
             }
         }
@@ -31481,7 +31470,7 @@ function Safari() {
             
             for (var i = 0; i < Object.keys(skillData).length; i++) {
                 if (isBasicSkill(Object.keys(skillData)[i])) {
-                    safaribot.sendHtmlMessage(src, "-" + retSkillData("[Pokémon Name]", Object.keys(skillData)[i], "unlock"), safchan);
+                    safaribot.sendHtmlMessage(src, "-" + retSkillData("[Pokémon Name]", Object.keys(skillData)[i], "unlock", false, true), safchan);
                 }
             }
         }
@@ -31497,7 +31486,42 @@ function Safari() {
                 return;
             }
             
-            // if no d4, list all basic skills for that species + special skills for that mon
+            if (!d2) {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}?".format(link("/quest idol:unlock:[Pokémon Name]", "name of the Pokémon", true)), safchan);
+                return;
+            }
+            
+            var mon = getInputPokemon(d2).num;
+            
+            if (!mon) {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... what's a " + d2 + "? How am I supposed to help you with a Pokémon that doesn't exist?", safchan);
+                return;
+            }
+            
+            var canUnlock = getUnlockableSkills(mon, player.idnum);
+            var isUnlocked = getUnlockedSkills(mon, player.idnum);
+            
+            if (canUnlock.length === 0 && isUnlocked.length === 0) {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... weird... this Pokémon doesn't seem to have any unlockable skills at all? Maybe you should throw it away.", safchan);
+                return;
+            }
+            if (canUnlock.length === 0) {
+                safaribot.sendMessage(src, alchemistSprite + "Alchemist: You've already unlocked all the skills this Pokémon can learn, maybe you wanna {0} them instead?".format(link("/quest idol:activate:" + mon, "activate")), safchan);
+                return;
+            }
+            
+            if (!d3) {
+                // show unlockable skills;
+                return;
+            }
+            if (!canUnlock.contains(d3)) { // TODO: function to map skill name to key
+                safaribot.sendMessage(src, alchemistSprite + "Alchemist: Heyyy... that's not a skill this Pokémon can learn.", safchan);
+                return;
+            }
+
+            sys.sendMessage(src, canUnlock + " && " + isUnlocked, safchan);
+            // show skill info and cost, link :confirm parameter as d4
+            // check shard cost, take items, saveplayer, add to skillUnlocks, add to permObj
         }
         else if (d1 === "activate") {
             if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
@@ -34555,6 +34579,9 @@ function Safari() {
         }
         return out;
     }
+    function isBasicSkill(key) {
+        return key.indexOf("basic") === 0;
+    }
     function getSkillDescription(key) {
         if (key in skillData) {
             var skill = skillData[key];
@@ -34562,7 +34589,37 @@ function Safari() {
         }
         return false;
     }
-    
+    function getUnlockableSkills(pokeId, playerId) {
+        var ret = [];
+        var playerUnlocks = skillUnlocks[playerId] || {};
+        for (var skill in skillData) {
+            if (pokeId in playerUnlocks && skill in playerUnlocks[pokeId]) {
+                continue;
+            }
+            if (isBasicSkill(skill)) {
+                var skillType = skill.slice(5);
+                if (skillType === type1(pokeId) || skillType === type2(pokeId)) {
+                    ret.push(skill);
+                }
+            }
+            else if (skill == pokeId) {
+                ret.push(skill);
+            }
+        }
+        
+        return ret;
+    }
+    function getUnlockedSkills(pokeId, playerId) {
+        var ret = [];
+        var playerUnlocks = skillUnlocks[playerId] || {};
+        for (var skill in skillData) {
+            if (pokeId in playerUnlocks && skill in playerUnlocks[pokeId]) {
+                ret.push(skill);
+            }
+        }
+        
+        return ret;
+    }
     var bakingData = {
         "apricorns": {
             "redapricorn": {
@@ -36769,7 +36826,7 @@ function Safari() {
                 getTreasure(treasureWinner, this.treasureHeld);
             }
         } else {
-        	points += (10 * level);
+            points += (10 * level);
         }
         if (this.horde.length > 0) {
             var averageDamage = Math.ceil((this.horde.length / this.startingSize) * ((this.level + 2) * 28)), c;
@@ -37149,7 +37206,7 @@ function Safari() {
                     continue;
                 }
                 stamina[id] = (-1 * averageDamage);
-                staminaStr.push(id.toCorrectCase() + " -" + dmg);
+                staminaStr.push(id.toCorrectCase() + " -" + averageDamage);
             }
 
             this.sendAll("The statue's HP is now at {0}! Stamina lost: {1}".format(toColor(this.hp, "blue"), staminaStr.join(", ")));
@@ -37290,21 +37347,21 @@ function Safari() {
         h = getBST(this.answerId);
         hints.push("BST is between {0} and {1}".format(h - sys.rand(0, 45), h + sys.rand(1, 45)));
         if (this.answerId in evolutions) {
-        	var evolvePoke = evolutions[this.answerId].evo;
-        	evolvePoke = Array.isArray(evolvePoke) ? evolvePoke : [evolvePoke];
-        	var hit = false, hold;
-			for (var i = 0; i < evolvePoke.length; i++) {
-				hold = evolvePoke[i];
-				if (type1(hold) == type1(this.answerId) && type2(hold) == type2(this.answerId)) {
-					continue;
-				}
-				hit = true;
-			}
-        	if (hit) {
-				hints.push("Can evolve into a Pokémon with a different type combination");
-        	} else {
-				hints.push("Can evolve");
-			}
+            var evolvePoke = evolutions[this.answerId].evo;
+            evolvePoke = Array.isArray(evolvePoke) ? evolvePoke : [evolvePoke];
+            var hit = false, hold;
+            for (var i = 0; i < evolvePoke.length; i++) {
+                hold = evolvePoke[i];
+                if (type1(hold) == type1(this.answerId) && type2(hold) == type2(this.answerId)) {
+                    continue;
+                }
+                hit = true;
+            }
+            if (hit) {
+                hints.push("Can evolve into a Pokémon with a different type combination");
+            } else {
+                hints.push("Can evolve");
+            }
         } else {
             hints.push("Can't evolve");
         }
@@ -38043,7 +38100,7 @@ function Safari() {
         };
         var e, val, max = sys.rand(Math.floor(3.2 +  (level * 1.35)), Math.floor(5.3 + (level * ((Math.random() * 0.4) + 1.5)))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0, i = 0;
 
-		max = Math.min(10 + level, max);
+        max = Math.min(10 + level, max);
 
         var blockedHazard = this.pyr.bannedHazard;
 
