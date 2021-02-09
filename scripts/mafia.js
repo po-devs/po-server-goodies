@@ -5670,7 +5670,7 @@ function Mafia(mafiachan) {
                                                 }
                                             }
                                             obj.memory[entry] = total;
-											if ((data.hasOwnProperty(silent)) && (!data.silent)) {
+											if ((data.hasOwnProperty("silent")) && (!data.silent)) {
 												var m = data.hasOwnProperty(msg) ? data.msg : "~Target~'s ~Memory~ is now ~Value~!";
 												var args = {
 													"Memory": entry,
