@@ -30732,12 +30732,12 @@ function Safari() {
                     }
                     var l = [], m = [0, 1, 2], amt;
                     for (i = 0; i < m.length; i++) {
-                    	if (getPokeAbility(answer[ind], m[i])) {
-                    		amt++;
-                    	}
+                        if (getPokeAbility(answer[ind], m[i])) {
+                            amt++;
+                        }
                     }
                     if (amt == 3) {
-                    	return false;
+                        return false;
                     }
                     strength = 16;
                     outText = "{0} has fewer than three legal abilities.";
@@ -30819,23 +30819,23 @@ function Safari() {
                     outText = "{0} can learn " + moveOff(m) + " and " + moveOff(m2) + ".";
                     break;
                 case "prime":
-                	function isPrime(num) {
-						for (var i = 2; i < num; i++)
-							if (num % i === 0) return false;
-						return num > 1;
-					}
+                    function isPrime(num) {
+                        for (var i = 2; i < num; i++)
+                            if (num % i === 0) return false;
+                        return num > 1;
+                    }
                     for (var i = 0; i < clues.length; i++) {
                         if (clues[i].kind == "prime") {
                             return false;
                         }
                     }
-					if (!(isPrime(parseInt(answer[ind], 10)))) {
-						return false;
-					}
-					value = "prime";
+                    if (!(isPrime(parseInt(answer[ind], 10)))) {
+                        return false;
+                    }
+                    value = "prime";
                     outText = "{0}'s dex number is prime.";
                     strength = 19;
-                	break;
+                    break;
                 case "effective":
                     for (var i = 0; i < clues.length; i++) {
                         if (clues[i].kind == "effective" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
@@ -36826,7 +36826,7 @@ function Safari() {
                 getTreasure(treasureWinner, this.treasureHeld);
             }
         } else {
-        	points += (10 * level);
+            points += (10 * level);
         }
         if (this.horde.length > 0) {
             var averageDamage = Math.ceil((this.horde.length / this.startingSize) * ((this.level + 2) * 28)), c;
@@ -37347,21 +37347,21 @@ function Safari() {
         h = getBST(this.answerId);
         hints.push("BST is between {0} and {1}".format(h - sys.rand(0, 45), h + sys.rand(1, 45)));
         if (this.answerId in evolutions) {
-        	var evolvePoke = evolutions[this.answerId].evo;
-        	evolvePoke = Array.isArray(evolvePoke) ? evolvePoke : [evolvePoke];
-        	var hit = false, hold;
-			for (var i = 0; i < evolvePoke.length; i++) {
-				hold = evolvePoke[i];
-				if (type1(hold) == type1(this.answerId) && type2(hold) == type2(this.answerId)) {
-					continue;
-				}
-				hit = true;
-			}
-        	if (hit) {
-				hints.push("Can evolve into a Pokémon with a different type combination");
-        	} else {
-				hints.push("Can evolve");
-			}
+            var evolvePoke = evolutions[this.answerId].evo;
+            evolvePoke = Array.isArray(evolvePoke) ? evolvePoke : [evolvePoke];
+            var hit = false, hold;
+            for (var i = 0; i < evolvePoke.length; i++) {
+                hold = evolvePoke[i];
+                if (type1(hold) == type1(this.answerId) && type2(hold) == type2(this.answerId)) {
+                    continue;
+                }
+                hit = true;
+            }
+            if (hit) {
+                hints.push("Can evolve into a Pokémon with a different type combination");
+            } else {
+                hints.push("Can evolve");
+            }
         } else {
             hints.push("Can't evolve");
         }
@@ -38100,7 +38100,7 @@ function Safari() {
         };
         var e, val, max = sys.rand(Math.floor(3.2 +  (level * 1.35)), Math.floor(5.3 + (level * ((Math.random() * 0.4) + 1.5)))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0, i = 0;
 
-		max = Math.min(10 + level, max);
+        max = Math.min(10 + level, max);
 
         var blockedHazard = this.pyr.bannedHazard;
 
