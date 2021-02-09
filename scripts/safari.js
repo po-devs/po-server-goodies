@@ -31320,14 +31320,11 @@ function Safari() {
             return;
         }
         
-        var isBasicSkill = function(key) {
-            return key.indexOf("basic") === 0;
-        };
-        var retSkillData = function(pokeId, key, action, label) {
+        var retSkillData = function(pokeId, key, action, label, setmsg) {
             var skillDescription = getSkillDescription(key);
             if (skillDescription) {
                 var skill = skillData[key];
-                return "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + key, skill.name) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>" : "");
+                return "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + key, skill.name, setmsg) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>" : "");
             }
             else {
                 return "";
@@ -31473,7 +31470,7 @@ function Safari() {
             
             for (var i = 0; i < Object.keys(skillData).length; i++) {
                 if (isBasicSkill(Object.keys(skillData)[i])) {
-                    safaribot.sendHtmlMessage(src, "-" + retSkillData("[Pokémon Name]", Object.keys(skillData)[i], "unlock"), safchan);
+                    safaribot.sendHtmlMessage(src, "-" + retSkillData("[Pokémon Name]", Object.keys(skillData)[i], "unlock", false, true), safchan);
                 }
             }
         }
@@ -34581,6 +34578,9 @@ function Safari() {
             out.push(p);
         }
         return out;
+    }
+    function isBasicSkill(key) {
+        return key.indexOf("basic") === 0;
     }
     function getSkillDescription(key) {
         if (key in skillData) {
