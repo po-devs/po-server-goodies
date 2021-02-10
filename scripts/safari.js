@@ -31450,7 +31450,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Have a look at the skills you've unlocked for <b>{0}</b>!".format(poke(mon)), safchan);
                 for (var skill in skillUnlocks[pid][mon]) {
                     var isActive = safari.playerHasActiveSkill(player, mon, skill);
-                    safaribot.sendHtmlMessage(src, "-" + retSkillData(parseInt(mon), skill, "activate", true) + (isActive ? " " + toColor("[Active with " + player.pokeskills[mon][skill].uses + " remaining uses]", "red") : ""), safchan);
+                    safaribot.sendHtmlMessage(src, "-" + retSkillData(parseInt(mon), skill, "activate", true) + (isActive ? " " + toColor("[Active with " + player.pokeskills[mon][skill].uses + " remaining uses]", "red") : " [" + link("/quest idol:activate:" + mon + ":" + skill, "Activate") + "]"), safchan);
                 }
                 
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: If you just wanna check the active skills of your current party Pokémon, you can do that with {0}, so you don't always have to bother me all the time. I'm tryna sleep here, yeah?".format(link("/party")), safchan);
@@ -31693,6 +31693,7 @@ function Safari() {
                 return;
             }
 
+            giveStuff(player, ingUsed, true);
             if (!player.pokeskills.hasOwnProperty(mon)) {
                 player.pokeskills[mon] = {};
                 sys.sendMessage(src, JSON.stringify(player.pokeskills), safchan);
@@ -31705,7 +31706,7 @@ function Safari() {
             // only level and uses need to be stored, all other data can be pulled live from skillData
             
             sys.sendMessage(src, JSON.stringify(player.pokeskills), safchan);
-            giveStuff(player, ingUsed, true);
+            
             safari.saveGame(player);
             
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! With <b>{0}</b> by your side, you and your <b>{1}</b> will be shining stars! I guarantee it, or my name isn't \"Idol\"!".format(skillName, monName), safchan);
