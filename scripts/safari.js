@@ -30858,7 +30858,7 @@ function Safari() {
                         value = "faces an immunity";
                         strength = 30;
                     }
-                    outText = "{0} " + value + " while attacking {1}.";
+                    outText = "{0} " + value + " while catching {1}.";
                     break;
                 case "noletters":
                     for (var i = 0; i < clues.length; i++) {
@@ -30973,9 +30973,9 @@ function Safari() {
                     }
 
                     if (l == 1) {                    
-                        outText = "{0} has 1 " + (res ? "resistance " : "weakness") + " in common with {1}.";
+                        outText = "{0} has 1 " + (res ? "resistance " : "weakness/immunity") + " in common with {1}.";
                     } else {
-                        outText = "{0} has " + l + " " + (res ? "resistances" : "weaknesses") + " in common with {1}.";
+                        outText = "{0} has " + l + " " + (res ? "resistances" : "weaknesses/immunities") + " in common with {1}.";
                     }
                     strength = 23;
                     

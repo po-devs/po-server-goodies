@@ -4391,7 +4391,7 @@ function Mafia(mafiachan) {
                     rolePossible = rolePossible2;
                 }
                 revealedRole = rolePossible.random();
-                gamemsg(player.name, "Your expose went all weird and gave a false result!", undefined, undefined, true);
+                gamemsg(srcname, "Your expose went all weird and gave a false result!", undefined, undefined, true);
             } else if (target.disguiseRole !== undefined) {
                 revealedRole = mafia.theme.trrole(target.disguiseRole);
             } else if (inspectMode.revealAs !== undefined) {
