@@ -31583,8 +31583,9 @@ function Safari() {
             skillUnlocks[player.idnum][mon][skillKey] = { "level": level }; // we only need to store level here, rest of the skill data will be pulled directly from skillData when activating, then added into player.pokeskills
             permObj.add("skillUnlocks", JSON.stringify(skillUnlocks));
             safari.saveGame(player);
-            // show skill info and cost, link :confirm parameter as d4
-            // check shard cost, take items, saveplayer, add to skillUnlocks, add to permObj
+            
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! Your {0} has unlocked the {1} skill! Come back when you're ready to activate it!".format(monName, skillName), safchan);
+            safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: I was the one who did all the work... <i>*grumble grumble*</i>", safchan);
         }
         else if (d1 === "activate") {
             if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
@@ -31599,7 +31600,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: There she goes again{0}.. She'll be alright, this always happens. Just give her some time.".format(link("/quest idol:youfounditcongratsicantbelievethis", ".")), safchan);
         }
         else if (d1 === "youfounditcongratsicantbelievethis") {
-            safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Think you're clever eh? The thing is, unlike my cousin, I'm very much aware that I'm a nameless fictional character in a chat-based game. Do you think you're safe there, in the real world? " + link("/quest idol:thisisthefinalstep", "«...Next?»"), safchan);
+            safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Think you're clever eh? The thing is, unlike my cousin, I'm very much aware that I'm a nameless fictional character in a chat-based game. Do you think you're safe there, in the real world? " + link("/quest idol:thisisthefinalstep", "«Next...?»"), safchan);
         }
         else if (d1 === "thisisthefinalstep") {
             sys.sendHtmlMessage(src, "<font size=10><b>" + toColor("YOU CANNOT ESCAPE", "red") + "</b></font>", safchan);
