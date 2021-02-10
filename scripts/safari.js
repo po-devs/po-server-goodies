@@ -31373,7 +31373,7 @@ function Safari() {
         }
         else if (d1 === "aboutunlock") {
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Ya see, every Pokémon species has their skills locked to begin with. By bringing us some {0} and {1}, we can <b>permanently unlock some of their skills</b>.".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's right, an <b>unlock</b> is permanent. Note than when we unlock a skill, it only applies to <b>that particular skill for that particular Pokémon species</b> (except for Special skills).", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's right, an <b>unlock</b> is permanent. Note than when we unlock a skill, it only applies to <b>that particular skill for that particular Pokémon</b>.", safchan);
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Unlocking a skill won't do anything for you by itself though. After you unlock a skill, you will gain the option of <b>{0}</b> it. THAT's where the real magic happens!".format(link("/quest idol:aboutactivate", "activating")), safchan);
             safaribot.sendHtmlMessage(src, link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
@@ -31396,9 +31396,9 @@ function Safari() {
             safaribot.sendHtmlMessage(src, link("/quest idol:showallspecial", "«List of Special Skills»") + " " + link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
         else if (d1 === "aboutbattle") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Skills are passive benefits that apply when that Pokémon is in your party during a Rotation Battle. Some skills will benefit not just the skill owner, but also the entire party.", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Skills are <b>passive benefits</b> that apply when that Pokémon is in your party during a Rotation Battle. Some skills will benefit not just the skill owner, but also the entire party.", safchan);
             safaribot.sendHtmlMessage(src, "Idol: Party skills like these will work even if they are not among the 3 Pokémon you chose for that particular battle. However, they stop working if that Pokémon has fainted.", safchan);
-            safaribot.sendHtmlMessage(src, "Idol: Note that multiples of the same skill do not stack! If you have multiples of the same Basic skill, and one is boosted due to being a single-typed Pokémon, the boosted version will take precedence, and party order will also determine which of the same skill is used first.", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: Note that multiples of the same skill <b>do not stack</b>! If you have multiples of the same Basic skill, and one is boosted due to being a single-typed Pokémon, the boosted version will take precedence, and party order will also determine which of the same skill is used first.", safchan);
             safaribot.sendHtmlMessage(src, link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
         else if (d1 === "showunlocks") {
@@ -31446,14 +31446,14 @@ function Safari() {
                 }
                 
                 if (!skillUnlocks[pid].hasOwnProperty(mon)) {
-                    safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You haven't <i>*yawn*</i> unlocked any skills for " + poke(mon) + " yet...", safchan);
+                    safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You haven't <i>*yawn*</i> unlocked any skills for <b>" + poke(mon) + "</b> yet...", safchan);
                     return;
                 }
                 
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Have a look at the skills you've unlocked for <b>{0}</b>!".format(poke(mon)), safchan);
                 for (var skill in skillUnlocks[pid][mon]) {
                     // TODO: if active, show [active] + remaining uses
-                    safaribot.sendHtmlMessage(src, retSkillData(parseInt(mon), skill, "activate", true), safchan);
+                    safaribot.sendHtmlMessage(src, "-" + retSkillData(parseInt(mon), skill, "activate", true), safchan);
                 }
                 
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: If you just wanna check the active skills of your current party Pokémon, you can do that with {0}, so you don't always have to bother me all the time. I'm tryna sleep here, yeah?".format(link("/party")), safchan);
@@ -31557,7 +31557,7 @@ function Safari() {
             if (!d4 || d4 !== "confirm") {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Here are the deets on this skill:", safchan);
                 sys.sendMessage(src, "", safchan);
-                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Name:</b></font><b><u>" + skillInfo.name + "</u></b>", safchan);
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Name:</b></font><b><u> " + skillInfo.name + "</u></b>", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Effect:</b></font> " + skillInfo.description.format(skillInfo.rate[0], skillInfo.rate[1], skillInfo.rate2[0], skillInfo.rate2[1]) + ".", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Max Uses:</b></font> " + skillInfo.uses, safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Unlock Cost:</b></font> " + readable(progress), safchan);
@@ -32256,7 +32256,7 @@ function Safari() {
                     if (page[pk] === "555") { // darmanitan
                         listForms.push(link("/quest philosopher:Galarian Darmanitan-Zen", "Galarian Darmanitan-Zen")); // g garm-zen is omitted from regular darm's form array, so manually push it in here
                     }
-                    safaribot.sendHtmlMessage(src, readable(listForms), safchan);
+                    safaribot.sendHtmlMessage(src, "-" + readable(listForms), safchan);
                     if (pk === page.length-1) {
                         var pageControls = (page.contains(keys[0]) ? "" : link("/quest philosopher:page:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest philosopher:page:" + (pageNum+1), "«Next Page»"));
                         if (pageControls) {
