@@ -31422,7 +31422,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Check out all the Pokémon you've unlocked skills for already!", safchan);
                 var keys = Object.keys(skillUnlocks[pid]).sort(function(a, b) { return parseInt(a) - parseInt(b) });
                 var displayLimit = 10,
-                    pageNum = Math.abs(parseInt(data[1])) || 0;
+                    pageNum = Math.abs(parseInt(d3)) || 0;
                 var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit); // maybe turn this whole thing into a function
                 
                 for (var i = 0; i < page.length; i++) {
@@ -31512,7 +31512,7 @@ function Safari() {
                 return;
             }
             if (canUnlock.length === 0) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You've already unlocked all the skills {0} can learn, maybe you wanna {1} them instead?".format(monName, link("/quest idol:activate:" + mon, "activate")), safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You've already unlocked all the skills <b>{0}</b> can learn, maybe you wanna {1} them instead?".format(monName, link("/quest idol:activate:" + mon, "activate")), safchan);
                 return;
             }
             
@@ -31529,11 +31529,11 @@ function Safari() {
             var skillName = skillInfo.name; // for proper casing
             
             if (isUnlocked.contains(skillKey)) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You've already unlocked this skill for {0} ya dummy.".format(monName), safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You've already unlocked this skill for <b>{0}</b> ya dummy.".format(monName), safchan);
                 return;
             }
             if (!canUnlock.contains(skillKey)) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Heyyy... that's not a skill {0} can learn.".format(monName), safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Heyyy... that's not a skill <b>{0}</b> can learn.".format(monName), safchan);
                 return;
             }
             
@@ -31557,7 +31557,7 @@ function Safari() {
             if (!d4 || d4 !== "confirm") {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Here are the deets on this skill:", safchan);
                 sys.sendMessage(src, "", safchan);
-                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Name:</b></font><b><u> " + skillInfo.name + "</u></b>", safchan);
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Name:</b></font> <b><u>" + skillInfo.name + "</u></b>", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Effect:</b></font> " + skillInfo.description.format(skillInfo.rate[0], skillInfo.rate[1], skillInfo.rate2[0], skillInfo.rate2[1]) + ".", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Max Uses:</b></font> " + skillInfo.uses, safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Unlock Cost:</b></font> " + readable(progress), safchan);
