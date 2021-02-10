@@ -31608,6 +31608,7 @@ function Safari() {
             permObj.add("skillUnlocks", JSON.stringify(skillUnlocks));
             safari.saveGame(player);
             
+            sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Idol|||Gave " + translateStuff(skillInfo.unlock) + "|||Unlocked " + skillName + " for " + monName + "\n");
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! Your <b>{0}</b> has permanently unlocked the <b>{1}</b> skill! Come back when you're ready to activate it!".format(monName, skillName), safchan);
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: I was the one who did all the work... <i>*grumble grumble*</i>", safchan);
         }
@@ -31715,6 +31716,7 @@ function Safari() {
             giveStuff(player, ingUsed, true);
             safari.saveGame(player);
             
+            sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Idol|||Gave " + translateStuff(skillInfo.activate) + "|||Activated " + skillName + " for " + monName + "\n");
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! With <b>{0}</b> by your side, you and your <b>{1}</b> will be shining stars! I guarantee it, or my name isn't \"Idol\"!".format(skillName, monName), safchan);
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "", safchan);
