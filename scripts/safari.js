@@ -31462,7 +31462,7 @@ function Safari() {
                 
                 if (mon in skillUnlocks[pid]) {
                     // update this later
-                    safaribot.sendHtmlMessage(src, retSkillData(species, skillUnlocks[pid][species][key], "activate", true), safchan);
+                    safaribot.sendHtmlMessage(src, retSkillData(mon, skillUnlocks[pid][mon][key], "activate", true), safchan);
                 }
             }
         }
