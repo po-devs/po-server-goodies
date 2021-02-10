@@ -31328,7 +31328,7 @@ function Safari() {
             var skillDescription = safari.getSkillDescription(key);
             if (skillDescription) {
                 var skill = skillData[key];
-                return "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "]</b>" : "");
+                return "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "</b>" : "");
             }
             else {
                 return "";
@@ -31512,12 +31512,12 @@ function Safari() {
                 return;
             }
             if (canUnlock.length === 0) {
-                safaribot.sendMessage(src, alchemistSprite + "Alchemist: You've already unlocked all the skills {0} can learn, maybe you wanna {1} them instead?".format(monName, link("/quest idol:activate:" + mon, "activate")), safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You've already unlocked all the skills {0} can learn, maybe you wanna {1} them instead?".format(monName, link("/quest idol:activate:" + mon, "activate")), safchan);
                 return;
             }
             
             if (!d3) {
-                safaribot.sendMessage(src, alchemistSprite + "Alchemist: Check out a list of skills {0} can unlock, why don't ya?".format(monName), safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Check out a list of skills {0} can unlock, why don't ya?".format(monName), safchan);
                 for (var i = 0; i < canUnlock.length; i++) {
                     safaribot.sendHtmlMessage(src, "-" + retSkillData(mon, canUnlock[i], "unlock", true), safchan);
                 }
@@ -31553,10 +31553,10 @@ function Safari() {
             if (!d4 || d4 !== "confirm") {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Here are the deets on this skill:", safchan);
                 sys.sendMessage(src, "", safchan);
-                sys.sendHtmlMessage(src, "<timestamp/><b>Name</b>: <u>" + skillInfo.name, safchan);
-                sys.sendHtmlMessage(src, "<timestamp/><b>Effect</b>: " + skillInfo.description.format(skillInfo.rate[0], skillInfo.rate[1], skillInfo.rate2[0], skillInfo.rate2[1]), safchan);
-                sys.sendHtmlMessage(src, "<timestamp/><b>Max Uses</b>: " + skillInfo.uses, safchan);
-                sys.sendHtmlMessage(src, "<timestamp/><b>Unlock Cost</b>: " + readable(progress), safchan);
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Name:</b></font><b><u>" + skillInfo.name + "</u></b>", safchan);
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Effect:</b></font> " + skillInfo.description.format(skillInfo.rate[0], skillInfo.rate[1], skillInfo.rate2[0], skillInfo.rate2[1]), safchan);
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Max Uses:</b></font> " + skillInfo.uses, safchan);
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Unlock Cost:</b></font> " + readable(progress), safchan);
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Anyway, {0} if you're sure you want your <b>{1}</b> to unlock <b>{2}</b>.".format(link("/quest idol:unlock:" + monName + ":" + skillName + ":confirm", "click here"), monName, skillName), safchan);
                 return;
@@ -31584,7 +31584,7 @@ function Safari() {
             permObj.add("skillUnlocks", JSON.stringify(skillUnlocks));
             safari.saveGame(player);
             
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! Your {0} has unlocked the {1} skill! Come back when you're ready to activate it!".format(monName, skillName), safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! Your <b>{0}</b> has unlocked the <b>{1}</b> skill! Come back when you're ready to activate it!".format(monName, skillName), safchan);
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: I was the one who did all the work... <i>*grumble grumble*</i>", safchan);
         }
         else if (d1 === "activate") {
