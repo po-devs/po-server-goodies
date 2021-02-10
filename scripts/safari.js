@@ -31450,7 +31450,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Have a look at the skills you've unlocked for <b>{0}</b>!".format(poke(mon)), safchan);
                 for (var skill in skillUnlocks[pid][mon]) {
                     var isActive = safari.playerHasActiveSkill(player, mon, skill);
-                    safaribot.sendHtmlMessage(src, "-" + retSkillData(parseInt(mon), skill, "activate", true) + (isActive ? " " + toColor("[Active with " + player.pokeskills[mon][skill].uses + " remaining uses]", "red") : " [" + link("/quest idol:activate:" + mon + ":" + skill, "Activate") + "]"), safchan);
+                    safaribot.sendHtmlMessage(src, "-" + retSkillData(parseInt(mon), skill, "activate", true) + (isActive ? " " + toColor("[Active with " + player.pokeskills[mon][skill].uses + " remaining uses]", "red") : ""), safchan);
                 }
                 
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: If you just wanna check the active skills of your current party Pokémon, you can do that with {0}, so you don't always have to bother me all the time. I'm tryna sleep here, yeah?".format(link("/party")), safchan);
@@ -31540,7 +31540,7 @@ function Safari() {
                 return;
             }
             
-            var skillKey = safari.getSkillKeyByName(d3);
+            var skillKey = d3 in skillData ? d3 : safari.getSkillKeyByName(d3);
             if (!skillKey) {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: That skill just plain doesn't exist!", safchan);
                 return;
@@ -31650,7 +31650,7 @@ function Safari() {
                 return;
             }
             
-            var skillKey = safari.getSkillKeyByName(d3);
+            var skillKey = d3 in skillData ? d3 : safari.getSkillKeyByName(d3);
             if (!skillKey) {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: That skill just plain doesn't exist!", safchan);
                 return;
