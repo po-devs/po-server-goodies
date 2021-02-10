@@ -31504,6 +31504,11 @@ function Safari() {
                 return;
             }
             
+            if (!player.pokemon.contains(mon)) {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... You don't seem to have that Pokémon? Maybe it ran away from you or somethin'." safchan);
+                return;
+            }
+            
             var canUnlock = getUnlockableSkills(mon, player.idnum);
             var isUnlocked = getUnlockedSkills(mon, player.idnum);
             
@@ -31528,6 +31533,10 @@ function Safari() {
             var skillInfo = skillData[skillKey];
             var skillName = skillInfo.name; // for proper casing
             
+            if (isUnlocked.contains(skillKey)) {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You've already unlocked this skill for {0} ya dummy.".format(monName), safchan);
+                return;
+            }
             if (!canUnlock.contains(skillKey)) {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Heyyy... that's not a skill {0} can learn.".format(monName), safchan);
                 return;
