@@ -31485,7 +31485,7 @@ function Safari() {
             var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
             
             for (var i = 0; i < page.length; i++) {
-                safaribot.sendHtmlMessage(src, "-" + poke(parseInt(page[i])) + "'s " + retSkillData(poke(page[i]), page[i], "unlock"), safchan);
+                safaribot.sendHtmlMessage(src, "-<b>" + poke(parseInt(page[i])) + "</b>'s " + retSkillData(poke(page[i]), page[i], "unlock"), safchan);
                 if (i === page.length-1) {
                     var pageControls = (page.contains(keys[0]) ? "" : link("/quest idol:showallspecial:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest idol:showallspecial:" + (pageNum+1), "«Next Page»"));
                     if (pageControls) {
