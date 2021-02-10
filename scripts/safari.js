@@ -31426,7 +31426,7 @@ function Safari() {
                 var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit); // maybe turn this whole thing into a function
                 
                 for (var i = 0; i < page.length; i++) {
-                    safaribot.sendHtmlMessage(src, "-" + link("/quest idol:activate:" + page[i], poke(page[i])), safchan);
+                    safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks:" + page[i], poke(parseInt(page[i]))), safchan);
                     
                     if (i === page.length-1) {
                         var pageControls = (page.contains(keys[0]) ? "" : link("/quest idol:showunlocks:all:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest idol:showunlocks:all:" + (pageNum+1), "«Next Page»"));
