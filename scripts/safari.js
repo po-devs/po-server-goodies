@@ -31367,7 +31367,7 @@ function Safari() {
             
             sys.sendMessage(src, "", safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks", "Show me which skills I've unlocked"), safchan); // option to enter specific pokemon, show whole list (paginate) if none whole list
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks", "Show me which Pokémon I've unlocked skills for"), safchan); // option to enter specific pokemon, show whole list (paginate) if none whole list
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:unlock", "I want to unlock a skill!"), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:activate", "I want to activate a skill!"), safchan);
         }
@@ -31419,6 +31419,7 @@ function Safari() {
             }
             
             if (d2 === "all") {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "placeholder", safchan);
                 var keys = Object.keys(skillUnlocks[pid]).sort(function(a, b) { return parseInt(a) - parseInt(b) });
                 var displayLimit = 10,
                     pageNum = Math.abs(parseInt(data[1])) || 0;
@@ -31505,7 +31506,7 @@ function Safari() {
             }
             
             if (!player.pokemon.contains(mon)) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... You don't seem to have that Pokémon? Maybe it ran away from you or somethin'." safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... You don't seem to have that Pokémon? Maybe it ran away from you or somethin'.", safchan);
                 return;
             }
             
