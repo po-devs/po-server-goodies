@@ -37865,25 +37865,61 @@ function Safari() {
                 damaging.push(moves[m]);
             }
         }
+        var damagingOriginal = [].concat(damaging);
 
-        var type, count = 0;
+        var type, count = 0, l1 = [], l2 = [], l3 = [];
         do {
-            this.firstAtk = damaging.random();
-            type = sys.type(moveType(this.firstAtk));
-            count++;
-        } while (count < 1 + level * 2 && type === "Normal");
+			this.firstAtk = damaging.random();
+			type = sys.type(moveType(this.firstAtk));
+			l1 = lookupMoveLearners(this.firstAtk);
+			count++;
+		} while (l1.length < 180 && count < 25);
+        count = 0;
+        damaging.splice(damaging.indexOf(this.firstAtk), 1);
+        do {
+			this.secondAtk = damaging.random();
+			type = sys.type(moveType(this.secondAtk));
+			l2 = lookupMoveLearners(this.secondAtk);
+			l3 = removeNonDuplicates(l2, l1);
+			count++;
+		} while ((l3.length < 80) && count < 50);
+        damaging.splice(damaging.indexOf(this.secondAtk), 1);
+		var atks = [this.firstAtk, this.secondAtk];
+        this.firstBonusAtk = false;
+        this.secondBonusAtk = false;
+        var l6 = [].concat(l3);
+        if (l3.length > 5) {
+        	var l4 = [];        
+			count = 0;
+			do {
+				this.firstBonusAtk = damaging.random();
+				type = sys.type(moveType(this.firstBonusAtk));
+				l4 = lookupMoveLearners(this.firstBonusAtk);
+				l3 = removeNonDuplicates(l6, l4);
+				count++;
+			} while ((l3.length < 25) && count < 60);
+			atks.push(this.firstBonusAtk);
+			damaging.splice(damaging.indexOf(this.firstBonusAtk), 1);
+		}
+        var l6 = [].concat(l3);
+        if (l3.length > 4) {
+        	var l5 = [];        
+			count = 0;
+			do {
+				this.secondBonusAtk = damaging.random();
+				type = sys.type(moveType(this.secondBonusAtk));
+				l5 = lookupMoveLearners(this.secondBonusAtk);
+				l3 = removeNonDuplicates(l6, l5);
+				count++;
+			} while ((l3.length < (2 + (0.05 * count))) && count < 160);
+			atks.push(this.secondBonusAtk);
+		}
+		
+        atks = atks.map(function(x) {return toColor(moveOff(x), "blue")});
+
         count = 0;
         do {
-            this.secondAtk = damaging.random();
-            type = sys.type(moveType(this.secondAtk));
-            count++;
-        } while (count < 1 + level * 2 && (this.firstAtk === this.secondAtk || type === "Normal"));
-        this.firstAtk = moveOff(this.firstAtk);
-        this.secondAtk = moveOff(this.secondAtk);
-
-        count = 0;
-        do {
-            this.thirdAtk = damaging.random();
+            this.thirdAtk = damagingOriginal.random();
             type = sys.type(moveType(this.thirdAtk));
             count++;
         } while (count < 2 + level * 2 && type === "Normal");
@@ -37899,7 +37935,7 @@ function Safari() {
             rock: { chance: 10 - level, item: "rock", amount: 10 * level },
             stardust: { chance: 4, item: "stardust", amount: 1 * level }
         };
-        var typeChances = {"Normal":30,"Fighting":20,"Flying":11,"Poison":40,"Ground":20,"Rock":36,"Bug":36,"Ghost":3.5,"Steel":0,"Fire":10,"Water":7,"Grass":12,"Electric":9,"Psychic":40,"Ice":34,"Dragon":6,"Dark":7,"Fairy":0};
+        var typeChances = {"Normal":20,"Fighting":20,"Flying":11,"Poison":40,"Ground":20,"Rock":36,"Bug":36,"Ghost":3.5,"Steel":0,"Fire":10,"Water":7,"Grass":12,"Electric":9,"Psychic":45,"Ice":34,"Dragon":6,"Dark":7,"Fairy":0};
         this.bonusTypes = [randomSample(typeChances)];
         var type_2 = randomSample(typeChances);
         var j = 0;
@@ -37925,7 +37961,7 @@ function Safari() {
 
         var self = this;
         this.sendAll("");
-        this.sendAll("Room {0}-{1}: As soon as you enter the room, you see a Pokémon in the shadows using {2}. They then look at you and prepare another attack!".format(level, roomNum, toColor(this.firstAtk, "blue") + " and " + toColor(this.secondAtk, "blue")));
+        this.sendAll("Room {0}-{1}: As soon as you enter the room, you see a Pokémon in the shadows using {2}. They then look at you and prepare another attack!".format(level, roomNum, readable(atks)));
         this.sendAll("Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(function(x) {return typeIcon(x) + " (" + self.bonusTypesObj[x] + ")"}), "or") + " will heal your Pokémon and give bonus points!");
         this.sendIndividuals();
         this.sendAll("");
