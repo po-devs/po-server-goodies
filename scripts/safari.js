@@ -31554,7 +31554,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Here are the deets on this skill:", safchan);
                 sys.sendMessage(src, "", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Name:</b></font><b><u>" + skillInfo.name + "</u></b>", safchan);
-                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Effect:</b></font> " + skillInfo.description.format(skillInfo.rate[0], skillInfo.rate[1], skillInfo.rate2[0], skillInfo.rate2[1]), safchan);
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Effect:</b></font> " + skillInfo.description.format(skillInfo.rate[0], skillInfo.rate[1], skillInfo.rate2[0], skillInfo.rate2[1]) + ".", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Max Uses:</b></font> " + skillInfo.uses, safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Unlock Cost:</b></font> " + readable(progress), safchan);
                 sys.sendMessage(src, "", safchan);
@@ -31584,7 +31584,7 @@ function Safari() {
             permObj.add("skillUnlocks", JSON.stringify(skillUnlocks));
             safari.saveGame(player);
             
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! Your <b>{0}</b> has unlocked the <b>{1}</b> skill! Come back when you're ready to activate it!".format(monName, skillName), safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! Your <b>{0}</b> has permanently unlocked the <b>{1}</b> skill! Come back when you're ready to activate it!".format(monName, skillName), safchan);
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: I was the one who did all the work... <i>*grumble grumble*</i>", safchan);
         }
         else if (d1 === "activate") {
