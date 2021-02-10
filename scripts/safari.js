@@ -31479,15 +31479,28 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Here's the list of <b>Special skills</b> that only specific Pokémon can learn!", safchan);
             var keys = Object.keys(skillData).filter(function(e) {
                 return !safari.isBasicSkill(e);
-            }).sort(function(a, b) { return parseInt(a) - parseInt(b) });
+            });
+            
+            var monList = [],
+                specialSkills = [];
+            
+            for (var i = 0; i < keys.length; i++) {
+                for (var j = 0; j < skillData[keys[i]].eligible.length; j++) {
+                    monList.push(skillData[keys[i]].eligible[j]);
+                    specialSkills.push(keys[i]);
+                }
+            }
+            
+            // intended result: skillData = {special1: {eligible: [1, 2]}, special2: {eligible: [3]}} -->  monList = [1, 2, 3]; specialSkills = [special1, special1, special2];
             var displayLimit = 10,
                 pageNum = Math.abs(parseInt(d3)) || 0;
-            var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
+            var page = monList.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
             
-            for (var i = 0; i < page.length; i++) {
-                safaribot.sendHtmlMessage(src, "-<b>" + poke(parseInt(page[i])) + "</b>'s " + retSkillData(poke(page[i]), page[i], "unlock"), safchan);
+            var out = [];
+            for (i = 0; i < page.length; i++) {
+                out.push("-<b>" + poke(parseInt(monList[i])) + "</b>'s " + retSkillData(poke(monList[i]), specialSkills[i], "unlock"));
                 if (i === page.length-1) {
-                    var pageControls = (page.contains(keys[0]) ? "" : link("/quest idol:showallspecial:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest idol:showallspecial:" + (pageNum+1), "«Next Page»"));
+                    var pageControls = (page.contains(monlist[0]) ? "" : link("/quest idol:showallspecial:" + (pageNum-1), "«Previous Page»")) + (page.contains(monList[monList.length-1]) ? "" : " " + link("/quest idol:showallspecial:" + (pageNum+1), "«Next Page»"));
                     if (pageControls) {
                         sys.sendMessage(src, "", safchan);
                         safaribot.sendHtmlMessage(src, pageControls, safchan);
@@ -34550,7 +34563,7 @@ function Safari() {
                     ret.push(skill);
                 }
             }
-            else if (skill == pokeId) {
+            else if (skill.eligible && skill.eligible.contains(pokeId)) {
                 ret.push(skill);
             }
         }
