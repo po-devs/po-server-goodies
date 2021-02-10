@@ -31461,7 +31461,8 @@ function Safari() {
                 */
                 
                 if (mon in skillUnlocks[pid]) {
-                    // for skill in skillUnlocks[pid][mon], sendHtmlMessage(retSkillData(species, skillUnlocks[pid][species][key]))
+                    // update this later
+                    sendHtmlMessage(src, retSkillData(species, skillUnlocks[pid][species][key], "activate", true), safchan);
                 }
             }
         }
