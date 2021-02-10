@@ -31541,6 +31541,10 @@ function Safari() {
             }
             
             var skillKey = safari.getSkillKeyByName(d3);
+            if (!skillKey) {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: That skill just plain doesn't exist!", safchan);
+                return;
+            }
             var skillInfo = skillData[skillKey];
             var skillName = skillInfo.name; // for proper casing
             
@@ -31647,6 +31651,10 @@ function Safari() {
             }
             
             var skillKey = safari.getSkillKeyByName(d3);
+            if (!skillKey) {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: That skill just plain doesn't exist!", safchan);
+                return;
+            }
             var skillInfo = skillData[skillKey];
             var skillName = skillInfo.name; // for proper casing
 
@@ -31693,10 +31701,9 @@ function Safari() {
                 return;
             }
 
-            giveStuff(player, ingUsed, true);
+            
             if (!player.pokeskills.hasOwnProperty(mon)) {
                 player.pokeskills[mon] = {};
-                sys.sendMessage(src, JSON.stringify(player.pokeskills), safchan);
             }
             
             player.pokeskills[mon][skillKey] = {
@@ -31704,9 +31711,8 @@ function Safari() {
                 uses: skillData[skillKey].uses
             };
             // only level and uses need to be stored, all other data can be pulled live from skillData
-            
-            sys.sendMessage(src, JSON.stringify(player.pokeskills), safchan);
-            
+
+            giveStuff(player, ingUsed, true);
             safari.saveGame(player);
             
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! With <b>{0}</b> by your side, you and your <b>{1}</b> will be shining stars! I guarantee it, or my name isn't \"Idol\"!".format(skillName, monName), safchan);
@@ -49525,7 +49531,7 @@ function Safari() {
                 } else {
                     if (!Array.isArray(obj[prop]) && typeof obj[prop] == "object" && typeof template[prop] == "object") {
                         for (p in template[prop]) {
-                            if (!["shop", "decorations", "secretBase", "nextSpawn"].contains(p)) {
+                            if (!["shop", "decorations", "secretBase", "nextSpawn", "pokeskills"].contains(p)) {
                                 toTemplate(obj[prop], p, template[prop]);
                             }
                         }
@@ -49537,7 +49543,7 @@ function Safari() {
                 if (!(prop in template)) {
                     delete obj[prop];
                 } else if (!Array.isArray(obj[prop]) && typeof obj[prop] == "object" && typeof template[prop] == "object") {
-                    if (!["shop", "decorations", "secretBase", "nextSpawn"].contains(prop)) {
+                    if (!["shop", "decorations", "secretBase", "nextSpawn", "pokeskills"].contains(prop)) {
                         for (p in obj[prop]) {
                             removeInvalid(obj[prop], p, template[prop]);
                         }
