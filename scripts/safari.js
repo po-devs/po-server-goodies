@@ -31305,7 +31305,7 @@ function Safari() {
         // TODO: Show active skills when using /party
         var player = getAvatar(src);
         
-        if (!player.pokeskills || Array.isArray(player.pokeskills)) {
+        if (Array.isArray(player.pokeskills)) {
             player.pokeskills = {};
             this.saveGame(player);
         }
@@ -31485,7 +31485,7 @@ function Safari() {
             var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
             
             for (var i = 0; i < page.length; i++) {
-                safaribot.sendHtmlMessage(src, "-" + poke(page[i]) + "'s " + retSkillData(poke(page[i]), page[i], "unlock"), safchan);
+                safaribot.sendHtmlMessage(src, "-" + poke(parseInt(page[i])) + "'s " + retSkillData(poke(page[i]), page[i], "unlock"), safchan);
                 if (i === page.length-1) {
                     var pageControls = (page.contains(keys[0]) ? "" : link("/quest idol:showallspecial:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest idol:showallspecial:" + (pageNum+1), "«Next Page»"));
                     if (pageControls) {
@@ -31613,7 +31613,7 @@ function Safari() {
                 return;
             }
             if (!d2) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}?".format(link("/quest idol:activate:[Pokémon Name]", "name of the Pokémon", true)), safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}? You can see a list of Pokémon that you've unlocked skills for {1}.".format(link("/quest idol:activate:[Pokémon Name]", "name of the Pokémon", true), link("/quest idol:showunlocks:all", "here")), safchan);
                 return;
             }
             
@@ -31695,13 +31695,16 @@ function Safari() {
 
             if (!player.pokeskills.hasOwnProperty(mon)) {
                 player.pokeskills[mon] = {};
+                sys.sendMessage(src, JSON.stringify(player.pokeskills), safchan);
             }
             
-
+            player.pokeskills[mon][skillKey] = {
+                level: skillUnlocks[player.idnum][mon][skillKey].level || 1,
+                uses: skillData[skillKey].uses
+            };
             // only level and uses need to be stored, all other data can be pulled live from skillData
-            player.pokeskills[mon].level = skillUnlocks[player.idnum][mon][skillKey].level || 1;
-            player.pokeskills[mon].uses = skillData[skillKey].uses;
             
+            sys.sendMessage(src, JSON.stringify(player.pokeskills), safchan);
             giveStuff(player, ingUsed, true);
             safari.saveGame(player);
             
@@ -31720,7 +31723,6 @@ function Safari() {
         }
         else {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Huh, that doesn't seem to be something I can help you with, sorry!", safchan);
-            return;
         }
     };
     this.arboristQuest = function(src, data) {
@@ -48127,7 +48129,7 @@ function Safari() {
             safaribot.sendMessage(src, "Your Safari data was successfully loaded!", safchan);
             this.dailyReward(src, getDay(now()));
             this.revertMega(src);
-            this.tickPokeSkills(src);
+            //this.tickPokeSkills(src);
             if (player.tutorial.inTutorial) {
                 this.progressTutorial(src);
             }
@@ -56276,7 +56278,7 @@ function Safari() {
                 for (e in onChannel) {
                     safari.dailyReward(onChannel[e], today);
                     safari.revertMega(onChannel[e]);
-                    safari.tickPokeSkills(onChannel[e]);
+                    //safari.tickPokeSkills(onChannel[e]);
                 }
                 safari.updateLeaderboards();
                 rawPlayers.save();
