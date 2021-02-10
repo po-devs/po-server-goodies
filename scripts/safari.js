@@ -31328,7 +31328,7 @@ function Safari() {
             var skillDescription = safari.getSkillDescription(key);
             if (skillDescription) {
                 var skill = skillData[key];
-                return "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]" + (label ? " <b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "</b>" : "");
+                return (label ? "<b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "</b> " : "") + "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]";
             }
             else {
                 return "";
@@ -31367,7 +31367,7 @@ function Safari() {
             
             sys.sendMessage(src, "", safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks", "Show me which Pokémon I've unlocked skills for"), safchan); // option to enter specific pokemon, show whole list (paginate) if none whole list
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks", "Show me which skills I've unlocked/activated"), safchan); // option to enter specific pokemon, show whole list (paginate) if none whole list
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:unlock", "I want to unlock a skill!"), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:activate", "I want to activate a skill!"), safchan);
         }
@@ -31419,7 +31419,7 @@ function Safari() {
             }
             
             if (d2 === "all") {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "placeholder", safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Check out all the Pokémon you've unlocked skills for already!", safchan);
                 var keys = Object.keys(skillUnlocks[pid]).sort(function(a, b) { return parseInt(a) - parseInt(b) });
                 var displayLimit = 10,
                     pageNum = Math.abs(parseInt(data[1])) || 0;
@@ -31447,23 +31447,16 @@ function Safari() {
                 
                 if (!skillUnlocks[pid].hasOwnProperty(mon)) {
                     safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You haven't <i>*yawn*</i> unlocked any skills for " + poke(mon) + " yet...", safchan);
+                    return;
                 }
                 
-                /*
-                skillUnlocks = {
-                    pid: {
-                        poke_id: {
-                            "basic1": {},
-                            "special": {}
-                        }
-                    }
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Have a look at the skills you've unlocked for <b>{0}</b>!".format(poke(mon)), safchan);
+                for (var skill in skillUnlocks[pid][mon]) {
+                    // TODO: if active, show [active] + remaining uses
+                    safaribot.sendHtmlMessage(src, retSkillData(parseInt(mon), skill, "activate", true), safchan);
                 }
-                */
                 
-                if (mon in skillUnlocks[pid]) {
-                    // update this later
-                    safaribot.sendHtmlMessage(src, retSkillData(parseInt(mon), skillUnlocks[pid][mon][key], "activate", true), safchan);
-                }
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: If you just wanna check the active skills of your current party Pokémon, you can do that with {0}, so you don't always have to bother me all the time. I'm tryna sleep here, yeah?".format(link("/party")), safchan);
             }
         }
         else if (d1 === "showallbasic") {
@@ -31524,7 +31517,7 @@ function Safari() {
             }
             
             if (!d3) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Check out a list of skills {0} can unlock, why don't ya?".format(monName), safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Check out a list of skills <b>{0}</b> can unlock, why don't ya?".format(monName), safchan);
                 for (var i = 0; i < canUnlock.length; i++) {
                     safaribot.sendHtmlMessage(src, "-" + retSkillData(mon, canUnlock[i], "unlock", true), safchan);
                 }
