@@ -30198,7 +30198,7 @@ function Safari() {
                     "toxic": [81,30],
                     "pit": [26],
                     "ice": [47,115],
-                    "flame": [18, 21],
+                    "flame": [18, 21, 85],
                     "electric": [140,101],
                     "dark": [35],
                     "barrier": [151],
@@ -37095,7 +37095,7 @@ function Safari() {
             }
         }
         this.revealedTypes = [this.types[0]];
-        this.hp = 1080 + 240 * level;
+        this.hp = 1080 + 250 * level;
         this.maxhp = this.hp;
         this.dealt = {};
         this.treasureGoal = Math.round(this.hp * (1.45 - this.level * 0.07));
@@ -37181,7 +37181,7 @@ function Safari() {
                 }
             }
 
-            var pointsRange = [48 + 32 * this.level, 25 + 16 * this.level, 15 + 6 * this.level, 3 + 2 * this.level, -3 - 5 * this.level, -7 - 9 * this.level];
+            var pointsRange = [52 + 32 * this.level, 32 + 20 * this.level, 15 + 6 * this.level, 3 + 2 * this.level, -3 - 5 * this.level, -7 - 9 * this.level];
             var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)];
             this.sendAll("The {0}-type statue's HP dropped to 0! The statue was destroyed! Points gained: {1}".format(this.types.map(typeIcon).join(" / "), plural(points, "Point")));
             if (totalDealt >= this.treasureGoal) {
@@ -37199,7 +37199,7 @@ function Safari() {
             }
 
             var staminaStr = [], members = this.pyr.names, id;
-            var averageDamage = Math.floor(11 + (1.25 * this.level));
+            var averageDamage = Math.floor(11 + (1.5 * this.level));
             for (p in members) {
                 id = members[p];
                 if (this.pyr.stamina[id] <= 0) {
@@ -38059,7 +38059,7 @@ function Safari() {
             "toxic": [81,30],
             "pit": [26],
             "ice": [47,115],
-            "flame": [18, 21],
+            "flame": [18, 21, 85],
             "electric": [140,101],
             "dark": [35],
             "barrier": [151],
@@ -38124,14 +38124,14 @@ function Safari() {
             max = total;
             count = 0;
             i++;
-            if (i > 100) {
+            if (i > 200) {
                 break;
             }
             for (e = 0; e < order.length; e++) {
                 if (blockedHazard.contains(order[e])) {
                     continue;
                 }
-                val = sys.rand(1, maxsize);
+                val = sys.rand(1, Math.min(5, maxsize));
                 if (max - val < 0) {
                     val = max;
                 }
@@ -38226,7 +38226,7 @@ function Safari() {
             this.treasureLocation = Object.keys(this.hazards).random();
         }
 
-        var known = Math.min((Math.floor(( level * 0.9 ) + sys.rand(3, Math.ceil( level*1.2 )))),count-(2 + Math.floor( level * 0.34))), unknown = sys.rand(Math.ceil(level*0.75), level + 1), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
+        var known = Math.min((Math.floor(( 0.2 + level * 0.9 ) + sys.rand(3, Math.ceil( level*1.25 )))),count-(2 + Math.floor( level * 0.34))), unknown = sys.rand(Math.ceil(level*0.75), level + 1), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
         hazList = Object.keys(display);
         var revealed = {};
         total = 0;
@@ -38481,7 +38481,7 @@ function Safari() {
                 if (!stamina.hasOwnProperty(p)) {
                     stamina[p] = 0;
                 }
-                stamina[p] -= Math.round(Math.max(wasted[p] - this.wasteCap, 0) * (((this.level * 0.8) + 6) * (count === 0 ? 0.5 : 1)));
+                stamina[p] -= Math.round(Math.max(wasted[p] - this.wasteCap, 0) * (((this.level * 0.75) + 5) * (count === 0 ? 0.5 : 1)));
             }
         }
         if (struggled.length > 0) {
@@ -38499,9 +38499,15 @@ function Safari() {
         if (notCleared.length > 0) {
             var mercy = Math.round(total * 0.25);
             if (count > mercy) {
-                var stmLost = (count + 2 - mercy) * (this.level + 5);
+                var stmLost = Math.round((count + 4 - mercy) * (this.level + 8) * 0.33);
                 if (mercy < count) {
-                    stmLost += (this.level + 5);
+                    stmLost += (this.level + 2);
+                }
+                if (mercy < count - 1) {
+                    stmLost += (this.level + 4);
+                }
+                if (mercy < count - 2) {
+                    stmLost += (this.level + 6);
                 }
                 if (stmLost > 0) {
                     this.sendAll("The following hazards haven't been cleared: <b>" + readable(notCleared) + "</b>! The party loses " + stmLost + " Stamina!");
@@ -38521,7 +38527,7 @@ function Safari() {
         }
         points = Math.round((16 + 3 * this.level) * (total - count));
         if (notCleared.length === 0) {
-            points += (5 * this.level);
+            points += (2 + (6 * this.level));
         }
 
         this.sendAll("");
@@ -48635,7 +48641,7 @@ function Safari() {
         permObj.add("elite", JSON.stringify(elite));
     };
     this.pyrBonusMons = function() {
-        var possible = [663, 426, 332, 381, 380, 121, 184, 282, 530, 230, 442, 609, 699, 144, 145, 715, 785, 212, 38, 395, 485, 635, 787, 479, 6, 368, 330, 284, 445, 3, 169, 303, 473, 452, 189, 687, 365, 658, 880, 248];
+        var possible = [663, 426, 332, 381, 380, 121, 184, 282, 530, 230, 442, 609, 699, 144, 145, 715, 785, 212, 38, 395, 485, 635, 787, 479, 6, 368, 330, 284, 445, 3, 169, 303, 473, 452, 189, 687, 365, 658, 880, 248, 334, 689, 437];
         possible = possible.shuffle().slice(0, 7);
         pyrBonusMons = possible;
         permObj.add("pyrBonusMons", JSON.stringify(pyrBonusMons));
