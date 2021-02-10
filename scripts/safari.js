@@ -31497,9 +31497,8 @@ function Safari() {
                 pageNum = Math.abs(parseInt(d3)) || 0;
             var page = monList.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
             
-            var out = [];
             for (i = 0; i < page.length; i++) {
-                out.push("-<b>" + poke(parseInt(monList[i])) + "</b>'s " + retSkillData(poke(monList[i]), specialSkills[i], "unlock"));
+                safaribot.sendHtmlMessage(src, "-<b>" + poke(parseInt(monList[i])) + "</b>'s " + retSkillData(poke(monList[i]), specialSkills[i], "unlock"), safchan);
                 if (i === page.length-1) {
                     var pageControls = (page.contains(monList[0]) ? "" : link("/quest idol:showallspecial:" + (pageNum-1), "«Previous Page»")) + (page.contains(monList[monList.length-1]) ? "" : " " + link("/quest idol:showallspecial:" + (pageNum+1), "«Next Page»"));
                     if (pageControls) {
