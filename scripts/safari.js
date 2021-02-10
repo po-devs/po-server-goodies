@@ -31328,7 +31328,7 @@ function Safari() {
             var skillDescription = safari.getSkillDescription(key);
             if (skillDescription) {
                 var skill = skillData[key];
-                return (label ? "<b>" + (isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "</b> " : "") + "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]";
+                return (label ? "<b>" + (safari.isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "</b> " : "") + "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]";
             }
             else {
                 return "";
@@ -31468,7 +31468,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Here's the list of <b>Basic skills</b> that any Pokémon of that type can learn!", safchan);
             
             for (var i = 0; i < Object.keys(skillData).length; i++) {
-                if (isBasicSkill(Object.keys(skillData)[i])) {
+                if (safari.isBasicSkill(Object.keys(skillData)[i])) {
                     safaribot.sendHtmlMessage(src, "-" + retSkillData("[Pokémon Name]", Object.keys(skillData)[i], "unlock", false, true), safchan);
                 }
             }
@@ -31579,7 +31579,7 @@ function Safari() {
             
             var level = 1;
             
-            if (isBasicSkill(skillKey) && type2(mon) === "???") { // single-typed pokemon get a level 2 basic skill
+            if (safari.isBasicSkill(skillKey) && type2(mon) === "???") { // single-typed pokemon get a level 2 basic skill
                 level = 2;
             }
             
@@ -34647,8 +34647,8 @@ function Safari() {
         }
         return out;
     }
-    function isBasicSkill(key) {
-        return key.indexOf("basic") === 0;
+    this.isBasicSkill = function(key) {
+        return !!skillData[key].basic;
     }
     this.getSkillDescription = function(key) {
         if (key in skillData) {
@@ -34664,7 +34664,7 @@ function Safari() {
             if (pokeId in playerUnlocks && skill in playerUnlocks[pokeId]) {
                 continue;
             }
-            if (isBasicSkill(skill)) {
+            if (safari.isBasicSkill(skill)) {
                 var skillType = skill.slice(5);
                 if (skillType === type1(pokeId) || skillType === type2(pokeId)) {
                     ret.push(skill);
