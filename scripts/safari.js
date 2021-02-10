@@ -31540,7 +31540,7 @@ function Safari() {
                 return;
             }
             
-            var skillKey = d3 in skillData ? d3 : safari.getSkillKeyByName(d3);
+            var skillKey = safari.getSkillKeyByName(d3);
             if (!skillKey) {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: That skill just plain doesn't exist!", safchan);
                 return;
@@ -31650,7 +31650,7 @@ function Safari() {
                 return;
             }
             
-            var skillKey = d3 in skillData ? d3 : safari.getSkillKeyByName(d3);
+            var skillKey = safari.getSkillKeyByName(d3);
             if (!skillKey) {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: That skill just plain doesn't exist!", safchan);
                 return;
