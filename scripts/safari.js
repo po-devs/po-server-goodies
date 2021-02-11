@@ -30320,18 +30320,18 @@ function Safari() {
                 }
                 var d = data[1].toLowerCase();
                 for (var x in altnames) {
-                	for (var i = 0; i < altnames[x].length; i++) {
-                		if (altnames[x][i] == d) {
-                			d = x;
-                			break;
-                		}
-                	}
+                    for (var i = 0; i < altnames[x].length; i++) {
+                        if (altnames[x][i] == d) {
+                            d = x;
+                            break;
+                        }
+                    }
                 }
                 for (var x in hazardNames) {
-					if (hazardNames[x].toLowerCase() == d) {
-						d = x;
-						break;
-					}
+                    if (hazardNames[x].toLowerCase() == d) {
+                        d = x;
+                        break;
+                    }
                 }
                 if (!(opt.contains(d))) {
                     safaribot.sendHtmlMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", false, true) + ". Valid hazards are " + readable(opt.map(function(x) { return x + " (" + hazardNames[x] + ")" })) + ".", safchan);
@@ -36854,10 +36854,10 @@ function Safari() {
         if (this.horde.length > 0) {
             var averageDamage = Math.ceil((this.horde.length / this.startingSize) * ((this.level + 2) * 34)), c;
             if (this.horde.length > 1) {
-            	averageDamage += this.level;
+                averageDamage += this.level;
             }
             if (this.horde.length > 2) {
-            	averageDamage += this.level + 2;
+                averageDamage += this.level + 2;
             }
             for (p in members) {
                 id = members[p];
@@ -37898,52 +37898,52 @@ function Safari() {
 
         var type, count = 0, l1 = [], l2 = [], l3 = [];
         do {
-			this.firstAtk = damaging.random();
-			type = sys.type(moveType(this.firstAtk));
-			l1 = lookupMoveLearners(this.firstAtk);
-			count++;
-		} while ((l1.length > 180 && count < 25) || count < 1);
+            this.firstAtk = damaging.random();
+            type = sys.type(moveType(this.firstAtk));
+            l1 = lookupMoveLearners(this.firstAtk);
+            count++;
+        } while ((l1.length > 180 && count < 25) || count < 1);
         count = 0;
         damaging.splice(damaging.indexOf(this.firstAtk), 1);
         do {
-			this.secondAtk = damaging.random();
-			type = sys.type(moveType(this.secondAtk));
-			l2 = lookupMoveLearners(this.secondAtk);
-			l3 = removeNonDuplicates(l2, l1);
-			count++;
-		} while ((l3.length > 80 && count < 50) || count < 1);
+            this.secondAtk = damaging.random();
+            type = sys.type(moveType(this.secondAtk));
+            l2 = lookupMoveLearners(this.secondAtk);
+            l3 = removeNonDuplicates(l2, l1);
+            count++;
+        } while ((l3.length > 80 && count < 50) || count < 1);
         damaging.splice(damaging.indexOf(this.secondAtk), 1);
-		var atks = [this.firstAtk, this.secondAtk];
+        var atks = [this.firstAtk, this.secondAtk];
         this.firstBonusAtk = false;
         this.secondBonusAtk = false;
         var l6 = [].concat(l3);
         if (l3.length > 5) {
-        	var l4 = [];        
-			count = 0;
-			do {
-				this.firstBonusAtk = damaging.random();
-				type = sys.type(moveType(this.firstBonusAtk));
-				l4 = lookupMoveLearners(this.firstBonusAtk);
-				l3 = removeNonDuplicates(l6, l4);
-				count++;
-			} while ((l3.length > 25 && count < 60) || count < 1);
-			atks.push(this.firstBonusAtk);
-			damaging.splice(damaging.indexOf(this.firstBonusAtk), 1);
-		}
+            var l4 = [];        
+            count = 0;
+            do {
+                this.firstBonusAtk = damaging.random();
+                type = sys.type(moveType(this.firstBonusAtk));
+                l4 = lookupMoveLearners(this.firstBonusAtk);
+                l3 = removeNonDuplicates(l6, l4);
+                count++;
+            } while ((l3.length > 25 && count < 60) || count < 1);
+            atks.push(this.firstBonusAtk);
+            damaging.splice(damaging.indexOf(this.firstBonusAtk), 1);
+        }
         var l6 = [].concat(l3);
         if (l3.length > 4) {
-        	var l5 = [];        
-			count = 0;
-			do {
-				this.secondBonusAtk = damaging.random();
-				type = sys.type(moveType(this.secondBonusAtk));
-				l5 = lookupMoveLearners(this.secondBonusAtk);
-				l3 = removeNonDuplicates(l6, l5);
-				count++;
-			} while (((l3.length > (2 + (0.05 * count))) && count < 160) || count < 1);
-			atks.push(this.secondBonusAtk);
-		}
-		
+            var l5 = [];        
+            count = 0;
+            do {
+                this.secondBonusAtk = damaging.random();
+                type = sys.type(moveType(this.secondBonusAtk));
+                l5 = lookupMoveLearners(this.secondBonusAtk);
+                l3 = removeNonDuplicates(l6, l5);
+                count++;
+            } while (((l3.length > (2 + (0.05 * count))) && count < 160) || count < 1);
+            atks.push(this.secondBonusAtk);
+        }
+        
         atks = atks.map(function(x) {return toColor(moveOff(x), "blue")});
 
         count = 0;
