@@ -11047,7 +11047,7 @@ function Safari() {
         if (commandData === "*") {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "How to use /find:", safchan);
-            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Move, Shiny, CanEvolve, HasEvolved, FinalForm, CanMega, Duplicate, Duplicate+, Region or Tier) and a value to find Pokémon in your box. Examples: ", safchan);
+            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Move, Shiny, NotEvolved, CanEvolve, HasEvolved, FinalForm, CanMega, Duplicate, Duplicate+, Region or Tier) and a value to find Pokémon in your box. Examples: ", safchan);
             safaribot.sendMessage(src, "For Name: Type any part of the Pokémon's name. e.g.: /find name LUG (both Lugia and Slugma will be displayed, among others with LUG on the name)", safchan);
             safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
             safaribot.sendMessage(src, "For Move: Type any move. e.g.: /find move tackle (will show all Pokémon that can learn Tackle)", safchan);
@@ -11062,7 +11062,7 @@ function Safari() {
             safaribot.sendMessage(src, "-Greater than. e.g.: /find bst 400 > (displays all Pokémon with BST of 400 or more)", safchan);
             safaribot.sendMessage(src, "-Less than. e.g.: /find bst 350 < (displays all Pokémon with BST of 350 or less)", safchan);
             safaribot.sendMessage(src, "-Range. e.g.: /find number 1 150 (displays all Pokémon with pokédex number between 1 and 150)", safchan);
-            safaribot.sendMessage(src, "For Shiny, CanEvolve, HasEvolved, FinalForm and CanMega: No additional parameter required.", safchan);
+            safaribot.sendMessage(src, "For Shiny, NotEvolved, CanEvolve, HasEvolved, FinalForm and CanMega: No additional parameter required.", safchan);
             safaribot.sendMessage(src, "To look for more than one paramater, use && (e.g.: '/find region johto && duplicate 3' to look for Pokémon from Johto that you have 3 copies of)", safchan);
             safaribot.sendMessage(src, "To look for any of more than one parameter, use or (e.g.: '/find type steel or color green' to look for Pokémon that's Steel type or green.)", safchan);
             sys.sendMessage(src, "", safchan);
@@ -11138,7 +11138,7 @@ function Safari() {
         }
     };
     function applyFilterCriteria(src, info, crit, val, list, current, commandData, box) {
-        var noparam = ["shiny", "canevolve", "finalform", "canmega", "hasevolved"], def;
+        var noparam = ["shiny", "canevolve", "finalform", "canmega", "hasevolved", "notevolved"], def;
 
         if (info.length >= 2) {
             switch (crit) {
@@ -11183,6 +11183,10 @@ function Safari() {
                 case "hasevolved":
                 case "isevolved":
                     crit = "hasevolved";
+                    break;
+                case "unevolved":
+                case "notevolved":
+                    crit = "notevolved";
                     break;
                 case "finalform":
                     crit = "finalform";
@@ -11387,6 +11391,14 @@ function Safari() {
                 }
             });
             return "has evolved";
+        }
+        else if (crit == "notevolved") {
+            current.forEach(function(x) {
+                if (pokeInfo.species(x) in evolutions && !(pokeInfo.species(x) in devolutions)) {
+                    list.push(x);
+                }
+            });
+            return "not evolved";
         }
         else if (crit == "canmega") {
             current.forEach(function(x){
