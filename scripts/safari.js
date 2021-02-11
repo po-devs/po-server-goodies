@@ -21712,60 +21712,11 @@ function Safari() {
                 }
             }
         }
-        this.skills = {
+        this.skills = { // deprecated
             "1": {},
             "2": {}
         };
-        if (!(this.fullNPC)) {
-            if (player1.hasOwnProperty("pokeskillsArr")) {
-                var pokskl = player1.pokeskillsArr, plc;
-                for (var j = 0; j < player1.pokeskillsArr.length; j++) {
-                    plc = player1.pokeskillsArr[j];
-                    for (var i = 0; i < this.team1.length; i++) {
-                        if (plc.id+"" !== this.team1[i].id+"") {
-                            continue;
-                        }
-                        safaribot.sendHtmlMessage(sys.id("Miki Sayaka"), "Found skills for " + this.team1[i].id, safchan);
-                        if (plc.hasOwnProperty("a")) {
-                            if (plc.a.active) {
-                                this.skills["1"][plc.a.effect] = [this.team1[i].id+"", plc.a.val];
-                            }
-                        }
-                        if (plc.hasOwnProperty("b")) {
-                            if (plc.b.active) {
-                                this.skills["1"][plc.b.effect] = [this.team1[i].id+"", plc.b.val];
-                                safaribot.sendHtmlMessage(sys.id("Miki Sayaka"), plc.b.effect + ": " + this.team1[i].id+"" + " / " + plc.b.val, safchan);
-                            }
-                        }
-                    } 
-                }
-            }
-        }
-        if (!(this.npcBattle)) {
-            if (player2.hasOwnProperty("pokeskillsArr")) {
-                var pokskl = player2.pokeskillsArr, plc;
-                for (var j = 0; j < player2.pokeskillsArr.length; j++) {
-                    pokskl = player2.pokeskillsArr[j];
-                    for (var i = 0; i < this.team2.length; i++) {
-                        if (pokskl.id+"" !== this.team2[i].id+"") {
-                            continue;
-                        }
-                        plc = pokskl;
-                        if (plc.hasOwnProperty("a")) {
-                            if (plc.a.active) {
-                                this.skills["2"][plc.a.effect] = [this.team2[i].id+"", plc.a.val];
-                            }
-                        }
-                        if (plc.hasOwnProperty("b")) {
-                            if (plc.b.active) {
-                                this.skills["2"][plc.b.effect] = [this.team2[i].id+"", plc.b.val];
-                            }
-                        }
-                    } 
-                }
-            }
-        }
-
+        
         var player3, player4;
         this.team3 = [];
         this.team4 = [];
@@ -22410,25 +22361,22 @@ function Safari() {
                     }
                 }
             }
-            for (var x in this.skills) {
-                if (this.turn == 0 && this.skills[x].hasOwnProperty("Finale")) {
-                    var hit = false;
-                    for (i = 0; i < this.team1.length; i++) {
-                        if (team1[i].id + '' == this.skills[x]["Finale"][0] + '') {
-                            hit = true;
-                            break;
+            
+            if (!this.fullNPC && this.npcBattle && this.turn === 0) { // start of battle
+                var finaleSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "finale");
+                var restoredHealth = 0;
+                if (finaleSkill) {
+                    for (var i = 0; i < this.originalTeam1.length; i++) {
+                        if (this.originalTeam1[i].hp <= 0) { // if fainted, don't heal
+                            continue;
                         }
-                    }
-                    if (hit) {
-                        for (i = 0; i < this.team1.length; i++) {
-                            if (team1[i].id + '' == this.skills[x]["Finale"][0] + '') {
-                                continue;
-                            }
-                            team1[i].hp = Math.min(team1[i].maxhp, team1[i].hp + (team1[i].maxhp * 0.01 * this.skills[x]["Finale"][1]));
-                        }
+                        restoredHealth = this.originalTeam1[i].maxhp * finaleSkill.rate / 100;
+                        this.originalTeam1[i].hp = Math.min(this.originalTeam1[i].maxhp, this.originalTeam1[i].hp + restoredHealth);
+                        this.sendToViewers("<b>[{0}'s {1}]</b> {2}'s {3} restored {4} HP!".format(poke(finaleSkill.id), finaleSkill.name, this.name1, poke(this.originalTeam1[i].id), restoredHealth));
                     }
                 }
             }
+
             this.turn++;
             this.subturn = 0;
             this.p1MoveCodes = {};
@@ -24655,6 +24603,13 @@ function Safari() {
                 if (dynamaxed) {
                     dmg = Math.ceil(dmg * 0.25);
                 }
+                if (!this.fullNPC && this.npcBattle) {
+                    var normalSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicNormal");
+                    if (normalSkill && move.type === "Normal") {
+                        dmg *= (1 + normalSkill.rate / 100);
+                        out.push("<b>[{0}'s {1}]</b> {2}'s Normal-type attack dealt {3}% more damage!".format(poke(normalSkill.id), normalSkill.name, poke(user.id), normalSkill.rate));
+                    }
+                }
                 if (self.selectData && self.selectData.shieldHP > 0 && targetSide === 2) {
                     dmg = Math.ceil(dmg * 0.5);
                     sdmg = dmg;
@@ -24668,6 +24623,13 @@ function Safari() {
                         } else {
                             if (move.type == "Fire") {
                                 sdmg *= 1.5;
+                                if (!this.fullNPC && this.npcBattle) {
+                                    var fireSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFire");
+                                    if (fireSkill) {
+                                        sdmg *= (1 + fireSkill.rate / 100);
+                                        out.push("<b>[{0}'s {1}]</b> {2}'s Fire-type attack dealt {3}% more damage to the Ice Shield!".format(poke(fireSkill.id), fireSkill.name, poke(user.id), fireSkill.rate));
+                                    }
+                                }
                             }
                             self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
@@ -34671,22 +34633,25 @@ function Safari() {
         var skillLevel = 0;
         
         for (var i = 0; i < party.length; i++) {
-            if (party[i] in player.pokeskills) { // check if they have the skill activated
-                if (!safari.playerHasActiveSkill(player, party[i], skillKey))
+            if (party[i].hp === 0) { // fainted mons can't activate skills
+                continue;
+            }
+            if (party[i].id in player.pokeskills) { // check if they have the skill activated
+                if (!safari.playerHasActiveSkill(player, party[i].id, skillKey))
                     continue;
                 
-                var skill = player.pokeskills[party[i]][skillKey];
+                var skill = player.pokeskills[party[i].id][skillKey];
                 
                 if (skill.uses <= 0) { // if out of uses, delete the skill
                     delete skill;
-                    if (Object.keys(player.pokeskills[party[i]]).length === 0) { // if that was the last skill for that mon, delete that mon's entry from player.pokeskills
-                        delete player.pokeskills[party[i]];
+                    if (Object.keys(player.pokeskills[party[i].id]).length === 0) { // if that was the last skill for that mon, delete that mon's entry from player.pokeskills
+                        delete player.pokeskills[party[i].id];
                     }
                     continue;
                 }
                 if (skill.level > skillLevel) {
                     skillLevel = skill.level;
-                    activatedMon = party[i];
+                    activatedMon = party[i].id;
                 }
             }
         }
@@ -34749,7 +34714,7 @@ function Safari() {
         rate = rate[skill.level - 1];
         rate2 = rate2[skill.level - 1];
         
-        return { rate: rate, rate2: rate2, description: desc, name: name };
+        return { rate: rate, rate2: rate2, description: desc, name: name, id: pokeId };
     };
     
     var bakingData = {
