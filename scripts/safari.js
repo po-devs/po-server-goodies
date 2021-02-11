@@ -31553,12 +31553,16 @@ function Safari() {
             
             var displayLimit = 10,
                 pageNum = Math.abs(parseInt(d2)) || 0;
-            var page = monList.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
+            var monListSlice = monList.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit),
+                specialSkillsSlice = specialSkills.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
             
-            for (i = 0; i < page.length; i++) {
-                safaribot.sendHtmlMessage(src, "-<b>" + poke(parseInt(monList[i])) + "'s</b> " + retSkillData(poke(monList[i]), specialSkills[i], "unlock"), safchan);
-                if (i === page.length-1) {
-                    var pageControls = (page.contains(monList[0]) ? "" : link("/quest idol:showallspecial:" + (pageNum-1), "«Previous Page»")) + (page.contains(monList[monList.length-1]) ? "" : " " + link("/quest idol:showallspecial:" + (pageNum+1), "«Next Page»"));
+            var firstPage = pageNum * displayLimit === 0,
+                lastPage = pageNum * displayLimit + displayLimit >= monList.length;
+            
+            for (i = 0; i < monListSlice.length; i++) {
+                safaribot.sendHtmlMessage(src, "-<b>" + poke(parseInt(monListSlice[i])) + "'s</b> " + retSkillData(poke(monListSlice[i]), specialSkillsSlice[i], "unlock"), safchan);
+                if (i === monListSlice.length-1) {
+                    var pageControls = (firstPage ? "" : link("/quest idol:showallspecial:" + (pageNum-1), "«Previous Page»")) + (lastPage ? "" : " " + link("/quest idol:showallspecial:" + (pageNum+1), "«Next Page»"));
                     if (pageControls) {
                         sys.sendMessage(src, "", safchan);
                         safaribot.sendHtmlMessage(src, pageControls, safchan);
