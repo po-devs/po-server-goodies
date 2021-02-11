@@ -29077,11 +29077,6 @@ function Safari() {
                 rew = Math.round(rew * (2 + ((this.getCostumeLevel(player)-2)/18)));
             }
 
-            if (player.balls.silver + rew > getCap("silver")) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: I see you brought the Pokémon, but you are currently unable to carry any more Silver Coin! Come back after spending some of them!", safchan);
-                return;
-            }
-
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Oh, you brought the " + poke(id) + "! Here, have your " + plural(rew, "silver") + "!", safchan);
             safaribot.sendMessage(src, "You gave your " + poke(id) + " to the Scientist and received " + plural(rew, "silver") + "!", safchan);
 
@@ -29098,6 +29093,12 @@ function Safari() {
             safari.toRecentQuests(player, "scientist");
 
             player.balls.silver += rew;
+            
+            if (player.balls.silver > getCap("silver")) {
+                var diff = player.balls.silver - getCap("silver");
+                safaribot.sendMessage(src, "Unfortunately, you had to discard " + plural(diff, "silver") + " due to excess!", safchan);
+                player.balls.silver = getCap("silver");
+            }
             player.notificationData.scientistWaiting = true;
             if (this.getFortune(player, "scientistreward", 0, null, true)) {
                 this.useFortuneCharge(player, "scientistreward", 1);
