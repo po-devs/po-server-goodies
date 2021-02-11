@@ -38001,6 +38001,7 @@ function Safari() {
         	if (l2.length < 6) {
         		j = 0;
         	}
+        	found = false;
         }
         atks = atks.map(function(x) {return toColor(moveOff(x), "blue")});
 
