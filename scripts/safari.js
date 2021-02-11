@@ -34656,16 +34656,16 @@ function Safari() {
                 return key;
         }
     };
-    this.pokeSkillActivated = function(src, party, skillKey) { // determine if a player can activate an ability, and returns the mon to activate
+    this.pokeSkillActivated = function(playerName, party, skillKey) { // determine if a player can activate an ability, and returns the exact skill data
+        var player = getAvatarOff(playerName);
+        
+        if (!player) {
+            return false;
+        }
+        
         if (!Array.isArray(party)) // pass single pokeId if not party skill
             party = [party];
 
-        var player = getAvatar(src);
-        
-        if (!player) {
-            return;
-        }
-        
         var activatedMon;
         var remainingUses = 0;
         var skillLevel = 1;
@@ -34698,7 +34698,7 @@ function Safari() {
             return false;
         }
 
-        return safari.usePokeSkillCharge(src, activatedMon, skillKey);
+        return safari.usePokeSkillCharge(player, activatedMon, skillKey);
     };
     /*
     pseudo battle code
@@ -34723,13 +34723,7 @@ function Safari() {
         
         return chance(rate);
     };
-    this.usePokeSkillCharge = function(src, pokeId, skillKey) {
-        var player = getAvatar(src);
-        
-        if (!player) {
-            return false;
-        }
-        
+    this.usePokeSkillCharge = function(player, pokeId, skillKey) {
         var skill = player.pokeskills[pokeId][skillKey];
         var skillInfo = skillData[skillKey];
         
@@ -34737,9 +34731,12 @@ function Safari() {
             desc = safari.getSkillDescription(skillKey);
             rate = skillInfo.rate,
             rate2 = skillInfo.rate2;
-        
+
         skill.uses--;
-        safaribot.sendHtmlMessage(src, "<b>{0}'s {1}</b> activated! [{2}] [Remaining Uses: {3}]".format(poke(pokeId), name, desc, skill.uses), safchan);
+
+        if (isPlaying(player.id))
+            safaribot.sendHtmlMessage(sys.id(player.id), "<b>{0}'s {1}</b> activated! [{2}] [Remaining Uses: {3}]".format(poke(pokeId), name, desc, skill.uses), safchan);
+
         if (skill.uses <= 0) {
             delete skill;
             if (Object.keys(player.pokeskills[pokeId]).length === 0) {
