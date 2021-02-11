@@ -31764,7 +31764,7 @@ function Safari() {
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Charge Cost:</b></font> " + readable(progress), safchan);
                 sys.sendMessage(src, "", safchan);
                 if (player.pokeskills[mon] && player.pokeskills[mon][skillKey] && player.pokeskills[mon][skillKey].uses > 0) {
-                    safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Looks like you already have {0} uses remaining for this skill, but you can charge it again for a total of {1}.".format(player.pokeskills[mon][skillKey].uses, player.pokeskills[mon][skillKey].uses + skillInfo.uses), safchan);
+                    safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Looks like you already have <b>{0}</b> uses remaining for this skill, but you can charge it again for a total of <b>{1}</b>.".format(player.pokeskills[mon][skillKey].uses, player.pokeskills[mon][skillKey].uses + skillInfo.uses), safchan);
                 }
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Anyway, {0} if you're sure you wanna charge <b>{1}</b> for your <b>{2}</b>.".format(link("/quest idol:charge:" + monName + ":" + skillName + ":confirm", "click here"), skillName, monName), safchan);
                 return;
@@ -31799,7 +31799,7 @@ function Safari() {
             safari.saveGame(player);
             
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Idol|||Gave " + translateStuff(skillInfo.activate) + "|||Charged " + skillName + " for " + monName + ", receiving " + skillData[skillKey].uses + " uses for a total of " + player.pokeskills[mon][skillKey].uses + "\n");
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! With <b>{0}</b> by your side, you and your <b>{1}</b> will be shining stars! I guarantee it, or my name isn't \"Idol\"!".format(skillName, monName), safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! You now have <b>{0}</b> remaining uses for <b>{1}'s {2}</b>. With this skill by your side, you and your Pokémon will be shining stars! I guarantee it, or my name isn't \"Idol\"!".format(player.pokeskills[mon][skillKey].uses, monName, skillName), safchan);
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: W-wait, my name isn't really \"Idol\" is it? What IS my name? I-I... Oh no...", safchan);
