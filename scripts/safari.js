@@ -34668,7 +34668,7 @@ function Safari() {
 
         var activatedMon;
         var remainingUses = 0;
-        var skillLevel = 1;
+        var skillLevel = 0;
         
         for (var i = 0; i < party.length; i++) {
             if (party[i] in player.pokeskills) { // check if they have the skill activated
