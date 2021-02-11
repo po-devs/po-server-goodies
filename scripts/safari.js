@@ -31763,7 +31763,7 @@ function Safari() {
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Number of Uses per Charge:</b></font> " + skillInfo.uses, safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Charge Cost:</b></font> " + readable(progress), safchan);
                 sys.sendMessage(src, "", safchan);
-                if (player.pokeskills[mon] && player.pokeskills[mon][skillKey] && player.pokeskills[mon][skillKey].uses > 0) {
+                if (safari.playerHasActiveSkill(player, mon, skillKey)) {
                     safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Looks like you already have <b>{0}</b> uses remaining for this skill, but you can charge it again for a total of <b>{1}</b>.".format(player.pokeskills[mon][skillKey].uses, player.pokeskills[mon][skillKey].uses + skillInfo.uses), safchan);
                 }
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Anyway, {0} if you're sure you wanna charge <b>{1}</b> for your <b>{2}</b>.".format(link("/quest idol:charge:" + monName + ":" + skillName + ":confirm", "click here"), skillName, monName), safchan);
@@ -34656,7 +34656,7 @@ function Safari() {
                 return key;
         }
     };
-    this.pokeSkillActivated = function(src, party, skillKey) { // determine if a player can activate an ability, and returns ability data
+    this.pokeSkillActivated = function(src, party, skillKey) { // determine if a player can activate an ability, and returns the mon to activate
         if (!Array.isArray(party)) // pass single pokeId if not party skill
             party = [party];
 
@@ -34671,7 +34671,7 @@ function Safari() {
         var skillLevel = 1;
         
         for (var i = 0; i < party.length; i++) {
-            if (monArr[i] in player.pokeSkills) { // check if they have the skill activated
+            if (party[i] in player.pokeSkills) { // check if they have the skill activated
                 if (!safari.playerHasActiveSkill(player, party[i], skillKey))
                     continue;
                 
