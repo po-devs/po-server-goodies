@@ -37966,7 +37966,7 @@ function Safari() {
         }
         var damagingOriginal = [].concat(damaging);
 
-        var type, count = 0, l1 = [], l2 = [], existingPool = [], newAttack, found = false, atks = [];
+        var type, count = 0, l1 = [], l2 = [], existingPool = [], newAttack, found = false, atks = [], lastLength = 900;
 		var j = 4;
         while (j > 0) {
         	while (!(found)) {
@@ -37980,21 +37980,22 @@ function Safari() {
             	if (j == 4 && l2.length < 190) {
             		found = true;
             	}
-            	if (j == 3 && l2.length < 75) {
+            	if (j == 3 && l2.length < 75 && l2.length < lastLength - 15) {
             		found = true;
             	}
-            	if (j == 2 && l2.length < 23) {
+            	if (j == 2 && l2.length < 20 && l2.length < lastLength - 10) {
             		found = true;
             	}
-            	if (j == 1 && l2.length < (2 * (count * 0.04))) {
+            	if (j == 1 && l2.length < (2 * (count * 0.04)) && l2.length < lastLength - 3) {
             		found = true;
             	}
         	}
+        	lastLength = l2.length;
         	existingPool = removeNonDuplicates(existingPool.concat(l1));
         	atks.push(newAttack);
 			damaging.splice(damaging.indexOf(newAttack), 1);
         	j--;
-        	if (l2.length < 4 && j == 0) {
+        	if (l2.length < 4 && j == 3) {
         		j = 0;
         	}
         	if (l2.length < 6) {
