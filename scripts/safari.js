@@ -30275,21 +30275,49 @@ function Safari() {
                     "sand": "Sandstorm",
                     "target": "Flying Target"
                 };
-                opt = Object.keys(hazardNames); //i'm super lazy
+                var altnames = {
+                    "water": ['water','streams'],
+                    "boulder": ['boulder'],
+                    "toxic": ['gas','toxic','poison'],
+                    "pit": ['pit','pits'],
+                    "ice": ['ice'],
+                    "flame": ['flames'],
+                    "electric": ['fence']
+                };
+                opt = Object.keys(hazardNames);
                 if (data.length < 2) {
                     safaribot.sendHtmlMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", false, true) + ".", safchan);
                     return;
                 }
                 var d = data[1].toLowerCase();
+                for (var x in altnames) {
+                	for (var i = 0; i < altnames[x].length; i++) {
+                		if (altnames[x][i] == d) {
+                			d = x;
+                			break;
+                		}
+                	}
+                }
+                for (var x in hazardNames) {
+					if (hazardNames[x].toLowerCase() == d) {
+						d = x;
+						break;
+					}
+                }
                 if (!(opt.contains(d))) {
                     safaribot.sendHtmlMessage(src, "You can choose a hazard to ban from appearing in your next pyramid run with " + link("/quest pyramid:ban:hazard", false, true) + ". Valid hazards are " + readable(opt.map(function(x) { return x + " (" + hazardNames[x] + ")" })) + ".", safchan);
                     return;
                 }
+                if (player.quests.pyramid.hazards.contains(d)) {
+                    safaribot.sendHtmlMessage(src, "You are already banning that hazard!", safchan);
+                    return;
+                }
                 player.quests.pyramid.hazards.push(d);
+                player.quests.pyramid.hazards = removeDuplicates(player.quests.pyramid.hazards);
                 if (player.quests.pyramid.hazards.length > 3) { //change this to larger amount later on
                     player.quests.pyramid.hazards.shift();
                 }
-                safaribot.sendHtmlMessage(src, "You will not encounter any " + player.quests.pyramid.hazards.join(" and ") + " during your next Pyramid run.", safchan);
+                safaribot.sendHtmlMessage(src, "You will not encounter any " + player.quests.pyramid.hazards.map(function(x){return hazardNames[x]}).join(" and ") + " during your next Pyramid run.", safchan);
                 break;
             case "bonus":
                 safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: According to legend, you'll have better fortune if you bring one of these Pokémon to the Pyramid: " + readable(pyrBonusMons.map(poke)) + ".", safchan);
@@ -37847,7 +37875,7 @@ function Safari() {
 			type = sys.type(moveType(this.firstAtk));
 			l1 = lookupMoveLearners(this.firstAtk);
 			count++;
-		} while (l1.length > 180 && count < 25);
+		} while ((l1.length > 180 && count < 25) || count < 1);
         count = 0;
         damaging.splice(damaging.indexOf(this.firstAtk), 1);
         do {
@@ -37856,7 +37884,7 @@ function Safari() {
 			l2 = lookupMoveLearners(this.secondAtk);
 			l3 = removeNonDuplicates(l2, l1);
 			count++;
-		} while ((l3.length > 80) && count < 50);
+		} while ((l3.length > 80 && count < 50) || count < 1);
         damaging.splice(damaging.indexOf(this.secondAtk), 1);
 		var atks = [this.firstAtk, this.secondAtk];
         this.firstBonusAtk = false;
@@ -37871,7 +37899,7 @@ function Safari() {
 				l4 = lookupMoveLearners(this.firstBonusAtk);
 				l3 = removeNonDuplicates(l6, l4);
 				count++;
-			} while ((l3.length > 25) && count < 60);
+			} while ((l3.length > 25 && count < 60) || count < 1);
 			atks.push(this.firstBonusAtk);
 			damaging.splice(damaging.indexOf(this.firstBonusAtk), 1);
 		}
@@ -37885,7 +37913,7 @@ function Safari() {
 				l5 = lookupMoveLearners(this.secondBonusAtk);
 				l3 = removeNonDuplicates(l6, l5);
 				count++;
-			} while ((l3.length > (2 + (0.05 * count))) && count < 160);
+			} while (((l3.length > (2 + (0.05 * count))) && count < 160) || count < 1);
 			atks.push(this.secondBonusAtk);
 		}
 		
