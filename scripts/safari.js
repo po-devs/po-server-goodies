@@ -34734,7 +34734,7 @@ function Safari() {
         var skillInfo = skillData[skillKey];
         
         var name = skillInfo.name,
-            desc = skillInfo.description,
+            desc = safari.getSkillDescription(skillKey);
             rate = skillInfo.rate,
             rate2 = skillInfo.rate2;
         
