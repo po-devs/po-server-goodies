@@ -11435,7 +11435,7 @@ function Safari() {
                 return false;
             }
             current.forEach(function(x) {
-                if (getTier(x).toLowerCase() === val) {
+                if (safari.getTier(x).toLowerCase() === val) {
                     list.push(x);
                 }
             });
