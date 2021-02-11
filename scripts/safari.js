@@ -31448,7 +31448,7 @@ function Safari() {
         }
         else if (d1 === "aboutspecial") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Special skills are skills that only certain Pokémon of a certain forme can learn! These Special skills likely contain battle effects that you won't be able to get from Basic skills.", safchan);
-            safaribot.sendHtmlMessage(src, "Idol: Unlocking a Special skill for a Pokémon will only unlock it for the specific forme that has that skill. For example, if you unlock the Special skill that Floette-Eternal has, only Floette-Eternal can activate it. All other Floette formes cannot access that Special skill and will only have the Basic Fairy-type skill.", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: Unlocking a Special skill for a Pokémon will only unlock it for the specific forme that has that skill. For example, if you unlock the Special skill that Floette-Eternal has, only Floette-Eternal can charge it. All other Floette formes cannot access that Special skill and will only have the Basic Fairy-type skill.", safchan);
             safaribot.sendHtmlMessage(src, link("/quest idol:showallspecial", "«List of Special Skills»") + " " + link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
         else if (d1 === "aboutbattle") {
@@ -31684,7 +31684,7 @@ function Safari() {
             safari.saveGame(player);
             
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Idol|||Gave " + translateStuff(skillInfo.unlock) + "|||Unlocked " + skillName + " for " + monName + "\n");
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! Your <b>{0}</b> has permanently unlocked the <b>{1}</b> skill! Come back when you're ready to charge it!".format(monName, skillName), safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! Your <b>{0}</b> has permanently unlocked the <b>{1}</b> skill! Come back when you're ready to {2} it!".format(monName, skillName, link("/quest idol:charge:" + monName + ":" + skillName, "charge")), safchan);
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: I was the one who did all the work... <i>*grumble grumble*</i>", safchan);
         }
         else if (d1 === "charge") {
