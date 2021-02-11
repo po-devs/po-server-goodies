@@ -34698,8 +34698,16 @@ function Safari() {
             return false;
         }
 
-        return activatedMon;
+        return safari.usePokeSkillCharge(src, activatedMon, skillKey);
     };
+    /*
+    pseudo battle code
+    ===================
+    var pokeSkill = pokeSkillActivated(sys.id(player), pokeId, "skillKey");
+    if (pokeSkill) {
+        access pokeSkill.rate/rate2 and do battle effect
+    }
+    */
     this.pokeSkillChance = function(skillKey, skillLevel) { // for skills that only activate at certain % chance even under the right conditions
         var data = skillData[skillKey];
         var rate,
@@ -34715,11 +34723,11 @@ function Safari() {
         
         return chance(rate);
     };
-    this.usePokeSkillCharge = function (src, pokeId, skillKey) {
+    this.usePokeSkillCharge = function(src, pokeId, skillKey) {
         var player = getAvatar(src);
         
         if (!player) {
-            return;
+            return false;
         }
         
         var skill = player.pokeskills[pokeId][skillKey];
