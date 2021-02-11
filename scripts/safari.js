@@ -36797,7 +36797,7 @@ function Safari() {
             }
         }
 
-        this.hordePower = [22 + level * 18, 100 + level * 36];
+        this.hordePower = [16 + level * 16, 100 + level * 28];
 
         this.treasures = {
             starpiece: { chance: (3 + (2.1 * level)), item: "starpiece", amount: 1 },
@@ -36882,7 +36882,7 @@ function Safari() {
                     }
                     defeated[id].push("{0} ({1} x {2})".format(toColor(poke(opp), "blue"), res.power[0], res.power[1]));
                     this.horde.splice(m, 1);
-                    points += 3 + (1.5 * this.level);
+                    points += 3 + (1.75 * this.level);
                     if (this.treasureHolder !== null && m === this.treasureHolder) {
                         treasurePoke = opp;
                         treasureWinner = id;
@@ -36922,7 +36922,7 @@ function Safari() {
             points += (10 * level);
         }
         if (this.horde.length > 0) {
-            var averageDamage = Math.ceil((this.horde.length / this.startingSize) * ((this.level + 2) * 34)), c;
+            var averageDamage = Math.ceil((this.horde.length / this.startingSize) * ((this.level + 3) * 37)), c;
             if (this.horde.length > 1) {
                 averageDamage += this.level;
             }
@@ -37966,54 +37966,41 @@ function Safari() {
         }
         var damagingOriginal = [].concat(damaging);
 
-        var type, count = 0, l1 = [], l2 = [], l3 = [];
-        do {
-            this.firstAtk = damaging.random();
-            type = sys.type(moveType(this.firstAtk));
-            l1 = lookupMoveLearners(this.firstAtk);
-            count++;
-        } while ((l1.length > 180 && count < 25) || count < 1);
-        count = 0;
-        damaging.splice(damaging.indexOf(this.firstAtk), 1);
-        do {
-            this.secondAtk = damaging.random();
-            type = sys.type(moveType(this.secondAtk));
-            l2 = lookupMoveLearners(this.secondAtk);
-            l3 = removeNonDuplicates(l2, l1);
-            count++;
-        } while ((l3.length > 80 && count < 50) || count < 1);
-        damaging.splice(damaging.indexOf(this.secondAtk), 1);
-        var atks = [this.firstAtk, this.secondAtk];
-        this.firstBonusAtk = false;
-        this.secondBonusAtk = false;
-        var l6 = [].concat(l3);
-        if (l3.length > 5) {
-            var l4 = [];        
-            count = 0;
-            do {
-                this.firstBonusAtk = damaging.random();
-                type = sys.type(moveType(this.firstBonusAtk));
-                l4 = lookupMoveLearners(this.firstBonusAtk);
-                l3 = removeNonDuplicates(l6, l4);
-                count++;
-            } while ((l3.length > 25 && count < 60) || count < 1);
-            atks.push(this.firstBonusAtk);
-            damaging.splice(damaging.indexOf(this.firstBonusAtk), 1);
+        var type, count = 0, l1 = [], l2 = [], existingPool = [], newAttack, found = false, atks = [];
+		var j = 4;
+        while (j > 0) {
+        	while (!(found)) {
+        		newAttack = damaging.random();
+            	l1 = lookupMoveLearners(newAttack);
+            	l2 = removeNonDuplicates(existingPool, l1);
+            	count++;
+            	if (count > (300 - (j * 50)) || l2.length < 6) {
+            		found = true;
+            	}
+            	if (j == 4 && l2.length < 190) {
+            		found = true;
+            	}
+            	if (j == 3 && l2.length < 75) {
+            		found = true;
+            	}
+            	if (j == 2 && l2.length < 23) {
+            		found = true;
+            	}
+            	if (j == 1 && l2.length < (2 * (count * 0.04))) {
+            		found = true;
+            	}
+        	}
+        	existingPool = removeNonDuplicates(existingPool.concat(l1));
+        	atks.push(newAttack);
+			damaging.splice(damaging.indexOf(newAttack), 1);
+        	j--;
+        	if (l2.length < 4 && j == 0) {
+        		j = 0;
+        	}
+        	if (l2.length < 6) {
+        		j = 0;
+        	}
         }
-        var l6 = [].concat(l3);
-        if (l3.length > 4) {
-            var l5 = [];        
-            count = 0;
-            do {
-                this.secondBonusAtk = damaging.random();
-                type = sys.type(moveType(this.secondBonusAtk));
-                l5 = lookupMoveLearners(this.secondBonusAtk);
-                l3 = removeNonDuplicates(l6, l5);
-                count++;
-            } while (((l3.length > (2 + (0.05 * count))) && count < 160) || count < 1);
-            atks.push(this.secondBonusAtk);
-        }
-        
         atks = atks.map(function(x) {return toColor(moveOff(x), "blue")});
 
         count = 0;
