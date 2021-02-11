@@ -37652,7 +37652,7 @@ function Safari() {
                 extraPoints = Math.round(extraPoints - (extraPoints * (hintsUsed - 3) / 4));
             }
 
-            var basePointsRange = [36 + 24 * this.level, 18 + 12 * this.level, 6 + 6 * this.level, 1 + 2 * this.level];
+            var basePointsRange = [42 + 27 * this.level, 18 + 12 * this.level, 6 + 6 * this.level, 1 + 2 * this.level];
             var points = basePointsRange[Math.min(this.answerAttempts, basePointsRange.length-1)] + extraPoints;
 
             this.sendAll("<b>{0}</b> answered <b>{1}</b> and the door opened! Points gained: {2}".format(name, this.answer, plural(points, "Point")));
@@ -37743,7 +37743,7 @@ function Safari() {
                 }
             }
             var points = -10 - this.level * 8;
-            this.sendAll("As the door opened by itself, a voice so loud that it hurts your ears could be heard: <b>\"YOU ARE TERRIBLE AT RIDDLES!!\"</b> | Points: {0} | Stamina lost: {1}".format(points, staminaStr.join(", ")));
+            this.sendAll("As the door opened by itself, a voice so loud that it hurts your ears could be heard: <b>\"YOU ARE TERRIBLE AT RIDDLES!!\"</b> The answer was " + this.answer + "! | Points: {0} | Stamina lost: {1}".format(points, staminaStr.join(", ")));
             this.pyr.updateStatus(points, stamina);
             this.sendAll("");
             this.passed = true;
