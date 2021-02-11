@@ -11047,13 +11047,14 @@ function Safari() {
         if (commandData === "*") {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "How to use /find:", safchan);
-            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Move, Shiny, CanEvolve, HasEvolved, FinalForm, CanMega, Duplicate, Duplicate+ or Region) and a value to find Pokémon in your box. Examples: ", safchan);
+            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Move, Shiny, CanEvolve, HasEvolved, FinalForm, CanMega, Duplicate, Duplicate+, Region or Tier) and a value to find Pokémon in your box. Examples: ", safchan);
             safaribot.sendMessage(src, "For Name: Type any part of the Pokémon's name. e.g.: /find name LUG (both Lugia and Slugma will be displayed, among others with LUG on the name)", safchan);
             safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
             safaribot.sendMessage(src, "For Move: Type any move. e.g.: /find move tackle (will show all Pokémon that can learn Tackle)", safchan);
             safaribot.sendMessage(src, "For Duplicate: Type a number. e.g.: /find duplicate 3 (will display all Pokémon that you have exactly 3 copies of)", safchan);
             safaribot.sendMessage(src, "For Duplicate+: Type a number greater than 1. e.g.: /find duplicate+ 3 (will display all Pokémon that you have at least 3 copies of)", safchan);
             safaribot.sendMessage(src, "For Region: Select any valid region (" +  readable(generations.slice(1, generations.length), "or") + ") to display all currently owned Pokémon from that region", safchan);
+            safaribot.sendMessage(src, "For Tier: Select any valid tier (" +  readable(tiers, "or") + ") to display all currently owned Pokémon in that tier", safchan);
             safaribot.sendMessage(src, "For Color: Select any valid color (" +  readable(Object.keys(pokeColors), "or") + ") to display all currently owned Pokémon with that color", safchan);
             safaribot.sendMessage(src, "For Start: Type one or more letters to find Pokémon with name starting with that letter sequence.", safchan);
             safaribot.sendMessage(src, "For Number and BST: There are 4 ways to search with those parameters:", safchan);
@@ -11061,7 +11062,7 @@ function Safari() {
             safaribot.sendMessage(src, "-Greater than. e.g.: /find bst 400 > (displays all Pokémon with BST of 400 or more)", safchan);
             safaribot.sendMessage(src, "-Less than. e.g.: /find bst 350 < (displays all Pokémon with BST of 350 or less)", safchan);
             safaribot.sendMessage(src, "-Range. e.g.: /find number 1 150 (displays all Pokémon with pokédex number between 1 and 150)", safchan);
-            safaribot.sendMessage(src, "For Shiny, CanEvolve, FinalForm and CanMega: No additional parameter required.", safchan);
+            safaribot.sendMessage(src, "For Shiny, CanEvolve, HasEvolved, FinalForm and CanMega: No additional parameter required.", safchan);
             safaribot.sendMessage(src, "To look for more than one paramater, use && (e.g.: '/find region johto && duplicate 3' to look for Pokémon from Johto that you have 3 copies of)", safchan);
             safaribot.sendMessage(src, "To look for any of more than one parameter, use or (e.g.: '/find type steel or color green' to look for Pokémon that's Steel type or green.)", safchan);
             sys.sendMessage(src, "", safchan);
@@ -11075,7 +11076,7 @@ function Safari() {
         var sets = commandData.split(" or ");
         var multi;
         var str, info, crit, val, m, def, title = [], finalTitle = [], list, current = player.pokemon.concat(), finalList = [];
-        var spacedVal = ["move","learn","canlearn"];
+        var spacedVal = ["move","learn","canlearn", "tier"];
 
         for (var i = 0; i < sets.length; i++) {
             multi = sets[i].split("&&");
@@ -11137,7 +11138,7 @@ function Safari() {
         }
     };
     function applyFilterCriteria(src, info, crit, val, list, current, commandData, box) {
-        var noparam = ["shiny", "canevolve", "finalform", "canmega"], def;
+        var noparam = ["shiny", "canevolve", "finalform", "canmega", "hasevolved"], def;
 
         if (info.length >= 2) {
             switch (crit) {
@@ -11180,6 +11181,7 @@ function Safari() {
                     break;
                 case "evolved":
                 case "hasevolved":
+                case "isevolved":
                     crit = "hasevolved";
                     break;
                 case "finalform":
@@ -11201,6 +11203,9 @@ function Safari() {
                 case "starting":
                 case "initial":
                     crit = "start";
+                    break;
+                case "tier":
+                    crit = "tier";
                     break;
                 default:
                     crit = "abc";
@@ -11299,13 +11304,6 @@ function Safari() {
             if (isNaN(val) || val < 1) {
                 safaribot.sendMessage(src, "Please specify a valid number higher than 0!", safchan);
                 return false;
-            }
-            if (val === 0) {
-                for (var i = 1, l = 807; i <= l; i++) {
-                    if (!box.contains(i)) {
-                        list.push(i);
-                    }
-                }
             }
             var normalCount = {}, shinyCount = {}, p, obj, e;
             for (var i = 0, l = pokeList.length; i < l; i++) {
@@ -11427,6 +11425,21 @@ function Safari() {
                }
             });
             return cap(val) + "-colored";
+        }
+        else if (crit == "tier") {
+            val = val.toLowerCase();
+            var tierLowerCase = tiers.map(function(e) { return e.toLowerCase() });
+            
+            if (!tierLowerCase.contains(val)) {
+                safaribot.sendMessage(src, val + " is not a valid tier! Valid tiers are " + readable(tiers) + ".", safchan);
+                return false;
+            }
+            current.forEach(function(x) {
+                if (getTier(x).toLowerCase() === val) {
+                    list.push(x);
+                }
+            });
+            return "in the " + tiers[tierLowerCase.indexOf(val)] + " tier";
         }
     }
     function rangeFilter(src, current, list, val, mode, paramName, info, type) {
@@ -31436,16 +31449,16 @@ function Safari() {
             var pid = player.idnum;
             
             if (!skillUnlocks.hasOwnProperty(pid)) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... it doesn't seem like you have any skills unlocked yet...", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: It doesn't seem like you have any skills unlocked yet...", safchan);
                 return;
             }
             if (!d2) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}? Or you could browse through {1} I guess. I'll just... wait for... your choice... over here... zzzzzzz...".format(link("/quest idol:showunlocks:[Pokémon Name]", "name of the Pokémon", true), link("/quest idol:showunlocks:all", "all of them")), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You'll have to give me the {0}. If you'd like, you can also just browse through {1} instead!".format(link("/quest idol:showunlocks:[Pokémon Name]", "name of the Pokémon", true), link("/quest idol:showunlocks:all", "all of them")), safchan);
                 return;
             }
             
             if (d2 === "all") {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Check out all the Pokémon you've unlocked skills for already!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Check out all the Pokémon you've unlocked skills for already!", safchan);
                 var keys = Object.keys(skillUnlocks[pid]).sort(function(a, b) { return parseInt(a) - parseInt(b) });
                 var displayLimit = 10,
                     pageNum = Math.abs(parseInt(d3)) || 0;
@@ -31467,22 +31480,22 @@ function Safari() {
                 var mon = getInputPokemon(d2).num;
                 
                 if (!mon) {
-                    safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... what's a " + d2 + "? How am I supposed to help you with a Pokémon that doesn't exist?", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Idol: I've never heard of " + d2 + " before. Are you sure such a thing exists?", safchan);
                     return;
                 }
                 
                 if (!skillUnlocks[pid].hasOwnProperty(mon)) {
-                    safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You haven't <i>*yawn*</i> unlocked any skills for <b>" + poke(mon) + "</b> yet...", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You haven't unlocked any skills for <b>" + poke(mon) + "</b> yet...", safchan);
                     return;
                 }
                 
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Have a look at the skills you've unlocked for <b>{0}</b>!".format(poke(mon)), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Have a look at the skills you've unlocked for <b>{0}</b>!".format(poke(mon)), safchan);
                 for (var skill in skillUnlocks[pid][mon]) {
                     var isActive = safari.playerHasActiveSkill(player, mon, skill);
                     safaribot.sendHtmlMessage(src, "-" + retSkillData(parseInt(mon), skill, "activate", true) + (isActive ? " " + toColor("[Active with " + player.pokeskills[mon][skill].uses + " remaining uses]", "red") : ""), safchan);
                 }
                 
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: If you just wanna check the active skills of your current party Pokémon, you can do that with {0}, so you don't always have to bother me all the time. I'm tryna sleep here, yeah?".format(link("/party")), safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: If you just wanna check the active skills of your current party Pokémon, you can do that with {0}, so you don't always have to bother us all the time. I'm tryna sleep here, yeah?".format(link("/party")), safchan);
             }
         }
         else if (d1 === "showallbasic") {
@@ -31523,11 +31536,11 @@ function Safari() {
             } // intended result: skillData = {special1: {eligible: [1, 2]}, special2: {eligible: [3]}} -->  monList = [1, 2, 3]; specialSkills = [special1, special1, special2];
             
             var displayLimit = 10,
-                pageNum = Math.abs(parseInt(d3)) || 0;
+                pageNum = Math.abs(parseInt(d2)) || 0;
             var page = monList.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
             
             for (i = 0; i < page.length; i++) {
-                safaribot.sendHtmlMessage(src, "-<b>" + poke(parseInt(monList[i])) + "</b>'s " + retSkillData(poke(monList[i]), specialSkills[i], "unlock"), safchan);
+                safaribot.sendHtmlMessage(src, "-<b>" + poke(parseInt(monList[i])) + "'s</b> " + retSkillData(poke(monList[i]), specialSkills[i], "unlock"), safchan);
                 if (i === page.length-1) {
                     var pageControls = (page.contains(monList[0]) ? "" : link("/quest idol:showallspecial:" + (pageNum-1), "«Previous Page»")) + (page.contains(monList[monList.length-1]) ? "" : " " + link("/quest idol:showallspecial:" + (pageNum+1), "«Next Page»"));
                     if (pageControls) {
@@ -31557,11 +31570,6 @@ function Safari() {
                 return;
             }
             
-            if (!player.pokemon.contains(mon)) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... You don't seem to have that Pokémon? Maybe it ran away from you or somethin'.", safchan);
-                return;
-            }
-            
             var canUnlock = getUnlockableSkills(mon, player.idnum);
             var isUnlocked = getUnlockedSkills(mon, player.idnum);
             
@@ -31570,12 +31578,12 @@ function Safari() {
                 return;
             }
             if (canUnlock.length === 0) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You've already unlocked all the skills <b>{0}</b> can learn, maybe you wanna {1} them instead?".format(monName, link("/quest idol:activate:" + mon, "activate")), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You've already unlocked all the skills <b>{0}</b> can learn, maybe you wanted to {1} them instead?".format(monName, link("/quest idol:activate:" + mon, "activate")), safchan);
                 return;
             }
             
             if (!d3) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Check out a list of skills <b>{0}</b> can unlock, why don't ya?".format(monName), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Check out a list of skills <b>{0}</b> can unlock!".format(monName), safchan);
                 for (var i = 0; i < canUnlock.length; i++) {
                     safaribot.sendHtmlMessage(src, "-" + retSkillData(mon, canUnlock[i], "unlock", true), safchan);
                 }
@@ -31584,18 +31592,18 @@ function Safari() {
             
             var skillKey = safari.getSkillKeyByName(d3);
             if (!skillKey) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: That skill just plain doesn't exist!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That skill just plain doesn't exist it seems.", safchan);
                 return;
             }
             var skillInfo = skillData[skillKey];
             var skillName = skillInfo.name; // for proper casing
             
             if (isUnlocked.contains(skillKey)) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: You've already unlocked this skill for <b>{0}</b> ya dummy.".format(monName), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You've already unlocked this skill for <b>{0}</b>, silly!".format(monName), safchan);
                 return;
             }
             if (!canUnlock.contains(skillKey)) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Heyyy... that's not a skill <b>{0}</b> can learn.".format(monName), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's not a skill <b>{0}</b> can learn.".format(monName), safchan);
                 return;
             }
             
@@ -31617,7 +31625,7 @@ function Safari() {
             }
             
             if (!d4 || d4 !== "confirm") {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Here are the deets on this skill:", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Here are the details on this skill:", safchan);
                 sys.sendMessage(src, "", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Name:</b></font> <b><u>" + skillInfo.name + "</u></b>", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Effect:</b></font> " + skillInfo.description.format(skillInfo.rate[0], skillInfo.rate[1], skillInfo.rate2[0], skillInfo.rate2[1]) + ".", safchan);
@@ -31628,6 +31636,10 @@ function Safari() {
                 return;
             }
             
+            if (!player.pokemon.contains(mon)) {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... You don't seem to have that Pokémon? Maybe it ran away from you or somethin'.", safchan);
+                return;
+            }
             if (!canMake) {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Umm... you kinda don't have enough stuff to unlock this skill. Did you leave the materials at home or somethin'?", safchan);
                 return;
@@ -31673,11 +31685,6 @@ function Safari() {
                 return;
             }
             
-            if (!player.pokemon.contains(mon)) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... You don't seem to have that Pokémon? Maybe it ran away from you or somethin'.", safchan);
-                return;
-            }
-            
             var isUnlocked = getUnlockedSkills(mon, player.idnum);
             
             if (isUnlocked.length === 0) {
@@ -31686,7 +31693,7 @@ function Safari() {
             }
             
             if (!d3) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Check out a list of skills <b>{0}</b> can activate, why don't ya?".format(monName), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Check out a list of skills <b>{0}</b> can activate!".format(monName), safchan);
                 for (var i = 0; i < isUnlocked.length; i++) {
                     safaribot.sendHtmlMessage(src, "-" + retSkillData(mon, isUnlocked[i], "activate", true), safchan);
                 }
@@ -31695,18 +31702,18 @@ function Safari() {
             
             var skillKey = safari.getSkillKeyByName(d3);
             if (!skillKey) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: That skill just plain doesn't exist!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That skill just plain doesn't exist it seems.", safchan);
                 return;
             }
             var skillInfo = skillData[skillKey];
             var skillName = skillInfo.name; // for proper casing
 
             if (safari.playerHasActiveSkill(player, mon, skillKey)) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: This skill's already activated for <b>{0}</b> ya dummy. You've got <b>{1}</b> more uses til it runs out, see?".format(monName, player.pokeskills[mon][skillKey].uses), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: This skill's already activated for <b>{0}</b>, silly. You've got <b>{1}</b> more uses til it runs out!".format(monName, player.pokeskills[mon][skillKey].uses), safchan);
                 return;
             }
             if (!isUnlocked.contains(skillKey)) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Heyyy... that's not a skill <b>{0}</b> has unlocked.".format(monName), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's not a skill <b>{0}</b> has unlocked.".format(monName), safchan);
                 return;
             }
             
@@ -31728,17 +31735,21 @@ function Safari() {
             }
             
             if (!d4 || d4 !== "confirm") {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Here are the deets on this skill:", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Here are the details on this skill:", safchan);
                 sys.sendMessage(src, "", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Name:</b></font> <b><u>" + skillInfo.name + "</u></b>", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Effect:</b></font> " + skillInfo.description.format(skillInfo.rate[0], skillInfo.rate[1], skillInfo.rate2[0], skillInfo.rate2[1]) + ".", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Max Uses:</b></font> " + skillInfo.uses, safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Activation Cost:</b></font> " + readable(progress), safchan);
                 sys.sendMessage(src, "", safchan);
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Anyway, {0} if you're sure you want to activate <b>{1}</b> for your <b>{2}</b>.".format(link("/quest idol:activate:" + monName + ":" + skillName + ":confirm", "click here"), skillName, monName), safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Anyway, {0} if you're sure you wanna activate <b>{1}</b> for your <b>{2}</b>.".format(link("/quest idol:activate:" + monName + ":" + skillName + ":confirm", "click here"), skillName, monName), safchan);
                 return;
             }
             
+            if (!player.pokemon.contains(mon)) {
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... You don't seem to have that Pokémon? Maybe it ran away from you or somethin'.", safchan);
+                return;
+            }
             if (!canMake) {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Umm... you kinda don't have enough stuff to activate this skill. Did you leave the materials at home or somethin'?", safchan);
                 return;
