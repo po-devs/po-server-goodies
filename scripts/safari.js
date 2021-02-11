@@ -31283,7 +31283,7 @@ function Safari() {
                 }
                 var n = now();
                 if (player.cooldowns.detective > n) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Please wait a while before guessing again!", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Please wait " + timeLeftString(player.cooldowns.detective) + " before guessing again!", safchan);
                     return;
                 }
                 if (passed) {
