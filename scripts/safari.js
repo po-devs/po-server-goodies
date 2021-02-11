@@ -31383,7 +31383,7 @@ function Safari() {
             var skillDescription = safari.getSkillDescription(key);
             if (skillDescription) {
                 var skill = skillData[key];
-                return (label ? "<b>" + (safari.isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "</b> " : "") + "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Max Uses: " + skill.uses + "]";
+                return (label ? "<b>" + (safari.isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "</b> " : "") + "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Uses per Charge: " + skill.uses + "]";
             }
             else {
                 return "";
@@ -34656,6 +34656,97 @@ function Safari() {
                 return key;
         }
     };
+    this.pokeSkillActivated = function(src, party, skillKey) { // determine if a player can activate an ability, and returns ability data
+        if (!Array.isArray(party)) // pass single pokeId if not party skill
+            party = [party];
+
+        var player = getAvatar(src);
+        
+        if (!player) {
+            return;
+        }
+        
+        var activatedMon;
+        var remainingUses = 0;
+        var skillLevel = 1;
+        
+        for (var i = 0; i < party.length; i++) {
+            if (monArr[i] in player.pokeSkills) { // check if they have the skill activated
+                if (!safari.playerHasActiveSkill(player, party[i], skillKey))
+                    continue;
+                
+                var skill = player.pokeskills[party[i]][skillKey];
+                
+                if (skill.uses <= 0) { // if out of uses, delete the skill
+                    delete skill;
+                    if (Object.keys(player.pokeskills[party[i]]).length === 0) { // if that was the last skill for that mon, delete that mon's entry from player.pokeskills
+                        delete player.pokeskill[party[i]];
+                    }
+                    continue;
+                }
+                if (skill.level > skillLevel) {
+                    skillLevel = skill.level;
+                    activatedMon = party[i];
+                }
+            }
+        }
+        
+        if (!activatedMon) {
+            return false;
+        }
+        if (!safari.pokeSkillChance(skillKey, skillLevel)) {
+            return false;
+        }
+
+        return activatedMon;
+    };
+    this.pokeSkillChance = function(skillKey, skillLevel) { // for skills that only activate at certain % chance even under the right conditions
+        var data = skillData[skillKey];
+        var rate,
+            prop = data.procProperty, // this determines which of rate/rate2 in skillData to use
+            index = skillLevel - 1;
+
+        if (!prop) { // if they don't have procProperty, they activate 100% of the time under the right conditions, so set rate to 1
+            rate = 1;
+        }
+        else {
+            rate = data[prop][index] / 100;
+        }
+        
+        return chance(rate);
+    };
+    this.usePokeSkillCharge = function (src, pokeId, skillKey) {
+        var player = getAvatar(src);
+        
+        if (!player) {
+            return;
+        }
+        
+        var skill = player.pokeskills[pokeId][skillKey];
+        var skillInfo = skillData[skillKey];
+        
+        var name = skillInfo.name,
+            desc = skillInfo.description,
+            rate = skillInfo.rate,
+            rate2 = skillInfo.rate2;
+        
+        skill.uses--;
+        safaribot.sendHtmlMessage(src, "<b>{0}'s {1}</b> activated! [{2}] [Remaining Uses: {3}]".format(poke(pokeId), name, desc, skill.uses), safchan);
+        if (skill.uses <= 0) {
+            delete skill;
+            if (Object.keys(player.pokeskills[pokeId]).length === 0) {
+                delete player.pokeskills[pokeId];
+            }
+        }
+        
+        safari.saveGame(player);
+        
+        rate = rate[skill.level - 1];
+        rate2 = rate2[skill.level - 1];
+        
+        return { rate: rate, rate2: rate2, description: desc, name: name };
+    };
+    
     var bakingData = {
         "apricorns": {
             "redapricorn": {
