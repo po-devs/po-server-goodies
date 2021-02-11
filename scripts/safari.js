@@ -1883,7 +1883,7 @@ function Safari() {
     var nextTheme;
     var currentRules;
     var nextRules;
-    var RULES_NERF = 0.30;
+    var RULES_NERF = 0.95;
     var RULES_BUFF = 0.25;
     var defaultRules = {
         "onlyTypes": { //Picks one of the random sets and excludes all types not in that array
@@ -8454,6 +8454,7 @@ function Safari() {
             gen = generation(id),
             color = pColor || getPokeColor(id);
 
+		var anyNerf = false;
         if (("excludeTypes" in rules && (rules.excludeTypes.contains(type_1) || rules.excludeTypes.contains(type_2))) ||
         ("minBST" in rules && bst < rules.minBST) ||
         ("maxBST" in rules && bst > rules.maxBST) ||
@@ -8465,6 +8466,7 @@ function Safari() {
         (rules.nerfSingle && type_2 === "???") ||
         (rules.nerfDual && type_2 !== "???")) {
             val = RULES_NERF;
+            anyNerf = true;
             if (player.helds.length > 0 && player.helds[0] == 2) {
                 player.berries.pecha = true;
                 needsPechaCleared.push(player.id.toLowerCase());
@@ -8514,7 +8516,7 @@ function Safari() {
                 }
             }
         }
-        return val;
+        return [val, anyNerf];
     };
     this.computeCatchRate = function(src, ball) {
         var player = getAvatar(src), wild, isShiny, wildStats, story = false, storyMultiplier = 1;
@@ -8808,7 +8810,7 @@ function Safari() {
         var leader = parseInt(player.party[0], 10);
         var species = pokeInfo.species(leader);
         var dailyBonus = safari.validDailyBoost(player) ? (dailyBoost.bonus * this.hasCostumeSkill(player, "botdboost") ? 1.1 : 1) : 1;
-        var rulesMod = currentRules ? this.getRulesMod(player, player.party[0], currentRules, scaleColor) : 1;
+        var rulesMod = currentRules ? this.getRulesMod(player, player.party[0], currentRules, scaleColor) : [1, false];
         var costumeMod = 1;
         if (story) {
             rulesMod = storyMultiplier;
@@ -8848,7 +8850,10 @@ function Safari() {
         var typebuff = 1 + (this.getFortune(player, "typebuff", 0, pType1) || this.getFortune(player, "typebuff", 0, pType2));
         var wildtypebuff = 1 + (this.getFortune(player, "typebuffwild", 0, wType1) || this.getFortune(player, "typebuffwild", 0, wType2));
 
-        var finalChance = Math.max((tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
+        var finalChance = Math.max((tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
+        if (rulesMod[1] == true) {
+        	finalChance = Math.min(50, finalChance);
+        }
         if (ball == "clone") {
             var maxCloneRate = itemData.clone.bonusRate + (player.costume === "scientist" ? costumeData.scientist.rate : 0) + this.getFortune(player, "scientist", 0);
             var finalChanceRollover = 0;
