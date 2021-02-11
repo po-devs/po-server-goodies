@@ -36797,7 +36797,13 @@ function Safari() {
             points += (10 * level);
         }
         if (this.horde.length > 0) {
-            var averageDamage = Math.ceil((this.horde.length / this.startingSize) * ((this.level + 2) * 28)), c;
+            var averageDamage = Math.ceil((this.horde.length / this.startingSize) * ((this.level + 2) * 34)), c;
+            if (this.horde.length > 1) {
+            	averageDamage += this.level;
+            }
+            if (this.horde.length > 2) {
+            	averageDamage += this.level + 2;
+            }
             for (p in members) {
                 id = members[p];
                 if (this.pyr.stamina[id] <= 0) {
