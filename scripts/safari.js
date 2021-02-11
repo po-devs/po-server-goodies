@@ -34671,7 +34671,7 @@ function Safari() {
         var skillLevel = 1;
         
         for (var i = 0; i < party.length; i++) {
-            if (party[i] in player.pokeSkills) { // check if they have the skill activated
+            if (party[i] in player.pokeskills) { // check if they have the skill activated
                 if (!safari.playerHasActiveSkill(player, party[i], skillKey))
                     continue;
                 
@@ -34680,7 +34680,7 @@ function Safari() {
                 if (skill.uses <= 0) { // if out of uses, delete the skill
                     delete skill;
                     if (Object.keys(player.pokeskills[party[i]]).length === 0) { // if that was the last skill for that mon, delete that mon's entry from player.pokeskills
-                        delete player.pokeskill[party[i]];
+                        delete player.pokeskills[party[i]];
                     }
                     continue;
                 }
