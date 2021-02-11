@@ -37283,7 +37283,7 @@ function Safari() {
             var pointsRange = [52 + 32 * this.level, 32 + 20 * this.level, 15 + 6 * this.level, 3 + 2 * this.level, -3 - 5 * this.level, -7 - 9 * this.level];
             var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)];
             this.sendAll("The {0}-type statue's HP dropped to 0! The statue was destroyed! Points gained: {1}".format(this.types.map(typeIcon).join(" / "), plural(points, "Point")));
-            if (totalDealt >= this.treasureGoal) {
+            if (totalDealt >= this.treasureGoal && bestAttacker) {
                 var reward = randomSampleObj(this.treasures);
                 this.sendAll("<b>{0}</b> found something stuck to a fragment of the statue! {0} received {1}!".format(addFlashTag(bestAttacker.toCorrectCase()), toColor(treasureName(reward), "blue")), true);
                 getTreasure(bestAttacker, reward);
