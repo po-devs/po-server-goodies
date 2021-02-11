@@ -31401,7 +31401,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Idol: Perhaps you're {0}? Or what say we {1}?".format(link("/quest idol:about1", "wondering what this is about"), link("/quest idol:menu", "get started immediately")), safchan);
         }
         else if (d1 === "about1") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You see, EVERY Pokémon has powerful skills hidden deep within. If you bring me some {0} and {1}, I can unlock and activate these skills for your Pokémon!".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You see, EVERY Pokémon has powerful skills hidden deep within. If you bring me some {0} and {1}, I can unlock and charge these skills for your Pokémon!".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
             safaribot.sendHtmlMessage(src, "Idol: Have you ever wondered how the {0} and {1} are so strong, or are able to activate special effects during battle? With a little help from me, of course!".format(link("/quest celeb", "Celebrities"), link("/quest league", "League Trainers")), safchan);
             safaribot.sendHtmlMessage(src, "Idol: But, I'm not alone. In order to tap into the magical power of the Shards, I have my cousin here to assist me!", safchan);
             safaribot.sendHtmlMessage(src, "Idol: ...? Wait, where is she? Don't tell me she fell asleep again... {0}".format(link("/quest idol:about2", "«Next»")), safchan);
@@ -31415,33 +31415,34 @@ function Safari() {
         else if (d1 === "menu") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: What can we do for you today?", safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutunlock", "Tell me about unlocking skills"), safchan);
-            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutactivate", "Tell me about activating skills"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutcharge", "Tell me about charging skills"), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutbasic", "Tell me about Basic skills"), safchan); // explain that it applies to all members of that species
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutspecial", "Tell me about Special skills"), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutbattle", "Tell me how exactly this works during a battle"), safchan);
             
             sys.sendMessage(src, "", safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks", "Show me which skills I've unlocked/activated"), safchan); // option to enter specific pokemon, show whole list (paginate) if none whole list
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks", "Show me which skills I've unlocked/charged"), safchan); // option to enter specific pokemon, show whole list (paginate) if none whole list
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:unlock", "I want to unlock a skill!"), safchan);
-            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:activate", "I want to activate a skill!"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:charge", "I want to charge a skill!"), safchan);
         }
         else if (d1 === "aboutunlock") {
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Ya see, every Pokémon species has their skills locked to begin with. By bringing us some {0} and {1}, we can <b>permanently unlock some of their skills</b>.".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's right, an <b>unlock</b> is permanent. Note than when we unlock a skill, it only applies to <b>that particular skill for that particular Pokémon</b>.", safchan);
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Unlocking a skill won't do anything for you by itself though. After you unlock a skill, you will gain the option of <b>{0}</b> it. THAT's where the real magic happens!".format(link("/quest idol:aboutactivate", "activating")), safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Unlocking a skill won't do anything for you by itself though. After you unlock a skill, you will gain the option of <b>{0}</b> it. THAT's where the real magic happens!".format(link("/quest idol:aboutcharge", "charging")), safchan);
             safaribot.sendHtmlMessage(src, link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
-        else if (d1 === "aboutactivate") {
-            safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: If you wanna actually make use of a skill in battle, you've gotta activate it. It's not free though, we'll need the power of some {0} and {1} first. Then, we can activate that skill for a <b>limited number of uses</b>.".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's right, <b>activation</b> is temporary. After a skill is activated, it will only work <b>a certain number of times</b>. Those Shards don't have unlimited energy you know! If you want to use a skill again after it has run out, you'll have to bring us more Shards to activate it again.", safchan);
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Of course, you can't just activate any skill you want. Only skills that you've already <b>{0}</b> can be activated.".format(link("/quest idol:aboutunlock", "unlocked")), safchan);
+        else if (d1 === "aboutcharge") {
+            safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: If you wanna actually make use of a skill in battle, you've gotta charge it. It's not free though, we'll need the power of some {0} and {1} first. Then, we can charge that skill for a <b>limited number of uses</b>.".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's right, <b>charging</b> is temporary. After a skill is charged, it will only work <b>a certain number of times</b>. Those Shards don't have unlimited energy you know! If you want to use a skill again after it has run out, you'll have to bring us more Shards to charge it again.", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You don't actually have to wait for it to run out though, charging can be done any time as long as you have the materials, and each charge will top up your skill with a set number of uses.", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Of course, you can't just charge any skill you want. Only skills that you've already <b>{0}</b> can be charged.".format(link("/quest idol:aboutunlock", "unlocked")), safchan);
             safaribot.sendHtmlMessage(src, link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
         else if (d1 === "aboutbasic") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Basic skills are skills that every Pokémon of a certain type can learn! That means there are 18 different Basic skills in total, one for each type.", safchan);
-            safaribot.sendHtmlMessage(src, "Idol: So for example, Bulbasaur is a Grass and Poison-type, therefore it can unlock and activate both the Basic Grass-type skill, and the Basic Poison-type skill.", safchan);
-            safaribot.sendHtmlMessage(src, "Idol: You might think that Pokémon with only a single type are disadvantaged since they can learn fewer Basic skills. But worry not! Pokémon with only one type will be able to unlock and activate a <b>stronger version of their type's skill</b>!", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: So for example, Bulbasaur is a Grass and Poison-type, therefore it can unlock and charge both the Basic Grass-type skill, and the Basic Poison-type skill.", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: You might think that Pokémon with only a single type are disadvantaged since they can learn fewer Basic skills. But worry not! Pokémon with only one type will be able to unlock and charge a <b>stronger version of their type's skill</b>!", safchan);
             //safaribot.sendHtmlMessage(src, "Idol: Unlocking a Basic skill for a Pokémon will unlock it for all Pokémon of the same species. That means if you unlock the Basic Fairy-type skill for Floette-Yellow, all the other Floette formes including Floette-Eternal will be able to activate it!", safchan);
             safaribot.sendHtmlMessage(src, link("/quest idol:showallbasic", "«List of Basic Skills»") + " " + link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
@@ -31508,7 +31509,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Have a look at the skills you've unlocked for <b>{0}</b>!".format(poke(mon)), safchan);
                 for (var skill in skillUnlocks[pid][mon]) {
                     var isActive = safari.playerHasActiveSkill(player, mon, skill);
-                    safaribot.sendHtmlMessage(src, "-" + retSkillData(parseInt(mon), skill, "activate", true) + (isActive ? " " + toColor("[Active with " + player.pokeskills[mon][skill].uses + " remaining uses]", "red") : ""), safchan);
+                    safaribot.sendHtmlMessage(src, "-" + retSkillData(parseInt(mon), skill, "charge", true) + (isActive ? " " + toColor("[Active with " + player.pokeskills[mon][skill].uses + " remaining uses]", "red") : ""), safchan);
                 }
                 
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: If you just wanna check the active skills of your current party Pokémon, you can do that with {0}, so you don't always have to bother us all the time. I'm tryna sleep here, yeah?".format(link("/party")), safchan);
@@ -31598,7 +31599,7 @@ function Safari() {
                 return;
             }
             if (canUnlock.length === 0) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You've already unlocked all the skills <b>{0}</b> can learn, maybe you wanted to {1} them instead?".format(monName, link("/quest idol:activate:" + mon, "activate")), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You've already unlocked all the skills <b>{0}</b> can learn, maybe you wanted to {1} them instead?".format(monName, link("/quest idol:charge:" + mon, "charge")), safchan);
                 return;
             }
             
@@ -31649,7 +31650,7 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Name:</b></font> <b><u>" + skillInfo.name + "</u></b>", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Effect:</b></font> " + skillInfo.description.format(skillInfo.rate[0], skillInfo.rate[1], skillInfo.rate2[0], skillInfo.rate2[1]) + ".", safchan);
-                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Max Uses:</b></font> " + skillInfo.uses, safchan);
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Number of Uses per Charge:</b></font> " + skillInfo.uses, safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Unlock Cost:</b></font> " + readable(progress), safchan);
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Anyway, {0} if you're sure you want your <b>{1}</b> to unlock <b>{2}</b>.".format(link("/quest idol:unlock:" + monName + ":" + skillName + ":confirm", "click here"), monName, skillName), safchan);
@@ -31683,16 +31684,16 @@ function Safari() {
             safari.saveGame(player);
             
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Idol|||Gave " + translateStuff(skillInfo.unlock) + "|||Unlocked " + skillName + " for " + monName + "\n");
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! Your <b>{0}</b> has permanently unlocked the <b>{1}</b> skill! Come back when you're ready to activate it!".format(monName, skillName), safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! Your <b>{0}</b> has permanently unlocked the <b>{1}</b> skill! Come back when you're ready to charge it!".format(monName, skillName), safchan);
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: I was the one who did all the work... <i>*grumble grumble*</i>", safchan);
         }
-        else if (d1 === "activate") {
+        else if (d1 === "charge") {
             if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
                 safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry, this feature isn't ready yet. Check back another time!", safchan);
                 return;
             }
             if (!d2) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}? You can see a list of Pokémon that you've unlocked skills for {1}.".format(link("/quest idol:activate:[Pokémon Name]", "name of the Pokémon", true), link("/quest idol:showunlocks:all", "here")), safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Maybe you wanna tell me the {0}? You can see a list of Pokémon that you've unlocked skills for {1}.".format(link("/quest idol:charge:[Pokémon Name]", "name of the Pokémon", true), link("/quest idol:showunlocks:all", "here")), safchan);
                 return;
             }
             
@@ -31713,9 +31714,9 @@ function Safari() {
             }
             
             if (!d3) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Check out a list of skills <b>{0}</b> can activate!".format(monName), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Check out a list of skills <b>{0}</b> can charge!".format(monName), safchan);
                 for (var i = 0; i < isUnlocked.length; i++) {
-                    safaribot.sendHtmlMessage(src, "-" + retSkillData(mon, isUnlocked[i], "activate", true), safchan);
+                    safaribot.sendHtmlMessage(src, "-" + retSkillData(mon, isUnlocked[i], "charge", true), safchan);
                 }
                 return;
             }
@@ -31728,10 +31729,10 @@ function Safari() {
             var skillInfo = skillData[skillKey];
             var skillName = skillInfo.name; // for proper casing
 
-            if (safari.playerHasActiveSkill(player, mon, skillKey)) {
+            /*if (safari.playerHasActiveSkill(player, mon, skillKey)) {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Idol: This skill's already activated for <b>{0}</b>, silly. You've got <b>{1}</b> more uses til it runs out!".format(monName, player.pokeskills[mon][skillKey].uses), safchan);
                 return;
-            }
+            }*/
             if (!isUnlocked.contains(skillKey)) {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's not a skill <b>{0}</b> has unlocked.".format(monName), safchan);
                 return;
@@ -31759,10 +31760,13 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Name:</b></font> <b><u>" + skillInfo.name + "</u></b>", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Effect:</b></font> " + skillInfo.description.format(skillInfo.rate[0], skillInfo.rate[1], skillInfo.rate2[0], skillInfo.rate2[1]) + ".", safchan);
-                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Max Uses:</b></font> " + skillInfo.uses, safchan);
-                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Activation Cost:</b></font> " + readable(progress), safchan);
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Number of Uses per Charge:</b></font> " + skillInfo.uses, safchan);
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Charge Cost:</b></font> " + readable(progress), safchan);
                 sys.sendMessage(src, "", safchan);
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Anyway, {0} if you're sure you wanna activate <b>{1}</b> for your <b>{2}</b>.".format(link("/quest idol:activate:" + monName + ":" + skillName + ":confirm", "click here"), skillName, monName), safchan);
+                if (player.pokeskills[mon] && player.pokeskills[mon][skillKey] && player.pokeskills[mon][skillKey].uses > 0) {
+                    safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Looks like you already have {0} uses remaining for this skill, but you can charge it again for a total of {1}.".format(player.pokeskills[mon][skillKey].uses, player.pokeskills[mon][skillKey].uses + skillInfo.uses), safchan);
+                }
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Anyway, {0} if you're sure you wanna charge <b>{1}</b> for your <b>{2}</b>.".format(link("/quest idol:charge:" + monName + ":" + skillName + ":confirm", "click here"), skillName, monName), safchan);
                 return;
             }
             
@@ -31771,7 +31775,7 @@ function Safari() {
                 return;
             }
             if (!canMake) {
-                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Umm... you kinda don't have enough stuff to activate this skill. Did you leave the materials at home or somethin'?", safchan);
+                safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Umm... you kinda don't have enough stuff to charge this skill. Did you leave the materials at home or somethin'?", safchan);
                 return;
             }
 
@@ -31779,17 +31783,22 @@ function Safari() {
             if (!player.pokeskills.hasOwnProperty(mon)) {
                 player.pokeskills[mon] = {};
             }
-            
-            player.pokeskills[mon][skillKey] = {
-                level: skillUnlocks[player.idnum][mon][skillKey].level || 1,
-                uses: skillData[skillKey].uses
-            };
+            if (!player.pokeskills[mon].hasOwnProperty(skillKey)) {
+                player.pokeskills[mon][skillKey] = {
+                    level: skillUnlocks[player.idnum][mon][skillKey].level || 1,
+                    uses: skillData[skillKey].uses
+                };
+            }
+            else { // if skill already has existing uses, just top it up
+                player.pokeskills[mon][skillKey].uses += skillData[skillKey].uses;
+            }
+
             // only level and uses need to be stored, all other data can be pulled live from skillData
 
             giveStuff(player, ingUsed, true);
             safari.saveGame(player);
             
-            sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Idol|||Gave " + translateStuff(skillInfo.activate) + "|||Activated " + skillName + " for " + monName + "\n");
+            sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Idol|||Gave " + translateStuff(skillInfo.activate) + "|||Charged " + skillName + " for " + monName + ", receiving " + skillData[skillKey].uses + " uses for a total of " + player.pokeskills[mon][skillKey].uses + "\n");
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! With <b>{0}</b> by your side, you and your <b>{1}</b> will be shining stars! I guarantee it, or my name isn't \"Idol\"!".format(skillName, monName), safchan);
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "", safchan);
