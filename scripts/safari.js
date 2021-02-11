@@ -38236,7 +38236,7 @@ function Safari() {
             this.treasureLocation = Object.keys(this.hazards).random();
         }
 
-        var known = Math.min((Math.floor(( 0.15 + level * 0.75 ) + sys.rand(3, Math.ceil( level*1.22 )))),count-(2 + Math.floor( level * 0.34))), unknown = sys.rand(Math.ceil(level*0.75), level + 1), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
+        var known = Math.min((Math.floor(( 0.15 + level * 0.75 ) + sys.rand(3, Math.ceil( level*1.22 )))),count-(2 + Math.floor( level * 0.34))), unknown = sys.rand(Math.ceil(level*0.75), Math.round((level * 1.4) + 1.3 + (Math.random())), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
         hazList = Object.keys(display);
         var revealed = {};
         total = 0;
