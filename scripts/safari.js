@@ -15863,6 +15863,10 @@ function Safari() {
     };
     this.showCostumeSkills = function(src, commandData) {
         var player = getAvatar(src);
+        
+        if (!player) {
+            return;
+        }
         var cos = player.costume;
         var noSkills = ["inver"];
         
