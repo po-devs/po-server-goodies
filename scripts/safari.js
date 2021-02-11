@@ -34624,12 +34624,11 @@ function Safari() {
         if (!player) {
             return false;
         }
-        // TODO: validate party mon is not fainted
+
         if (!Array.isArray(party)) // pass single pokeId if not party skill
             party = [party];
 
         var activatedMon;
-        var remainingUses = 0;
         var skillLevel = 0;
         
         for (var i = 0; i < party.length; i++) {
@@ -34649,7 +34648,7 @@ function Safari() {
                     }
                     continue;
                 }
-                if (skill.level > skillLevel) {
+                if (skill.level > skillLevel) { // skills of higher level take precedence and will be used over lower levels if possible
                     skillLevel = skill.level;
                     activatedMon = party[i].id;
                 }
@@ -34665,21 +34664,13 @@ function Safari() {
 
         return safari.usePokeSkillCharge(player, activatedMon, skillKey);
     };
-    /*
-    pseudo battle code
-    ===================
-    var pokeSkill = pokeSkillActivated(sys.id(player), pokeId, "skillKey");
-    if (pokeSkill) {
-        access pokeSkill.rate/rate2 and do battle effect
-    }
-    */
     this.pokeSkillChance = function(skillKey, skillLevel) { // for skills that only activate at certain % chance even under the right conditions
         var data = skillData[skillKey];
         var rate,
             prop = data.procProperty, // this determines which of rate/rate2 in skillData to use
             index = skillLevel - 1;
 
-        if (!prop) { // if they don't have procProperty, they activate 100% of the time under the right conditions, so set rate to 1
+        if (!prop) { // if they don't have procProperty, that means they activate 100% of the time under the right conditions, so set rate to 1
             rate = 1;
         }
         else {
