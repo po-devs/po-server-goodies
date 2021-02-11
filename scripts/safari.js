@@ -37841,7 +37841,7 @@ function Safari() {
 			type = sys.type(moveType(this.firstAtk));
 			l1 = lookupMoveLearners(this.firstAtk);
 			count++;
-		} while (l1.length < 180 && count < 25);
+		} while (l1.length > 180 && count < 25);
         count = 0;
         damaging.splice(damaging.indexOf(this.firstAtk), 1);
         do {
@@ -37850,7 +37850,7 @@ function Safari() {
 			l2 = lookupMoveLearners(this.secondAtk);
 			l3 = removeNonDuplicates(l2, l1);
 			count++;
-		} while ((l3.length < 80) && count < 50);
+		} while ((l3.length > 80) && count < 50);
         damaging.splice(damaging.indexOf(this.secondAtk), 1);
 		var atks = [this.firstAtk, this.secondAtk];
         this.firstBonusAtk = false;
@@ -37865,7 +37865,7 @@ function Safari() {
 				l4 = lookupMoveLearners(this.firstBonusAtk);
 				l3 = removeNonDuplicates(l6, l4);
 				count++;
-			} while ((l3.length < 25) && count < 60);
+			} while ((l3.length > 25) && count < 60);
 			atks.push(this.firstBonusAtk);
 			damaging.splice(damaging.indexOf(this.firstBonusAtk), 1);
 		}
@@ -37879,7 +37879,7 @@ function Safari() {
 				l5 = lookupMoveLearners(this.secondBonusAtk);
 				l3 = removeNonDuplicates(l6, l5);
 				count++;
-			} while ((l3.length < (2 + (0.05 * count))) && count < 160);
+			} while ((l3.length > (2 + (0.05 * count))) && count < 160);
 			atks.push(this.secondBonusAtk);
 		}
 		
@@ -38230,7 +38230,7 @@ function Safari() {
             this.treasureLocation = Object.keys(this.hazards).random();
         }
 
-        var known = Math.min((Math.floor(( 0.2 + level * 0.9 ) + sys.rand(3, Math.ceil( level*1.25 )))),count-(2 + Math.floor( level * 0.34))), unknown = sys.rand(Math.ceil(level*0.75), level + 1), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
+        var known = Math.min((Math.floor(( 0.15 + level * 0.75 ) + sys.rand(3, Math.ceil( level*1.22 )))),count-(2 + Math.floor( level * 0.34))), unknown = sys.rand(Math.ceil(level*0.75), level + 1), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
         hazList = Object.keys(display);
         var revealed = {};
         total = 0;
