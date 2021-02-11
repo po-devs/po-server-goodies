@@ -31397,7 +31397,7 @@ function Safari() {
         
         if (!d1 || d1 === "*") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: I bet you've ever wondered how to make your Pokémon stronger!", safchan);
-            safaribot.sendHtmlMessage(src, "Idol: Well, you're in luck because I'm an expert when it comes to identifying the shining talents of Pokémon.", safchan);
+            safaribot.sendHtmlMessage(src, "Idol: Well you're in luck, because I'm an expert when it comes to identifying the shining talents of Pokémon!", safchan);
             safaribot.sendHtmlMessage(src, "Idol: Perhaps you're {0}? Or what say we {1}?".format(link("/quest idol:about1", "wondering what this is about"), link("/quest idol:menu", "get started immediately")), safchan);
         }
         else if (d1 === "about1") {
@@ -31447,7 +31447,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, link("/quest idol:showallbasic", "«List of Basic Skills»") + " " + link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
         else if (d1 === "aboutspecial") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Special skills are skills that only certain Pokémon of a certain forme can learn! These Special skills likely contain battle effects that you won't be able to get from Basic skills.", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Special skills are skills that only certain Pokémon can learn! These Special skills likely contain battle effects that you won't be able to get from Basic skills.", safchan);
             safaribot.sendHtmlMessage(src, "Idol: Unlocking a Special skill for a Pokémon will only unlock it for the specific forme that has that skill. For example, if you unlock the Special skill that Floette-Eternal has, only Floette-Eternal can charge it. All other Floette formes cannot access that Special skill and will only have the Basic Fairy-type skill.", safchan);
             safaribot.sendHtmlMessage(src, link("/quest idol:showallspecial", "«List of Special Skills»") + " " + link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
@@ -34662,7 +34662,7 @@ function Safari() {
         if (!player) {
             return false;
         }
-        
+        // TODO: validate party mon is not fainted
         if (!Array.isArray(party)) // pass single pokeId if not party skill
             party = [party];
 
