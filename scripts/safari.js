@@ -56302,7 +56302,11 @@ function Safari() {
                 if (winners.length > 0) {
                     var list = [];
                     for (var e in reward) {
-                        list.push(reward[e] + " " + itemAlias(e, false, true) + (reward[e] === 1 ? "" : "s"));
+                    	if (e == "cashbonus") {
+                    		list.push("$$$");
+                    	} else {
+                    		list.push(reward[e] + " " + itemAlias(e, false, true) + (reward[e] === 1 ? "" : "s"));
+						}
                     }
                     if (list.length < 1) {
                         list.push("a prize");
