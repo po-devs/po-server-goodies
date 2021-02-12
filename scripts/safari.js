@@ -10305,16 +10305,14 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "<b>Current Petaya Combo:</b> " + player.berries.petayaCombo, safchan);
             }
             for (var i = 0; i < player.party.length; i++) {
-                var currentSkills = [];
                 var activeSkills = getActiveSkills(player.party[i], player);
+                
+                activeSkills = activeSkills.map(function(e) {
+                    return link("/quest idol:charge:" + player.party[i] + ":" + skillData[e].name, skillData[e].name) + " [" + plural(player.pokeskills[player.party[i]][skillKey].uses, "use") + "]";
+                });
+                
                 if (activeSkills.length > 0) {
-                    for (var j = 0; j < activeSkills.length; j++) {
-                        var skillKey = activeSkills[j];
-                        currentSkills.push("{0} [{1}]".format(link("/quest idol:" + "charge:" + player.party[i] + ":" + skillData[skillKey].name, skillData[skillKey].name), plural(player.pokeskills[player.party[i]][skillKey].uses, "use")));
-                    }
-                }
-                if (currentSkills.length > 0) {
-                    safaribot.sendHtmlMessage(src, "<b>{0}'s Active Skills:</b> {1}".format(poke(player.party[i]), readable(currentSkills)), safchan);
+                    safaribot.sendHtmlMessage(src, "<b>{0}'s Active Skills:</b> {1}".format(poke(player.party[i]), readable(activeSkills)), safchan);
                 }
             }
             if (player.fortune.deadline > n || player.fortune.limit > 0) {
