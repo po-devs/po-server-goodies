@@ -24629,7 +24629,7 @@ function Safari() {
                 if (dynamaxed) {
                     dmg = Math.ceil(dmg * 0.25);
                 }
-                if (isPlayerVsNPC) {
+                if (isPlayerVsNPC && targetSide === 1) {
                     var normalSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicNormal");
                     if (normalSkill && move.type === "Normal") {
                         dmg *= (1 + normalSkill.rate / 100);
@@ -24869,7 +24869,7 @@ function Safari() {
                     }
                 }
 
-                if (isPlayerVsNPC && typeMultiplier < 1) {
+                if (isPlayerVsNPC && typeMultiplier < 1 && targetSide === 1) {
                     var damageResistSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicSteel");
                     if (damageResistSkill) {
                         dmg *= (1 - damageResistSkill.rate3 / 100);
@@ -25426,7 +25426,7 @@ function Safari() {
                             else { // no statusChance means 100% status rate, so assign a reduced statusChance
                                 move.statusChance = 1 - (defenceSkill.rate2 / 100);
                             }
-                            out.push("<b>[{0}'s {1}]</b> {2}'s {3}-type attack reduced the {4} chance by {5}%!".format(poke(defenceSkill.id), defenceSkill.name, poke(user.id), move.type, cap(move.status), defenceSkill.rate2));
+                            out.push("<b>[{0}'s {1}]</b> {2}'s reduced the {3} chance by {4}%!".format(poke(defenceSkill.id), defenceSkill.name, poke(user.id), cap(move.status), defenceSkill.rate2));
                         }
                     }
                     if (!move.statusChance || chance(move.statusChance)) {
@@ -31176,7 +31176,10 @@ function Safari() {
             out.wrongGuesses = 0;
             
             while (out.answer.length < 4) {
-                out.answer.push(Math.ceil(Math.random() * highestDexNum - 1));
+                var pokeId = Math.ceil(Math.random() * highestDexNum - 1);
+                if (pokeId <= 0 || pokeId >= highestDexNum)
+                    continue;
+                out.answer.push(pokeId);
                 out.answer = removeDuplicates(out.answer);
             }
             var firstFourOrder = [2 + 3 * Math.random(), 5 + 6 * Math.random(), 16 + 4 * Math.random(), 19 + 6 * Math.random()].shuffle(); //strength of first few clues
