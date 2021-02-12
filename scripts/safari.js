@@ -24546,7 +24546,7 @@ function Safari() {
                 if (screenExtendSkill) {
                     this.side1Field.reflect = (this.side1Field.reflect > 0 ? this.side1Field.reflect + screenExtendSkill.rate2 : 0);
                     this.side1Field.lightscreen = (this.side1Field.lightscreen > 0 ? this.side1Field.lightscreen + screenExtendSkill.rate2 : 0);
-                    out.push("<b>[{0}'s {1}]</b> {2}'s Psychic-type attack extended the duration of your screens by {3}!".format(poke(screenExtendSkill.id), screenExtendSkill.name, poke(user.id), plural(screenExtendSkill.rate2, "turn"));
+                    out.push("<b>[{0}'s {1}]</b> {2}'s Psychic-type attack extended the duration of your screens by {3}!".format(poke(screenExtendSkill.id), screenExtendSkill.name, poke(user.id), plural(screenExtendSkill.rate2, "turn")));
                 }
             }
             if (move.haze) {
