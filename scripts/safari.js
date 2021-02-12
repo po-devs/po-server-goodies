@@ -37995,7 +37995,7 @@ function Safari() {
             		found = true;
             	}
             	if (found) {
-            		//sys.sendMessage(sys.id("Miki Sayaka"), "Found move " + newAttack + " after " + count + " loops with learning length " + l2.length + ".", staffchannel);
+            		sys.sendMessage(sys.id("Miki Sayaka"), "Found move " + newAttack + " after " + count + " loops with learning length " + l2.length + ".", staffchannel);
             		break;
             	}
         	}
