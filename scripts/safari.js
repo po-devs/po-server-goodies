@@ -31002,9 +31002,9 @@ function Safari() {
                     }
 
                     if (l == 1) {                    
-                        outText = "{0} has 1 " + (res ? "resistance " : "weakness/immunity") + " in common with {1}.";
+                        outText = "{0} has 1 " + (res ? "resistance/immunity" : "weakness") + " in common with {1}.";
                     } else {
-                        outText = "{0} has " + l + " " + (res ? "resistances" : "weaknesses/immunities") + " in common with {1}.";
+                        outText = "{0} has " + l + " " + (res ? "resistances/immunities" : "weaknesses") + " in common with {1}.";
                     }
                     strength = 23;
                     
