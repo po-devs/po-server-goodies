@@ -22381,10 +22381,10 @@ function Safari() {
             
             if (!this.fullNPC && this.npcBattle && this.turn === 0) { // start of battle
                 var restoredHealth = 0;
-                var partyFullHealth = false;
+                var partyFullHealth = true;
                 for (var i = 0; i < this.originalTeam1.length; i++) {
                     if (this.originalTeam1[i].hp < this.originalTeam1[i].maxhp) {
-                        partyFullHealth = true;
+                        partyFullHealth = false;
                     }
                 }
                 if (!partyFullHealth) {
