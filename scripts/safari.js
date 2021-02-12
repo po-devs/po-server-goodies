@@ -24630,7 +24630,7 @@ function Safari() {
                     dmg = Math.ceil(dmg * 0.25);
                 }
                 if (isPlayerVsNPC && move.type === "Normal" && targetSide !== 1) {
-                    var normalSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicNormal");
+                    var normalSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicNormal");
                     if (normalSkill) {
                         dmg *= (1 + normalSkill.rate / 100);
                         out.push("<b>[{0}'s {1}]</b> {2}'s Normal-type attack dealt {3}% more damage!".format(poke(normalSkill.id), normalSkill.name, poke(user.id), normalSkill.rate));
@@ -24650,7 +24650,7 @@ function Safari() {
                             if (move.type == "Fire") {
                                 sdmg *= 1.5;
                                 if (isPlayerVsNPC) {
-                                    var antiShieldSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFire");
+                                    var antiShieldSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicFire");
                                     if (antiShieldSkill) {
                                         sdmg *= (1 + antiShieldSkill.rate / 100);
                                         out.push("<b>[{0}'s {1}]</b> {2}'s Fire-type attack dealt {3}% more damage to the Ice Shield!".format(poke(antiShieldSkill.id), antiShieldSkill.name, poke(user.id), antiShieldSkill.rate));
@@ -24673,7 +24673,7 @@ function Safari() {
                             if (move.type == "Water") {
                                 sdmg *= 1.5;
                                 if (isPlayerVsNPC) {
-                                    var antiShieldSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicWater");
+                                    var antiShieldSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicWater");
                                     if (antiShieldSkill) {
                                         sdmg *= (1 + antiShieldSkill.rate / 100);
                                         out.push("<b>[{0}'s {1}]</b> {2}'s Water-type attack dealt {3}% more damage to the Sludge Shield!".format(poke(antiShieldSkill.id), antiShieldSkill.name, poke(user.id), antiShieldSkill.rate));
@@ -24696,7 +24696,7 @@ function Safari() {
                             if (move.type == "Fighting") {
                                 sdmg *= 1.5;
                                 if (isPlayerVsNPC) {
-                                    var antiShieldSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFighting");
+                                    var antiShieldSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicFighting");
                                     if (antiShieldSkill) {
                                         sdmg *= (1 + antiShieldSkill.rate / 100);
                                         out.push("<b>[{0}'s {1}]</b> {2}'s Fighting-type attack dealt {3}% more damage to the Metal Shield!".format(poke(antiShieldSkill.id), antiShieldSkill.name, poke(user.id), antiShieldSkill.rate));
@@ -24719,7 +24719,7 @@ function Safari() {
                             if (move.type == "Fairy") {
                                 sdmg *= 1.5;
                                 if (isPlayerVsNPC) {
-                                    var antiShieldSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFairy");
+                                    var antiShieldSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicFairy");
                                     if (antiShieldSkill) {
                                         sdmg *= (1 + antiShieldSkill.rate / 100);
                                         out.push("<b>[{0}'s {1}]</b> {2}'s Fairy-type attack dealt {3}% more damage to the Draco Shield!".format(poke(antiShieldSkill.id), antiShieldSkill.name, poke(user.id), antiShieldSkill.rate));
@@ -24742,7 +24742,7 @@ function Safari() {
                             if (move.type == "Ground") {
                                 sdmg *= 1.5;
                                 if (isPlayerVsNPC) {
-                                    var antiShieldSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicGround");
+                                    var antiShieldSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicGround");
                                     if (antiShieldSkill) {
                                         sdmg *= (1 + antiShieldSkill.rate / 100);
                                         out.push("<b>[{0}'s {1}]</b> {2}'s Ground-type attack dealt {3}% more damage to the Electro Shield!".format(poke(antiShieldSkill.id), antiShieldSkill.name, poke(user.id), antiShieldSkill.rate));
@@ -24765,7 +24765,7 @@ function Safari() {
                             if (move.type == "Psychic") {
                                 sdmg *= 1.5;
                                 if (isPlayerVsNPC) {
-                                    var antiShieldSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicPsychic");
+                                    var antiShieldSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicPsychic");
                                     if (antiShieldSkill) {
                                         sdmg *= (1 + antiShieldSkill.rate / 100);
                                         out.push("<b>[{0}'s {1}]</b> {2}'s Psychic-type attack dealt {3}% more damage to the Genesis Shield!".format(poke(antiShieldSkill.id), antiShieldSkill.name, poke(user.id), antiShieldSkill.rate));
@@ -24869,16 +24869,16 @@ function Safari() {
                     }
                 }
 
-                if (isPlayerVsNPC && (this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) && move.type === "Psychic" && targetSide !== 1) {
-                    var screenExtendSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicPsychic");
+                if (isPlayerVsNPC && (self.side1Field.reflect > 0 || self.side1Field.lightscreen > 0) && move.type === "Psychic" && targetSide !== 1) {
+                    var screenExtendSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicPsychic");
                     if (screenExtendSkill) {
-                        this.side1Field.reflect = (this.side1Field.reflect > 0 ? this.side1Field.reflect + screenExtendSkill.rate2 : 0);
-                        this.side1Field.lightscreen = (this.side1Field.lightscreen > 0 ? this.side1Field.lightscreen + screenExtendSkill.rate2 : 0);
+                        self.side1Field.reflect = (self.side1Field.reflect > 0 ? self.side1Field.reflect + screenExtendSkill.rate2 : 0);
+                        self.side1Field.lightscreen = (self.side1Field.lightscreen > 0 ? self.side1Field.lightscreen + screenExtendSkill.rate2 : 0);
                         out.push("<b>[{0}'s {1}]</b> {2}'s Psychic-type attack extended the duration of your screens by {3}!".format(poke(screenExtendSkill.id), screenExtendSkill.name, poke(user.id), plural(screenExtendSkill.rate2, "turn")));
                     }
                 }
                 if (isPlayerVsNPC && typeMultiplier < 1 && move.type === "Steel" && targetSide !== 1) {
-                    var damageResistSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicSteel");
+                    var damageResistSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicSteel");
                     if (damageResistSkill) {
                         dmg *= (1 - damageResistSkill.rate3 / 100);
                         out.push("<b>[{0}'s {1}]</b> {2}'s Steel-type attack reduced the damage of the opponent's attack by {3}%!".format(poke(damageResistSkill.id), damageResistSkill.name, poke(user.id), damageResistSkill.rate3));
