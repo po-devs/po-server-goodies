@@ -10314,7 +10314,7 @@ function Safari() {
                     }
                 }
                 if (currentSkills.length > 0) {
-                    safaribot.sendHtmlMessage(src, "<b>{0}'s Active Skills:</b> {1}".format(player.party[i], readable(currentSkills)), safchan);
+                    safaribot.sendHtmlMessage(src, "<b>{0}'s Active Skills:</b> {1}".format(poke(player.party[i]), readable(currentSkills)), safchan);
                 }
             }
             if (player.fortune.deadline > n || player.fortune.limit > 0) {
@@ -31536,7 +31536,7 @@ function Safari() {
                     activeSkills = activeSkills.map(function(e) {
                         return link("/quest idol:charge:" + page[i] + ":" + skillData[e].name, skillData[e].name);
                     });
-                    safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks:" + page[i], poke(parseInt(page[i]))) + (activeSkills.length > 0 ? readable(activeSkills) : ""), safchan);
+                    safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks:" + page[i], poke(parseInt(page[i]))) + (activeSkills.length > 0 ? " [" + readable(activeSkills) + "]" : ""), safchan);
                     
                     if (i === page.length-1) {
                         var pageControls = (page.contains(keys[0]) ? "" : link("/quest idol:showunlocks:all:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest idol:showunlocks:all:" + (pageNum+1), "«Next Page»"));
