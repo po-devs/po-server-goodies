@@ -14454,7 +14454,7 @@ function Safari() {
                     if (player.costume == "explorer" && chance(0.2) && safari.detectiveData.hasOwnProperty(player.idnum+"")) {
                         for (var i = 0; i < safari.detectiveData[player.idnum+""].clues.length; i++) {
                             if (safari.detectiveData[player.idnum+""].clues[i].unlock == "explorerfinder") {
-                                safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue!" +(freefinder ? "<i>Additionally, no charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
+                                safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! " +(freefinder ? "<i>Additionally, no charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
                                 safari.detectiveClue(player.idnum, "explorerfinder", src);
                                 hit = true;
                                 break;
@@ -24634,7 +24634,7 @@ function Safari() {
                 if (!self.fullNPC && self.npcBattle && move.type === "Normal" && targetSide !== 1) {
                     var normalSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicNormal");
                     if (normalSkill) {
-                        dmg *= (1 + normalSkill.rate / 100);
+                        dmg *= Math.ceil(1 + normalSkill.rate / 100);
                         out.push("<b>[{0}'s {1}]</b> {2}'s Normal-type attack dealt {3}% more damage!".format(poke(normalSkill.id), normalSkill.name, poke(user.id), normalSkill.rate));
                     }
                 }
@@ -24882,7 +24882,7 @@ function Safari() {
                 if (!self.fullNPC && self.npcBattle && typeMultiplier < 1 && targetSide === 1) {
                     var damageResistSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicSteel");
                     if (damageResistSkill) {
-                        dmg *= (1 - damageResistSkill.rate3 / 100);
+                        dmg *= Math.ceil(1 - damageResistSkill.rate3 / 100);
                         out.push("<b>[{0}'s {1}]</b> The damage of {2}'s attack by was reduced by {3}%!".format(poke(damageResistSkill.id), damageResistSkill.name, poke(user.id), damageResistSkill.rate3));
                     }
                 }
