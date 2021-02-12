@@ -37973,7 +37973,11 @@ function Safari() {
         	while (!(found)) {
         		newAttack = damaging.random();
             	l1 = lookupMoveLearners(newAttack);
-            	l2 = removeNonDuplicates(existingPool.concat(l1));
+            	if (existingPool.length == 0) {
+            		l2 = [].concat(l1);
+            	} else {
+					l2 = removeNonDuplicates(existingPool.concat(l1));
+				}
             	count++;
             	if (count > (300 - (j * 50)) || l2.length < 6) {
             		found = true;
@@ -37991,12 +37995,16 @@ function Safari() {
             		found = true;
             	}
             	if (found) {
-            		sys.sendMessage(sys.id("Miki Sayaka"), "Found move " + newAttack + " after " + count + " loops with learning length " + l2.length + ".", staffchannel);
+            		//sys.sendMessage(sys.id("Miki Sayaka"), "Found move " + newAttack + " after " + count + " loops with learning length " + l2.length + ".", staffchannel);
             		break;
             	}
         	}
         	lastLength = l2.length;
-        	existingPool = removeNonDuplicates(existingPool.concat(l1));
+        	if (existingPool.length == 0) {        	
+				existingPool = existingPool.concat(l1);
+        	} else {
+				existingPool = removeNonDuplicates(existingPool.concat(l1));
+        	}
         	atks.push(newAttack);
 			damaging.splice(damaging.indexOf(newAttack), 1);
         	j--;
