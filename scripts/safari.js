@@ -32506,27 +32506,28 @@ function Safari() {
             safaribot.sendMessage(src, "Announcer: You need at least 6 Pokémon in your party to challenge Celebrities!", safchan);
             return;
         }
-        
-        if (difficulty < 0) {
-            for (var i in player.party) {
-                if (getBST(player.party[i]) > 480 && (opt3 !== "bypass" && SESSION.channels(safchan).isChannelOwner(src))) {
-                    safaribot.sendMessage(src, "Announcer: For Easy level difficulty, you cannot use Pokémon with a Base Stat Total above 480!", safchan);
-                    return;
-                }
-            }
-            if (player.costume !== "preschooler") {
-                safaribot.sendMessage(src, "Announcer: Sorry! Only Preschoolers can do Easy level difficulty!", safchan);
-            }
-        }
-        if (difficulty < 2) {
-            for (var i in player.party) {
-                if (getBST(player.party[i]) > 640) {
-                    safaribot.sendMessage(src, "Announcer: For Normal and Hard level difficulties, you cannot use Pokémon with a Base Stat Total above 640!", safchan);
-                    return;
-                }
-            }
-        }
 
+        if (opt3 !== "bypass" || !SESSION.channels(safchan).isChannelOwner(src)) {
+            if (difficulty < 0) {
+                for (var i in player.party) {
+                    if (getBST(player.party[i]) > 480) {
+                        safaribot.sendMessage(src, "Announcer: For Easy level difficulty, you cannot use Pokémon with a Base Stat Total above 480!", safchan);
+                        return;
+                    }
+                }
+                if (player.costume !== "preschooler") {
+                    safaribot.sendMessage(src, "Announcer: Sorry! Only Preschoolers can do Easy level difficulty!", safchan);
+                }
+            }
+            if (difficulty < 2) {
+                for (var i in player.party) {
+                    if (getBST(player.party[i]) > 640) {
+                        safaribot.sendMessage(src, "Announcer: For Normal and Hard level difficulties, you cannot use Pokémon with a Base Stat Total above 640!", safchan);
+                        return;
+                    }
+                }
+            }
+        }
         var postBattle = function(name, isWinner, hpLeft, args, viewers, extraArgs) {
             var player = getAvatarOff(name), e;
             var id = sys.id(name);
