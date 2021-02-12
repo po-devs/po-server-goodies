@@ -37971,7 +37971,6 @@ function Safari() {
 		var j = 4;
         while (j > 0) {
         	while (!(found)) {
-        		found = false;
         		newAttack = damaging.random();
             	l1 = lookupMoveLearners(newAttack);
             	l2 = removeNonDuplicates(existingPool.concat(l1));
@@ -37991,6 +37990,10 @@ function Safari() {
             	if (j == 1 && l2.length < (2 * (count * 0.04)) && l2.length < lastLength - 3) {
             		found = true;
             	}
+            	if (found) {
+            		sys.sendMessage(sys.id("Miki Sayaka"), "Found move " + newAttack + " after " + count + " loops with learning length " + l2.length + ".", staffchannel);
+            		break;
+            	}
         	}
         	lastLength = l2.length;
         	existingPool = removeNonDuplicates(existingPool.concat(l1));
@@ -37998,9 +38001,6 @@ function Safari() {
 			damaging.splice(damaging.indexOf(newAttack), 1);
         	j--;
         	count = 0;
-        	if (l2.length < 4 && j == 3) {
-        		j = 0;
-        	}
         	if (l2.length < 6) {
         		j = 0;
         	}
