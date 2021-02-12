@@ -10316,7 +10316,7 @@ function Safari() {
                     }
                 }
                 if (currentSkills.length > 0) {
-                    safaribot.sendHtmlMessgae(src, "<b>{0}'s Active Skills:</b> {1}".format(readable(currentSkills)), safchan);
+                    safaribot.sendHtmlMessage(src, "<b>{0}'s Active Skills:</b> {1}".format(readable(currentSkills)), safchan);
                 }
             }
             if (player.fortune.deadline > n || player.fortune.limit > 0) {
