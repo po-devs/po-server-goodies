@@ -24545,14 +24545,6 @@ function Safari() {
                     }
                 }
             }
-            if (isPlayerVsNPC && (this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0)) {
-                var screenExtendSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicPsychic");
-                if (screenExtendSkill) {
-                    this.side1Field.reflect = (this.side1Field.reflect > 0 ? this.side1Field.reflect + screenExtendSkill.rate2 : 0);
-                    this.side1Field.lightscreen = (this.side1Field.lightscreen > 0 ? this.side1Field.lightscreen + screenExtendSkill.rate2 : 0);
-                    out.push("<b>[{0}'s {1}]</b> {2}'s Psychic-type attack extended the duration of your screens by {3}!".format(poke(screenExtendSkill.id), screenExtendSkill.name, poke(user.id), plural(screenExtendSkill.rate2, "turn")));
-                }
-            }
             if (move.haze) {
                 obj = [];
                 switch (move.haze) {
@@ -24637,9 +24629,9 @@ function Safari() {
                 if (dynamaxed) {
                     dmg = Math.ceil(dmg * 0.25);
                 }
-                if (isPlayerVsNPC && targetSide === 2) {
+                if (isPlayerVsNPC && move.type === "Normal" && targetSide !== 1) {
                     var normalSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicNormal");
-                    if (normalSkill && move.type === "Normal") {
+                    if (normalSkill) {
                         dmg *= (1 + normalSkill.rate / 100);
                         out.push("<b>[{0}'s {1}]</b> {2}'s Normal-type attack dealt {3}% more damage!".format(poke(normalSkill.id), normalSkill.name, poke(user.id), normalSkill.rate));
                     }
@@ -24877,7 +24869,15 @@ function Safari() {
                     }
                 }
 
-                if (isPlayerVsNPC && typeMultiplier < 1 && targetSide === 1) {
+                if (isPlayerVsNPC && (this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) && move.type === "Psychic" && targetSide !== 1) {
+                    var screenExtendSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicPsychic");
+                    if (screenExtendSkill) {
+                        this.side1Field.reflect = (this.side1Field.reflect > 0 ? this.side1Field.reflect + screenExtendSkill.rate2 : 0);
+                        this.side1Field.lightscreen = (this.side1Field.lightscreen > 0 ? this.side1Field.lightscreen + screenExtendSkill.rate2 : 0);
+                        out.push("<b>[{0}'s {1}]</b> {2}'s Psychic-type attack extended the duration of your screens by {3}!".format(poke(screenExtendSkill.id), screenExtendSkill.name, poke(user.id), plural(screenExtendSkill.rate2, "turn")));
+                    }
+                }
+                if (isPlayerVsNPC && typeMultiplier < 1 && move.type === "Steel" && targetSide !== 1) {
                     var damageResistSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicSteel");
                     if (damageResistSkill) {
                         dmg *= (1 - damageResistSkill.rate3 / 100);
