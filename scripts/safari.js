@@ -31853,7 +31853,6 @@ function Safari() {
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Idol|||Gave " + translateStuff(skillInfo.activate) + "|||Charged " + skillName + " for " + monName + ", receiving " + skillData[skillKey].uses + " uses for a total of " + player.pokeskills[mon][skillKey].uses + "\n");
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! You now have <b>{0}</b> remaining uses for <b>{1}'s {2}</b>. With this skill by your side, you and your Pokémon will be shining stars! I guarantee it, or my name isn't \"Idol\"!".format(player.pokeskills[mon][skillKey].uses, monName, skillName), safchan);
             sys.sendMessage(src, "", safchan);
-            sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: W-wait, my name isn't really \"Idol\" is it? What IS my name? I-I... Oh no...", safchan);
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: There she goes again{0}.. She'll be alright, this always happens... Just give her some time.".format(link("/quest idol:youfounditcongratsicantbelievethis", ".")), safchan);
         }
