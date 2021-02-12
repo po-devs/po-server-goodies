@@ -37970,9 +37970,10 @@ function Safari() {
 		var j = 4;
         while (j > 0) {
         	while (!(found)) {
+        		found = false;
         		newAttack = damaging.random();
             	l1 = lookupMoveLearners(newAttack);
-            	l2 = removeNonDuplicates(existingPool, l1);
+            	l2 = removeNonDuplicates(existingPool.concat(l1));
             	count++;
             	if (count > (300 - (j * 50)) || l2.length < 6) {
             		found = true;
@@ -37995,6 +37996,7 @@ function Safari() {
         	atks.push(newAttack);
 			damaging.splice(damaging.indexOf(newAttack), 1);
         	j--;
+        	count = 0;
         	if (l2.length < 4 && j == 3) {
         		j = 0;
         	}
