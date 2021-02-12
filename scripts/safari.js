@@ -10308,7 +10308,7 @@ function Safari() {
                 var activeSkills = getActiveSkills(player.party[i], player);
                 
                 activeSkills = activeSkills.map(function(e) {
-                    return link("/quest idol:charge:" + player.party[i] + ":" + skillData[e].name, skillData[e].name) + " [" + plural(player.pokeskills[player.party[i]][skillKey].uses, "use") + "]";
+                    return link("/quest idol:charge:" + player.party[i] + ":" + skillData[e].name, skillData[e].name) + " [" + plural(player.pokeskills[player.party[i]][e].uses, "use") + "]";
                 });
                 
                 if (activeSkills.length > 0) {
@@ -31534,7 +31534,7 @@ function Safari() {
                     activeSkills = activeSkills.map(function(e) {
                         return link("/quest idol:charge:" + page[i] + ":" + skillData[e].name, skillData[e].name);
                     });
-                    safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks:" + page[i], poke(parseInt(page[i]))) + (activeSkills.length > 0 ? " [" + readable(activeSkills) + "]" : ""), safchan);
+                    safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks:" + page[i], poke(parseInt(page[i]))) + (activeSkills.length > 0 ? " [Active: " + readable(activeSkills) + "]" : ""), safchan);
                     
                     if (i === page.length-1) {
                         var pageControls = (page.contains(keys[0]) ? "" : link("/quest idol:showunlocks:all:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest idol:showunlocks:all:" + (pageNum+1), "«Next Page»"));
