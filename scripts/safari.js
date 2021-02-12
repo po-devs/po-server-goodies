@@ -22380,16 +22380,24 @@ function Safari() {
             }
             
             if (!this.fullNPC && this.npcBattle && this.turn === 0) { // start of battle
-                var finaleSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "finale");
                 var restoredHealth = 0;
-                if (finaleSkill) {
-                    for (var i = 0; i < this.originalTeam1.length; i++) {
-                        if (this.originalTeam1[i].hp <= 0) { // if fainted, don't heal
-                            continue;
+                var partyFullHealth = false;
+                for (var i = 0; i < this.originalTeam1.length; i++) {
+                    if (this.originalTeam1[i].hp < this.originalTeam1[i].maxhp) {
+                        partyFullHealth = true;
+                    }
+                }
+                if (!partyFullHealth) {
+                    var finaleSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "finale");
+                    if (finaleSkill) {
+                        for (i = 0; i < this.originalTeam1.length; i++) {
+                            if (this.originalTeam1[i].hp <= 0) { // if fainted, don't heal
+                                continue;
+                            }
+                            restoredHealth = Math.round(this.originalTeam1[i].maxhp * finaleSkill.rate / 100);
+                            this.originalTeam1[i].hp = Math.min(this.originalTeam1[i].maxhp, this.originalTeam1[i].hp + restoredHealth);
+                            this.sendToViewers("<b>[{0}'s {1}]</b> {2}'s {3} restored {4} HP!".format(poke(finaleSkill.id), finaleSkill.name, this.name1, poke(this.originalTeam1[i].id), restoredHealth));
                         }
-                        restoredHealth = this.originalTeam1[i].maxhp * finaleSkill.rate / 100;
-                        this.originalTeam1[i].hp = Math.min(this.originalTeam1[i].maxhp, this.originalTeam1[i].hp + restoredHealth);
-                        this.sendToViewers("<b>[{0}'s {1}]</b> {2}'s {3} restored {4} HP!".format(poke(finaleSkill.id), finaleSkill.name, this.name1, poke(this.originalTeam1[i].id), restoredHealth));
                     }
                 }
             }
@@ -24629,7 +24637,7 @@ function Safari() {
                 if (dynamaxed) {
                     dmg = Math.ceil(dmg * 0.25);
                 }
-                if (isPlayerVsNPC && targetSide === 1) {
+                if (isPlayerVsNPC && targetSide === 2) {
                     var normalSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicNormal");
                     if (normalSkill && move.type === "Normal") {
                         dmg *= (1 + normalSkill.rate / 100);
