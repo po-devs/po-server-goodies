@@ -25424,11 +25424,11 @@ function Safari() {
             if (!this.isImmuneTo(target.id, move.status)) {
                 if (["sleep", "freeze"].contains(move.status) === false || this.countCondition(oppparty, move.status) === 0) {
                     // skill effect placed here to ensure all other checks for the status have passed other than statusChance. this avoids activating the skill in vain if the effect would have been prevented for any other reason anyway
-                    if (!this.fullNPC && this.npcBattle && targetSide === 1) {
+                    if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() === this.name1) { // don't use targetSide since moves from "other" category have targetSide = 0
                         var statusList = ["sleep", "paralyzed", "burn", "freeze", "poison"];
-                        var skillDefence = ["basicFairy", "basicGround", "basicWater", "basicFire", "basicSteel"];
+                        var statusDefence = ["basicFairy", "basicGround", "basicWater", "basicFire", "basicSteel"];
                         
-                        var defenceSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, skillDefence[statusList.indexOf(move.status)]);
+                        var defenceSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, statusDefence[statusList.indexOf(move.status)]);
                         if (defenceSkill) {
                             if (move.statusChance) {
                                 move.statusChance -= (defenceSkill.rate2 / 100);
