@@ -1609,7 +1609,8 @@ function Safari() {
         "...Oh, it's just an ad. \"Test your verbosity in " + link("/cjoin Hangman", "#Hangman") + "!\" it says.",
         "Every day you play, you can bait 5 times without experiencing the full cooldown! Isn't that neat?",  
         "Logging in 31 days in a row gives you a Master Ball!",
-        "You can read about the latest Safari updates in the <a href='http://pokemon-online.eu/threads/38977/'>Safari Changelog</a>!"
+        "You can read about the latest Safari updates in the <a href='http://pokemon-online.eu/threads/38977/'>Safari Changelog</a>!",
+        "Having trouble finding asleep? Try /findd Mareep!"
     ];
     var packItems = {
         amulet: 2, crown: 2,
