@@ -8455,7 +8455,7 @@ function Safari() {
             gen = generation(id),
             color = pColor || getPokeColor(id);
 
-		var anyNerf = false;
+        var anyNerf = false;
         if (("excludeTypes" in rules && (rules.excludeTypes.contains(type_1) || rules.excludeTypes.contains(type_2))) ||
         ("minBST" in rules && bst < rules.minBST) ||
         ("maxBST" in rules && bst > rules.maxBST) ||
@@ -8853,7 +8853,7 @@ function Safari() {
 
         var finalChance = Math.max((tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true) {
-        	finalChance = Math.min(50, finalChance);
+            finalChance = Math.min(50, finalChance);
         }
         if (ball == "clone") {
             var maxCloneRate = itemData.clone.bonusRate + (player.costume === "scientist" ? costumeData.scientist.rate : 0) + this.getFortune(player, "scientist", 0);
@@ -38053,51 +38053,51 @@ function Safari() {
         var damagingOriginal = [].concat(damaging);
 
         var type, count = 0, l1 = [], l2 = [], existingPool = [], newAttack, found = false, atks = [], lastLength = 900;
-		var j = 4;
+        var j = 4;
         while (j > 0) {
-        	while (!(found)) {
-        		newAttack = damaging.random();
-            	l1 = lookupMoveLearners(newAttack);
-            	if (existingPool.length == 0) {
-            		l2 = [].concat(l1);
-            	} else {
-					l2 = removeNonDuplicates(existingPool.concat(l1));
-				}
-            	count++;
-            	if (count > (300 - (j * 50)) || l2.length < 6) {
-            		found = true;
-            	}
-            	if (j == 4 && l2.length < 190) {
-            		found = true;
-            	}
-            	if (j == 3 && l2.length < 75 && l2.length < lastLength - 15) {
-            		found = true;
-            	}
-            	if (j == 2 && l2.length < 20 && l2.length < lastLength - 10) {
-            		found = true;
-            	}
-            	if (j == 1 && l2.length < (2 * (count * 0.04)) && l2.length < lastLength - 3) {
-            		found = true;
-            	}
-            	if (found) {
-            		sys.sendMessage(sys.id("Miki Sayaka"), "Found move " + newAttack + " after " + count + " loops with learning length " + l2.length + ".", staffchannel);
-            		break;
-            	}
-        	}
-        	lastLength = l2.length;
-        	if (existingPool.length == 0) {        	
-				existingPool = existingPool.concat(l1);
-        	} else {
-				existingPool = removeNonDuplicates(existingPool.concat(l1));
-        	}
-        	atks.push(newAttack);
-			damaging.splice(damaging.indexOf(newAttack), 1);
-        	j--;
-        	count = 0;
-        	if (l2.length < 6) {
-        		j = 0;
-        	}
-        	found = false;
+            while (!(found)) {
+                newAttack = damaging.random();
+                l1 = lookupMoveLearners(newAttack);
+                if (existingPool.length == 0) {
+                    l2 = [].concat(l1);
+                } else {
+                    l2 = removeNonDuplicates(existingPool.concat(l1));
+                }
+                count++;
+                if (count > (300 - (j * 50)) || l2.length < 6) {
+                    found = true;
+                }
+                if (j == 4 && l2.length < 190) {
+                    found = true;
+                }
+                if (j == 3 && l2.length < 75 && l2.length < lastLength - 15) {
+                    found = true;
+                }
+                if (j == 2 && l2.length < 20 && l2.length < lastLength - 10) {
+                    found = true;
+                }
+                if (j == 1 && l2.length < (2 * (count * 0.04)) && l2.length < lastLength - 3) {
+                    found = true;
+                }
+                if (found) {
+                    sys.sendMessage(sys.id("Miki Sayaka"), "Found move " + newAttack + " after " + count + " loops with learning length " + l2.length + ".", staffchannel);
+                    break;
+                }
+            }
+            lastLength = l2.length;
+            if (existingPool.length == 0) {            
+                existingPool = existingPool.concat(l1);
+            } else {
+                existingPool = removeNonDuplicates(existingPool.concat(l1));
+            }
+            atks.push(newAttack);
+            damaging.splice(damaging.indexOf(newAttack), 1);
+            j--;
+            count = 0;
+            if (l2.length < 6) {
+                j = 0;
+            }
+            found = false;
         }
         atks = atks.map(function(x) {return toColor(moveOff(x), "blue")});
 
@@ -56396,11 +56396,11 @@ function Safari() {
                 if (winners.length > 0) {
                     var list = [];
                     for (var e in reward) {
-                    	if (e == "cashbonus") {
-                    		list.push("$$$");
-                    	} else {
-                    		list.push(reward[e] + " " + itemAlias(e, false, true) + (reward[e] === 1 ? "" : "s"));
-						}
+                        if (e == "cashbonus") {
+                            list.push("$$$");
+                        } else {
+                            list.push(reward[e] + " " + itemAlias(e, false, true) + (reward[e] === 1 ? "" : "s"));
+                        }
                     }
                     if (list.length < 1) {
                         list.push("a prize");
