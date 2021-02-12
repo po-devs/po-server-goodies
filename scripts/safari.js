@@ -10304,6 +10304,21 @@ function Safari() {
             if (player.helds[0] == "9") {
                 safaribot.sendHtmlMessage(src, "<b>Current Petaya Combo:</b> " + player.berries.petayaCombo, safchan);
             }
+            for (var i = 0; i < player.party.length; i++) {
+                var currentSkills = [];
+                var unlockedSkills = getUnlockedSkills(player.party[i], player.idnum);
+                if (unlockedSkills.length > 0) {
+                    for (var j = 0; j < unlockedSkills.length; j++) {
+                        var skillKey = unlockedSkills[j];
+                        if (!safari.playerHasActiveSkill(player, player.party[i], skillKey))
+                            continue;
+                        currentSkills.push("{0} [{1}]".format(link("/quest idol:" + "charge:" + player.party[i] + ":" + skillData[skillKey].name, skillData[skillKey].name), plural(player.pokeskills[player.party[i]][skillKey].uses, "use")));
+                    }
+                }
+                if (currentSkills.length > 0) {
+                    safaribot.sendHtmlMessgae(src, "<b>{0}'s Active Skills:</b> {1}".format(readable(currentSkills)), safchan);
+                }
+            }
             if (player.fortune.deadline > n || player.fortune.limit > 0) {
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("cookie") + "'s Effect:</b> \"" + this.fortuneDescription(player.fortune) + "\"!", safchan);
             }
@@ -24479,6 +24494,7 @@ function Safari() {
                     out.push(name + " became the center of attention!");
                 }
             }
+            
             if (move.reflect) {
                 if (isP1 || isP3) {
                     if (this.side1Field.reflect > 0) {
@@ -24523,6 +24539,14 @@ function Safari() {
                         }
                         out.push("Light Screen was put up on " + user.owner + "'s side of the field!");
                     }
+                }
+            }
+            if (isPlayerVsNPC && (this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0)) {
+                var screenExtendSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicPsychic");
+                if (screenExtendSkill) {
+                    this.side1Field.reflect = (this.side1Field.reflect > 0 ? this.side1Field.reflect + screenExtendSkill.rate2 : 0);
+                    this.side1Field.lightscreen = (this.side1Field.lightscreen > 0 ? this.side1Field.lightscreen + screenExtendSkill.rate2 : 0);
+                    out.push("<b>[{0}'s {1}]</b> {2}'s Psychic-type attack extended the duration of your screens by {3}!".format(poke(screenExtendSkill.id), screenExtendSkill.name, poke(user.id), plural(screenExtendSkill.rate2, "turn"));
                 }
             }
             if (move.haze) {
@@ -24609,7 +24633,7 @@ function Safari() {
                 if (dynamaxed) {
                     dmg = Math.ceil(dmg * 0.25);
                 }
-                if (!this.fullNPC && this.npcBattle) {
+                if (isPlayerVsNPC) {
                     var normalSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicNormal");
                     if (normalSkill && move.type === "Normal") {
                         dmg *= (1 + normalSkill.rate / 100);
@@ -24629,11 +24653,11 @@ function Safari() {
                         } else {
                             if (move.type == "Fire") {
                                 sdmg *= 1.5;
-                                if (!this.fullNPC && this.npcBattle) {
-                                    var fireSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFire");
-                                    if (fireSkill) {
-                                        sdmg *= (1 + fireSkill.rate / 100);
-                                        out.push("<b>[{0}'s {1}]</b> {2}'s Fire-type attack dealt {3}% more damage to the Ice Shield!".format(poke(fireSkill.id), fireSkill.name, poke(user.id), fireSkill.rate));
+                                if (isPlayerVsNPC) {
+                                    var antiShieldSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFire");
+                                    if (antiShieldSkill) {
+                                        sdmg *= (1 + antiShieldSkill.rate / 100);
+                                        out.push("<b>[{0}'s {1}]</b> {2}'s Fire-type attack dealt {3}% more damage to the Ice Shield!".format(poke(antiShieldSkill.id), antiShieldSkill.name, poke(user.id), antiShieldSkill.rate));
                                     }
                                 }
                             }
@@ -24652,6 +24676,13 @@ function Safari() {
                         } else {
                             if (move.type == "Water") {
                                 sdmg *= 1.5;
+                                if (isPlayerVsNPC) {
+                                    var antiShieldSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicWater");
+                                    if (antiShieldSkill) {
+                                        sdmg *= (1 + antiShieldSkill.rate / 100);
+                                        out.push("<b>[{0}'s {1}]</b> {2}'s Water-type attack dealt {3}% more damage to the Sludge Shield!".format(poke(antiShieldSkill.id), antiShieldSkill.name, poke(user.id), antiShieldSkill.rate));
+                                    }
+                                }
                             }
                             self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
@@ -24668,6 +24699,13 @@ function Safari() {
                         } else {
                             if (move.type == "Fighting") {
                                 sdmg *= 1.5;
+                                if (isPlayerVsNPC) {
+                                    var antiShieldSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFighting");
+                                    if (antiShieldSkill) {
+                                        sdmg *= (1 + antiShieldSkill.rate / 100);
+                                        out.push("<b>[{0}'s {1}]</b> {2}'s Fighting-type attack dealt {3}% more damage to the Metal Shield!".format(poke(antiShieldSkill.id), antiShieldSkill.name, poke(user.id), antiShieldSkill.rate));
+                                    }
+                                }
                             }
                             self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
@@ -24684,6 +24722,13 @@ function Safari() {
                         } else {
                             if (move.type == "Fairy") {
                                 sdmg *= 1.5;
+                                if (isPlayerVsNPC) {
+                                    var antiShieldSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFairy");
+                                    if (antiShieldSkill) {
+                                        sdmg *= (1 + antiShieldSkill.rate / 100);
+                                        out.push("<b>[{0}'s {1}]</b> {2}'s Fairy-type attack dealt {3}% more damage to the Draco Shield!".format(poke(antiShieldSkill.id), antiShieldSkill.name, poke(user.id), antiShieldSkill.rate));
+                                    }
+                                }
                             }
                             self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
@@ -24700,6 +24745,13 @@ function Safari() {
                         } else {
                             if (move.type == "Ground") {
                                 sdmg *= 1.5;
+                                if (isPlayerVsNPC) {
+                                    var antiShieldSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicGround");
+                                    if (antiShieldSkill) {
+                                        sdmg *= (1 + antiShieldSkill.rate / 100);
+                                        out.push("<b>[{0}'s {1}]</b> {2}'s Ground-type attack dealt {3}% more damage to the Electro Shield!".format(poke(antiShieldSkill.id), antiShieldSkill.name, poke(user.id), antiShieldSkill.rate));
+                                    }
+                                }
                             }
                             self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
@@ -24716,6 +24768,13 @@ function Safari() {
                         } else {
                             if (move.type == "Psychic") {
                                 sdmg *= 1.5;
+                                if (isPlayerVsNPC) {
+                                    var antiShieldSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicPsychic");
+                                    if (antiShieldSkill) {
+                                        sdmg *= (1 + antiShieldSkill.rate / 100);
+                                        out.push("<b>[{0}'s {1}]</b> {2}'s Psychic-type attack dealt {3}% more damage to the Genesis Shield!".format(poke(antiShieldSkill.id), antiShieldSkill.name, poke(user.id), antiShieldSkill.rate));
+                                    }
+                                }
                             }
                             self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
@@ -24814,6 +24873,13 @@ function Safari() {
                     }
                 }
 
+                if (isPlayerVsNPC && typeMultiplier < 1) {
+                    var damageResistSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicSteel");
+                    if (damageResistSkill) {
+                        dmg *= (1 - damageResistSkill.rate3 / 100);
+                        out.push("<b>[{0}'s {1}]</b> {2}'s Steel-type attack reduced the damage of the opponent's attack by {3}%!".format(poke(damageResistSkill.id), damageResistSkill.name, poke(user.id), damageResistSkill.rate3));
+                    }
+                }
                 if (dmg > target.hp) {
                     dmg = target.hp;
                 }
@@ -25348,39 +25414,57 @@ function Safari() {
     Battle2.prototype.afterDamage = function(user, move, target, oppparty, damaging, targetSide, out) {
         var fainted = (target.hp <= 0 ? true : false);
         var tname = target.owner + "'s " + poke(target.id);
-        if (!fainted && target.condition === "none" && move.status && (!move.statusChance || chance(move.statusChance)) && (!(move.status === "sleep" && (!hasType(target.id, "Fying") && this.select && this.select.electricterrain) && (!(this.select && this.select.mistyterrain && (!hasType(target.id, "Flying"))))))) {
+        if (!fainted && target.condition === "none" && move.status && (!(move.status === "sleep" && (!hasType(target.id, "Flying") && this.select && this.select.electricterrain) && (!(this.select && this.select.mistyterrain && (!hasType(target.id, "Flying"))))))) {
             if (!this.isImmuneTo(target.id, move.status)) {
                 if (["sleep", "freeze"].contains(move.status) === false || this.countCondition(oppparty, move.status) === 0) {
-                    if (damaging && this.select && this.select.genesisshield && this.selectData.shieldHP > 0 && targetSide === 2) {
-                        out.push("The secondary effects were suppressed by the shield.");
+                    // skill effect placed here to ensure all other checks for the status have passed other than statusChance. this avoids activating the skill in vain if the effect would have been prevented for any other reason anyway
+                    if (!this.fullNPC && this.npcBattle && targetSide === 1) {
+                        var statusList = ["sleep", "paralyzed", "burn", "freeze", "poison"];
+                        var skillDefence = ["basicFairy", "basicGround", "basicWater", "basicFire", "basicSteel"];
+                        
+                        var defenceSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, skillDefence[statusList.indexOf(move.status)]);
+                        if (defenceSkill) {
+                            if (move.statusChance) {
+                                move.statusChance -= (defenceSkill.rate2 / 100);
+                            }
+                            else { // no statusChance means 100% status rate, so assign a reduced statusChance
+                                move.statusChance = 1 - (defenceSkill.rate2 / 100);
+                            }
+                            out.push("<b>[{0}'s {1}]</b> {2}'s {3}-type attack reduced the {4} chance by {5}%!".format(poke(defenceSkill.id), defenceSkill.name, poke(user.id), move.type, cap(move.status), defenceSkill.rate2));
+                        }
                     }
-                    else {
-                        target.condition = move.status;
-                        target.conditionDuration = sys.rand(0, 3);
-                        if (move.status == "sleep" && this.select && this.select.extendedSleep) {
-                            target.conditionDuration++;
+                    if (!move.statusChance || chance(move.statusChance)) {
+                        if (damaging && this.select && this.select.genesisshield && this.selectData.shieldHP > 0 && targetSide === 2) {
+                            out.push("The secondary effects were suppressed by the shield.");
                         }
-                        var supressed = false;
-                        if (targetSide == 1 && this.skills["1"].pastelVeil && move.status == "poison") {
-                            if (this.skills["1"].pastelVeil[0] == target.id + "" || this.skills["1"].pastelVeil[1] == "Ally") {
-                                out.push(tname + " was veiled from the poison!");
-                                supressed = true;
+                        else {
+                            target.condition = move.status;
+                            target.conditionDuration = sys.rand(0, 3);
+                            if (move.status == "sleep" && this.select && this.select.extendedSleep) {
+                                target.conditionDuration++;
                             }
-                        }
-                        if (!supressed) {
-                            if (move.status == "poison" && (hasType(user.id, "Poison"))) {
-                                target.badlyPoisoned = 1;
-                                out.push(tname + " got badly poisoned!");
+                            var supressed = false;
+                            if (targetSide == 1 && this.skills["1"].pastelVeil && move.status == "poison") {
+                                if (this.skills["1"].pastelVeil[0] == target.id + "" || this.skills["1"].pastelVeil[1] == "Ally") {
+                                    out.push(tname + " was veiled from the poison!");
+                                    supressed = true;
+                                }
                             }
-                            else {
-                                var conditionVerb = {
-                                    sleep: "fell asleep",
-                                    paralyzed: "was paralyzed",
-                                    burn: "got burned",
-                                    freeze: "was frozen solid",
-                                    poison: "got poisoned"
-                                };
-                                out.push(tname + " " + conditionVerb[move.status] + "!");
+                            if (!supressed) {
+                                if (move.status == "poison" && (hasType(user.id, "Poison"))) {
+                                    target.badlyPoisoned = 1;
+                                    out.push(tname + " got badly poisoned!");
+                                }
+                                else {
+                                    var conditionVerb = {
+                                        sleep: "fell asleep",
+                                        paralyzed: "was paralyzed",
+                                        burn: "got burned",
+                                        freeze: "was frozen solid",
+                                        poison: "got poisoned"
+                                    };
+                                    out.push(tname + " " + conditionVerb[move.status] + "!");
+                                }
                             }
                         }
                     }
@@ -31420,7 +31504,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, link("/quest idol:showallspecial", "«List of Special Skills»") + " " + link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
         else if (d1 === "aboutbattle") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Skills are <b>passive benefits</b> that apply when that Pokémon is in your party during a Rotation Battle. Some skills will benefit not just the skill owner, but also the entire party.", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Skills are <b>passive benefits</b> that apply when that Pokémon is in your party during an NPC Rotation Battle. Some skills will benefit not just the skill owner, but also the entire party.", safchan);
             safaribot.sendHtmlMessage(src, "Idol: Party skills like these will work even if they are not among the 3 Pokémon you chose for that particular battle. However, they stop working if that Pokémon has fainted.", safchan);
             safaribot.sendHtmlMessage(src, "Idol: Note that multiples of the same skill <b>do not stack</b>! If you have multiples of the same Basic skill, and one is boosted due to being a single-typed Pokémon, the boosted version will take precedence, and party order will also determine which of the same skill is used first.", safchan);
             safaribot.sendHtmlMessage(src, link("/quest idol:menu", "«Back to Menu»"), safchan);
@@ -32371,6 +32455,8 @@ function Safari() {
         }
         var opt = data.length > 0 ? data[0].toLowerCase() : "*";
         var opt2 = data.length > 1 ? data[1].toLowerCase() : "*";
+        var opt3 = data.length > 2 ? data[2].toLowerCase() : "*";
+        
         if (opt !== "start") {
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, "Announcer: Welcome to Celebrity Battles! I am your host, the Announcer!", safchan);
@@ -32407,10 +32493,6 @@ function Safari() {
         if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid", "baking"])) {
             return;
         }
-        if (contestCooldown <= 0) {
-            safaribot.sendHtmlMessage(src, "Announcer: You cannot battle right before a contest is about to start!", safchan);
-            return;
-        }
         if (player.party.length < 6) {
             safaribot.sendMessage(src, "Announcer: You need at least 6 Pokémon in your party to challenge Celebrities!", safchan);
             return;
@@ -32425,7 +32507,7 @@ function Safari() {
         }
         if (difficulty < 0) {
             for (var i in player.party) {
-                if (getBST(player.party[i]) > 480) {
+                if (getBST(player.party[i]) > 480 && (opt3 !== "bypass" && SESSION.channels(safchan).isChannelOwner(src))) {
                     safaribot.sendMessage(src, "Announcer: For Easy level difficulty, you cannot use Pokémon with a Base Stat Total above 480!", safchan);
                     return;
                 }
@@ -34583,7 +34665,7 @@ function Safari() {
     this.getSkillDescription = function(key) {
         if (key in skillData) {
             var skill = skillData[key];
-            return skill.description.format(skill.rate[0], skill.rate[1], skill.rate2[0], skill.rate2[1]);
+            return skill.description.format(skill.rate[0], skill.rate[1], skill.rate2[0], skill.rate2[1], skill.rate3[0], skill.rate3[1]);
         }
         return false;
     }
@@ -34692,7 +34774,8 @@ function Safari() {
         var name = skillInfo.name,
             desc = safari.getSkillDescription(skillKey);
             rate = skillInfo.rate,
-            rate2 = skillInfo.rate2;
+            rate2 = skillInfo.rate2,
+            rate3 = skillInfo.rate3 || []; // this is optional
 
         skill.uses--;
 
@@ -34710,8 +34793,9 @@ function Safari() {
         
         rate = rate[skill.level - 1];
         rate2 = rate2[skill.level - 1];
+        rate3 = rate3[skill.level - 1];
         
-        return { rate: rate, rate2: rate2, description: desc, name: name, id: pokeId };
+        return { rate: rate, rate2: rate2, rate3: rate3, description: desc, name: name, id: pokeId };
     };
     
     var bakingData = {
