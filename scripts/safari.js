@@ -24629,6 +24629,8 @@ function Safari() {
                 if (dynamaxed) {
                     dmg = Math.ceil(dmg * 0.25);
                 }
+                
+                safaribot.sendMessage(sys.id("ripper roo"), self.name1 + " && " + self.originalTeam1);
                 if (isPlayerVsNPC && move.type === "Normal" && targetSide !== 1) {
                     var normalSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicNormal");
                     if (normalSkill) {
