@@ -10316,7 +10316,7 @@ function Safari() {
                     }
                 }
                 if (currentSkills.length > 0) {
-                    safaribot.sendHtmlMessage(src, "<b>{0}'s Active Skills:</b> {1}".format(readable(currentSkills)), safchan);
+                    safaribot.sendHtmlMessage(src, "<b>{0}'s Active Skills:</b> {1}".format(player.party[i], readable(currentSkills)), safchan);
                 }
             }
             if (player.fortune.deadline > n || player.fortune.limit > 0) {
@@ -34775,7 +34775,7 @@ function Safari() {
             desc = safari.getSkillDescription(skillKey);
             rate = skillInfo.rate,
             rate2 = skillInfo.rate2,
-            rate3 = skillInfo.rate3 || []; // this is optional
+            rate3 = skillInfo.rate3 || [];
 
         skill.uses--;
 
