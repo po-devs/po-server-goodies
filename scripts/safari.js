@@ -24630,8 +24630,8 @@ function Safari() {
                     dmg = Math.ceil(dmg * 0.25);
                 }
                 
-                safaribot.sendMessage(sys.id("ripper roo"), self.name1 + " && " + self.originalTeam1 + " && " + isPlayerVsNPC + " && " + move.type + " && " + targetSide, safchan);
-                if (isPlayerVsNPC && move.type === "Normal" && targetSide !== 1) {
+                //safaribot.sendMessage(sys.id("ripper roo"), self.name1 + " && " + self.originalTeam1 + " && " + isPlayerVsNPC + " && " + move.type + " && " + targetSide, safchan);
+                if (!self.fullNPC && self.npcBattle && move.type === "Normal" && targetSide !== 1) {
                     var normalSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicNormal");
                     if (normalSkill) {
                         dmg *= (1 + normalSkill.rate / 100);
@@ -24651,7 +24651,7 @@ function Safari() {
                         } else {
                             if (move.type == "Fire") {
                                 sdmg *= 1.5;
-                                if (isPlayerVsNPC) {
+                                if (!self.fullNPC && self.npcBattle) {
                                     var antiShieldSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicFire");
                                     if (antiShieldSkill) {
                                         sdmg *= (1 + antiShieldSkill.rate / 100);
@@ -24674,7 +24674,7 @@ function Safari() {
                         } else {
                             if (move.type == "Water") {
                                 sdmg *= 1.5;
-                                if (isPlayerVsNPC) {
+                                if (!self.fullNPC && self.npcBattle) {
                                     var antiShieldSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicWater");
                                     if (antiShieldSkill) {
                                         sdmg *= (1 + antiShieldSkill.rate / 100);
@@ -24697,7 +24697,7 @@ function Safari() {
                         } else {
                             if (move.type == "Fighting") {
                                 sdmg *= 1.5;
-                                if (isPlayerVsNPC) {
+                                if (!self.fullNPC && self.npcBattle) {
                                     var antiShieldSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicFighting");
                                     if (antiShieldSkill) {
                                         sdmg *= (1 + antiShieldSkill.rate / 100);
@@ -24720,7 +24720,7 @@ function Safari() {
                         } else {
                             if (move.type == "Fairy") {
                                 sdmg *= 1.5;
-                                if (isPlayerVsNPC) {
+                                if (!self.fullNPC && self.npcBattle) {
                                     var antiShieldSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicFairy");
                                     if (antiShieldSkill) {
                                         sdmg *= (1 + antiShieldSkill.rate / 100);
@@ -24743,7 +24743,7 @@ function Safari() {
                         } else {
                             if (move.type == "Ground") {
                                 sdmg *= 1.5;
-                                if (isPlayerVsNPC) {
+                                if (!self.fullNPC && self.npcBattle) {
                                     var antiShieldSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicGround");
                                     if (antiShieldSkill) {
                                         sdmg *= (1 + antiShieldSkill.rate / 100);
@@ -24766,7 +24766,7 @@ function Safari() {
                         } else {
                             if (move.type == "Psychic") {
                                 sdmg *= 1.5;
-                                if (isPlayerVsNPC) {
+                                if (!self.fullNPC && self.npcBattle) {
                                     var antiShieldSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicPsychic");
                                     if (antiShieldSkill) {
                                         sdmg *= (1 + antiShieldSkill.rate / 100);
@@ -24871,7 +24871,7 @@ function Safari() {
                     }
                 }
 
-                if (isPlayerVsNPC && (self.side1Field.reflect > 0 || self.side1Field.lightscreen > 0) && move.type === "Psychic" && targetSide !== 1) {
+                if (!self.fullNPC && self.npcBattle && (self.side1Field.reflect > 0 || self.side1Field.lightscreen > 0) && move.type === "Psychic" && targetSide !== 1) {
                     var screenExtendSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicPsychic");
                     if (screenExtendSkill) {
                         self.side1Field.reflect = (self.side1Field.reflect > 0 ? self.side1Field.reflect + screenExtendSkill.rate2 : 0);
@@ -24879,7 +24879,7 @@ function Safari() {
                         out.push("<b>[{0}'s {1}]</b> {2}'s Psychic-type attack extended the duration of your screens by {3}!".format(poke(screenExtendSkill.id), screenExtendSkill.name, poke(user.id), plural(screenExtendSkill.rate2, "turn")));
                     }
                 }
-                if (isPlayerVsNPC && typeMultiplier < 1 && move.type === "Steel" && targetSide !== 1) {
+                if (!self.fullNPC && self.npcBattle && typeMultiplier < 1 && move.type === "Steel" && targetSide !== 1) {
                     var damageResistSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicSteel");
                     if (damageResistSkill) {
                         dmg *= (1 - damageResistSkill.rate3 / 100);
