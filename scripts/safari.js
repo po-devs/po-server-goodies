@@ -25445,7 +25445,7 @@ function Safari() {
             if (!this.isImmuneTo(target.id, move.status)) {
                 if (["sleep", "freeze"].contains(move.status) === false || this.countCondition(oppparty, move.status) === 0) {
                     // skill effect placed here to ensure all other checks for the status have passed other than statusChance. this avoids activating the skill in vain if the effect would have been prevented for any other reason anyway
-                    if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() === this.name1) { // don't use targetSide since moves from "other" category have targetSide = 0
+                    if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() === this.name1.toLowerCase()) { // don't use targetSide since moves from "other" category have targetSide = 0
                         var statusList = ["sleep", "paralyzed", "burn", "freeze", "poison"];
                         var statusDefence = ["basicFairy", "basicGround", "basicWater", "basicFire", "basicSteel"];
                         
@@ -25702,6 +25702,13 @@ function Safari() {
         }
         if (!fainted && move.flinch && chance(move.flinch)) {
             target.flinch = true;
+        }
+        if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && move.type === "Fighting" && !move.brickBreak) { // don't use targetSide since moves from "other" category have targetSide = 0
+            var screenShatterSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFighting");
+            if (screenShatterSkill) {
+                move.brickBreak = true;
+                out.push("<b>[{0}'s {1}]</b> {2}'s Fighting-type attack became able to shatter screens!".format(poke(screenShatterSkill.id), screenShatterSkill.name, poke(user.id));
+            }
         }
         if (move.brickBreak) {
             if (isP1 || isP3) {
