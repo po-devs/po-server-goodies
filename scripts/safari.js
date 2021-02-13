@@ -31384,7 +31384,7 @@ function Safari() {
                     safari.detectiveData[uid+""].solved = true;
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Congratulations! The combination was " + readable(guesses.map(function(x) {return poke(parseInt(x, 10))})) + "! Here is your prize!", safchan);
                     var today = getDay(now());
-                    var grandprize = today > 18657 && today < 18671 ? "@entry,3@prize,25@hdew" : "3@prize,25@hdew";
+                    var grandprize = today > 18657 && today <= 18671 ? "@entry,3@prize,25@hdew" : "3@prize,25@hdew";
                     var g = giveStuff(player, toStuffObj(grandprize));
                     safaribot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "orangered"), safchan);
                     player.records.casesSolved += 1;
@@ -34681,14 +34681,14 @@ function Safari() {
     };
     this.isBasicSkill = function(key) {
         return !!skillData[key].basic;
-    }
+    };
     this.getSkillDescription = function(key) {
         if (key in skillData) {
             var skill = skillData[key];
             return skill.description.format(skill.rate[0], skill.rate[1], skill.rate2[0], skill.rate2[1], skill.rate3[0], skill.rate3[1]);
         }
         return false;
-    }
+    };
     function getUnlockableSkills(pokeId, playerId) {
         var ret = [];
         var playerUnlocks = skillUnlocks[playerId] || {};
