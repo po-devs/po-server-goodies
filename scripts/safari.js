@@ -31752,11 +31752,6 @@ function Safari() {
             }
         }
         else if (d1 === "showallbasic") {
-            if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
-                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry, this feature isn't ready yet. Check back another time!", safchan);
-                return;
-            }
-            
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Here's the list of <b>Basic skills</b> that any Pokémon of that type can learn!", safchan);
             
             for (var i = 0; i < Object.keys(skillData).length; i++) {
@@ -31766,11 +31761,6 @@ function Safari() {
             }
         }
         else if (d1 === "showallspecial") {
-            if (!SESSION.channels(safchan).isChannelOwner(src)) { // REMOVE THIS LATER
-                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry, this feature isn't ready yet. Check back another time!", safchan);
-                return;
-            }
-            
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Here's the list of <b>Special skills</b> that only specific Pokémon can learn!", safchan);
             var keys = Object.keys(skillData).filter(function(e) {
                 return !safari.isBasicSkill(e);
