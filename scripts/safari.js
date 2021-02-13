@@ -16776,6 +16776,7 @@ function Safari() {
         }
         var lim = shop[input.input].limit;
         var playerlim = shop[input.input].playerLimit ? shop[input.input].playerLimit : lim;
+        playerlim = Math.min(lim, playerlim);
         if (fromNPC) {
             if (shop[input.input].hasOwnProperty("purchases") && shop[input.input].hasOwnProperty("playerLimit")) {
                 if (shop[input.input].purchases.hasOwnProperty(player.idnum+"")) {
@@ -16949,6 +16950,7 @@ function Safari() {
         var limitChanged = false;
         if (shop[input.input].limit > 0) {
             shop[input.input].limit -= amount;
+            shop[input.input].limit = Math.max(amount, 0);
             limitChanged = true;
         }
         if (playerlim > 0 && fromNPC) {
