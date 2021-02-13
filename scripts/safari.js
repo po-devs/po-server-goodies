@@ -24936,7 +24936,7 @@ function Safari() {
                             if (splashDamageSkill) {
                                 var splashDamage = Math.ceil(dmg * splashDamageSkill.rate2 / 100);
                                 for (var i = 0; i < validTargets.length; i++) {
-                                    validTargets[i].hp -= dmg;
+                                    validTargets[i].hp -= splashDamage;
                                     validTargets[i].hp = Math.max(1, validTargets[i].hp); // splash damage can't sink an opponent in the back, leave them at 1 hp at minimum
                                     out.push("<b>[{0}'s {1}]</b> {2}'s Rock-type attack dealt {3} damage to the opponent's {4}!".format(poke(splashDamageSkill.id), splashDamageSkill.name, poke(user.id), splashDamage, poke(validTargets[i].id)));
                                 }
@@ -25712,7 +25712,7 @@ function Safari() {
                 var defianted = false;
                 for (e = 0; e < move.nerf.length; e++) {
                     obj = move.nerf[e];
-                    if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase()) {
+                    if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() === this.name1.toLowerCase()) {
                         var nerfDefenceSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicDark");
                         if (nerfDefenceSkill) {
                             obj.nerfChance -= (nerfDefenceSkill.rate2 / 100);
