@@ -25697,11 +25697,40 @@ function Safari() {
         if (!fainted && move.flinch && chance(move.flinch)) {
             target.flinch = true;
         }
-        if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && move.type === "Fighting" && !move.brickBreak && (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0)) { // don't use targetSide since moves from "other" category have targetSide = 0
-            var screenShatterSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFighting");
-            if (screenShatterSkill) {
-                move.brickBreak = true;
-                out.push("<b>[{0}'s {1}]</b> {2}'s Fighting-type attack became able to shatter screens!".format(poke(screenShatterSkill.id), screenShatterSkill.name, poke(user.id)));
+        if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase()) { // don't use targetSide since moves from "other" category have targetSide = 0
+            if (move.type === "Fighting" && !move.brickBreak && (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0)) {
+                var screenShatterSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFighting");
+                if (screenShatterSkill) {
+                    move.brickBreak = true;
+                    out.push("<b>[{0}'s {1}]</b> {2}'s Fighting-type attack became able to shatter screens!".format(poke(screenShatterSkill.id), screenShatterSkill.name, poke(user.id)));
+                }
+            }
+            if (move.type === "Flying" && user.boosts["spe"] < 6) {
+                var speedBoostSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFlying");
+                if (speedBoostSkill) {
+                    user.boosts["spe"] += speedBoostSkill.rate2;
+                    user.boosts["spe"] = Math.min(6, user.boosts["spe"]);
+                    out.push("<b>[{0}'s {1}]</b> {2}'s Flying-type attack boosted its speed by {3}!".format(poke(speedBoostSkill.id), speedBoostSkill.name, poke(user.id), plural(speedBoostSkill.rate2, "stage")));
+                }
+            }
+            if (move.type === "Grass") {
+                var hasStatus = [];
+                for (var i = 0; i < this.team1.length; i++) {
+                    if (this.team1[i].condition !== "none") {
+                        hasStatus.push(this.team1[i]);
+                    }
+                }
+                
+                if (hasStatus.length > 0) {
+                    var aromatherapySkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicGrass");
+                    if (aromatherapySkill) {
+                        var toCure = hasStatus.random();
+                        
+                        toCure.condition = "none";
+                        toCure.badlyPoisoned = 0;
+                        out.push("<b>[{0}'s {1}]</b> {2}'s Grass-type attack cured {3} of its status condition!".format(poke(aromatherapySkill.id), aromatherapySkill.name, poke(user.id), poke(toCure.id)));
+                    }
+                }
             }
         }
         if (move.brickBreak) {
@@ -26763,7 +26792,7 @@ function Safari() {
             freeze: ["Ice"],
             poison: ["Poison", "Steel"]
         };
-        if (this.select && this.select.corrosion) {
+        if (this.select && (this.select.corrosion || this.select.classicTypes)) {
             immunities.poison = ["Poison"];
         }
         for (var i = immunities[condition].length; i--; ) {
