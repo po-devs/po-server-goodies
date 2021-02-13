@@ -14079,9 +14079,9 @@ function Safari() {
 
         commandData = typeNull(commandData).split(":");
 
-        var poke = commandData[0];
+        var pokeInput = commandData[0];
         var evoChoice = commandData[1] || "*";
-        var info = getInputPokemon(poke);
+        var info = getInputPokemon(pokeInput);
         var shiny = info.shiny;
         var num = info.num;
         if (!num) {
