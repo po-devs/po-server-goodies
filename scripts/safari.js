@@ -22404,12 +22404,7 @@ function Safari() {
             
             if (!this.fullNPC && this.npcBattle && this.turn === 0) { // start of battle
                 var restoredHealth = 0;
-                var partyFullHealth = true;
-                for (var i = 0; i < this.originalTeam1.length; i++) {
-                    if (this.originalTeam1[i].hp < this.originalTeam1[i].maxhp) {
-                        partyFullHealth = false;
-                    }
-                }
+                var partyFullHealth = this.originalTeam1.filter(function(e) { return e.hp < e.maxhp }).length === 0;
                 if (!partyFullHealth) {
                     var finaleSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "finale");
                     if (finaleSkill) {
