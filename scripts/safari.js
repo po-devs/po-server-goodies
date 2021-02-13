@@ -11920,7 +11920,7 @@ function Safari() {
             sys.sendMessage(src, "±Quests: Turned in {0} to Journal for a total of {1}. ".format(plural(rec.journalSubmitted, "phоto"), plural(rec.journalPoints, "Photo Point")), safchan);
             sys.sendMessage(src, "±Quests: Cleared {0} and lost {1}. Cleared all of the Gyms {2}, all of the Elite Four {3}, and lost to the Elite Four {4}.".format(plural(rec.gymsCleared, "Gym Battle"), plural(rec.gymsLost, "Gym Battle"), plural(rec.allGymsCleared, "time"), plural(rec.eliteCleared, "time"), plural(rec.eliteLost, "time")), safchan);
             sys.sendMessage(src, "±Quests: Obtained a Celebrity score of {0} on Easy, {1} on Normal, {2} on Hard, {3} on Expert, {4} on Super Expert, and {5} on Abyssal.".format(rec.celebrityScoreEasy, rec.celebrityScore, rec.celebrityScoreHard, rec.celebrityScoreExpert, rec.celebrityScoreSuperExpert, rec.celebrityScoreAbyssal), safchan);
-            sys.sendMessage(src, "±Quests: Unlocked {0} and activated {1} from the Idol.".format(plural(rec.idolUnlocked, "skill"), plural(rec.idolActivated, "skill")), safchan);
+            sys.sendMessage(src, "±Quests: Unlocked {0} and charged skills {1} from the Idol.".format(plural(rec.idolUnlocked, "skill"), plural(rec.idolActivated, "time")), safchan);
             var detectiveStats = "±Quests: Solved {0}" + (rec.fastestCaseSolved > 0 ? " and solved a case with a record time of {1}." : ".");
             sys.sendMessage(src, detectiveStats.format(plural(rec.casesSolved, "Detective case"), timeString(rec.fastestCaseSolved/1000)), safchan);
             sys.sendMessage(src, "±Missions: Cleared {0} for a total of {1}.".format(plural(rec.missionCleared, "mission"), plural(rec.missionPoints, "mission point")), safchan);
