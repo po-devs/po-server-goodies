@@ -25043,7 +25043,7 @@ function Safari() {
                             if (validStats.length > 0) {
                                 var statSpiteSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicGhost");
                                 if (statSpiteSkill) {
-                                    var randStat = validStats.random().shift();
+                                    var randStat = validStats.shuffle().shift();
                                     user.boosts[randStat] -= statSpiteSkill.rate2;
                                     user.boosts[randStat] = Math.max(-6, user.boosts[randStat]);
                                     out.push("<b>[{0}'s {1}]</b> {2}'s ineffective attack caused its {3} to drop by {4}!".format(poke(statSpiteSkill.id), statSpiteSkill.name, poke(user.id), randStat.toUpperCase(), plural(statSpiteSkill.rate2, "stage")));
@@ -25564,12 +25564,7 @@ function Safari() {
                                 target.conditionDuration++;
                             }
                             var supressed = false;
-                            if (targetSide == 1 && this.skills["1"].pastelVeil && move.status == "poison") {
-                                if (this.skills["1"].pastelVeil[0] == target.id + "" || this.skills["1"].pastelVeil[1] == "Ally") {
-                                    out.push(tname + " was veiled from the poison!");
-                                    supressed = true;
-                                }
-                            }
+
                             if (!supressed) {
                                 if (move.status == "poison" && (hasType(user.id, "Poison"))) {
                                     target.badlyPoisoned = 1;
@@ -25717,10 +25712,12 @@ function Safari() {
                 var defianted = false;
                 for (e = 0; e < move.nerf.length; e++) {
                     obj = move.nerf[e];
-                    var nerfDefenceSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicDark");
-                    if (nerfDefenceSkill) {
-                        obj.nerfChance -= (nerfDefenceSkill.rate2 / 100);
-                        out.push("<b>[{0}'s {1}]</b> The stat decrease chance of {2}'s move was reduced by {3}%!".format(poke(nerfDefenceSkill.id), nerfDefenceSkill.name, poke(user.id), nerfDefenceSkill.rate2));
+                    if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase()) {
+                        var nerfDefenceSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicDark");
+                        if (nerfDefenceSkill) {
+                            obj.nerfChance -= (nerfDefenceSkill.rate2 / 100);
+                            out.push("<b>[{0}'s {1}]</b> The stat decrease chance of {2}'s move was reduced by {3}%!".format(poke(nerfDefenceSkill.id), nerfDefenceSkill.name, poke(user.id), nerfDefenceSkill.rate2));
+                        }
                     }
                     if (chance(obj.nerfChance)) {
                         target.boosts[obj.nerfStat] += obj.nerf;
