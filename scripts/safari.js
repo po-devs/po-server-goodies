@@ -50545,7 +50545,7 @@ function Safari() {
             "/tradeblock: To edit your tradeblocked list. You will instantly reject trade requests asking you for an Item/Pokémon you tradeblocked. Pokémon in this list cannot be sold with /sell. To reject all trades, use /trade off.",
             "/evolve: Use a Rare Candy (or candies) to evolve a Pokémon, which will give you Candy Dusts depending on the amount of Rare Candies used*.",
             "/spray: Use a Devolution Spray to devolve a Pokémon*.",
-            "/megastone: Use a Mega Stone to Mega Evolve a Pokémon*.",
+            "/mega [Pokémon*]: Use a Mega Stone to Mega Evolve a Pokémon. Use /mega [Pokémon*]:[X or Y] to choose between Mega Evolutions for species that have multiple.",
             "/gacha: Use a ticket to win a prize!",
             "/finder: Use your item finder to look for items.",
             "/giveitem [Berry Name]:[Party Slot]: Gives a berry to the Pokémon in the specified party slot (1 to 6). Party slot defaults to 1.",
