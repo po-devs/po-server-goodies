@@ -25703,7 +25703,7 @@ function Safari() {
         if (!fainted && move.flinch && chance(move.flinch)) {
             target.flinch = true;
         }
-        if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && move.type === "Fighting" && !move.brickBreak) { // don't use targetSide since moves from "other" category have targetSide = 0
+        if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && move.type === "Fighting" && !move.brickBreak && (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0)) { // don't use targetSide since moves from "other" category have targetSide = 0
             var screenShatterSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFighting");
             if (screenShatterSkill) {
                 move.brickBreak = true;
