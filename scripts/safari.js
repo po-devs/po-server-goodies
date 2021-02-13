@@ -14956,7 +14956,7 @@ function Safari() {
             this.saveGame(player);
             return;
         }*/
-        if (item === "celebrityTicket" || item === "celebrityticket") {
+        if (item.toLowerCase() === "celebrityticket") {
             if (player.balls.celebrityTicket < 1) {
                 safaribot.sendMessage(src, "You don't have any Celebrity Tickets to use!", safchan);
                 return;
@@ -14970,14 +14970,14 @@ function Safari() {
                 cd2 = cd[1];
             }
             if (cd2) {
-                if (["kanto", "johto", "hoenn", "sinnoh", "unova", "galar", "random"].indexOf(cd2) == -1) {
+                if (["kanto", "johto", "hoenn", "sinnoh", "unova", "galar", "random"].indexOf(cd2.toLowerCase()) == -1) {
                     safaribot.sendMessage(src, "You must select a valid region to challenge next! (Kanto, Johto, Hoenn, Sinnoh, Unova, and Galar are valid.)", safchan);
                     return;
                 }
-                if (cd2 == "random") {
+                if (cd2.toLowerCase() == "random") {
                     cd2 = ["kanto", "johto", "hoenn", "sinnoh", "unova", "galar"].random();
                 }
-                player.celebrityRegion = cd2;
+                player.celebrityRegion = cd2.toLowerCase();
             } else {
                 safaribot.sendMessage(src, "You must select a valid region to challenge next! (Kanto, Johto, Hoenn, Sinnoh, Unova, Galar, or Random are valid.)", safchan);
                 return;
