@@ -14077,7 +14077,11 @@ function Safari() {
             return;
         }
 
-        var info = getInputPokemon(commandData);
+        commandData = typeNull(commandData).split(":");
+
+        var poke = commandData[0];
+        var evoChoice = commandData[1] || "*";
+        var info = getInputPokemon(poke);
         var shiny = info.shiny;
         var num = info.num;
         if (!num) {
@@ -14095,12 +14099,29 @@ function Safari() {
             return;
         }
         if (info.input in player.shop) {
-            safaribot.sendMessage(src, "You need to remove this Pokémon from your shop before mega evolving them!", safchan);
+            safaribot.sendMessage(src, "You need to remove this Pokémon from your shop before Mega Evolving them!", safchan);
             return;
         }
 
         var possibleEvo = megaEvolutions[num];
-        var evolveTo = possibleEvo[sys.rand(0, possibleEvo.length)];
+        var evolveTo;
+        
+        if (possibleEvo.length > 1) {
+            if (evoChoice === "*") {
+                safaribot.sendHtmlMessage(src, "This Pokémon has multiple Mega Evolutions! Use {0} to choose the one you want.".format(link("/mega poke:[X or Y]")), safchan);
+                return;
+            }
+            if (["1", "x", possibleEvo[0].toLowerCase()].contains(evoChoice)) {
+                evolveTo = possibleEvo[0];
+            }
+            else if (["2", "y", possibleEvo[1].toLowerCase()].contains(evoChoice)) {
+                evolveTo = possibleEvo[1];
+            }
+        }
+        else {
+            evolveTo = possibleEvo[0];
+        }
+        
         var evolvedId = shiny ? "" + evolveTo : evolveTo;
 
         player.balls.mega -= 1;
