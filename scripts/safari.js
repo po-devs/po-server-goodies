@@ -24645,37 +24645,6 @@ function Safari() {
                     dmg = Math.ceil(dmg * 0.25);
                 }
                 
-                //safaribot.sendMessage(sys.id("ripper roo"), self.name1 + " && " + self.originalTeam1 + " && " + isPlayerVsNPC + " && " + move.type + " && " + targetSide, safchan);
-                if (!self.fullNPC && self.npcBattle && targetSide !== 1) {
-                    if (move.type === "Normal") {
-                        var normalSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicNormal");
-                        if (normalSkill) {
-                            dmg *= Math.ceil(1 + normalSkill.rate / 100);
-                            out.push("<b>[{0}'s {1}]</b> {2}'s Normal-type attack dealt {3}% more damage!".format(poke(normalSkill.id), normalSkill.name, poke(user.id), normalSkill.rate));
-                        }
-                    }
-                    if (move.type === "Poison" && target.condition === "poison") {
-                        var statusPunishSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicPoison");
-                        if (statusPunishSkill) {
-                            dmg *= Math.ceil(1 + statusPunishSkill.rate / 100);
-                            out.push("<b>[{0}'s {1}]</b> {2}'s {4}-type attack dealt {3}% more damage!".format(poke(statusPunishSkill.id), statusPunishSkill.name, poke(user.id), statusPunishSkill.rate, move.type));
-                        }
-                    }
-                    if (move.type === "Electric" && target.condition === "paralyzed") {
-                        var statusPunishSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicElectric");
-                        if (statusPunishSkill) {
-                            dmg *= Math.ceil(1 + statusPunishSkill.rate / 100);
-                            out.push("<b>[{0}'s {1}]</b> {2}'s {4}-type attack dealt {3}% more damage!".format(poke(statusPunishSkill.id), statusPunishSkill.name, poke(user.id), statusPunishSkill.rate, move.type));
-                        }
-                    }
-                    if (move.type === "Ice" && target.condition === "freeze") {
-                        var statusPunishSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicIce");
-                        if (statusPunishSkill) {
-                            dmg *= Math.ceil(1 + statusPunishSkill.rate / 100);
-                            out.push("<b>[{0}'s {1}]</b> {2}'s {4}-type attack dealt {3}% more damage!".format(poke(statusPunishSkill.id), statusPunishSkill.name, poke(user.id), statusPunishSkill.rate, move.type));
-                        }
-                    }
-                }
                 if (self.selectData && self.selectData.shieldHP > 0 && targetSide === 2) {
                     dmg = Math.ceil(dmg * 0.5);
                     sdmg = dmg;
@@ -24909,19 +24878,105 @@ function Safari() {
                     }
                 }
 
-                if (!self.fullNPC && self.npcBattle && (self.side1Field.reflect > 0 || self.side1Field.lightscreen > 0) && move.type === "Psychic" && targetSide !== 1) {
-                    var screenExtendSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicPsychic");
-                    if (screenExtendSkill) {
-                        self.side1Field.reflect = (self.side1Field.reflect > 0 ? self.side1Field.reflect + screenExtendSkill.rate2 : 0);
-                        self.side1Field.lightscreen = (self.side1Field.lightscreen > 0 ? self.side1Field.lightscreen + screenExtendSkill.rate2 : 0);
-                        out.push("<b>[{0}'s {1}]</b> {2}'s Psychic-type attack extended the duration of your screens by {3}!".format(poke(screenExtendSkill.id), screenExtendSkill.name, poke(user.id), plural(screenExtendSkill.rate2, "turn")));
+                if (!self.fullNPC && self.npcBattle && targetSide === 1) {
+                    if (typeMultiplier < 1) {
+                        var damageResistSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicSteel");
+                        if (damageResistSkill) {
+                            dmg *= Math.ceil(1 - damageResistSkill.rate3 / 100);
+                            out.push("<b>[{0}'s {1}]</b> The damage of {2}'s attack was reduced by {3}%!".format(poke(damageResistSkill.id), damageResistSkill.name, poke(user.id), damageResistSkill.rate3));
+                        }
                     }
                 }
-                if (!self.fullNPC && self.npcBattle && typeMultiplier < 1 && targetSide === 1) {
-                    var damageResistSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicSteel");
-                    if (damageResistSkill) {
-                        dmg *= Math.ceil(1 - damageResistSkill.rate3 / 100);
-                        out.push("<b>[{0}'s {1}]</b> The damage of {2}'s attack by was reduced by {3}%!".format(poke(damageResistSkill.id), damageResistSkill.name, poke(user.id), damageResistSkill.rate3));
+                
+                //safaribot.sendMessage(sys.id("ripper roo"), self.name1 + " && " + self.originalTeam1 + " && " + isPlayerVsNPC + " && " + move.type + " && " + targetSide, safchan);
+                if (!self.fullNPC && self.npcBattle && targetSide !== 1) {
+                    if (move.type === "Normal") {
+                        var normalSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicNormal");
+                        if (normalSkill) {
+                            dmg *= Math.ceil(1 + normalSkill.rate / 100);
+                            out.push("<b>[{0}'s {1}]</b> {2}'s Normal-type attack dealt {3}% more damage!".format(poke(normalSkill.id), normalSkill.name, poke(user.id), normalSkill.rate));
+                        }
+                    }
+                    if (move.type === "Psychic" && (self.side1Field.reflect > 0 || self.side1Field.lightscreen > 0)) {
+                        var screenExtendSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicPsychic");
+                        if (screenExtendSkill) {
+                            self.side1Field.reflect = (self.side1Field.reflect > 0 ? self.side1Field.reflect + screenExtendSkill.rate2 : 0);
+                            self.side1Field.lightscreen = (self.side1Field.lightscreen > 0 ? self.side1Field.lightscreen + screenExtendSkill.rate2 : 0);
+                            out.push("<b>[{0}'s {1}]</b> {2}'s Psychic-type attack extended the duration of your screens by {3}!".format(poke(screenExtendSkill.id), screenExtendSkill.name, poke(user.id), plural(screenExtendSkill.rate2, "turn")));
+                        }
+                    }
+                    if (move.type === "Poison" && target.condition === "poison") {
+                        var statusPunishSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicPoison");
+                        if (statusPunishSkill) {
+                            dmg *= Math.ceil(1 + statusPunishSkill.rate / 100);
+                            out.push("<b>[{0}'s {1}]</b> {2}'s {4}-type attack dealt {3}% more damage!".format(poke(statusPunishSkill.id), statusPunishSkill.name, poke(user.id), statusPunishSkill.rate, move.type));
+                        }
+                    }
+                    if (move.type === "Electric" && target.condition === "paralyzed") {
+                        var statusPunishSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicElectric");
+                        if (statusPunishSkill) {
+                            dmg *= Math.ceil(1 + statusPunishSkill.rate / 100);
+                            out.push("<b>[{0}'s {1}]</b> {2}'s {4}-type attack dealt {3}% more damage!".format(poke(statusPunishSkill.id), statusPunishSkill.name, poke(user.id), statusPunishSkill.rate, move.type));
+                        }
+                    }
+                    if (move.type === "Ice" && target.condition === "freeze") {
+                        var statusPunishSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicIce");
+                        if (statusPunishSkill) {
+                            dmg *= Math.ceil(1 + statusPunishSkill.rate / 100);
+                            out.push("<b>[{0}'s {1}]</b> {2}'s {4}-type attack dealt {3}% more damage!".format(poke(statusPunishSkill.id), statusPunishSkill.name, poke(user.id), statusPunishSkill.rate, move.type));
+                        }
+                    }
+                    if (move.type === "Rock") {
+                        var validTargets = self.team2.filter(function(e) {
+                            return e.index !== target.index && e.hp > 0;
+                        });
+                        
+                        if (validTargets.length > 0) {
+                            var splashDamageSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicRock");
+                            if (splashDamageSkill) {
+                                var splashDamage = Math.ceil(dmg * splashDamageSkill.rate2 / 100);
+                                for (var i = 0; i < validTargets.length; i++) {
+                                    validTargets[i].hp -= dmg;
+                                    validTargets[i].hp = Math.max(1, validTargets[i].hp); // splash damage can't sink an opponent in the back, leave them at 1 hp at minimum
+                                    out.push("<b>[{0}'s {1}]</b> {2}'s Rock-type attack dealt {3} damage to the opponent's {4}!".format(poke(splashDamageSkill.id), splashDamageSkill.name, poke(user.id), splashDamage, poke(validTargets[i].id)));
+                                }
+                            }
+                        }
+                    }
+                    if (move.type === "Bug") {
+                        var userPartyCount = self.team1.filter(function(e) { return e.hp > 0 }).length;
+                        var oppPartyCount = self.team2.filter(function(e) { return e.hp > 0 }).length;
+                        
+                        if (userPartyCount > oppPartyCount) {
+                            var swarmDamageSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicBug");
+                            if (swarmDamageSkill) {
+                                var swarmDamage = 1 + 1 * (userPartyCount - oppPartyCount) * swarmDamageSkill.rate2 / 100;
+                                
+                                dmg = Math.ceil(dmg * swarmDamage);
+                                out.push("<b>[{0}'s {1}]</b> {2}'s Bug-type attack dealt {3}% more damage!".format(poke(swarmDamageSkill.id), swarmDamageSkill.name, poke(user.id), Math.round((swarmDamage - 1) * 100)));
+                            }
+                        }
+                    }
+                    if (move.type === "Dark") {
+                        var stats = ["atk", "def", "spe", "satk", "sdef"];
+                        var hasPositiveStatChange = false,
+                            hasNegativeStatChange = false;
+
+                        for (var i = 0; i < stats.length; i++) {
+                            if (target.boosts[stats[i]] > 0)
+                                hasPositiveStatChange = true;
+                            else if (target.boosts[stats[i]] < 0) {
+                                hasNegativeStatChange = true;
+                            }
+                        }
+                        
+                        if (hasPositiveStatChange && !hasNegativeStatChange) {
+                            var statBoostPunishSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicDark");
+                            if (statBoostPunishSkill) {
+                                dmg *= Math.ceil(1 + statBoostPunishSkill.rate / 100);
+                                out.push("<b>[{0}'s {1}]</b> {2}'s Dark-type attack dealt {3}% more damage!".format(poke(statBoostPunishSkill.id), statBoostPunishSkill.name, poke(user.id), statBoostPunishSkill.rate));
+                            }
+                        }
                     }
                 }
                 if (dmg > target.hp) {
@@ -24974,6 +25029,27 @@ function Safari() {
                     if (target.item.balloon) {
                         out.push(tname + "'s balloon popped!");
                         target.item.balloon = false;
+                    }
+                    if (!self.fullNPC && self.npcBattle && targetSide === 1) {
+                        if (typeMultiplier < 1) {
+                            var stats = ["atk", "def", "spe", "satk", "sdef"];
+                            var validStats = [];
+                            
+                            for (var i = 0; i < stats.length; i++) {
+                                if (user.boosts[stats[i]] > -6) {
+                                    validStats.push(stats[i]);
+                                }
+                            }
+                            if (validStats.length > 0) {
+                                var statSpiteSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicGhost");
+                                if (statSpiteSkill) {
+                                    var randStat = validStats.random().shift();
+                                    user.boosts[randStat] -= statSpiteSkill.rate2;
+                                    user.boosts[randStat] = Math.max(-6, user.boosts[randStat]);
+                                    out.push("<b>[{0}'s {1}]</b> {2}'s ineffective attack caused its {3} to drop by {4}!".format(poke(statSpiteSkill.id), statSpiteSkill.name, poke(user.id), randStat.toUpperCase(), plural(statSpiteSkill.rate2, "stage")));
+                                }
+                            }
+                        }
                     }
                 }
                 if (move.drain) {
@@ -25641,6 +25717,11 @@ function Safari() {
                 var defianted = false;
                 for (e = 0; e < move.nerf.length; e++) {
                     obj = move.nerf[e];
+                    var nerfDefenceSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicDark");
+                    if (nerfDefenceSkill) {
+                        obj.nerfChance -= (nerfDefenceSkill.rate2 / 100);
+                        out.push("<b>[{0}'s {1}]</b> The stat decrease chance of {2}'s move was reduced by {3}%!".format(poke(nerfDefenceSkill.id), nerfDefenceSkill.name, poke(user.id), nerfDefenceSkill.rate2));
+                    }
                     if (chance(obj.nerfChance)) {
                         target.boosts[obj.nerfStat] += obj.nerf;
                         target.boosts[obj.nerfStat] = Math.min(6, Math.max(target.boosts[obj.nerfStat], -6));
@@ -25724,8 +25805,9 @@ function Safari() {
             if (move.type === "Fighting" && !move.brickBreak && (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0)) {
                 var screenShatterSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFighting");
                 if (screenShatterSkill) {
-                    move.brickBreak = true;
-                    out.push("<b>[{0}'s {1}]</b> {2}'s Fighting-type attack became able to shatter screens!".format(poke(screenShatterSkill.id), screenShatterSkill.name, poke(user.id)));
+                    if (chance(screenShatterSkill.rate2 / 100))
+                        move.brickBreak = true;
+                    out.push("<b>[{0}'s {1}]</b> {2}'s Fighting-type attack gained a {3}% chance to shatter screens!".format(poke(screenShatterSkill.id), screenShatterSkill.name, poke(user.id),  screenShatterSkill.rate2));
                 }
             }
             if (move.type === "Flying" && user.boosts["spe"] < 6) {
@@ -25737,12 +25819,7 @@ function Safari() {
                 }
             }
             if (move.type === "Grass") {
-                var hasStatus = [];
-                for (var i = 0; i < this.team1.length; i++) {
-                    if (this.team1[i].condition !== "none") {
-                        hasStatus.push(this.team1[i]);
-                    }
-                }
+                var hasStatus = this.team1.filter(function(e) { return e.condition !== "none" });
                 
                 if (hasStatus.length > 0) {
                     var aromatherapySkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicGrass");
@@ -25752,6 +25829,28 @@ function Safari() {
                         toCure.condition = "none";
                         toCure.badlyPoisoned = 0;
                         out.push("<b>[{0}'s {1}]</b> {2}'s Grass-type attack cured {3} of its status condition!".format(poke(aromatherapySkill.id), aromatherapySkill.name, poke(user.id), poke(toCure.id)));
+                    }
+                }
+            }
+            if (move.type === "Dragon" && user.hp <= (user.maxhp * 0.66)) {
+                var stats = ["atk", "def", "spe", "satk", "sdef"];
+                var validStats = [];
+                
+                for (var i = 0; i < stats.length; i++) {
+                    if (user.boosts[stats[i]] < 6) {
+                        validStats.push(stats[i]);
+                    }
+                }
+                
+                if (validStats.length >= 2) {
+                    var multiBoostSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicDragon");
+                    if (multiBoostSkill) {
+                        var randStat = validStats.shuffle().shift();
+                        var randStat2 = validStats.shift();
+                        
+                        user.boosts[randStat] += multiBoostSkill.rate2;
+                        user.boosts[randStat2] += multiBoostSkill.rate2;
+                        out.push("<b>[{0}'s {1}]</b> {2}'s Dragon-type attack raised its {3} and {4} by {5}!".format(poke(multiBoostSkill.id), multiBoostSkill.name, poke(user.id), randStat.toUpperCase(), randStat2.toUpperCase(), plural(multiBoostSkill.rate2, "stage")));
                     }
                 }
             }
