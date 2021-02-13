@@ -31761,7 +31761,7 @@ function Safari() {
             
             for (var i = 0; i < Object.keys(skillData).length; i++) {
                 if (safari.isBasicSkill(Object.keys(skillData)[i])) {
-                    safaribot.sendHtmlMessage(src, "-" + retSkillData("[Pokémon Name]", Object.keys(skillData)[i], "unlock", false, true), safchan);
+                    safaribot.sendHtmlMessage(src, "-<b>" + Object.keys(skillData)[i].slice(5) + "-type's</b> " + retSkillData("[Pokémon Name]", Object.keys(skillData)[i], "unlock", false, true), safchan);
                 }
             }
         }
