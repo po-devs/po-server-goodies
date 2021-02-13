@@ -34897,10 +34897,6 @@ function Safari() {
         }
     };
     this.pokeSkillActivated = function(playerName, party, skillKey) { // determine if a player can activate an ability, and returns the exact skill data
-        if (!playerName || typeof playerName !== "string") {
-            safaribot.sendAll("Error in pokeSkillActivated(): " + playerName + " && " + party + " && " + skillKey, staffchannel);
-            return false;
-        }
         var player = getAvatarOff(playerName);
         
         if (!player) {
