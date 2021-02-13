@@ -25707,7 +25707,7 @@ function Safari() {
             var screenShatterSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFighting");
             if (screenShatterSkill) {
                 move.brickBreak = true;
-                out.push("<b>[{0}'s {1}]</b> {2}'s Fighting-type attack became able to shatter screens!".format(poke(screenShatterSkill.id), screenShatterSkill.name, poke(user.id));
+                out.push("<b>[{0}'s {1}]</b> {2}'s Fighting-type attack became able to shatter screens!".format(poke(screenShatterSkill.id), screenShatterSkill.name, poke(user.id)));
             }
         }
         if (move.brickBreak) {
