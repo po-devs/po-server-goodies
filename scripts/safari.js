@@ -31768,6 +31768,7 @@ function Safari() {
                 level = 2;
             }
             
+            player.records.idolUnlocked += 1;
             giveStuff(player, ingUsed, true);
             skillUnlocks[player.idnum][mon][skillKey] = { "level": level }; // we only need to store level here, rest of the skill data will be pulled directly from skillData when activating, then added into player.pokeskills
             permObj.add("skillUnlocks", JSON.stringify(skillUnlocks));
@@ -31888,6 +31889,7 @@ function Safari() {
 
             // only level and uses need to be stored, all other data can be pulled live from skillData
 
+            player.records.idolActivated += 1;
             giveStuff(player, ingUsed, true);
             safari.saveGame(player);
             
