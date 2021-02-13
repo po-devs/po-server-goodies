@@ -38106,6 +38106,7 @@ function Safari() {
                 damaging.push(moves[m]);
             }
         }
+        damaging = damaging.shuffle();
         var damagingOriginal = [].concat(damaging);
 
         var type, count = 0, l1 = [], l2 = [], existingPool = [], newAttack, found = false, atks = [], lastLength = 900;
@@ -38117,13 +38118,13 @@ function Safari() {
             	}
                 newAttack = damaging.pop();
                 l1 = lookupMoveLearners(parseInt(newAttack, 10));
-                if (existingPool.length == 0) {
+                if (existingPool.length < 1) {
                     l2 = [].concat(l1);
                 } else {
                     l2 = removeNonDuplicates(existingPool.concat(l1));
                 }
                 count++;
-                if (count > (300 - (j * 50)) || l2.length < 6) {
+                if (count > (300 - (j * 50)) || (l2.length < 6 && j > 1)) {
                     found = true;
                 }
                 if (j == 4 && l2.length < 190) {
@@ -38147,10 +38148,9 @@ function Safari() {
             if (existingPool.length == 0) {            
                 existingPool = existingPool.concat(l1);
             } else {
-                existingPool = removeNonDuplicates(existingPool.concat(l1));
+                existingPool = [].concat(l2);
             }
             atks.push(newAttack);
-            damaging.splice(damaging.indexOf(newAttack), 1);
             j--;
             count = 0;
             if (l2.length < 6) {
