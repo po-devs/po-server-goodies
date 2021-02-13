@@ -24646,11 +24646,34 @@ function Safari() {
                 }
                 
                 //safaribot.sendMessage(sys.id("ripper roo"), self.name1 + " && " + self.originalTeam1 + " && " + isPlayerVsNPC + " && " + move.type + " && " + targetSide, safchan);
-                if (!self.fullNPC && self.npcBattle && move.type === "Normal" && targetSide !== 1) {
-                    var normalSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicNormal");
-                    if (normalSkill) {
-                        dmg *= Math.ceil(1 + normalSkill.rate / 100);
-                        out.push("<b>[{0}'s {1}]</b> {2}'s Normal-type attack dealt {3}% more damage!".format(poke(normalSkill.id), normalSkill.name, poke(user.id), normalSkill.rate));
+                if (!self.fullNPC && self.npcBattle && targetSide !== 1) {
+                    if (move.type === "Normal") {
+                        var normalSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicNormal");
+                        if (normalSkill) {
+                            dmg *= Math.ceil(1 + normalSkill.rate / 100);
+                            out.push("<b>[{0}'s {1}]</b> {2}'s Normal-type attack dealt {3}% more damage!".format(poke(normalSkill.id), normalSkill.name, poke(user.id), normalSkill.rate));
+                        }
+                    }
+                    if (move.type === "Poison" && target.condition === "poison") {
+                        var statusPunishSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicPoison");
+                        if (statusPunishSkill) {
+                            dmg *= Math.ceil(1 + statusPunishSkill.rate / 100);
+                            out.push("<b>[{0}'s {1}]</b> {2}'s {4}-type attack dealt {3}% more damage!".format(poke(statusPunishSkill.id), statusPunishSkill.name, poke(user.id), statusPunishSkill.rate, move.type));
+                        }
+                    }
+                    if (move.type === "Electric" && target.condition === "paralyzed") {
+                        var statusPunishSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicElectric");
+                        if (statusPunishSkill) {
+                            dmg *= Math.ceil(1 + statusPunishSkill.rate / 100);
+                            out.push("<b>[{0}'s {1}]</b> {2}'s {4}-type attack dealt {3}% more damage!".format(poke(statusPunishSkill.id), statusPunishSkill.name, poke(user.id), statusPunishSkill.rate, move.type));
+                        }
+                    }
+                    if (move.type === "Ice" && target.condition === "freeze") {
+                        var statusPunishSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicIce");
+                        if (statusPunishSkill) {
+                            dmg *= Math.ceil(1 + statusPunishSkill.rate / 100);
+                            out.push("<b>[{0}'s {1}]</b> {2}'s {4}-type attack dealt {3}% more damage!".format(poke(statusPunishSkill.id), statusPunishSkill.name, poke(user.id), statusPunishSkill.rate, move.type));
+                        }
                     }
                 }
                 if (self.selectData && self.selectData.shieldHP > 0 && targetSide === 2) {
