@@ -14108,13 +14108,13 @@ function Safari() {
         
         if (possibleEvo.length > 1) {
             if (evoChoice === "*") {
-                safaribot.sendHtmlMessage(src, "This Pokémon has multiple Mega Evolutions! Use {0} to choose the one you want.".format(link("/mega poke:[X or Y]")), safchan);
+                safaribot.sendHtmlMessage(src, "This Pokémon has multiple Mega Evolutions! Use {0} to choose the one you want.".format(link("/mega " + pokeInput + ":[X or Y]", false, true)), safchan);
                 return;
             }
-            if (["1", "x", possibleEvo[0].toLowerCase()].contains(evoChoice)) {
+            if (["1", "x", poke(possibleEvo[0]).toLowerCase()].contains(evoChoice)) {
                 evolveTo = possibleEvo[0];
             }
-            else if (["2", "y", possibleEvo[1].toLowerCase()].contains(evoChoice)) {
+            else if (["2", "y", poke(possibleEvo[1]).toLowerCase()].contains(evoChoice)) {
                 evolveTo = possibleEvo[1];
             }
         }
