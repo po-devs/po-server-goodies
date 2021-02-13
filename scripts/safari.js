@@ -22565,39 +22565,33 @@ function Safari() {
                 this.sendToViewers(this.name3 + "'s Team: " + opponentInfo(this.team3), null, [this.name3.toLowerCase()]);
             }
             if (this.select || this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0 || this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) {
-                var m = "";
+                var m = [];
                 if (this.select && this.npcItems) {
                     if (this.npcItems.hyper && this.npcItems.hyper > 0) {
-                        m += toColor("Hyper Potion: " + this.npcItems.hyper + " ", "purple");
+                        m.push(toColor("Hyper Potion: " + this.npcItems.hyper + " ", "purple"));
                     }
                     if (this.npcItems.full && this.npcItems.full > 0) {
-                        m += toColor("Full Restore: " + this.npcItems.full + " ", "purple");
+                        m.push(toColor("Full Restore: " + this.npcItems.full + " ", "purple"));
                     }
                 }
                 if (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0) {
-                    if (m !== "") {
-                        m += "||";
-                    }
                     if (this.side2Field.reflect > 0) {
-                        m += toColor("Reflect ({0} remaining) ".format(plural(this.side2Field.reflect, "turn")), "red");
+                        m.push(toColor("Reflect ({0} remaining) ".format(plural(this.side2Field.reflect, "turn")), "red"));
                     }
                     if (this.side2Field.lightscreen > 0) {
-                        m += toColor("Light Screen ({0} remaining) ".format(plural(this.side2Field.lightscreen, "turn")), "red");
+                        m.push(toColor("Light Screen ({0} remaining) ".format(plural(this.side2Field.lightscreen, "turn")), "red"));
                     }
                 }
                 if (this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) {
-                    if (m !== "") {
-                        m += "||";
-                    }
                     if (this.side1Field.reflect > 0) {
-                        m += toColor("Reflect ({0} remaining) ".format(plural(this.side1Field.reflect, "turn")), "blue");
+                        m.push(toColor("Reflect ({0} remaining) ".format(plural(this.side1Field.reflect, "turn")), "blue"));
                     }
                     if (this.side1Field.lightscreen > 0) {
-                        m += toColor("Light Screen ({0} remaining) ".format(plural(this.side1Field.lightscreen, "turn")), "blue");
+                        m.push(toColor("Light Screen ({0} remaining) ".format(plural(this.side1Field.lightscreen, "turn")), "blue"));
                     }
                 }
-                if (m !== "") {
-                    this.sendMessage(this.name1, m);
+                if (m.length > 0) {
+                    this.sendMessage(this.name1, m.join(" || "));
                 }
             }
             
