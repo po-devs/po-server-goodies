@@ -34837,7 +34837,7 @@ function Safari() {
         skill.uses--;
 
         if (isPlaying(player.id))
-            safaribot.sendHtmlMessage(sys.id(player.id), "<b>{0}'s {1}</b> activated! [{2}] [Remaining Uses: {3}]".format(poke(pokeId), name, desc, skill.uses), safchan);
+            safaribot.sendHtmlMessage(sys.id(player.id), "<b>{0}'s {1}</b> activated! [{2}] [Remaining Uses: <b>{3}</b>]".format(poke(pokeId), name, desc, skill.uses), safchan);
 
         if (skill.uses <= 0) {
             delete skill;
