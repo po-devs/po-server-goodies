@@ -38090,8 +38090,11 @@ function Safari() {
         var j = 4;
         while (j > 0) {
             while (!(found)) {
-                newAttack = damaging.random();
-                l1 = lookupMoveLearners(newAttack);
+            	if (damaging.length < 3) {
+            		damaging = [].concat(damagingOriginal);
+            	}
+                newAttack = damaging.pop();
+                l1 = lookupMoveLearners(parseInt(newAttack, 10));
                 if (existingPool.length == 0) {
                     l2 = [].concat(l1);
                 } else {
@@ -38114,7 +38117,7 @@ function Safari() {
                     found = true;
                 }
                 if (found) {
-                    sys.sendMessage(sys.id("Miki Sayaka"), "Found move " + newAttack + " after " + count + " loops with learning length " + l2.length + ".", staffchannel);
+                    sys.sendMessage(sys.id("Miki Sayaka"), "Found move " + newAttack + " after " + count + " loops with learning length " + l1.length + " (total " + l2.legnth + "). [" + readable(l1) + "]", staffchannel);
                     break;
                 }
             }
