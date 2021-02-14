@@ -23248,8 +23248,20 @@ function Safari() {
                     }
                 }
                 if (user.hp > 0) {
+                    var side1ApplicableHazards = (!hasType(user.id, "Flying") && !user.lastPlayed2 && (this.side1Field.spikes || this.side1Field.dynamicweb))
+                                                || (!hasType(user.id, "Flying") && !user.lastPlayed2 && !hasType(user.id, "Steel") && this.side1Field.toxicspikes)
+                                                || (!hasType(user.id, "Flying") && user.lastPlayed2 && this.side1Field.quicksand)
+                                                || (!user.lastPlayed2 && (this.side1Field.stealthrock || this.side1Field.stealththunder || this.side1Field.stealthicicles));
+                    
+                    var deltaStreamSkill;
+                    if (!this.fullNPC && this.npcBattle && side1ApplicableHazards) {
+                        deltaStreamSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "deltaStream");
+                    }
                     if (this.side1Field.spikes > 0 && (isP1 || isP3)) {
-                        if ((!user.lastPlayed2) && (!hasType(user.id, "Flying"))) {
+                        if (deltaStreamSkill) {
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2} was protected from the spikes!".format(poke(deltaStreamSkill.id), deltaStreamSkill.name, poke(user.id)), sColor));
+                        }
+                        else if ((!user.lastPlayed2) && (!hasType(user.id, "Flying"))) {
                             this.sendToViewers(toColor(name + " is hurt by the spikes!", sColor));
                             user.hp = Math.max(Math.floor(user.hp - (this.side1Field.spikes * user.maxhp/24)), 1);
                         }
@@ -23261,7 +23273,10 @@ function Safari() {
                         }
                     }
                     if (this.side1Field.stealthrock && (isP1 || isP3)) {
-                        if (!user.lastPlayed2) {
+                        if (deltaStreamSkill) {
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2} was protected from the Stealth Rock!".format(poke(deltaStreamSkill.id), deltaStreamSkill.name, poke(user.id)), sColor));
+                        }
+                        else if (!user.lastPlayed2) {
                             var dmgPerc = 0.08;
                             var mult = safari.checkEffective("Rock", "???", type1(user.id), type2(user.id), null, this.select.inverted, this.select, this.select2);
                             dmgPerc *= mult;
@@ -23283,7 +23298,10 @@ function Safari() {
                         }
                     }
                     if (this.side1Field.stealththunder && (isP1 || isP3)) {
-                        if (!user.lastPlayed2) {
+                        if (deltaStreamSkill) {
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2} was protected from the Stealth Thunder!".format(poke(deltaStreamSkill.id), deltaStreamSkill.name, poke(user.id)), sColor));
+                        }
+                        else if (!user.lastPlayed2) {
                             var dmgPerc = 0.08;
                             var mult = safari.checkEffective("Electric", "???", type1(user.id), type2(user.id), null, this.select.inverted, this.select, this.select2);
                             dmgPerc *= mult;
@@ -23294,7 +23312,10 @@ function Safari() {
                         }
                     }
                     if (this.side1Field.stealthicicles && (isP1 || isP3)) {
-                        if (!user.lastPlayed2) {
+                        if (deltaStreamSkill) {
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2} was protected from the Stealth Icicles!".format(poke(deltaStreamSkill.id), deltaStreamSkill.name, poke(user.id)), sColor));
+                        }
+                        else if (!user.lastPlayed2) {
                             var dmgPerc = 0.08;
                             var mult = safari.checkEffective("Ice", "???", type1(user.id), type2(user.id), null, this.select.inverted, this.select, this.select2);
                             dmgPerc *= mult;
@@ -23305,7 +23326,10 @@ function Safari() {
                         }
                     }
                     if (this.side1Field.toxicspikes && (isP1 || isP3)) {
-                        if (!user.lastPlayed2) {
+                        if (deltaStreamSkill) {
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2} was protected from the Toxic Spikes!".format(poke(deltaStreamSkill.id), deltaStreamSkill.name, poke(user.id)), sColor));
+                        }
+                        else if (!user.lastPlayed2) {
                             if (hasType(user.id, "Poison") && (!hasType(user.id, "Flying"))) {
                                 this.sendToViewers(toColor("The Toxic Spikes were removed from the field!", sColor));
                                 this.side1Field.toxicspikes = false;
@@ -23316,7 +23340,10 @@ function Safari() {
                         }
                     }
                     if (this.side1Field.dynamicweb && (isP1 || isP3)) {
-                        if ((!user.lastPlayed2) && (!hasType(user.id, "Flying"))) {
+                        if (deltaStreamSkill) {
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2} was protected from the web!".format(poke(deltaStreamSkill.id), deltaStreamSkill.name, poke(user.id)), sColor));
+                        }
+                        else if ((!user.lastPlayed2) && (!hasType(user.id, "Flying"))) {
                             this.sendToViewers(toColor(name + " was entangled in the web!", sColor));
                             var stat = ["def", "spe", "sdef"].random();
                             user.boosts[stat] -= 1;
@@ -23325,7 +23352,10 @@ function Safari() {
                         }
                     }
                     if (this.side1Field.quicksand && (isP1 || isP3)) {
-                        if ((user.lastPlayed2) && (!hasType(user.id, "Flying"))) {
+                        if (deltaStreamSkill) {
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2} was protected from the quicksand!".format(poke(deltaStreamSkill.id), deltaStreamSkill.name, poke(user.id)), sColor));
+                        }
+                        else if ((user.lastPlayed2) && (!hasType(user.id, "Flying"))) {
                             this.sendToViewers(toColor(name + " sinks further into the quicksand!", sColor));
                             var stat = ["def", "spe", "sdef"].random();
                             user.boosts[stat] -= 2;
