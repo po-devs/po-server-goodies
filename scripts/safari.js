@@ -31551,7 +31551,7 @@ function Safari() {
                     safari.detectiveData[uid+""].solved = true;
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Congratulations! The combination was " + readable(guesses.map(function(x) {return poke(parseInt(x, 10))})) + "! Here is your prize!", safchan);
                     var today = getDay(now());
-                    var grandprize = today > 18657 && today <= 18671 ? "@entry,3@prize,25@hdew" : "3@prize,25@hdew";
+                    var grandprize = false ? "@entry,3@prize,25@hdew" : "3@prize,25@hdew"; //set to true for future detective related raffles
                     var g = giveStuff(player, toStuffObj(grandprize));
                     safaribot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "orangered"), safchan);
                     player.records.casesSolved += 1;
