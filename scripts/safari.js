@@ -24977,6 +24977,13 @@ function Safari() {
                             }
                         }
                     }
+                    if (typeMultiplier < 1 && move.type === "Ghost") {
+                        var resistBypassSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicGhost");
+                        if (resistBypassSkill) {
+                            dmg *= Math.ceil(1 + resistBypassSkill.rate / 100);
+                            out.push("<b>[{0}'s {1}]</b> {2}'s Ghost-type attack dealt {3}% more damage!".format(poke(resistBypassSkill.id), resistBypassSkill.name, poke(user.id), resistBypassSkill.rate));
+                        }
+                    }
                 }
                 if (dmg > target.hp) {
                     dmg = target.hp;
@@ -25579,6 +25586,17 @@ function Safari() {
                                     };
                                     out.push(tname + " " + conditionVerb[move.status] + "!");
                                 }
+                                if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() === this.name1.toLowerCase() && !(target.boosts["atk"] === 6 && target.boosts["satk"] === 6)) { // if both stats are maxed, dont use skill
+                                    var berserkGeneSkill = safari.pokeSkillActivated(this.name1, target.id, "berserkGene");
+                                    if (berserkGeneSkill) {
+                                        target.boosts["atk"] += berserkGeneSkill.rate;
+                                        target.boosts["satk"] += berserkGeneSkill.rate;
+                                        target.boosts["atk"] = Math.min(6, target.boosts["atk"]);
+                                        target.boosts["satk"] = Math.min (6, target.boosts["satk"]);
+                                        
+                                        out.push("<b>[{0}'s {1}]</b> {2}'s ATK and SATK rose by {3}!".format(poke(berserkGeneSkill.id), berserkGeneSkill.name, poke(target.id), plural(berserkGeneSkill.rate, "stage")));
+                                    }
+                                }
                             }
                         }
                     }
@@ -25709,14 +25727,15 @@ function Safari() {
             }
             else {
                 var defianted = false;
+
+                if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() === this.name1.toLowerCase()) {
+                    var nerfDefenceSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicDark");
+                }
                 for (e = 0; e < move.nerf.length; e++) {
                     obj = move.nerf[e];
-                    if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() === this.name1.toLowerCase()) {
-                        var nerfDefenceSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicDark");
-                        if (nerfDefenceSkill) {
-                            obj.nerfChance -= (nerfDefenceSkill.rate2 / 100);
-                            out.push("<b>[{0}'s {1}]</b> The stat decrease chance of {2}'s move was reduced by {3}%!".format(poke(nerfDefenceSkill.id), nerfDefenceSkill.name, poke(user.id), nerfDefenceSkill.rate2));
-                        }
+                    if (nerfDefenceSkill) {
+                        obj.nerfChance -= (nerfDefenceSkill.rate2 / 100);
+                        out.push("<b>[{0}'s {1}]</b> The stat decrease chance of {2}'s move was reduced by {3}%!".format(poke(nerfDefenceSkill.id), nerfDefenceSkill.name, poke(user.id), nerfDefenceSkill.rate2));
                     }
                     if (chance(obj.nerfChance)) {
                         target.boosts[obj.nerfStat] += obj.nerf;
