@@ -22416,8 +22416,17 @@ function Safari() {
                             }
                             restoredHealth = Math.round(this.originalTeam1[i].maxhp * finaleSkill.rate / 100);
                             this.originalTeam1[i].hp = Math.min(this.originalTeam1[i].maxhp, this.originalTeam1[i].hp + restoredHealth);
-                            this.sendToViewers("<b>[{0}'s {1}]</b> {2}'s {3} restored {4} HP!".format(poke(finaleSkill.id), finaleSkill.name, this.name1, poke(this.originalTeam1[i].id), restoredHealth));
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3} restored {4} HP!".format(poke(finaleSkill.id), finaleSkill.name, this.name1, poke(this.originalTeam1[i].id), restoredHealth), "#55E"));
                         }
+                    }
+                }
+                
+                var flowerGiftSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "flowerGift");
+                if (flowerGiftSkill) {
+                    for (var i = 0; i < this.team1.length; i++) {
+                        this.team1[i].stats["atk"] *= (1 + flowerGiftSkill.rate / 100);
+                        this.team1[i].stats["sdef"] *= (1 + flowerGiftSkill.rate / 100);
+                        this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3} had their ATK and SDEF increased by {4}%!".format(poke(flowerGiftSkill.id), flowerGiftSkill.name, this.name1, poke(this.team1[i].id), flowerGiftSkill.rate), "#55E"));
                     }
                 }
             }
