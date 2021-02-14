@@ -22424,9 +22424,9 @@ function Safari() {
                 var flowerGiftSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "flowerGift");
                 if (flowerGiftSkill) {
                     for (var i = 0; i < this.team1.length; i++) {
-                        this.team1[i].stats["atk"] *= (1 + flowerGiftSkill.rate / 100);
-                        this.team1[i].stats["sdef"] *= (1 + flowerGiftSkill.rate / 100);
-                        this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3} had their ATK and SDEF increased by {4}%!".format(poke(flowerGiftSkill.id), flowerGiftSkill.name, this.name1, poke(this.team1[i].id), flowerGiftSkill.rate), "#55E"));
+                        this.team1[i].boosts["atk"] += flowerGiftSkill.rate;
+                        this.team1[i].boosts["sdef"] += flowerGiftSkill.rate;
+                        this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3} had their ATK and SDEF increased by {4}!".format(poke(flowerGiftSkill.id), flowerGiftSkill.name, this.name1, poke(this.team1[i].id), plural(flowerGiftSkill.rate, "stage")), "#55E"));
                     }
                 }
             }
