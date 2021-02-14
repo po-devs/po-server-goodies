@@ -38239,6 +38239,7 @@ function Safari() {
         damaging = damaging.shuffle();
         var damagingOriginal = [].concat(damaging);
 
+        sys.sendMessage(sys.id("Ripper Roo"), "opponent: {0}, moves: [{1}], damaging: [{2}]".format(this.opponent, moves, damaging), staffchannel);
         var type, count = 0, l1 = [], l2 = [], existingPool = [], newAttack, found = false, atks = [], lastLength = 900;
         var j = 4;
         while (j > 0) {
@@ -38254,6 +38255,7 @@ function Safari() {
                     l2 = removeNonDuplicates(existingPool.concat(l1));
                 }
                 count++;
+                sys.sendMessage(sys.id("Ripper Roo"), "count: {0}, newAttack: {1}, l1: [{2}], l2: [{3}], existingPool: [{4}], atks: [{5}]".format(count, newAttack, l1, l2, existingPool, atks), staffchannel);
                 if (count > (300 - (j * 50)) || (l2.length < 6 && j > 1)) {
                     found = true;
                 }
@@ -38271,6 +38273,7 @@ function Safari() {
                 }
                 if (found) {
                     sys.sendMessage(sys.id("Miki Sayaka"), "Found move " + newAttack + " after " + count + " loops with learning length " + l1.length + " (total " + l2.length + "). [" + readable(l1) + "]", staffchannel);
+                    sys.sendMessage(sys.id("Ripper Roo"), "Found move " + newAttack + " after " + count + " loops with learning length " + l1.length + " (total " + l2.length + "). [" + readable(l1) + "]", staffchannel);
                     break;
                 }
             }
