@@ -194,6 +194,7 @@ function Safari() {
         
         // Halloween/Summertime Trials
         "173": base64Ribbons.earthRibbon,
+        "256": base64Ribbons.earthRibbon,
         
         // unused
         "999": base64Ribbons.legendRibbon
@@ -16950,7 +16951,7 @@ function Safari() {
         var limitChanged = false;
         if (shop[input.input].limit > 0) {
             shop[input.input].limit -= amount;
-            shop[input.input].limit = Math.max(amount, 0);
+            shop[input.input].limit = Math.max(shop[input.input].limit, 0);
             limitChanged = true;
         }
         if (playerlim > 0 && fromNPC) {
@@ -51771,12 +51772,16 @@ function Safari() {
                 return true;
             }
             if (command === "showdex" || command == "hidedex") {
+                var player = getAvatar(src);
+                if (!player) {
+                    safaribot.sendMessage(src, "You don't have a Safari save!", safchan);
+                    return true;
+                }
                 commandData = commandData.toLowerCase();
                 if (!(["stats", "effectiveness", "trivia"].contains(commandData))) {
                     safaribot.sendMessage(src, "Toggleable dex options are stats, effectiveness, and trivia.", safchan);
                     return true;
                 }
-                var player = getAvatar(src);
                 if (command == "showdex") {
                     if (player.dexOptional.contains(commandData)) {
                         safaribot.sendMessage(src, "The dex is already showing " + commandData + " for you!", safchan);
