@@ -23248,7 +23248,7 @@ function Safari() {
                     }
                 }
                 if (user.hp > 0) {
-                    var side1ApplicableHazards = (!hasType(user.id, "Flying") && !user.lastPlayed2 && (this.side1Field.spikes || this.side1Field.dynamicweb))
+                    var side1ApplicableHazards = (isP1 || isP3) && (!hasType(user.id, "Flying") && !user.lastPlayed2 && (this.side1Field.spikes || this.side1Field.dynamicweb))
                                                 || (!hasType(user.id, "Flying") && !user.lastPlayed2 && !hasType(user.id, "Steel") && this.side1Field.toxicspikes)
                                                 || (!hasType(user.id, "Flying") && user.lastPlayed2 && this.side1Field.quicksand)
                                                 || (!user.lastPlayed2 && (this.side1Field.stealthrock || this.side1Field.stealththunder || this.side1Field.stealthicicles));
