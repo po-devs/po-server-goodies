@@ -33203,7 +33203,7 @@ function Safari() {
             }
             var ind = (trainer.elite ? eliteindex : index);
             currentTrainer.powerBoost = ((trainer.power - 1.08) + ((difficulty - 3)/18) + ((difficulty > 1 ? 0.002 : 0)) + ((difficulty < 1 ? 0.0002 : 0)) + (ind/56) + (trainer.elite ? 0.037 : 0)) + (difficulty < 0 ? -0.27 : 0);
-            chal = Math.round(0.75 + (ind/4) + (difficulty * 1.66) + (difficulty === 4 ? -3 : 0));
+            chal = Math.round(1 + (ind/4) + (difficulty * 1) + (difficulty === 4 ? -3 : 0));
             if (ind >= 5) {
                 chal++;
             }
