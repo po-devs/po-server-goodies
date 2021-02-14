@@ -23248,13 +23248,13 @@ function Safari() {
                     }
                 }
                 if (user.hp > 0) {
-                    var side1ApplicableHazards = (isP1 || isP3) && (!hasType(user.id, "Flying") && !user.lastPlayed2 && (this.side1Field.spikes || this.side1Field.dynamicweb))
+                    var side1ApplicableHazards = (!hasType(user.id, "Flying") && !user.lastPlayed2 && (this.side1Field.spikes || this.side1Field.dynamicweb))
                                                 || (!hasType(user.id, "Flying") && !user.lastPlayed2 && !hasType(user.id, "Steel") && this.side1Field.toxicspikes)
                                                 || (!hasType(user.id, "Flying") && user.lastPlayed2 && this.side1Field.quicksand)
                                                 || (!user.lastPlayed2 && (this.side1Field.stealthrock || this.side1Field.stealththunder || this.side1Field.stealthicicles));
                     
                     var deltaStreamSkill;
-                    if (!this.fullNPC && this.npcBattle && side1ApplicableHazards) {
+                    if (!this.fullNPC && this.npcBattle && side1ApplicableHazards && user.owner.toLowerCase() === this.name1.toLowerCase()) {
                         deltaStreamSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "deltaStream");
                     }
                     if (this.side1Field.spikes > 0 && (isP1 || isP3)) {
