@@ -38235,11 +38235,7 @@ function Safari() {
         } while ([10, 11, 13, 14, 129, 132, 201, 202, 265, 266, 268, 360, 374, 401, 412, 602, 664, 665, 771, 789, 790].contains(this.opponent));
 
         var moves = fetchMoves(this.opponent), damaging = [], m;
-        for (m = moves.length; m--; ) {
-            if (getMoveBP(moves[m]) !== "---") {
-                damaging.push(moves[m]);
-            }
-        }
+        damaging = moves.filter(function(x) {return getMoveBP(x) !== "---"});
         damaging = damaging.shuffle();
         var damagingOriginal = [].concat(damaging);
 
@@ -38251,7 +38247,7 @@ function Safari() {
             		damaging = [].concat(damagingOriginal);
             	}
                 newAttack = damaging.pop();
-                l1 = lookupMoveLearners(parseInt(newAttack, 10));
+                l1 = lookupMoveLearners(newAttack);
                 if (existingPool.length < 1) {
                     l2 = [].concat(l1);
                 } else {
@@ -38274,7 +38270,7 @@ function Safari() {
                     found = true;
                 }
                 if (found) {
-                    sys.sendMessage(sys.id("Miki Sayaka"), "Found move " + newAttack + " after " + count + " loops with learning length " + l1.length + " (total " + l2.legnth + "). [" + readable(l1) + "]", staffchannel);
+                    sys.sendMessage(sys.id("Miki Sayaka"), "Found move " + newAttack + " after " + count + " loops with learning length " + l1.length + " (total " + l2.length + "). [" + readable(l1) + "]", staffchannel);
                     break;
                 }
             }
