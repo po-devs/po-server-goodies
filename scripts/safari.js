@@ -25856,6 +25856,21 @@ function Safari() {
             target.flinch = true;
         }
         if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase()) { // don't use targetSide since moves from "other" category have targetSide = 0
+            var stats = ["atk", "def", "spe", "satk", "sdef"];
+            
+            if (user.boosts["atk"] < 6 || user.boosts["def"] < 6 || user.boosts["satk"] < 6 || user.boosts["sdef"] < 6 || user.boosts["spe"] < 6) {
+                var rotoLotoSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "rotoLoto");
+                if (rotoLotoSkill) {
+                    var targetStat;
+                    do {
+                        targetStat = stats.random();
+                    } while (user.boosts[targetStat] === 6);
+                    
+                    user.boosts[targetStat] += rotoLotoSkill.rate2;
+                    user.boosts[targetStat] = Math.min(6, user.boosts[targetStat]);
+                    out.push("<b>[{0}'s {1}]</b> {2}'s {3} was raised by {4}!".format(poke(rotoLotoSkill.id), rotoLotoSkill.name, poke(user.id), targetStat.toUpperCase(), plural(rotoLotoSkill.rate2, "stage")));
+                }
+            }
             if (move.type === "Fighting" && !move.brickBreak && (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0)) {
                 var screenShatterSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFighting");
                 if (screenShatterSkill) {
@@ -25887,7 +25902,6 @@ function Safari() {
                 }
             }
             if (move.type === "Dragon" && user.hp <= (user.maxhp * 0.66)) {
-                var stats = ["atk", "def", "spe", "satk", "sdef"];
                 var validStats = [];
                 
                 for (var i = 0; i < stats.length; i++) {
