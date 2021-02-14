@@ -24881,8 +24881,8 @@ function Safari() {
                     if (typeMultiplier < 1) {
                         var damageResistSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicSteel");
                         if (damageResistSkill) {
-                            dmg *= Math.ceil(1 - damageResistSkill.rate3 / 100);
-                            out.push("<b>[{0}'s {1}]</b> The damage of {2}'s attack was reduced by {3}%!".format(poke(damageResistSkill.id), damageResistSkill.name, poke(user.id), damageResistSkill.rate3));
+                            dmg *= Math.ceil(1 - damageResistSkill.rate / 100);
+                            out.push("<b>[{0}'s {1}]</b> The damage of {2}'s attack was reduced by {3}%!".format(poke(damageResistSkill.id), damageResistSkill.name, poke(user.id), damageResistSkill.rate));
                         }
                     }
                 }
@@ -25587,7 +25587,7 @@ function Safari() {
                                     out.push(tname + " " + conditionVerb[move.status] + "!");
                                 }
                                 if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() === this.name1.toLowerCase() && !(target.boosts["atk"] === 6 && target.boosts["satk"] === 6)) { // if both stats are maxed, dont use skill
-                                    var berserkGeneSkill = safari.pokeSkillActivated(this.name1, target.id, "berserkGene");
+                                    var berserkGeneSkill = safari.pokeSkillActivated(this.name1, target, "berserkGene");
                                     if (berserkGeneSkill) {
                                         target.boosts["atk"] += berserkGeneSkill.rate;
                                         target.boosts["satk"] += berserkGeneSkill.rate;
