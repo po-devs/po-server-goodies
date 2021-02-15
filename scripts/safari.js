@@ -25984,7 +25984,7 @@ function Safari() {
                     }
                 }
                 
-                if (!this.isImmuneTo(target.id, "sleep") && !(this.select && (this.select.electricterrain || this.select.mistyterrain) && !hasType(target.id, "Flying"))) {
+                if (!this.isImmuneTo(target.id, "sleep") && !(this.select && (this.select.electricterrain || this.select.mistyterrain) && !hasType(target.id, "Flying")) && this.countCondition(oppparty, "sleep") < 1) {
                     var relicSongSkill = safari.pokeSkillActivated(this.name1, user, "relicSong");
                     if (relicSongSkill) {
                         target.condition = "sleep";
