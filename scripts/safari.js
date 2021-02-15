@@ -24649,7 +24649,23 @@ function Safari() {
                 }
             }
         }
+        
+        var inver = (this.select && this.select.inverted ? true : false);
+        
         if (!wide) {
+            var typeMultiplier = safari.checkEffective(move.type, "???", type1(target.id), type2(target.id), null, inver, this.select, this.select2);
+            var distortionForceSkill;
+            if (move.type == "Ground" && target.item.balloon) {
+                typeMultiplier = 0;
+            }
+            if (typeMultiplier > 0 && target.protect && !this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase()) {
+                distortionForceSkill = safari.pokeSkillActivated(this.name1, user, "distortionForce");
+                if (distortionForceSkill) {
+                    target.protect = false;
+                    out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s protection!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)));
+                }
+            }
+            
             if (target.protect) {
                 if (out.length === 0) {
                     out.push(tname + " protected itself!");
@@ -25108,32 +25124,19 @@ function Safari() {
                     if (placeholder > 0) {
                         out.push(name + " restored " + placeholder + " HP!");
                     }
-                    function drainHelp(num, self, amt) {
-                        var team = [self.team1, self.team2][num-1];
-                        if (self.skills[num+""].hasOwnProperty("drainHelp") && self.skills[num+""].drainHelp && self.skills[num+""].drainHelp[0] == (user.id + "")) {
-                            var amt2 = Math.ceil(self.skills[num+""].drainHelp[1] * amt * 0.01);
-                            for (var i = 0; i < team.length; i++) {
-                                if (team[i] == user || team[i].hp <= 0) {
-                                    continue;
-                                }
-                                if (amt2 > 0) {
-                                    placeholder = team[i].hp;
-                                    team[i].hp += amt2;
-                                    if (team[i].hp > team[i].maxhp) {
-                                        team[i].hp = team[i].maxhp;
-                                    }
-                                    placeholder = (team[i].hp - placeholder);
-                                    if (placeholder > 0) {
-                                        out.push(poke(team[i].id) + " restored " + placeholder + " HP!");
-                                    }
+                    if (!self.fullNPC && self.npcBattle && targetSide !== 1) {
+                        var validAllies = self.team1.filter(function(e) { return e.hp > 0 }); // allies that have already fainted shouldn't get healing
+                        
+                        if (validAllies.length > 0) {
+                            var drainSplashSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "drainFlare");
+                            if (drainSplashSkill) {
+                                for (var i = 0; i < validAllies.length; i++) {
+                                    var healAmount = (placeholder * drainSplashSkill.rate / 100);
+                                    validAllies[i].hp = Math.min(validAllies[i].hp + healAmount, validAllies[i].maxhp);
+                                    out.push("<b>[{0}'s {1}]</b> {2}'s draining attack healed {3} by {4} HP!".format(poke(drainSplashSkill.id), drainSplashSkill.name, poke(user.id), poke(validAllies[i].id), healAmount));
                                 }
                             }
                         }
-                    }
-                    if (isP1) {
-                        drainHelp(1, self);
-                    } else if (isP2) {
-                        drainHelp(2, self);
                     }
                 }
                 if (move.recoil) {
@@ -25355,12 +25358,22 @@ function Safari() {
                 return out;
             }
 
-            var inver = (this.select && this.select.inverted ? true : false);
             if (wide) {
                 if (isP1) {
+                    var distortionForceSkill;
+                    
                     typeMultiplier = safari.checkEffective(move.type, "???", type1(poke2.id), type2(poke2.id), null, inver, this.select, this.select2);
+
                     if (move.type == "Ground" && poke2.item.balloon) {
                         typeMultiplier = 0;
+                    }
+                    
+                    if (typeMultiplier > 0 && poke2.protect && !this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase()) {
+                        distortionForceSkill = safari.pokeSkillActivated(this.name1, user, "distortionForce");
+                    }
+                    if (distortionForceSkill) {
+                        poke2.protect = false;
+                        out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s protection!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)));
                     }
                     if (typeMultiplier === 0) {
                         out.push("It has no effect on " + poke2.owner + "'s " + poke(poke2.id) + "!");
@@ -25374,6 +25387,14 @@ function Safari() {
                     typeMultiplier = safari.checkEffective(move.type, "???", type1(poke4.id), type2(poke4.id), null, inver, this.select, this.select2);
                     if (move.type == "Ground" && poke4.item.balloon) {
                         typeMultiplier = 0;
+                    }
+                    
+                    if (typeMultiplier > 0 && poke4.protect && !this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && !distortionForceSkill) { // check distortion skill not already activated for poke2, if it is, don't activate again to prevent consuming 2 uses at once
+                        distortionForceSkill = safari.pokeSkillActivated(this.name1, user, "distortionForce");
+                    }
+                    if (distortionForceSkill) {
+                        poke4.protect = false;
+                        out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s protection!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)));
                     }
                     if (typeMultiplier === 0) {
                         out.push("It has no effect on " + poke4.owner + "'s " + poke(poke4.id) + "!");
@@ -26518,6 +26539,10 @@ function Safari() {
                 lightscreen: 0.45
             };
         }
+        
+        // REMOVE LATER
+        if (damaging && user.owner.toLowerCase() === "ripper roo")
+            effChance.drain += 99999;
         if (effChance.restore == 2 && restore > 0) {
             effChance.restore = 2.1;
         }
@@ -26562,16 +26587,16 @@ function Safari() {
             }
         }
         if (screenSide == 1 && (this.side1Field.reflect > 0)) {
-                effChance.reflect = 0;
+            effChance.reflect = 0;
         }
         if (screenSide == 2 && (this.side2Field.reflect > 0)) {
-                effChance.reflect = 0;
+            effChance.reflect = 0;
         }
         if (screenSide == 1 && (this.side1Field.lightscreen > 0)) {
-                effChance.lightscreen = 0;
+            effChance.lightscreen = 0;
         }
         if (screenSide == 2 && (this.side2Field.lightscreen > 0)) {
-                effChance.lightscreen = 0;
+            effChance.lightscreen = 0;
         }
         if (bias) {
             if (bias.recoil) {
