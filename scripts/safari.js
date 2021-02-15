@@ -25125,7 +25125,7 @@ function Safari() {
                         out.push(name + " restored " + placeholder + " HP!");
                     }
                     if (!self.fullNPC && self.npcBattle && targetSide !== 1) {
-                        var validAllies = self.team1.filter(function(e) { return e.hp > 0 }); // allies that have already fainted shouldn't get healing
+                        var validAllies = self.team1.filter(function(e) { return e.hp > 0 && e.hp < e.maxhp }); // allies that have already fainted shouldn't get healing
                         
                         if (validAllies.length > 0) {
                             var drainSplashSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "drainFlare");
