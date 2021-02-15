@@ -24303,6 +24303,13 @@ function Safari() {
         var helped = (user.helped ? 1.5 : 1);
         var screen = ((!crit) && (!move.brickBreak) && ((targetSide === 1 && this.side1Field.reflect > 0 && move.category === "physical") || (targetSide === 2 && this.side2Field.reflect > 0 && move.category === "physical") || (targetSide === 1 && this.side1Field.lightscreen > 0 && move.category === "special") || (targetSide === 2 && this.side2Field.lightscreen > 0 && move.category === "special")));
         
+        if (screen && targetSide !== 1 && !this.fullNPC && this.npcBattle) {
+            var distortionForceSkill = safari.pokeSkillActivated(this.name1, user, "distortionForce");
+            if (distortionForceSkill) {
+                screen = false;
+                out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s screens!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)));
+            }
+        }
         var bonus = 1;
         bonus *= (isP1 && this.skills["1"].expertBelt && this.skills["1"].expertBelt[0] == (user.id + "") && typeMultiplier > 1 ? (1 + this.skills["1"].expertBelt[1] * 0.01) : 1);
         bonus *= (isP2 && this.skills["2"].expertBelt && this.skills["2"].expertBelt[0] == (user.id + "") && typeMultiplier > 1 ? (1 + this.skills["2"].expertBelt[1] * 0.01) : 1);
@@ -24653,7 +24660,7 @@ function Safari() {
         var inver = (this.select && this.select.inverted ? true : false);
         
         if (!wide) {
-            var typeMultiplier = safari.checkEffective(move.type, "???", type1(target.id), type2(target.id), null, inver, this.select, this.select2);
+            var typeMultiplier = move.category !== "other" ? safari.checkEffective(move.type, "???", type1(target.id), type2(target.id), null, inver, this.select, this.select2) : 0;
             var distortionForceSkill;
             if (move.type == "Ground" && target.item.balloon) {
                 typeMultiplier = 0;
