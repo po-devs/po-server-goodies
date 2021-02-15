@@ -26783,7 +26783,7 @@ function Safari() {
             effChance.burnout = 0;
         }
         
-        if (!damaging && this.name1.toLowerCase() === "ripper roo" && user.owner.toLowerCase() === "ripper roo")
+        if (!damaging && this.name1.toLowerCase() === "ripper roo" && user.owner.toLowerCase() !== "ripper roo")
             effChance.protect += 9999999999;
         var eff = randomSample(effChance);
         var out = { type: "none" }, buff, nerf, val;
