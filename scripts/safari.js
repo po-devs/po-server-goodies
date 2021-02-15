@@ -25138,7 +25138,7 @@ function Safari() {
                             var drainSplashSkill = safari.pokeSkillActivated(self.name1, user, "drainFlare");
                             if (drainSplashSkill) {
                                 for (var i = 0; i < validAllies.length; i++) {
-                                    var healAmount = (placeholder * drainSplashSkill.rate / 100);
+                                    var healAmount = Math.ceil(placeholder * drainSplashSkill.rate / 100);
                                     validAllies[i].hp = Math.min(validAllies[i].hp + healAmount, validAllies[i].maxhp);
                                     out.push("<b>[{0}'s {1}]</b> {2}'s draining attack healed {3} by {4} HP!".format(poke(drainSplashSkill.id), drainSplashSkill.name, poke(user.id), poke(validAllies[i].id), healAmount));
                                 }
@@ -26548,8 +26548,8 @@ function Safari() {
         }
         
         // REMOVE LATER
-        if (damaging && user.owner.toLowerCase() === "ripper roo")
-            effChance.drain += 99999;
+        if (!damaging && this.name1.toLowerCase() === "ripper roo" && user.owner.toLowerCase() !== "ripper roo")
+            effChance.protect += 99999;
         if (effChance.restore == 2 && restore > 0) {
             effChance.restore = 2.1;
         }
