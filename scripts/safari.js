@@ -24982,8 +24982,8 @@ function Safari() {
                             out.push("<b>[{0}'s {1}]</b> The damage of {2}'s attack was reduced by {3}%!".format(poke(damageResistSkill.id), damageResistSkill.name, poke(user.id), damageResistSkill.rate));
                         }
                     }
-                    else if (typeMultiplier > 1) {
-                        var prismArmorSkill = safari.pokeSkillActivated(self.name1, user, "prismArmor");
+                    if (typeMultiplier > 1) {
+                        var prismArmorSkill = safari.pokeSkillActivated(self.name1, target, "prismArmor");
                         if (prismArmorSkill) {
                             dmg *= Math.ceil(1 - prismArmorSkill.rate / 100);
                             out.push("<b>[{0}'s {1}]</b> The damage of {2}'s attack was reduced by {3}%!".format(poke(prismArmorSkill.id), prismArmorSkill.name, poke(user.id), prismArmorSkill.rate));
@@ -25430,7 +25430,7 @@ function Safari() {
                     
                     typeMultiplier = safari.checkEffective(move.type, "???", type1(poke2.id), type2(poke2.id), null, inver, this.select, this.select2);
 
-                    if (move.type == "Ground" && (poke2.item.balloon || hasType(target.id, "Flying"))) {
+                    if (move.type == "Ground" && (poke2.item.balloon || (hasType(target.id, "Flying") && !inver))) {
                         typeMultiplier = 0;
                         if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && !poke2.protect) {
                             thousandArrowsSkill = safari.pokeSkillActivated(this.name1, user, "thousandArrows");
@@ -25464,7 +25464,7 @@ function Safari() {
                     }
                     
                     typeMultiplier = safari.checkEffective(move.type, "???", type1(poke4.id), type2(poke4.id), null, inver, this.select, this.select2);
-                    if (move.type == "Ground" && (poke4.item.balloon || hasType(target.id, "Flying"))) {
+                    if (move.type == "Ground" && (poke4.item.balloon || (hasType(target.id, "Flying") && !inver))) {
                         typeMultiplier = 0;
                         if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && !poke4.protect) {
                             thousandArrowsSkill = safari.pokeSkillActivated(this.name1, user, "thousandArrows");
@@ -25644,7 +25644,7 @@ function Safari() {
             }
             else {
                 var typeMultiplier = safari.checkEffective(move.type, "???", type1(target.id), type2(target.id), null, inver, this.select, this.select2);
-                if (move.type == "Ground" && (target.item.balloon || hasType(target.id, "Flying"))) {
+                if (move.type == "Ground" && (target.item.balloon || (hasType(target.id, "Flying") && !inver))) {
                     typeMultiplier = 0;
                     if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && !target.protect) {
                         var thousandArrowsSkill = safari.pokeSkillActivated(this.name1, user, "thousandArrows");
