@@ -22862,6 +22862,16 @@ function Safari() {
                     } else {
                         move1 = this.p1MoveCodes[this.player1Input];
                         poke1 = this.team1[move1.ownerId];
+                        if (this.npcBattle) {
+                            var oppHasFaintedMon = this.team2.filter(function(e) { return e.hp <= 0 }).length > 0 || (this.tagBattle ? this.team4.filter(function(e) { return e.hp <= 0 }).length > 0 : false);
+                            if (oppHasFaintedMon && (move.type === "Water" || move.type === "Dark") && move1.priority <= 0) {
+                                var battleBondSkill = safari.pokeSkillActivated(this.name1, poke1, "battleBondSkill");
+                                if (battleBondSkill) {
+                                    move1.priority = battleBondSkill.rate;
+                                    this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3}-type attack had its priority increased to {4}!".format(poke(battleBondSkill.id), battleBondSkill.name, poke(user.id), move.type, battleBondSkill.rate), "#55E"));
+                                }
+                            }
+                        }
                     }
                     spd1 = this.getStatValue(poke1, "spe", (poke1.condition === "paralyzed" ? 0.5 : 1));
                 }
@@ -24703,6 +24713,7 @@ function Safari() {
                 var dmg = self.damageCalc(user, move, target, typeMultiplier, targetSide, isP1, isP2, isP3, isP4);
                 var sdmg = dmg;
                 var dynamaxed = false;
+                var recoilGrace = 0;
                 var userSide = targetSide == 2 ? 1 : 2;
                 if (this.dynamaxLegal) {
                     var dynamaxObj = this.dynamaxes[targetSide+""], party;
@@ -25061,6 +25072,16 @@ function Safari() {
                             out.push("<b>[{0}'s {1}]</b> {2}'s Ghost-type attack dealt {3}% more damage!".format(poke(resistBypassSkill.id), resistBypassSkill.name, poke(user.id), resistBypassSkill.rate));
                         }
                     }
+                    
+                    if (move.recoil) {
+                        var lightOfRuinSkill = safari.pokeSkillActivated(self.name1, user, "lightOfRuin");
+                        if (lightOfRuinSkill) {
+                            var dmgBefore = dmg;
+                            dmg *= Math.ceil(1 + lightOfRuinSkill.rate / 100);
+                            recoilGrace = dmg - dmgBefore;
+                            out.push("<b>[{0}'s {1}]</b> {2}'s attack dealt {3}% more damage!".format(poke(lightOfRuinSkill.id), lightOfRuinSkill.name, poke(user.id), lightOfRuinSkill.rate));
+                        }
+                    }
                 }
                 if (dmg > target.hp) {
                     dmg = target.hp;
@@ -25163,7 +25184,7 @@ function Safari() {
                 }
                 if (move.recoil) {
                     var placeholder = user.hp;
-                    user.hp -= Math.floor(dmg * 0.3333);
+                    user.hp -= Math.floor((dmg - recoilGrace) * 0.3333);
                     if (user.hp <= 0) {
                         user.hp = 0;
                     }
@@ -26553,6 +26574,7 @@ function Safari() {
                     move.priority = 1;
                 }
             }
+            
             out.push(move);
         }
         return out;
@@ -26717,6 +26739,9 @@ function Safari() {
             effChance.haze = 0;
             effChance.burnout = 0;
         }
+        
+        if (damaging && this.name1.toLowerCase() === "ripper roo" && user.owner.toLowerCase() === "ripper roo")
+            effChance.recoil += 9999999999;
         var eff = randomSample(effChance);
         var out = { type: "none" }, buff, nerf, val;
         
