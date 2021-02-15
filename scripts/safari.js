@@ -22864,11 +22864,11 @@ function Safari() {
                         poke1 = this.team1[move1.ownerId];
                         if (this.npcBattle) {
                             var oppHasFaintedMon = this.team2.filter(function(e) { return e.hp <= 0 }).length > 0 || (this.tagBattle ? this.team4.filter(function(e) { return e.hp <= 0 }).length > 0 : false);
-                            if (oppHasFaintedMon && (move.type === "Water" || move.type === "Dark") && move1.priority <= 0) {
+                            if (oppHasFaintedMon && (move1.type === "Water" || move1.type === "Dark") && move1.priority <= 0) {
                                 var battleBondSkill = safari.pokeSkillActivated(this.name1, poke1, "battleBondSkill");
                                 if (battleBondSkill) {
                                     move1.priority = battleBondSkill.rate;
-                                    this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3}-type attack had its priority increased to {4}!".format(poke(battleBondSkill.id), battleBondSkill.name, poke(user.id), move.type, battleBondSkill.rate), "#55E"));
+                                    this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3}-type attack had its priority increased to {4}!".format(poke(battleBondSkill.id), battleBondSkill.name, poke(user.id), move1.type, battleBondSkill.rate), "#55E"));
                                 }
                             }
                         }
