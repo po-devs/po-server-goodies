@@ -24982,6 +24982,13 @@ function Safari() {
                             out.push("<b>[{0}'s {1}]</b> The damage of {2}'s attack was reduced by {3}%!".format(poke(damageResistSkill.id), damageResistSkill.name, poke(user.id), damageResistSkill.rate));
                         }
                     }
+                    else if (typeMultiplier > 1) {
+                        var prismArmorSkill = safari.pokeSkillActivated(self.name1, user, "prismArmor");
+                        if (prismArmorSkill) {
+                            dmg *= Math.ceil(1 - prismArmorSkill.rate / 100);
+                            out.push("<b>[{0}'s {1}]</b> The damage of {2}'s attack was reduced by {3}%!".format(poke(prismArmorSkill.id), prismArmorSkill.name, poke(user.id), prismArmorSkill.rate));
+                        }
+                    }
                 }
                 
                 //safaribot.sendMessage(sys.id("ripper roo"), self.name1 + " && " + self.originalTeam1 + " && " + isPlayerVsNPC + " && " + move.type + " && " + targetSide, safchan);
@@ -25081,7 +25088,13 @@ function Safari() {
                             out.push("<b>[{0}'s {1}]</b> {2}'s Ghost-type attack dealt {3}% more damage!".format(poke(resistBypassSkill.id), resistBypassSkill.name, poke(user.id), resistBypassSkill.rate));
                         }
                     }
-                    
+                    if (typeMultiplier > 1) {
+                        var neuroforceSkill = safari.pokeSkillActivated(self.name1, user, "neuroforce");
+                        if (neuroforceSkill) {
+                            dmg *= Math.ceil(1 + neuroforceSkill.rate / 100);
+                            out.push("<b>[{0}'s {1}]</b> {2}'s attack dealt {3}% more damage!".format(poke(neuroforceSkill.id), neuroforceSkill.name, poke(user.id), neuroforceSkill.rate));
+                        }
+                    }
                     if (move.recoil) {
                         var lightOfRuinSkill = safari.pokeSkillActivated(self.name1, user, "lightOfRuin");
                         if (lightOfRuinSkill) {
@@ -26782,9 +26795,7 @@ function Safari() {
             effChance.haze = 0;
             effChance.burnout = 0;
         }
-        
-        if (!damaging && this.name1.toLowerCase() === "ripper roo" && user.owner.toLowerCase() !== "ripper roo")
-            effChance.protect += 9999999999;
+
         var eff = randomSample(effChance);
         var out = { type: "none" }, buff, nerf, val;
         
