@@ -25128,7 +25128,7 @@ function Safari() {
                         var validAllies = self.team1.filter(function(e) { return e.hp > 0 && e.hp < e.maxhp }); // allies that have already fainted shouldn't get healing
                         
                         if (validAllies.length > 0) {
-                            var drainSplashSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "drainFlare");
+                            var drainSplashSkill = safari.pokeSkillActivated(self.name1, user, "drainFlare");
                             if (drainSplashSkill) {
                                 for (var i = 0; i < validAllies.length; i++) {
                                     var healAmount = (placeholder * drainSplashSkill.rate / 100);
