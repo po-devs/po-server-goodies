@@ -24276,6 +24276,17 @@ function Safari() {
                 def = Math.min(this.getStatValue(target, "def", 1, (crit ? -1 : 0)), this.getStatValue(target, "atk", 1, (crit ? -1 : 0)));
             }
         }
+        if (!this.fullNPC && this.npcBattle && targetSide !== 1) {
+            var lowerDef = Math.min(this.getStatValue(target, "def", 1, (crit ? -1 : 0)), this.getStatValue(target, "sdef", 1, (crit ? -1 : 0)));
+            
+            if (def > lowerDef) {
+                var resoluteSwordSkill = safari.pokeSkillActivated(this.name1, user, "resoluteSword");
+                if (resoluteSwordSkill) {
+                    def = lowerDef;
+                    out.push("<b>[{0}'s {1}]</b> {2}'s attack swapped to the {3} category to target the opponent's lower defensive stat!".format(poke(resoluteSwordSkill.id), resoluteSwordSkill.name, poke(user.id), (move.category === "physical" ? "Special" : "Physical")));
+                }
+            }
+        }
 
         var burn = user.condition === "burn" && move.category === "physical";
         var dmg = atk * move.power / def;
@@ -24311,10 +24322,6 @@ function Safari() {
             }
         }
         var bonus = 1;
-        bonus *= (isP1 && this.skills["1"].expertBelt && this.skills["1"].expertBelt[0] == (user.id + "") && typeMultiplier > 1 ? (1 + this.skills["1"].expertBelt[1] * 0.01) : 1);
-        bonus *= (isP2 && this.skills["2"].expertBelt && this.skills["2"].expertBelt[0] == (user.id + "") && typeMultiplier > 1 ? (1 + this.skills["2"].expertBelt[1] * 0.01) : 1);
-        bonus *= ((isP2 || isP4) && this.skills["1"].solidRock && this.skills["1"].solidRock[0] == (target.id + "") && typeMultiplier > 1 ? (1 - this.skills["1"].solidRock[1] * 0.01) : 1);
-        bonus *= ((isP1 || isP3) && this.skills["2"].solidRock && this.skills["2"].solidRock[0] == (target.id + "") && typeMultiplier > 1 ? (1 - this.skills["2"].solidRock[1] * 0.01) : 1);
         if (this.select) {
             bonus *= ((isP2 || isP4) && (this.select.boostType.contains(move.type)) ? 1.3 : 1);
             bonus *= ((isP1 || isP3) && (this.select.solidRock) && (typeMultiplier > 1) ? 0.75 : 1);
@@ -24685,6 +24692,14 @@ function Safari() {
 
             var dealDamage = function(user, move, target, typeMultiplier, targetSide, out) {
                 self.crit = false;
+                
+                if (typeMultiplier < 1 && !self.fullNPC && self.npcBattle && targetSide !== 1) {
+                    var judgmentSkill = safari.pokeSkillActivated(self.name1, user, "judgment");
+                    if (judgmentSkill) {
+                        typeMultiplier = 1;
+                        out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed the type disadvantage!".format(poke(judgmentSkill.id), judgmentSkill.name, poke(user.id)));
+                    }
+                }
                 var dmg = self.damageCalc(user, move, target, typeMultiplier, targetSide, isP1, isP2, isP3, isP4);
                 var sdmg = dmg;
                 var dynamaxed = false;
@@ -25950,6 +25965,33 @@ function Safari() {
                     }
                 }
             }
+            if (target.condition === "none") {
+                var absofusionSkill; 
+                
+                if (!this.isImmuneTo(target.id, "burn")) {
+                    absofusionSkill = safari.pokeSkillActivated(this.name1, user, "absofusionWhite");
+                    if (absofusionSkill) {
+                        target.condition = "burn";
+                        out.push("<b>[{0}'s {1}]</b> {2}'s attack burned the opponent!".format(poke(absofusionSkill.id), absofusionSkill.name, poke(user.id)));
+                    }
+                }
+                
+                if (!this.isImmuneTo(target.id, "paralyzed")) {
+                    absofusionSkill = safari.pokeSkillActivated(this.name1, user, "absofusionBlack");
+                    if (absofusionSkill) {
+                        target.condition = "paralyzed";
+                        out.push("<b>[{0}'s {1}]</b> {2}'s attack paralyzed the opponent!".format(poke(absofusionSkill.id), absofusionSkill.name, poke(user.id)));
+                    }
+                }
+                
+                if (!this.isImmuneTo(target.id, "sleep") && !(this.select && (this.select.electricterrain || this.select.mistyterrain) && !hasType(target.id, "Flying"))) {
+                    var relicSongSkill = safari.pokeSkillActivated(this.name1, user, "relicSong");
+                    if (relicSongSkill) {
+                        target.condition = "sleep";
+                        out.push("<b>[{0}'s {1}]</b> {2}'s attack put the opponent to sleep!".format(poke(relicSongSkill.id), relicSongSkill.name, poke(user.id)));
+                    }
+                }
+            }
         }
         if (move.brickBreak) {
             if (isP1 || isP3) {
@@ -26547,9 +26589,6 @@ function Safari() {
             };
         }
         
-        // REMOVE LATER
-        if (!damaging && this.name1.toLowerCase() === "ripper roo" && user.owner.toLowerCase() !== "ripper roo")
-            effChance.protect += 99999;
         if (effChance.restore == 2 && restore > 0) {
             effChance.restore = 2.1;
         }
