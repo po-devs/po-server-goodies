@@ -24307,7 +24307,7 @@ function Safari() {
             var distortionForceSkill = safari.pokeSkillActivated(this.name1, user, "distortionForce");
             if (distortionForceSkill) {
                 screen = false;
-                out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s screens!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)));
+                this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s screens!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)), "#55E"));
             }
         }
         var bonus = 1;
@@ -25131,8 +25131,8 @@ function Safari() {
                     if (placeholder > 0) {
                         out.push(name + " restored " + placeholder + " HP!");
                     }
-                    if (!self.fullNPC && self.npcBattle && targetSide !== 1) {
-                        var validAllies = self.team1.filter(function(e) { return e.hp > 0 && e.hp < e.maxhp }); // allies that have already fainted shouldn't get healing
+                    if (!self.fullNPC && self.npcBattle && targetSide !== 1 && placeholder > 0) {
+                        var validAllies = self.team1.filter(function(e) { return e.hp > 0 && e.hp < e.maxhp && e.index !== user.index }); // allies that have already fainted shouldn't get healing
                         
                         if (validAllies.length > 0) {
                             var drainSplashSkill = safari.pokeSkillActivated(self.name1, user, "drainFlare");
