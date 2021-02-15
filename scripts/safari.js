@@ -24283,7 +24283,7 @@ function Safari() {
                 var resoluteSwordSkill = safari.pokeSkillActivated(this.name1, user, "resoluteSword");
                 if (resoluteSwordSkill) {
                     def = lowerDef;
-                    out.push("<b>[{0}'s {1}]</b> {2}'s attack swapped to the {3} category to target the opponent's lower defensive stat!".format(poke(resoluteSwordSkill.id), resoluteSwordSkill.name, poke(user.id), (move.category === "physical" ? "Special" : "Physical")));
+                    this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s attack swapped to the {3} category to target the opponent's lower defensive stat!".format(poke(resoluteSwordSkill.id), resoluteSwordSkill.name, poke(user.id), (move.category === "physical" ? "Special" : "Physical"))), "#55E");
                 }
             }
         }
@@ -25965,7 +25965,7 @@ function Safari() {
                     }
                 }
             }
-            if (target.condition === "none") {
+            if (target.condition === "none" && !fainted) {
                 var absofusionSkill; 
                 
                 if (!this.isImmuneTo(target.id, "burn")) {
