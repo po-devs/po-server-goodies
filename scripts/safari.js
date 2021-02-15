@@ -24325,10 +24325,14 @@ function Safari() {
         var screen = ((!crit) && (!move.brickBreak) && ((targetSide === 1 && this.side1Field.reflect > 0 && move.category === "physical") || (targetSide === 2 && this.side2Field.reflect > 0 && move.category === "physical") || (targetSide === 1 && this.side1Field.lightscreen > 0 && move.category === "special") || (targetSide === 2 && this.side2Field.lightscreen > 0 && move.category === "special")));
         
         if (screen && targetSide !== 1 && !this.fullNPC && this.npcBattle) {
-            var distortionForceSkill = safari.pokeSkillActivated(this.name1, user, "distortionForce");
-            if (distortionForceSkill) {
-                screen = false;
-                this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s screens!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)), "#55E"));
+            var distortionSkillList = ["distortionForce", "hyperspaceFury"];
+            for (var i = 0; i < distortionSkillList.length; i++) {
+                distortionForceSkill = safari.pokeSkillActivated(this.name1, user, distortionSkillList[i]);
+                if (distortionForceSkill) {
+                    screen = false;
+                    this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s screens!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)), "#55E"));
+                    break;
+                }
             }
         }
         var bonus = 1;
@@ -24683,10 +24687,14 @@ function Safari() {
                 typeMultiplier = 0;
             }
             if (typeMultiplier > 0 && target.protect && !this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase()) {
-                distortionForceSkill = safari.pokeSkillActivated(this.name1, user, "distortionForce");
-                if (distortionForceSkill) {
-                    target.protect = false;
-                    out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s protection!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)));
+                var distortionSkillList = ["distortionForce", "hyperspaceFury"];
+                for (var i = 0; i < distortionSkillList.length; i++) {
+                    distortionForceSkill = safari.pokeSkillActivated(this.name1, user, distortionSkillList[i]);
+                    if (distortionForceSkill) {
+                        target.protect = false;
+                        out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s protection!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)));
+                        break;
+                    }
                 }
             }
             
@@ -24710,6 +24718,7 @@ function Safari() {
                         out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed the type disadvantage!".format(poke(judgmentSkill.id), judgmentSkill.name, poke(user.id)));
                     }
                 }
+                
                 var dmg = self.damageCalc(user, move, target, typeMultiplier, targetSide, isP1, isP2, isP3, isP4);
                 var sdmg = dmg;
                 var dynamaxed = false;
@@ -25404,20 +25413,33 @@ function Safari() {
             if (wide) {
                 if (isP1) {
                     var distortionForceSkill;
+                    var thousandArrowsSkill;
                     
                     typeMultiplier = safari.checkEffective(move.type, "???", type1(poke2.id), type2(poke2.id), null, inver, this.select, this.select2);
 
-                    if (move.type == "Ground" && poke2.item.balloon) {
+                    if (move.type == "Ground" && (poke2.item.balloon || hasType(target.id, "Flying"))) {
                         typeMultiplier = 0;
+                        if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && !poke2.protect) {
+                            thousandArrowsSkill = safari.pokeSkillActivated(this.name1, user, "thousandArrows");
+                            if (thousandArrowsSkill) {
+                                typeMultiplier = 2;
+                                out.push("<b>[{0}'s {1}]</b> {2}'s Ground-type attack struck the airborne {3}!".format(poke(thousandArrowsSkill.id), thousandArrowsSkill.name, poke(user.id), poke(target.id)));
+                            }
+                        }
                     }
                     
                     if (typeMultiplier > 0 && poke2.protect && !this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase()) {
-                        distortionForceSkill = safari.pokeSkillActivated(this.name1, user, "distortionForce");
+                        var distortionSkillList = ["distortionForce", "hyperspaceFury"];
+                        for (var i = 0; i < distortionSkillList.length; i++) {
+                            distortionForceSkill = safari.pokeSkillActivated(this.name1, user, distortionSkillList[i]);
+                            if (distortionForceSkill) {
+                                poke2.protect = false;
+                                out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s protection!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)));
+                                break;
+                            }
+                        }
                     }
-                    if (distortionForceSkill) {
-                        poke2.protect = false;
-                        out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s protection!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)));
-                    }
+                    
                     if (typeMultiplier === 0) {
                         out.push("It has no effect on " + poke2.owner + "'s " + poke(poke2.id) + "!");
                     }
@@ -25427,18 +25449,31 @@ function Safari() {
                     else if (poke2.hp > 0) {
                         out = dealDamage(poke1, move, poke2, typeMultiplier, 2, out);
                     }
+                    
                     typeMultiplier = safari.checkEffective(move.type, "???", type1(poke4.id), type2(poke4.id), null, inver, this.select, this.select2);
-                    if (move.type == "Ground" && poke4.item.balloon) {
+                    if (move.type == "Ground" && (poke4.item.balloon || hasType(target.id, "Flying"))) {
                         typeMultiplier = 0;
+                        if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && !poke4.protect) {
+                            thousandArrowsSkill = safari.pokeSkillActivated(this.name1, user, "thousandArrows");
+                            if (thousandArrowsSkill) {
+                                typeMultiplier = 2;
+                                out.push("<b>[{0}'s {1}]</b> {2}'s Ground-type attack struck the airborne {3}!".format(poke(thousandArrowsSkill.id), thousandArrowsSkill.name, poke(user.id), poke(target.id)));
+                            }
+                        }
                     }
                     
                     if (typeMultiplier > 0 && poke4.protect && !this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && !distortionForceSkill) { // check distortion skill not already activated for poke2, if it is, don't activate again to prevent consuming 2 uses at once
-                        distortionForceSkill = safari.pokeSkillActivated(this.name1, user, "distortionForce");
+                        var distortionSkillList = ["distortionForce", "hyperspaceFury"];
+                        for (var i = 0; i < distortionSkillList.length; i++) {
+                            distortionForceSkill = safari.pokeSkillActivated(this.name1, user, distortionSkillList[i]);
+                            if (distortionForceSkill) {
+                                poke4.protect = false;
+                                out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s protection!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)));
+                                break;
+                            }
+                        }
                     }
-                    if (distortionForceSkill) {
-                        poke4.protect = false;
-                        out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s protection!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)));
-                    }
+
                     if (typeMultiplier === 0) {
                         out.push("It has no effect on " + poke4.owner + "'s " + poke(poke4.id) + "!");
                     }
@@ -25596,9 +25631,17 @@ function Safari() {
             }
             else {
                 var typeMultiplier = safari.checkEffective(move.type, "???", type1(target.id), type2(target.id), null, inver, this.select, this.select2);
-                if (move.type == "Ground" && target.item.balloon) {
+                if (move.type == "Ground" && (target.item.balloon || hasType(target.id, "Flying"))) {
                     typeMultiplier = 0;
+                    if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && !target.protect) {
+                        var thousandArrowsSkill = safari.pokeSkillActivated(this.name1, user, "thousandArrows");
+                        if (thousandArrowsSkill) {
+                            typeMultiplier = 2;
+                            out.push("<b>[{0}'s {1}]</b> {2}'s Ground-type attack struck the airborne {3}!".format(poke(thousandArrowsSkill.id), thousandArrowsSkill.name, poke(user.id), poke(target.id)));
+                        }
+                    }
                 }
+
                 if (typeMultiplier === 0) {
                     if (this.select && this.select.bypassImmune && (isP2 || isP4)) {
                         typeMultiplier = 1;
@@ -31815,13 +31858,13 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: What can we do for you today?", safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutunlock", "Tell me about unlocking skills"), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutcharge", "Tell me about charging skills"), safchan);
-            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutbasic", "Tell me about Basic skills"), safchan); // explain that it applies to all members of that species
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutbasic", "Tell me about Basic skills"), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutspecial", "Tell me about Special skills"), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:aboutbattle", "Tell me how exactly this works during a battle"), safchan);
             
             sys.sendMessage(src, "", safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks", "Show me which skills I've unlocked/charged"), safchan); // option to enter specific pokemon, show whole list (paginate) if none whole list
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks", "Show me which skills I've unlocked/charged"), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:unlock", "I want to unlock a skill!"), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:charge", "I want to charge a skill!"), safchan);
         }
