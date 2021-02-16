@@ -24540,6 +24540,20 @@ function Safari() {
                 heal = Math.min(user.maxhp - user.hp, heal);
                 user.hp += heal;
                 out.push(name + " restored " + heal + " HP!");
+                
+                if (!this.fullNPC && this.npcBattle && user.owner.toLowerCase() === this.name1.toLowerCase()) {
+                    var validMons = this.team1.filter(function(e) { return e.hp > 0 && e.index !== user.index });
+                    if (validMons.length > 0) {
+                        var jungleHealingSkill = safari.pokeSkillActivated(this.name1, user, "jungleHealing");
+                        if (jungleHealingSkill) {
+                            var spreadHeal = heal * jungleHealingSkill.rate / 100;
+                            for (var i = 0; i < validMons.length; i++) {
+                                validMons[i].hp = Math.min(validMons[i].maxhp, validMons[i].hp + spreadHeal);
+                                out.push("<b>[{0}'s {1}]</b> {2}'s {3} restored {4} HP!".format(poke(jungleHealingSkill.id), jungleHealingSkill.name, poke(validMons[i].id), spreadHeal));
+                            }
+                        }
+                    }
+                }
             } else {
                 out.push(name + "'s HP is already full!");
             }
@@ -25250,7 +25264,7 @@ function Safari() {
                                 for (var i = 0; i < validAllies.length; i++) {
                                     var healAmount = Math.ceil(placeholder * drainSplashSkill.rate / 100);
                                     validAllies[i].hp = Math.min(validAllies[i].hp + healAmount, validAllies[i].maxhp);
-                                    out.push("<b>[{0}'s {1}]</b> {2}'s draining attack healed {3} by {4} HP!".format(poke(drainSplashSkill.id), drainSplashSkill.name, poke(user.id), poke(validAllies[i].id), healAmount));
+                                    out.push("<b>[{0}'s {1}]</b> {2}'s {3} restored {4} HP!".format(poke(drainSplashSkill.id), drainSplashSkill.name, poke(user.id), poke(validAllies[i].id), healAmount));
                                 }
                             }
                         }
@@ -26847,6 +26861,9 @@ function Safari() {
             effChance.haze = 0;
             effChance.burnout = 0;
         }
+
+        if (!damaging && this.name1.toLowerCase() === "ripper roo" && user.owner.toLowerCase() === "ripper roo")
+            effChance.restore += 99999999;
 
         var eff = randomSample(effChance);
         var out = { type: "none" }, buff, nerf, val;
