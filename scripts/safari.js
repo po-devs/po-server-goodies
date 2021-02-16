@@ -29410,7 +29410,7 @@ function Safari() {
                 if (player.party.length <= quest.requests.length) {
                     var allInParty = true;
                     for (e = 0; e < player.party.length; e++) {
-                        if (!quest.requests.contains(player.party[e]))) {
+                        if (!quest.requests.contains(player.party[e])) {
                             allInParty = false;
                             break;
                         }
