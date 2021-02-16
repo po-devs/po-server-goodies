@@ -4225,7 +4225,7 @@ function Safari() {
     var ultraPokes = {
         "851993": {
             "types": ["Electric", "???"],
-            "name": "Pikachu-Partner",
+            "name": "Pikachu-Seventh Hat",
             "stats": [35, 55, 40, 50, 50, 90],
             "abilities": [ "Static", "Lightning Rod" ],
             "tier": "SM PU",
@@ -22443,7 +22443,7 @@ function Safari() {
                     this.abilityQueue[i][j] += 1;
                 }
             }
-            
+
             var showBoosts = function(user, select, select2) {
                 var out = [], val;
                 for (var e in user.boosts) {
@@ -23644,8 +23644,8 @@ function Safari() {
                     this.sendToViewers("All stat bonuses were flipped!");
                 }
             }
-            if ((this.turn % 3 === 0) && (this.select) && (this.turn !== 0)) {
-                if ((this.select.statshift) || (this.select2 && this.select2.statshift)) {
+            if ((this.turn % 3 === 0) && (this.turn !== 0)) {
+                if ((this.select && this.select.statshift) || (this.select2 && this.select2.statshift)) {
                     var allMons = this.team1.concat(this.team2).concat(this.team3).concat(this.team4), mon, k, o;
                     for (var i = 0; i < allMons.length; i++) {
                         mon = allMons[i];
@@ -23657,6 +23657,44 @@ function Safari() {
                         mon.boosts.atk = o;
                     }
                     this.sendToViewers("All stat bonuses were shifted!");
+                }
+
+                if (!this.fullNPC && this.npcBattle) {
+                    for (var i = 0 ; i < self.team1.length; i++) { // looping through b/c if there are multiple pokemon with this skill, each of them will activate it individually
+                        var pokeObj = self.team1[i];
+                        var statList = Object.keys(pokeObj.stats);
+                        var pokeStats = statList.map(function(e) { return pokeObj.stats[e] });
+                        
+                        var highestStat = Math.max.apply(null, pokeStats);
+                        var highestStatName = statList.reduce(function(a, b) { return pokeObj.stats[a] === highestStat ? a : b });
+                        
+                        if (pokeObj.boosts[highestStatName] < 6) {
+                            var beastBoostSkill = safari.pokeSkillActivated(self.name1, pokeObj, "beastBoost");
+                            if (beastBoostSkill) {
+                                pokeObj.boosts[highestStatName] += beastBoostSkill.rate;
+                                pokeObj.boosts[highestStatName] = Math.min(6, pokeObj.boosts[highestStatName]);
+                                this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3} increased by {4}!".format(poke(beastBoostSkill.id), beastBoostSkill.name, poke(pokeObj.id), highestStatName.toUpperCase(), plural(beastBoostSkill.rate, "stage")), "#55E"));
+                            }
+                        }
+                        if (pokeObj.boosts["atk"] < 6) {
+                            var intrepidSwordSkill = safari.pokeSkillActivated(self.name1, pokeObj, "intrepidSword");
+                            if (intrepidSwordSkill) {
+                                pokeObj.boosts["atk"] += intrepidSwordSkill.rate;
+                                pokeObj.boosts["atk"] = Math.min(6, pokeObj.boosts["atk"]);
+                                this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s ATK increased by {3}!".format(poke(intrepidSwordSkill.id), intrepidSwordSkill.name, poke(pokeObj.id), plural(intrepidSwordSkill.rate, "stage")), "#55E"));
+                            }
+                        }
+                        if (pokeObj.boosts["def"] < 6 || pokeObj.boosts["sdef"] < 6) {
+                            var dauntlessShieldSkill = safari.pokeSkillActivated(self.name1, pokeObj, "dauntlessShield");
+                            if (dauntlessShieldSkill) {
+                                pokeObj.boosts["def"] += dauntlessShieldSkill.rate;
+                                pokeObj.boosts["sdef"] += dauntlessShieldSkill.rate;
+                                pokeObj.boosts["def"] = Math.min(6, pokeObj.boosts["def"]);
+                                pokeObj.boosts["sdef"] = Math.min(6, pokeObj.boosts["sdef"]);
+                                this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s DEF and SDEF increased by {3}!".format(poke(dauntlessShieldSkill.id), dauntlessShieldSkill.name, poke(pokeObj.id), plural(dauntlessShieldSkill.rate, "stage")), "#55E"));
+                            }
+                        }
+                    }
                 }
             }
             if ((this.turn % 5 === 0) && (this.select) && (this.turn !== 0)) {
@@ -25147,6 +25185,20 @@ function Safari() {
                                 self.selectData.retaliate2 = true;
                             } else {
                                 self.selectData.retaliate1 = true;
+                            }
+                        }
+                        
+                        if (!self.fullNPC && self.npcBattle && targetSide === 1) {
+                            for (var i = 0 ; i < self.team1.length; i++) { // looping through b/c if there are multiple pokemon with this skill, each of them will activate it individually
+                                if (self.team1[i].boosts["satk"] === 6)
+                                    continue;
+                                
+                                var soulHeartSkill = safari.pokeSkillActivated(self.name1, self.team1[i], "soulHeart");
+                                if (soulHeartSkill) {
+                                    self.team1[i].boosts["satk"] += soulHeartSkill.rate;
+                                    self.team1[i].boosts["satk"] = Math.min(6, self.team1[i].boosts["satk"])
+                                    out.push("<b>[{0}'s {1}]</b> {2}'s SATK increased by {3}!".format(poke(soulHeartSkill.id), soulHeartSkill.name, poke(self.team1[i].id), plural(soulHeartSkill.rate, "stage")));
+                                }
                             }
                         }
                     }
