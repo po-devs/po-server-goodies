@@ -14109,15 +14109,15 @@ function Safari() {
         var evolveTo;
         
         if (possibleEvo.length > 1) {
-            if (evoChoice === "*") {
-                safaribot.sendHtmlMessage(src, "This Pokémon has multiple Mega Evolutions! Use {0} to choose the one you want.".format(link("/mega " + pokeInput + ":[X or Y]", false, true)), safchan);
-                return;
-            }
             if (["1", "x", poke(possibleEvo[0]).toLowerCase()].contains(evoChoice)) {
                 evolveTo = possibleEvo[0];
             }
             else if (["2", "y", poke(possibleEvo[1]).toLowerCase()].contains(evoChoice)) {
                 evolveTo = possibleEvo[1];
+            }
+            else {
+                safaribot.sendHtmlMessage(src, "This Pokémon has multiple Mega Evolutions! Use {0} to choose the one you want.".format(link("/mega " + pokeInput + ":[X or Y]", false, true)), safchan);
+                return;
             }
         }
         else {
@@ -29393,13 +29393,9 @@ function Safari() {
                 for (e = 0; e < quest.requests.length; e++) {
                     id = quest.requests[e];
                     if (!player.pokemon.contains(id)) {
-                        if (freeUsed.length < free) {
-                            freeUsed.push(id);
-                        } else {
-                            safaribot.sendHtmlMessage(src, (showSprite ? trainerSprite : "") + "Collector: You don't have " + an(pokePlain(id)) + "!", safchan);
-                            hasPokemon = false;
-                            showSprite = false;
-                        }
+                        safaribot.sendHtmlMessage(src, (showSprite ? trainerSprite : "") + "Collector: You don't have " + an(pokePlain(id)) + "!", safchan);
+                        hasPokemon = false;
+                        showSprite = false;
                     }
                 }
                 if (!hasPokemon) {
@@ -29407,9 +29403,6 @@ function Safari() {
                 }
                 for (e = 0; e < quest.requests.length; e++) {
                     id = quest.requests[e];
-                    if (freeUsed.contains(id)) {
-                        continue;
-                    }
                     if (!canLosePokemon(src, id + "", "give")) {
                         return;
                     }
@@ -29417,7 +29410,7 @@ function Safari() {
                 if (player.party.length <= quest.requests.length) {
                     var allInParty = true;
                     for (e = 0; e < player.party.length; e++) {
-                        if (!quest.requests.contains(player.party[e]) && !freeUsed.contains(player.party[e])) {
+                        if (!quest.requests.contains(player.party[e]))) {
                             allInParty = false;
                             break;
                         }
@@ -29432,6 +29425,7 @@ function Safari() {
                 if (player.costume === "pokefan") {
                     costumed = true;
                 }
+                
                 var givenList = quest.requests.concat();
                 while (free > freeUsed.length) {
                     e = quest.requests.random();
@@ -38524,9 +38518,9 @@ function Safari() {
         var j = 4;
         while (j > 0) {
             while (!(found)) {
-            	if (damaging.length < 3) {
-            		damaging = [].concat(damagingOriginal);
-            	}
+                if (damaging.length < 3) {
+                    damaging = [].concat(damagingOriginal);
+                }
                 newAttack = damaging.pop();
                 l1 = lookupMoveLearners(newAttack);
                 if (existingPool.length < 1) {
