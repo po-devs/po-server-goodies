@@ -3742,7 +3742,6 @@ function Mafia(mafiachan) {
             //mafiabot.sendAll("GAME ENDED", mafiachan);
             mafia.unloadAWOL();
             mafia.clearVariables();
-            mafia.isEvent = false;
             runUpdate();
             this.advertiseFeaturedTheme();
             
@@ -5761,16 +5760,16 @@ function Mafia(mafiachan) {
                                     inspectedRole = this.revealAsRole(targetMode.revealAs, target.role, player.role.role);
                                 }
                                 if (incorrectChance > 0 && chance(incorrectChance)) {
-                                	var rolePossible = [], rolePossible2 = [];
+                                    var rolePossible = [], rolePossible2 = [];
                                     for (var x in this.players) {
                                         if (!(this.players[x].role.role == target.role.role || this.players[x].role.role == player.role.role)) {
                                             rolePossible.push(this.players[x].role.role);
                                         }
                                         rolePossible2.push(this.players[x].role.role);
                                     }
-									if (rolePossible.length == 0) {
-										rolePossible = rolePossible2;
-									}
+                                    if (rolePossible.length == 0) {
+                                        rolePossible = rolePossible2;
+                                    }
                                     inspectedRole = rolePossible.random();
                                 }
 
