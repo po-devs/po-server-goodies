@@ -2152,7 +2152,7 @@ function Mafia(mafiachan) {
         sendBorder();
         sendChanAll("", mafiachan);
         if (sys.id('PolkaBot') !== undefined) {
-            sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
+            //sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
         }
         //mafiabot.sendAll("GAME ENDED", mafiachan);
         mafia.saveCurrentGame("None");
@@ -3737,7 +3737,7 @@ function Mafia(mafiachan) {
             mafia.saveCurrentGame("Tie");
             mafia.checkDead(CurrentGame.playerCount);
             if (sys.id('PolkaBot') !== undefined) {
-                sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
+                //sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
             //mafiabot.sendAll("GAME ENDED", mafiachan);
             mafia.unloadAWOL();
@@ -3809,7 +3809,7 @@ function Mafia(mafiachan) {
             mafia.unloadAWOL();
             mafia.clearVariables();
             if (sys.id('PolkaBot') !== undefined) {
-                sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
+                //sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
 
             if (mafia.isEvent) {
@@ -4240,7 +4240,7 @@ function Mafia(mafiachan) {
                     massConvert(player, commandObject);
                 }
                 if (sys.id('PolkaBot') !== undefined) {
-                    sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+target.name+" DIED", mafiachan);
+                    //sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+target.name+" DIED", mafiachan);
                 }
                 this.kill(mafia.players[commandData]);
             } else {
@@ -4261,13 +4261,13 @@ function Mafia(mafiachan) {
                 }
 
                 if (sys.id('PolkaBot') !== undefined) {
-                    sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+name+" DIED", mafiachan);
+                    //sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+name+" DIED", mafiachan);
                 }
                 this.kill(mafia.players[name]);
                 if (target.role.actions.daykill === "bomb") {
                     this.kill(mafia.players[commandData]);
                     if (sys.id('PolkaBot') !== undefined) {
-                        sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+commandData+" DIED", mafiachan);
+                        //sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+commandData+" DIED", mafiachan);
                     }
                 }
             }
@@ -4438,7 +4438,7 @@ function Mafia(mafiachan) {
                     }
                     this.kill(mafia.players[commandData]);
                     if (sys.id('PolkaBot') !== undefined) {
-                        sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+commandData+" DIED", mafiachan);
+                       // sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+commandData+" DIED", mafiachan);
                     }
                 } else {
                     if ("copyAs" in commandObject) {
@@ -4468,7 +4468,7 @@ function Mafia(mafiachan) {
                 }
 
                 if (sys.id('PolkaBot') !== undefined) {
-                    sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+name+" DIED", mafiachan);
+                    //sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+name+" DIED", mafiachan);
                 }
                 this.kill(mafia.players[name]);
             }
