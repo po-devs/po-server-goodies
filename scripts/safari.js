@@ -24760,7 +24760,7 @@ function Safari() {
         if (move.category !== "other") {
             var self = this;
 
-            var dealDamage = function(user, move, target, typeMultiplier, targetSide, out) {
+            var dealDamage = function(user, move, target, typeMultiplier, targetSide, out, friendlyFire) {
                 self.crit = false;
                 
                 if (typeMultiplier < 1 && !self.fullNPC && self.npcBattle && targetSide !== 1) {
@@ -25044,7 +25044,7 @@ function Safari() {
                 }
                 
                 //safaribot.sendMessage(sys.id("ripper roo"), self.name1 + " && " + self.originalTeam1 + " && " + isPlayerVsNPC + " && " + move.type + " && " + targetSide, safchan);
-                if (!self.fullNPC && self.npcBattle && targetSide !== 1) {
+                if (!self.fullNPC && self.npcBattle && targetSide !== 1 && !friendlyFire) {
                     if (move.type === "Normal") {
                         var normalSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicNormal");
                         if (normalSkill) {
@@ -25222,7 +25222,7 @@ function Safari() {
                         out.push(tname + "'s balloon popped!");
                         target.item.balloon = false;
                     }
-                    if (!self.fullNPC && self.npcBattle && targetSide === 1) {
+                    if (!self.fullNPC && self.npcBattle && targetSide === 1 && !friendlyFire) {
                         if (typeMultiplier < 1) {
                             var stats = ["atk", "def", "spe", "satk", "sdef"];
                             var validStats = [];
@@ -25255,7 +25255,7 @@ function Safari() {
                     if (placeholder > 0) {
                         out.push(name + " restored " + placeholder + " HP!");
                     }
-                    if (!self.fullNPC && self.npcBattle && targetSide !== 1 && placeholder > 0) {
+                    if (!self.fullNPC && self.npcBattle && targetSide !== 1 && !friendlyFire && placeholder > 0) {
                         var validAllies = self.team1.filter(function(e) { return e.hp > 0 && e.hp < e.maxhp && e.index !== user.index }); // allies that have already fainted shouldn't get healing
                         
                         if (validAllies.length > 0) {
@@ -25496,24 +25496,24 @@ function Safari() {
                     
                     typeMultiplier = safari.checkEffective(move.type, "???", type1(poke2.id), type2(poke2.id), null, inver, this.select, this.select2);
 
-                    if (move.type == "Ground" && (poke2.item.balloon || (hasType(target.id, "Flying") && !inver))) {
+                    if (move.type == "Ground" && (poke2.item.balloon || (hasType(poke2.id, "Flying") && !inver))) {
                         typeMultiplier = 0;
-                        if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && !poke2.protect) {
+                        if (!this.fullNPC && this.npcBattle && poke2.owner.toLowerCase() !== this.name1.toLowerCase() && !poke2.protect) {
                             thousandArrowsSkill = safari.pokeSkillActivated(this.name1, user, "thousandArrows");
                             if (thousandArrowsSkill) {
                                 typeMultiplier = 2;
-                                out.push("<b>[{0}'s {1}]</b> {2}'s Ground-type attack struck the airborne {3}!".format(poke(thousandArrowsSkill.id), thousandArrowsSkill.name, poke(user.id), poke(target.id)));
+                                out.push("<b>[{0}'s {1}]</b> {2}'s Ground-type attack struck the airborne {3}!".format(poke(thousandArrowsSkill.id), thousandArrowsSkill.name, poke(user.id), poke(poke2.id)));
                             }
                         }
                     }
                     
-                    if (typeMultiplier > 0 && poke2.protect && !this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase()) {
+                    if (typeMultiplier > 0 && poke2.protect && !this.fullNPC && this.npcBattle && poke2.owner.toLowerCase() !== this.name1.toLowerCase()) {
                         var distortionSkillList = ["distortionForce", "hyperspaceFury"];
                         for (var i = 0; i < distortionSkillList.length; i++) {
                             distortionForceSkill = safari.pokeSkillActivated(this.name1, user, distortionSkillList[i]);
                             if (distortionForceSkill) {
                                 poke2.protect = false;
-                                out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s protection!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)));
+                                out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s protection!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(poke2.id)));
                                 break;
                             }
                         }
@@ -25530,24 +25530,24 @@ function Safari() {
                     }
                     
                     typeMultiplier = safari.checkEffective(move.type, "???", type1(poke4.id), type2(poke4.id), null, inver, this.select, this.select2);
-                    if (move.type == "Ground" && (poke4.item.balloon || (hasType(target.id, "Flying") && !inver))) {
+                    if (move.type == "Ground" && (poke4.item.balloon || (hasType(poke4.id, "Flying") && !inver))) {
                         typeMultiplier = 0;
-                        if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && !poke4.protect) {
+                        if (!this.fullNPC && this.npcBattle && poke4.owner.toLowerCase() !== this.name1.toLowerCase() && !poke4.protect) {
                             thousandArrowsSkill = safari.pokeSkillActivated(this.name1, user, "thousandArrows");
                             if (thousandArrowsSkill) {
                                 typeMultiplier = 2;
-                                out.push("<b>[{0}'s {1}]</b> {2}'s Ground-type attack struck the airborne {3}!".format(poke(thousandArrowsSkill.id), thousandArrowsSkill.name, poke(user.id), poke(target.id)));
+                                out.push("<b>[{0}'s {1}]</b> {2}'s Ground-type attack struck the airborne {3}!".format(poke(thousandArrowsSkill.id), thousandArrowsSkill.name, poke(user.id), poke(poke4.id)));
                             }
                         }
                     }
                     
-                    if (typeMultiplier > 0 && poke4.protect && !this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && !distortionForceSkill) { // check distortion skill not already activated for poke2, if it is, don't activate again to prevent consuming 2 uses at once
+                    if (typeMultiplier > 0 && poke4.protect && !this.fullNPC && this.npcBattle && poke4.owner.toLowerCase() !== this.name1.toLowerCase() && !distortionForceSkill) { // check distortion skill not already activated for poke2, if it is, don't activate again to prevent consuming 2 uses at once
                         var distortionSkillList = ["distortionForce", "hyperspaceFury"];
                         for (var i = 0; i < distortionSkillList.length; i++) {
                             distortionForceSkill = safari.pokeSkillActivated(this.name1, user, distortionSkillList[i]);
                             if (distortionForceSkill) {
                                 poke4.protect = false;
-                                out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s protection!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(target.id)));
+                                out.push("<b>[{0}'s {1}]</b> {2}'s attack bypassed {3}'s protection!".format(poke(distortionForceSkill.id), distortionForceSkill.name, poke(user.id), poke(poke4.id)));
                                 break;
                             }
                         }
@@ -25574,7 +25574,7 @@ function Safari() {
                             out.push(poke3.owner + "'s " + poke(poke3.id) + " protected itself!");
                         }
                         else if (poke1.hp > 0) {
-                            out = dealDamage(poke1, move, poke3, typeMultiplier, 1, out);
+                            out = dealDamage(poke1, move, poke3, typeMultiplier, 1, out, true);
                         }
                     }
                 }
@@ -25617,7 +25617,7 @@ function Safari() {
                             out.push(poke1.owner + "'s " + poke(poke1.id) + " protected itself!");
                         }
                         else if (poke1.hp > 0) {
-                            out = dealDamage(poke3, move, poke1, typeMultiplier, 1, out);
+                            out = dealDamage(poke3, move, poke1, typeMultiplier, 1, out, true);
                         }
                     }
                 }
@@ -25660,7 +25660,7 @@ function Safari() {
                             out.push(poke4.owner + "'s " + poke(poke4.id) + " protected itself!");
                         }
                         else if (poke4.hp > 0) {
-                            out = dealDamage(poke2, move, poke4, typeMultiplier, 2, out);
+                            out = dealDamage(poke2, move, poke4, typeMultiplier, 2, out, true);
                         }
                     }
                 }
@@ -25703,7 +25703,7 @@ function Safari() {
                             out.push(poke2.owner + "'s " + poke(poke2.id) + " protected itself!");
                         }
                         else if (poke2.hp > 0) {
-                            out = dealDamage(poke4, move, poke2, typeMultiplier, 2, out);
+                            out = dealDamage(poke4, move, poke2, typeMultiplier, 2, out, true);
                         }
                     }
                 }
@@ -25758,7 +25758,7 @@ function Safari() {
         }
 
         if (move.category === "other") {
-            out = this.afterDamage(user, move, target, oppparty, false, 0, out);
+            out = this.afterDamage(user, move, target, oppparty, false, ((isP1 || isP3) ? 2 : 1), out);
         }
         return out;
     };
@@ -25769,7 +25769,7 @@ function Safari() {
             if (!this.isImmuneTo(target.id, move.status)) {
                 if (["sleep", "freeze"].contains(move.status) === false || this.countCondition(oppparty, move.status) === 0) {
                     // skill effect placed here to ensure all other checks for the status have passed other than statusChance. this avoids activating the skill in vain if the effect would have been prevented for any other reason anyway
-                    if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() === this.name1.toLowerCase()) { // don't use targetSide since moves from "other" category have targetSide = 0
+                    if (!this.fullNPC && this.npcBattle && targetSide === 1) {
                         var statusList = ["sleep", "paralyzed", "burn", "freeze", "poison"];
                         var statusDefence = ["basicFairy", "basicGround", "basicWater", "basicFire", "basicSteel"];
                         
@@ -25811,7 +25811,7 @@ function Safari() {
                                     };
                                     out.push(tname + " " + conditionVerb[move.status] + "!");
                                 }
-                                if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() === this.name1.toLowerCase() && !(target.boosts["atk"] === 6 && target.boosts["satk"] === 6)) { // if both stats are maxed, dont use skill
+                                if (!this.fullNPC && this.npcBattle && targetSide === 1 && !(target.boosts["atk"] === 6 && target.boosts["satk"] === 6)) { // if both stats are maxed, dont use skill
                                     var berserkGeneSkill = safari.pokeSkillActivated(this.name1, target, "berserkGene");
                                     if (berserkGeneSkill) {
                                         target.boosts["atk"] += berserkGeneSkill.rate;
@@ -25953,7 +25953,7 @@ function Safari() {
             else {
                 var defianted = false;
 
-                if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() === this.name1.toLowerCase()) {
+                if (!this.fullNPC && this.npcBattle && targetSide === 1) {
                     var nerfDefenceSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicDark");
                 }
                 for (e = 0; e < move.nerf.length; e++) {
@@ -26041,7 +26041,7 @@ function Safari() {
         if (!fainted && move.flinch && chance(move.flinch)) {
             target.flinch = true;
         }
-        if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase()) { // don't use targetSide since moves from "other" category have targetSide = 0
+        if (!this.fullNPC && this.npcBattle && targetSide !== 1) {
             var stats = ["atk", "def", "spe", "satk", "sdef"];
             
             if (user.boosts["atk"] < 6 || user.boosts["def"] < 6 || user.boosts["satk"] < 6 || user.boosts["sdef"] < 6 || user.boosts["spe"] < 6) {
