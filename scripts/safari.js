@@ -37472,7 +37472,7 @@ function Safari() {
             points += (10 * level);
         }
         if (this.horde.length > 0) {
-            var averageDamage = Math.ceil((this.horde.length / this.startingSize) * ((this.level + 3) * 37)), c;
+            var averageDamage = Math.ceil((this.horde.length / this.startingSize) * ((this.level + 5) * 25)), c;
             if (this.horde.length > 1) {
                 averageDamage += this.level;
             }
@@ -39167,7 +39167,7 @@ function Safari() {
                 if (!stamina.hasOwnProperty(p)) {
                     stamina[p] = 0;
                 }
-                stamina[p] -= Math.round(Math.max(wasted[p] - this.wasteCap, 0) * (((this.level * 0.75) + 5) * (count === 0 ? 0.5 : 1)));
+                stamina[p] -= Math.round(Math.max(wasted[p] - this.wasteCap, 0) * ((((this.level + 6) * 0.85) + 5) * (count === 0 ? 0.5 : 1)));
             }
         }
         if (struggled.length > 0) {
