@@ -29669,14 +29669,20 @@ function Safari() {
                     if (this.hasCostumeSkill(player, "extraScientistSilver")) {
                         rew = Math.round(rew * (1.66 + ((this.getCostumeLevel(player)-2)/15)));
                     }
-                    if (player.balls.silver + rew > getCap("silver")) {
-                        safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: I see you brought the correct photograph, but you are currently unable to carry any more Silver Coin! Come back after spending some of them!", safchan);
-                        return;
-                    }
+
                     safari.costumeEXP(player, "scientist", (rew * 4));
                     safari.missionProgress(player, "scientist", 1, rew, {silver: rew});
                     safaribot.sendHtmlMessage(src, "Here are your " + plural(rew, "silver") + "!", safchan);
-                    giveStuff(player, toStuffObj(rew + "@silver"));
+
+                    player.balls.silver += rew;
+
+                    if (player.balls.silver > getCap("silver")) {
+                        var diff = player.balls.silver - getCap("silver");
+                        safaribot.sendMessage(src, "Unfortunately, you had to discard " + plural(diff, "silver") + " due to excess!", safchan);
+                        player.balls.silver = getCap("silver");
+                    }
+
+                    player.records.scientistEarnings += rew;
                     player.quests.scientist.photo = id;
                 }
                 else {
