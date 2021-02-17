@@ -2552,7 +2552,7 @@ function Safari() {
         if (self) {
             var player = getAvatar(src);
             if (!player) {
-                safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+                safaribot.sendHtmlMessage(src, "You need to enter the game first! Type /start for that. If you already had a save previously but can no longer find/access it, please contact a {0}!".format(link("/cauth", "Safari Admin")), safchan);
                 return false;
             }
         }
