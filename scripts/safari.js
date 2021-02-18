@@ -21738,7 +21738,7 @@ function Safari() {
             this.name2 = player2.name;
             this.powerBoost = player2.powerBoost || 0;
             this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party, this.idnum2);
-            this.idnum = "<NPC>" + this.name2;
+            this.idnum2 = "<NPC>" + this.name2;
             this.postBattle = player2.postBattle;
             this.postArgs = player2.postArgs;
             npcDesc = player2.desc || null;
