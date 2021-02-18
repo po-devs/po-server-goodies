@@ -21737,8 +21737,8 @@ function Safari() {
         if (isNPC) {
             this.name2 = player2.name;
             this.powerBoost = player2.powerBoost || 0;
-            this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party, this.idnum2);
             this.idnum2 = "<NPC>" + this.name2;
+            this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party, this.idnum2);
             this.postBattle = player2.postBattle;
             this.postArgs = player2.postArgs;
             npcDesc = player2.desc || null;
@@ -21808,15 +21808,15 @@ function Safari() {
             if (isNPC) {
                 this.name4 = player4.name;
                 this.powerBoost = player4.powerBoost || 0;
-                this.team4 = this.originalTeam4 = this.buildTeam(this.name4, player4.party, this.name4);
                 this.idnum4 = "<NPC>" + this.name4;
+                this.team4 = this.originalTeam4 = this.buildTeam(this.name4, player4.party, this.idnum4);
                 this.biasNPC2 = player4.bias;
             }
             else {
                 player4 = isNPC ? p4 : getAvatar(p4);
                 this.name4 = sys.name(p4);
-                this.team4 = this.originalTeam4 = this.buildTeam(this.name4, player4.party, this.name4, player4.cherished);
                 this.idnum4 = player4.idnum;
+                this.team4 = this.originalTeam4 = this.buildTeam(this.name4, player4.party, this.idnum4, player4.cherished);
                 this.viewers.push(this.name4.toLowerCase());
 
                 if (!this.oneOnTwo) {
