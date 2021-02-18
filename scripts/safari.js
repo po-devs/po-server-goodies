@@ -1870,6 +1870,8 @@ function Safari() {
     /* Contest Variables */
     var contestDuration = 300; //Contest lasts for 5 minutes
     var contestCount = 0;
+    var contestExtension = 0;
+    var contestExtensionLimit = 600; // event extension limit, 10 minutes
     var contestCatchers = {};
     var contestBroadcast = true; //Determines whether Tohjo gets notified
     var contestCooldownLength = 1800; //1 contest every 30 minutes
@@ -7666,7 +7668,7 @@ function Safari() {
         else {
             if ((isRare(num) || shiny) && !dexNum) {
                 amount = 1;
-                if ((isLegendary(num) || shiny) && contestCount > 0 && contestCount % 2 === 0) {
+                if ((isLegendary(num) || shiny) && ((contestCount > 0 && contestCount % 2 === 0) || contestCount === 0 && getBST(num) > 600)) { // if legendary or shiny and either contest active + 1 in 2 chance or contest no active and BST over 600
                     wildEvent = true;
                 }
             }
@@ -56804,271 +56806,284 @@ function Safari() {
         }
 
         if (contestCount > 0) {
-            contestCount--;
-            if (contestCount === 0) {
-                var winners = [], pokeWinners = [], maxCaught = 0, maxBST = 0, player, contestInfo = { finished: now() }, fullWinners = [];
-                for (var e in contestCatchers) {
-                    if (contestCatchers.hasOwnProperty(e)) {
-                        player = getAvatarOff(e);
-                        if (contestCatchers[e].length >= maxCaught) {
+            if (wildEvent && contestCount === 1 && contestExtension <= contestExtensionLimit) { // if 1 second left and event active, start counting contestExtension up until the extension limit
+                contestExtension++;
+                if (contestExtension === 1) {
+                    safaribot.sendHtmlAll("<b>The contest has been extended due to the event! (Max extension time: {0} minutes)</b>".format(contestExtensionLimit / 60), safchan);
+                }
+                
+                if (contestExtensionLimit - contestExtension === 30) {
+                    safaribot.sendHtmlAll("<b>The contest extension ends in 30 seconds!</b>", safchan);
+                }
+            }
+            else {
+                contestCount--;
+                contestExtension = 0;
+                if (contestCount === 0) {
+                    var winners = [], pokeWinners = [], maxCaught = 0, maxBST = 0, player, contestInfo = { finished: now() }, fullWinners = [];
+                    for (var e in contestCatchers) {
+                        if (contestCatchers.hasOwnProperty(e)) {
+                            player = getAvatarOff(e);
+                            if (contestCatchers[e].length >= maxCaught) {
+                                if (player) {
+                                    if (contestCatchers[e].length > maxCaught) {
+                                        winners = [];
+                                        pokeWinners = [];
+                                        fullWinners = [];
+                                        maxCaught = contestCatchers[e].length;
+                                    }
+                                    winners.push(e);
+                                    pokeWinners.push(poke(player.party[0]));
+                                    fullWinners.push(e.toCorrectCase() + " (using " + poke(player.party[0]) + ")");
+                                }
+                            }
+                            safari.missionProgress(player, "contest", "caught", 1, { caught: contestCatchers[e].length });
+                        }
+                    }
+                    var tieBreaker = [], bst, name, top = winners.length, catchersBST = {}, allContestants = [];
+
+                    safari.compileThrowers();
+                    var allContestants = Object.keys(contestCatchers), pokemonSpawned = 0;
+                    for (e in contestCatchers) {
+                        if (contestCatchers.hasOwnProperty(e)) {
+                            catchersBST[e] = add(contestCatchers[e].map(getBST));
+                            pokemonSpawned += contestCatchers[e].length;
+                        }
+                    }
+                    if (top > 1) {
+                        maxBST = 0;
+                        pokeWinners = [];
+                        for (e in winners) {
+                            name = winners[e];
+                            bst = catchersBST[name];
+
+                            if (bst >= maxBST) {
+                                player = getAvatarOff(name);
+                                if (player) {
+                                    if (bst > maxBST) {
+                                        tieBreaker = [];
+                                        pokeWinners = [];
+                                        fullWinners = [];
+                                        maxBST = bst;
+                                    }
+                                    tieBreaker.push(name);
+                                    pokeWinners.push(poke(player.party[0]));
+                                    fullWinners.push(name.toCorrectCase() + " (using " + poke(player.party[0]) + ")");
+                                }
+                            }
+                        }
+                        winners = tieBreaker;
+                    }
+                    allContestants.sort(function(a, b) {
+                        if (contestCatchers[a].length > contestCatchers[b].length) {
+                            return -1;
+                        }
+                        else if (contestCatchers[a].length < contestCatchers[b].length) {
+                            return 1;
+                        }
+                        else if (catchersBST[a] > catchersBST[b]) {
+                            return -1;
+                        }
+                        else if (catchersBST[a] < catchersBST[b]) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+
+                    var playerScore = function(name) {
+                        return "(Caught " + contestCatchers[name].length + ", BST " + catchersBST[name] + ")";
+                    };
+
+                    var reward = currentRules && currentRules.rewards ? currentRules.rewards : { gacha: 10 };
+                    sys.sendAll(separator, safchan);
+                    safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
+                    var saveContestVal = 8; //test this at 8 for now, if it needs to be higher or lower it can be adjusted in the future
+                    if (Object.keys(contestCatchers).length === 1) {
+                        if (contestCatchers[winners[0]].length < saveContestVal) {
+                            safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
+                            winners = [];
+                            contestInfo.winners = null;
+                        }
+                    }
+                    if (winners.length > 0) {
+                        var list = [];
+                        for (var e in reward) {
+                            if (e == "cashbonus") {
+                                list.push("$$$");
+                            } else {
+                                list.push(reward[e] + " " + itemAlias(e, false, true) + (reward[e] === 1 ? "" : "s"));
+                            }
+                        }
+                        if (list.length < 1) {
+                            list.push("a prize");
+                        }
+                        safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and " + (winners.length > 1 ? "have" : "has") + " won " + readable(list, "and")  + "!", safchan);
+                        contestInfo.winners = readable(fullWinners, "and");
+                        contestInfo.caught = maxCaught;
+                        contestInfo.bst = maxBST === 0 ? catchersBST[winners[0]] : maxBST;
+                    }
+                    if (allContestants.length > 0) {
+                        safaribot.sendAll(allContestants.map(function (x) { return x.toCorrectCase() + " " + playerScore(x); }).join(", "), safchan);
+                    }
+                    sys.sendAll(separator, safchan);
+
+                    var winner, playerId, amt;
+                    for (e in contestantsCount) {
+                        if (contestantsCount.hasOwnProperty(e)) {
+                            player = getAvatarOff(e);
+                            if (contestantsCount[e] > 0 && player) {
+                                playerId = sys.id(e);
+                                var basis = 2.5;
+                                amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * basis), 1);
+                                if (playerId) {
+                                    if (e in contestCatchers) {
+                                        safaribot.sendMessage(playerId, "You finished in " + getOrdinal(winners.contains(e) ? 1 : allContestants.indexOf(e) + 1) + " place " + playerScore(e), safchan);
+                                    }
+                                    safaribot.sendMessage(playerId, "You received " + plural(amt, "bait") + " for participating in the contest!", safchan);
+                                }
+                                rewardCapCheck(player, "bait", amt);
+                                safari.missionProgress(player, "contest", "thrown", 1, { thrown: contestantsCount[e] });
+                                /*if (amt >= Math.floor(basis)) {
+                                    player.records.fullyPlayedContests += 1;
+                                }*/
+                                safari.saveGame(player);
+                            }
+                        }
+                    }
+
+                    if (winners.length > 0) {
+                        var r, rewardName, amt;
+                        for (e in winners) {
+                            winner = winners[e];
+                            player = getAvatarOff(winner);
                             if (player) {
-                                if (contestCatchers[e].length > maxCaught) {
-                                    winners = [];
-                                    pokeWinners = [];
-                                    fullWinners = [];
-                                    maxCaught = contestCatchers[e].length;
-                                }
-                                winners.push(e);
-                                pokeWinners.push(poke(player.party[0]));
-                                fullWinners.push(e.toCorrectCase() + " (using " + poke(player.party[0]) + ")");
-                            }
-                        }
-                        safari.missionProgress(player, "contest", "caught", 1, { caught: contestCatchers[e].length });
-                    }
-                }
-                var tieBreaker = [], bst, name, top = winners.length, catchersBST = {}, allContestants = [];
-
-                safari.compileThrowers();
-                var allContestants = Object.keys(contestCatchers), pokemonSpawned = 0;
-                for (e in contestCatchers) {
-                    if (contestCatchers.hasOwnProperty(e)) {
-                        catchersBST[e] = add(contestCatchers[e].map(getBST));
-                        pokemonSpawned += contestCatchers[e].length;
-                    }
-                }
-                if (top > 1) {
-                    maxBST = 0;
-                    pokeWinners = [];
-                    for (e in winners) {
-                        name = winners[e];
-                        bst = catchersBST[name];
-
-                        if (bst >= maxBST) {
-                            player = getAvatarOff(name);
-                            if (player) {
-                                if (bst > maxBST) {
-                                    tieBreaker = [];
-                                    pokeWinners = [];
-                                    fullWinners = [];
-                                    maxBST = bst;
-                                }
-                                tieBreaker.push(name);
-                                pokeWinners.push(poke(player.party[0]));
-                                fullWinners.push(name.toCorrectCase() + " (using " + poke(player.party[0]) + ")");
-                            }
-                        }
-                    }
-                    winners = tieBreaker;
-                }
-                allContestants.sort(function(a, b) {
-                    if (contestCatchers[a].length > contestCatchers[b].length) {
-                        return -1;
-                    }
-                    else if (contestCatchers[a].length < contestCatchers[b].length) {
-                        return 1;
-                    }
-                    else if (catchersBST[a] > catchersBST[b]) {
-                        return -1;
-                    }
-                    else if (catchersBST[a] < catchersBST[b]) {
-                        return 1;
-                    }
-                    return 0;
-                });
-
-                var playerScore = function(name) {
-                    return "(Caught " + contestCatchers[name].length + ", BST " + catchersBST[name] + ")";
-                };
-
-                var reward = currentRules && currentRules.rewards ? currentRules.rewards : { gacha: 10 };
-                sys.sendAll(separator, safchan);
-                safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
-                var saveContestVal = 8; //test this at 8 for now, if it needs to be higher or lower it can be adjusted in the future
-                if (Object.keys(contestCatchers).length === 1) {
-                    if (contestCatchers[winners[0]].length < saveContestVal) {
-                        safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
-                        winners = [];
-                        contestInfo.winners = null;
-                    }
-                }
-                if (winners.length > 0) {
-                    var list = [];
-                    for (var e in reward) {
-                        if (e == "cashbonus") {
-                            list.push("$$$");
-                        } else {
-                            list.push(reward[e] + " " + itemAlias(e, false, true) + (reward[e] === 1 ? "" : "s"));
-                        }
-                    }
-                    if (list.length < 1) {
-                        list.push("a prize");
-                    }
-                    safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and " + (winners.length > 1 ? "have" : "has") + " won " + readable(list, "and")  + "!", safchan);
-                    contestInfo.winners = readable(fullWinners, "and");
-                    contestInfo.caught = maxCaught;
-                    contestInfo.bst = maxBST === 0 ? catchersBST[winners[0]] : maxBST;
-                }
-                if (allContestants.length > 0) {
-                    safaribot.sendAll(allContestants.map(function (x) { return x.toCorrectCase() + " " + playerScore(x); }).join(", "), safchan);
-                }
-                sys.sendAll(separator, safchan);
-
-                var winner, playerId, amt;
-                for (e in contestantsCount) {
-                    if (contestantsCount.hasOwnProperty(e)) {
-                        player = getAvatarOff(e);
-                        if (contestantsCount[e] > 0 && player) {
-                            playerId = sys.id(e);
-                            var basis = 2.5;
-                            amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * basis), 1);
-                            if (playerId) {
-                                if (e in contestCatchers) {
-                                    safaribot.sendMessage(playerId, "You finished in " + getOrdinal(winners.contains(e) ? 1 : allContestants.indexOf(e) + 1) + " place " + playerScore(e), safchan);
-                                }
-                                safaribot.sendMessage(playerId, "You received " + plural(amt, "bait") + " for participating in the contest!", safchan);
-                            }
-                            rewardCapCheck(player, "bait", amt);
-                            safari.missionProgress(player, "contest", "thrown", 1, { thrown: contestantsCount[e] });
-                            /*if (amt >= Math.floor(basis)) {
-                                player.records.fullyPlayedContests += 1;
-                            }*/
-                            safari.saveGame(player);
-                        }
-                    }
-                }
-
-                if (winners.length > 0) {
-                    var r, rewardName, amt;
-                    for (e in winners) {
-                        winner = winners[e];
-                        player = getAvatarOff(winner);
-                        if (player) {
-                            rewardName = [];
-                            for (r in reward) {
-                                amt = reward[r];
-                                if (["redapricorn", "grnapricorn", "bluapricorn", "whtapricorn", "blkapricorn", "pnkapricorn", "ylwapricorn"].contains(r) && safari.hasCostumeSkill(player, "extraApricornsFromContest")) {
-                                    amt = Math.floor(amt * (1 + (safari.getCostumeLevel(player) + 10)/30));
-                                }
-                                if (r == "cashbonus") {
-                                    var val = 1000;
-                                    if (catchersBST.hasOwnProperty(winner)) {
-                                        val = catchersBST[winner];
+                                rewardName = [];
+                                for (r in reward) {
+                                    amt = reward[r];
+                                    if (["redapricorn", "grnapricorn", "bluapricorn", "whtapricorn", "blkapricorn", "pnkapricorn", "ylwapricorn"].contains(r) && safari.hasCostumeSkill(player, "extraApricornsFromContest")) {
+                                        amt = Math.floor(amt * (1 + (safari.getCostumeLevel(player) + 10)/30));
                                     }
-                                    if (val > 0) {
-                                        player.money += val;
-                                        player.money = Math.min(player.money, moneyCap);
-                                        rewardName.push("$" + val);
+                                    if (r == "cashbonus") {
+                                        var val = 1000;
+                                        if (catchersBST.hasOwnProperty(winner)) {
+                                            val = catchersBST[winner];
+                                        }
+                                        if (val > 0) {
+                                            player.money += val;
+                                            player.money = Math.min(player.money, moneyCap);
+                                            rewardName.push("$" + val);
+                                        }
+                                    } else if (amt > 0) {
+                                        player.balls[r] += amt;
+                                        if (player.balls[r] > getCap(r)) {
+                                            player.balls[r] = getCap(r);
+                                        }
+                                        if (r == "entry") {
+                                            rafflePlayers.add(player.id, player.balls.entry);
+                                            rafflePlayers.save();
+                                        }
+                                        rewardName.push(amt + " " + itemAlias(r, false, true) + (amt === 1 ? "" : "s"));
+                                        safari.missionProgress(player, "contestPrize", r, amt);
                                     }
-                                } else if (amt > 0) {
-                                    player.balls[r] += amt;
-                                    if (player.balls[r] > getCap(r)) {
-                                        player.balls[r] = getCap(r);
-                                    }
-                                    if (r == "entry") {
-                                        rafflePlayers.add(player.id, player.balls.entry);
-                                        rafflePlayers.save();
-                                    }
-                                    rewardName.push(amt + " " + itemAlias(r, false, true) + (amt === 1 ? "" : "s"));
-                                    safari.missionProgress(player, "contestPrize", r, amt);
                                 }
+                                player.records.contestsWon += 1;
+                                var c = currentTheme ? themeName(currentTheme) : "Default";
+                                safari.missionProgress(player, "contest", "won", 1, { won: true, theme: c, lead: player.party[0] });
+                                safari.costumeEXP(player, "wincontest");
+                                safari.addToMonthlyLeaderboards(player.id, "contestsWon", 1);
+                                safari.saveGame(player);
+                                playerId = sys.id(winner);
+                                safari.detectiveClue(player.idnum, "contest", playerId);
+                                if (playerId) {
+                                    safaribot.sendMessage(playerId, "You received " + readable(rewardName, "and") + " for winning the contest!", safchan);
+                                }
+                                safari.inboxMessage(player, "You received " + readable(rewardName, "and") + " for winning the contest!", isPlaying(winner));
                             }
-                            player.records.contestsWon += 1;
-                            var c = currentTheme ? themeName(currentTheme) : "Default";
-                            safari.missionProgress(player, "contest", "won", 1, { won: true, theme: c, lead: player.party[0] });
-                            safari.costumeEXP(player, "wincontest");
-                            safari.addToMonthlyLeaderboards(player.id, "contestsWon", 1);
-                            safari.saveGame(player);
-                            playerId = sys.id(winner);
-                            safari.detectiveClue(player.idnum, "contest", playerId);
-                            if (playerId) {
-                                safaribot.sendMessage(playerId, "You received " + readable(rewardName, "and") + " for winning the contest!", safchan);
-                            }
-                            safari.inboxMessage(player, "You received " + readable(rewardName, "and") + " for winning the contest!", isPlaying(winner));
                         }
                     }
-                }
-                if (currentPokemon && isRare(currentPokemon)) {
-                    sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared with the " + themeName(currentTheme) + " contest::\n");
-                }
+                    if (currentPokemon && isRare(currentPokemon)) {
+                        sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared with the " + themeName(currentTheme) + " contest::\n");
+                    }
 
-                contestInfo.themeId = currentTheme ? currentTheme : "none";
-                contestInfo.theme = currentTheme ? themeName(currentTheme) : "Default";
-                contestInfo.rules = safari.translateRules(currentRules, true);
-                lastContests.push(contestInfo);
-                if (lastContests.length > 10) {
-                    lastContests.shift();
-                }
-                permObj.add("lastContests", JSON.stringify(lastContests));
-                //Clear throwers if the contest ends with a Wild Pokemon uncaught
-                resetVars();
-                currentRules = null;
-                contestCatchers = {};
-                wildSpirit = false;
-                for (var e = 0; e < needsPechaCleared.length; e++) {
-                    var p = getAvatarOff(needsPechaCleared[e]);
-                    if (p) {
-                        p.berries.pecha = false;
-                        safari.saveGame(p);
+                    contestInfo.themeId = currentTheme ? currentTheme : "none";
+                    contestInfo.theme = currentTheme ? themeName(currentTheme) : "Default";
+                    contestInfo.rules = safari.translateRules(currentRules, true);
+                    lastContests.push(contestInfo);
+                    if (lastContests.length > 10) {
+                        lastContests.shift();
                     }
-                }
-                needsPechaCleared = [];
+                    permObj.add("lastContests", JSON.stringify(lastContests));
+                    //Clear throwers if the contest ends with a Wild Pokemon uncaught
+                    resetVars();
+                    currentRules = null;
+                    contestCatchers = {};
+                    wildSpirit = false;
+                    for (var e = 0; e < needsPechaCleared.length; e++) {
+                        var p = getAvatarOff(needsPechaCleared[e]);
+                        if (p) {
+                            p.berries.pecha = false;
+                            safari.saveGame(p);
+                        }
+                    }
+                    needsPechaCleared = [];
 
-                //Check daily rewards after a contest so players won't need to relog to get their reward when date changes
-                var onChannel = sys.playersOfChannel(safchan),
-                    today = getDay(now());
-                for (e in onChannel) {
-                    safari.dailyReward(onChannel[e], today);
-                    safari.revertMega(onChannel[e]);
-                    //safari.tickPokeSkills(onChannel[e]);
-                }
-                safari.updateLeaderboards();
-                rawPlayers.save();
-                cookedPlayers.save();
-                rafflePlayers.save();
-                safari.updateMAuctions();
-                if (now() > scientistQuest.expires) {
-                    safari.changeScientistQuest();
-                }
-                if (today >= getDay(dailyBoost.expires)) {
-                    var next = permObj.get("nextDailyBoost");
-                    safari.changeDailyBoost(next);
-                    safari.checkNewWeek();
-                    safari.dayCareStep(2);
-                    safari.checkNewMonth();
-                    safari.lockInactiveSaves();
-                    safari.backupSaves();
-                    safari.flipEconomyDay();
-                    var mercy = parseInt(permObj.get("loginDaysDown"), 10);
-                    if (mercy > 0) {
-                        permObj.add("loginDaysDown", 0);
+                    //Check daily rewards after a contest so players won't need to relog to get their reward when date changes
+                    var onChannel = sys.playersOfChannel(safchan),
+                        today = getDay(now());
+                    for (e in onChannel) {
+                        safari.dailyReward(onChannel[e], today);
+                        safari.revertMega(onChannel[e]);
+                        //safari.tickPokeSkills(onChannel[e]);
                     }
-                    this.pyrBonusMons();
-                }
-                else {
-                    safari.dayCareStep(1);
-                }
-                safari.pendingNotifications();
-                if (safari.events.spiritDuelsEnabled) {
-                    if (safari.events.spiritDuelsBattling) {
-                        safari.events.currentSpiritDuel = true;
-                        safari.startSpiritDuel();
+                    safari.updateLeaderboards();
+                    rawPlayers.save();
+                    cookedPlayers.save();
+                    rafflePlayers.save();
+                    safari.updateMAuctions();
+                    if (now() > scientistQuest.expires) {
+                        safari.changeScientistQuest();
                     }
-                }
-                safari.runPendingActive();
-                checkUpdate();
-            } else {
-                if (!currentPokemon && (chance(0.092743 + (sys.playersOfChannel(safchan).length > 54 ? 0.011 : 0)) || ((lastWild > now() + 12000 && (chance(0.25))) )) ) {
-                    var amt = chance(0.05919) ? (chance(0.35) ? 3 : 2) : 1;
-                    if (currentTheme && (chance(0.02)) && (currentTheme === "seasonal" || (currentTheme === "seasonal2"))) {
-                        amt++;
-                    }
-                    if (safari.events.spiritDuelsEnabled && spiritSpawn && chance(0.3) && contestCount < 150) {
-                        spiritSpawn = false;
-                        wildSpirit = true;
-                        safari.createWild(null, null, amt, null, null, null, null, false, false, false, true);
+                    if (today >= getDay(dailyBoost.expires)) {
+                        var next = permObj.get("nextDailyBoost");
+                        safari.changeDailyBoost(next);
+                        safari.checkNewWeek();
+                        safari.dayCareStep(2);
+                        safari.checkNewMonth();
+                        safari.lockInactiveSaves();
+                        safari.backupSaves();
+                        safari.flipEconomyDay();
+                        var mercy = parseInt(permObj.get("loginDaysDown"), 10);
+                        if (mercy > 0) {
+                            permObj.add("loginDaysDown", 0);
+                        }
+                        this.pyrBonusMons();
                     }
                     else {
-                        safari.createWild(null, null, amt);
+                        safari.dayCareStep(1);
+                    }
+                    safari.pendingNotifications();
+                    if (safari.events.spiritDuelsEnabled) {
+                        if (safari.events.spiritDuelsBattling) {
+                            safari.events.currentSpiritDuel = true;
+                            safari.startSpiritDuel();
+                        }
+                    }
+                    safari.runPendingActive();
+                    checkUpdate();
+                } else {
+                    if (!currentPokemon && (chance(0.092743 + (sys.playersOfChannel(safchan).length > 54 ? 0.011 : 0)) || ((lastWild > now() + 12000 && (chance(0.25))) )) ) {
+                        var amt = chance(0.05919) ? (chance(0.35) ? 3 : 2) : 1;
+                        if (currentTheme && (chance(0.02)) && (currentTheme === "seasonal" || (currentTheme === "seasonal2"))) {
+                            amt++;
+                        }
+                        if (safari.events.spiritDuelsEnabled && spiritSpawn && chance(0.3) && contestCount < 150) {
+                            spiritSpawn = false;
+                            wildSpirit = true;
+                            safari.createWild(null, null, amt, null, null, null, null, false, false, false, true);
+                        }
+                        else {
+                            safari.createWild(null, null, amt);
+                        }
                     }
                 }
             }
