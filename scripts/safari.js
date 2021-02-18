@@ -25775,7 +25775,7 @@ function Safari() {
     Battle2.prototype.afterDamage = function(user, move, target, oppparty, damaging, targetSide, out) {
         var fainted = (target.hp <= 0 ? true : false);
         var tname = target.owner + "'s " + poke(target.id);
-        if (!fainted && target.condition === "none" && move.status && (!(move.status === "sleep" && (!hasType(target.id, "Flying") && this.select && this.select.electricterrain) && (!(this.select && this.select.mistyterrain && (!hasType(target.id, "Flying"))))))) {
+        if (!fainted && target.condition === "none" && move.status && !(this.select && this.select.electricterrain && move.status === "sleep" && !hasType(target.id, "Flying")) && !(this.select && this.select.mistyterrain && !hasType(target.id, "Flying"))) {
             if (!this.isImmuneTo(target.id, move.status)) {
                 if (["sleep", "freeze"].contains(move.status) === false || this.countCondition(oppparty, move.status) === 0) {
                     // skill effect placed here to ensure all other checks for the status have passed other than statusChance. this avoids activating the skill in vain if the effect would have been prevented for any other reason anyway
