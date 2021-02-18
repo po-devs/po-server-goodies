@@ -16534,7 +16534,7 @@ function Safari() {
                     playerlim = Math.min((info.playerLimit - info.purchases[player.idnum+""]), lim);
                 }
             }
-            lim = playerlim;
+            lim = Math.min(lim, playerlim);
             input = getInputPokemon(i);
             if (info.silver) {
                 if (input.num) {
