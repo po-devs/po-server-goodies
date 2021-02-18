@@ -21479,15 +21479,17 @@ function Safari() {
 
         this.player1lastUsed = null;
 
-        var player1;
+        var player1, player2;
         if (this.fullNPC) {
             player1 = p1;
             this.name1 = player1.name;
             this.biasNPC0 = player1.bias;
+            this.idnum1 = "<NPC>" + player1.name;
         } else {
             player1 = getAvatar(p1);
 
             this.name1 = sys.name(p1);
+            this.idnum1 = player1.idnum;
             if (this.viewers.length == 0) {
                 this.viewers = [this.name1.toLowerCase()];
             }
@@ -21495,13 +21497,14 @@ function Safari() {
         }
         if (typeof p2 !== "object") {
             this.name2 = sys.name(p2);
+            this.idnum2 = getAvatar(p2).idnum;
             this.viewers.push(this.name2.toLowerCase());
         }
 
         this.winMsg = opt.winMsg;
         this.loseMsg = opt.loseMsg;
 
-        var player2 = isNPC ? p2 : getAvatar(p2);
+        player2 = isNPC ? p2 : getAvatar(p2);
         var npcDesc = null;
         this.canPickMoves = false;
         
@@ -21727,15 +21730,15 @@ function Safari() {
         }
 
         if (this.fullNPC) {
-            this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party);
+            this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party, this.idnum1);
         } else {
-            this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party, player1.cherished, player1.helds, player1.zCrystalUser);
+            this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party, this.idnum1, player1.cherished, player1.helds, player1.zCrystalUser);
         }
         if (isNPC) {
             this.name2 = player2.name;
             this.powerBoost = player2.powerBoost || 0;
-            this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party);
-            
+            this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party, this.idnum2);
+            this.idnum = "<NPC>" + this.name2;
             this.postBattle = player2.postBattle;
             this.postArgs = player2.postArgs;
             npcDesc = player2.desc || null;
@@ -21743,7 +21746,7 @@ function Safari() {
             this.biasNPC = player2.bias;
             this.npcFavorite = player2.favorite;
         } else {
-            this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party, player2.cherished, player2.helds);
+            this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party, this.idnum2, player2.cherished, player2.helds);
         }
         
         if (opt) {
@@ -21797,20 +21800,23 @@ function Safari() {
             if (!this.oneOnTwo) {
                 player3 = isNPC ? p3 : getAvatar(p3);
                 this.name3 = sys.name(p3);
-                this.team3 = this.originalTeam3 = this.buildTeam(this.name3, player3.party, player3.cherished);
+                this.idnum3 = isNPC ? "<NPC>" + this.name3 : player3.idnum;
+                this.team3 = this.originalTeam3 = this.buildTeam(this.name3, player3.party, this.idnum3, player3.cherished);
                 this.viewers.push(this.name3.toLowerCase());
             }
 
             if (isNPC) {
                 this.name4 = player4.name;
                 this.powerBoost = player4.powerBoost || 0;
-                this.team4 = this.originalTeam4 = this.buildTeam(this.name4, player4.party);
+                this.team4 = this.originalTeam4 = this.buildTeam(this.name4, player4.party, this.name4);
+                this.idnum4 = "<NPC>" + this.name4;
                 this.biasNPC2 = player4.bias;
             }
             else {
                 player4 = isNPC ? p4 : getAvatar(p4);
                 this.name4 = sys.name(p4);
-                this.team4 = this.originalTeam4 = this.buildTeam(this.name4, player4.party, player4.cherished);
+                this.team4 = this.originalTeam4 = this.buildTeam(this.name4, player4.party, this.name4, player4.cherished);
+                this.idnum4 = player4.idnum;
                 this.viewers.push(this.name4.toLowerCase());
 
                 if (!this.oneOnTwo) {
@@ -22495,7 +22501,7 @@ function Safari() {
                 
                 return out.join(" || ");
             };
-            var prepareTeamForTurn = function(name, team, codesObj, abilityList, isNPC) {
+            var prepareTeamForTurn = function(name, idnum, team, codesObj, abilityList, isNPC) {
                 var abilityMsg = "";
                 var range = 1;
                 abilityList = [];
@@ -22508,7 +22514,7 @@ function Safari() {
                     }
                 }
                 var dynamaxed, which;
-                which = (this.name1 == name ? 1 : 2);
+                which = (this.idnum1 == idnum ? 1 : 2);
                 var e, t = 0, p, m, moves = [],  codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
                 for (e = 0; e < team.length; e++) {
                     p = team[e];
@@ -22529,7 +22535,7 @@ function Safari() {
                                 }
                             }
                         }
-                        p.moves = self.generateMoves(e, p, name, dynamaxed);
+                        p.moves = self.generateMoves(e, p, name, idnum, dynamaxed);
                         p.flinch = false;
                         p.protect = false;
                         p.helped = false;
@@ -22629,12 +22635,12 @@ function Safari() {
             
             if (!(this.recharge1)) {
                 this.sendMessage(this.name1, "Your team (use /bat [Letter] to choose a move): ");
-                prepareTeamForTurn(this.name1, this.team1, this.p1MoveCodes, this.abilityOptions["1"]);
+                prepareTeamForTurn(this.name1, this.idnum1, this.team1, this.p1MoveCodes, this.abilityOptions["1"]);
             } else {
                 this.player1Input = "---";
             }
             if (!(this.recharge2)) {
-                prepareTeamForTurn(this.name2, this.team2, this.p2MoveCodes, this.abilityOptions["2"], this.npcBattle);
+                prepareTeamForTurn(this.name2, this.idnum2, this.team2, this.p2MoveCodes, this.abilityOptions["2"], this.npcBattle);
             } else {
                 this.player2Input = "---";
             }
@@ -22647,7 +22653,7 @@ function Safari() {
                         }
                     }
                     if (!(this.recharge3)) {
-                        prepareTeamForTurn(this.name3, this.team3, this.p3MoveCodes, this.abilityOptions["3"], this.npcBattle);
+                        prepareTeamForTurn(this.name3, this.idnum3, this.team3, this.p3MoveCodes, this.abilityOptions["3"], this.npcBattle);
                     } else {
                         this.player3Input = "---";
                     }
@@ -22659,7 +22665,7 @@ function Safari() {
                     }
                 }
                 if (!(this.recharge4)) {
-                    prepareTeamForTurn(this.name4, this.team4, this.p4MoveCodes, this.abilityOptions["4"], this.npcBattle);
+                    prepareTeamForTurn(this.name4, this.idnum4, this.team4, this.p4MoveCodes, this.abilityOptions["4"], this.npcBattle);
                 } else {
                     this.player4Input = "---";
                 }
@@ -23273,7 +23279,7 @@ function Safari() {
                                                 || (!user.lastPlayed2 && (this.side1Field.stealthrock || this.side1Field.stealththunder || this.side1Field.stealthicicles));
                     
                     var deltaStreamSkill;
-                    if (!this.fullNPC && this.npcBattle && side1ApplicableHazards && user.owner.toLowerCase() === this.name1.toLowerCase()) {
+                    if (!this.fullNPC && this.npcBattle && side1ApplicableHazards && user.ownerID === this.idnum1) {
                         deltaStreamSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "deltaStream");
                     }
                     if (this.side1Field.spikes > 0 && (isP1 || isP3)) {
@@ -23908,10 +23914,11 @@ function Safari() {
     };
     Battle2.prototype.inputMove = function(src, data) {
         var name = sys.name(src);
-        var isP1 = this.name1.toLowerCase() === name.toLowerCase();
-        var isP2 = this.name2.toLowerCase() === name.toLowerCase();
-        var isP3 = this.name3.toLowerCase() === name.toLowerCase();
-        var isP4 = this.name4.toLowerCase() === name.toLowerCase();
+        var idnum = getAvatar(src).idnum;
+        var isP1 = this.idnum1 === idnum;
+        var isP2 = this.idnum2 === idnum;
+        var isP3 = this.idnum3 === idnum;
+        var isP4 = this.idnum4 === idnum;
 
         if (data.toLowerCase() == "info" && this.viewers.indexOf(name.toLowerCase()) !== -1) {
             this.showInfo(name);
@@ -24019,14 +24026,15 @@ function Safari() {
             return;
         }
         data = data.toLowerCase();
-        var isP1 = this.name1.toLowerCase() === name.toLowerCase();
-        var isP2 = this.name2.toLowerCase() === name.toLowerCase();
-        var isP3 = this.name3.toLowerCase() === name.toLowerCase();
-        var isP4 = this.name4.toLowerCase() === name.toLowerCase();
+        var idnum = getAvatar(src).idnum;
+        var isP1 = this.idnum1 === idnum;
+        var isP2 = this.idnum2 === idnum;
+        var isP3 = this.idnum3 === idnum;
+        var isP4 = this.idnum4 === idnum;
 
         if (this.tagBattle && this.oneOnTwo) {
             if (this.player1Input !== null) {
-                isP3 = this.name1.toLowerCase() === name.toLowerCase();
+                isP3 = this.idnum1 === idnum;
                 if (isP3) {
                     isP1 = false;
                 }
@@ -24472,16 +24480,16 @@ function Safari() {
             }
         }
         else {  
-            if ((target.hp <= 0) && target.owner.toLowerCase() === this.name2.toLowerCase()) {
+            if ((target.hp <= 0) && target.ownerID === this.idnum2) {
                 target = this.poke4;
             }
-            if ((target.hp <= 0) && target.owner.toLowerCase() === this.name4.toLowerCase()) {
+            if ((target.hp <= 0) && target.ownerID === this.idnum4) {
                 target = this.poke2;
             }
-            if ((target.hp <= 0) && target.owner.toLowerCase() === this.name3.toLowerCase()) {
+            if ((target.hp <= 0) && target.ownerID === this.idnum3) {
                 target = this.poke1;
             }
-            if ((target.hp <= 0) && target.owner.toLowerCase() === this.name1.toLowerCase()) {
+            if ((target.hp <= 0) && target.ownerID === this.idnum1) {
                 target = this.poke3;
             }
             if (target.hp <= 0 && (move.category !== "other")) {
@@ -24492,47 +24500,47 @@ function Safari() {
         }
         var party, oppparty, protectUses;
         var poke1 = this.poke1, poke2 = this.poke2, poke3 = this.poke3, poke4 = this.poke4;
-        if (user.owner.toLowerCase() === this.name1.toLowerCase()) {
+        if (user.ownerID === this.idnum1) {
             party = this.team1;
             oppparty = this.team2;
             if (!wide) {
-                if (target.owner.toLowerCase() == this.name4.toLowerCase()) {
+                if (target.ownerID == this.idnum4) {
                     oppparty = this.team4;
                 }
             }
             protectUses = this.protectCount1;
         }
-        else if (user.owner.toLowerCase() === this.name2.toLowerCase()) {
+        else if (user.ownerID === this.idnum2) {
             party = this.team2;
             oppparty = this.team1;
             if (!wide) {
-                if (target.owner.toLowerCase() == this.name3.toLowerCase()) {
+                if (target.ownerID == this.idnum3) {
                     oppparty = this.team3;
                 }
             }
             protectUses = this.protectCount2;
         }
-        else if (user.owner.toLowerCase() === this.name3.toLowerCase()) {
+        else if (user.ownerID === this.idnum3) {
             party = this.team3;
             oppparty = this.team2;
             if (!wide) {
-                if (target.owner.toLowerCase() == this.name4.toLowerCase()) {
+                if (target.ownerID == this.idnum4) {
                     oppparty = this.team4;
                 }
             }
             protectUses = this.protectCount3;
         }
-        else if (user.owner.toLowerCase() === this.name4.toLowerCase()) {
+        else if (user.ownerID === this.idnum4) {
             party = this.team4;
             oppparty = this.team1;
             if (!wide) {
-                if (target.owner.toLowerCase() == this.name3.toLowerCase()) {
+                if (target.ownerID == this.idnum3) {
                     oppparty = this.team3;
                 }
             }
             protectUses = this.protectCount4;
         }
-        var isPlayerVsNPC = (((user.owner.toLowerCase() === this.name2.toLowerCase()) || user.owner.toLowerCase() === this.name4.toLowerCase()) && this.npcBattle);
+        var isPlayerVsNPC = ((user.ownerID === this.idnum2 || user.ownerID === this.idnum4) && this.npcBattle);
         
         if (move.restore) {
             if (user.hp < user.maxhp) {
@@ -24541,7 +24549,7 @@ function Safari() {
                 user.hp += heal;
                 out.push(name + " restored " + heal + " HP!");
                 
-                if (!this.fullNPC && this.npcBattle && user.owner.toLowerCase() === this.name1.toLowerCase()) {
+                if (!this.fullNPC && this.npcBattle && user.ownerID === this.idnum1) {
                     var validMons = this.team1.filter(function(e) { return e.hp > 0 && e.index !== user.index });
                     if (validMons.length > 0) {
                         var jungleHealingSkill = safari.pokeSkillActivated(this.name1, user, "jungleHealing");
@@ -25498,7 +25506,7 @@ function Safari() {
 
                     if (move.type == "Ground" && (poke2.item.balloon || (hasType(poke2.id, "Flying") && !inver))) {
                         typeMultiplier = 0;
-                        if (!this.fullNPC && this.npcBattle && poke2.owner.toLowerCase() !== this.name1.toLowerCase() && !poke2.protect) {
+                        if (!this.fullNPC && this.npcBattle && !poke2.protect) {
                             thousandArrowsSkill = safari.pokeSkillActivated(this.name1, user, "thousandArrows");
                             if (thousandArrowsSkill) {
                                 typeMultiplier = 2;
@@ -25507,7 +25515,7 @@ function Safari() {
                         }
                     }
                     
-                    if (typeMultiplier > 0 && poke2.protect && !this.fullNPC && this.npcBattle && poke2.owner.toLowerCase() !== this.name1.toLowerCase()) {
+                    if (typeMultiplier > 0 && poke2.protect && !this.fullNPC && this.npcBattle) {
                         var distortionSkillList = ["distortionForce", "hyperspaceFury"];
                         for (var i = 0; i < distortionSkillList.length; i++) {
                             distortionForceSkill = safari.pokeSkillActivated(this.name1, user, distortionSkillList[i]);
@@ -25532,7 +25540,7 @@ function Safari() {
                     typeMultiplier = safari.checkEffective(move.type, "???", type1(poke4.id), type2(poke4.id), null, inver, this.select, this.select2);
                     if (move.type == "Ground" && (poke4.item.balloon || (hasType(poke4.id, "Flying") && !inver))) {
                         typeMultiplier = 0;
-                        if (!this.fullNPC && this.npcBattle && poke4.owner.toLowerCase() !== this.name1.toLowerCase() && !poke4.protect) {
+                        if (!this.fullNPC && this.npcBattle && !poke4.protect) {
                             thousandArrowsSkill = safari.pokeSkillActivated(this.name1, user, "thousandArrows");
                             if (thousandArrowsSkill) {
                                 typeMultiplier = 2;
@@ -25541,7 +25549,7 @@ function Safari() {
                         }
                     }
                     
-                    if (typeMultiplier > 0 && poke4.protect && !this.fullNPC && this.npcBattle && poke4.owner.toLowerCase() !== this.name1.toLowerCase() && !distortionForceSkill) { // check distortion skill not already activated for poke2, if it is, don't activate again to prevent consuming 2 uses at once
+                    if (typeMultiplier > 0 && poke4.protect && !this.fullNPC && this.npcBattle && !distortionForceSkill) { // check distortion skill not already activated for poke2, if it is, don't activate again to prevent consuming 2 uses at once
                         var distortionSkillList = ["distortionForce", "hyperspaceFury"];
                         for (var i = 0; i < distortionSkillList.length; i++) {
                             distortionForceSkill = safari.pokeSkillActivated(this.name1, user, distortionSkillList[i]);
@@ -25712,7 +25720,7 @@ function Safari() {
                 var typeMultiplier = safari.checkEffective(move.type, "???", type1(target.id), type2(target.id), null, inver, this.select, this.select2);
                 if (move.type == "Ground" && (target.item.balloon || (hasType(target.id, "Flying") && !inver))) {
                     typeMultiplier = 0;
-                    if (!this.fullNPC && this.npcBattle && target.owner.toLowerCase() !== this.name1.toLowerCase() && !target.protect) {
+                    if (!this.fullNPC && this.npcBattle && target.ownerID !== this.idnum1 && !target.protect) {
                         var thousandArrowsSkill = safari.pokeSkillActivated(this.name1, user, "thousandArrows");
                         if (thousandArrowsSkill) {
                             typeMultiplier = 2;
@@ -25832,19 +25840,19 @@ function Safari() {
         }
         var name, party, isP1 = false, isP2 = false, isP3 = false, isP4 = false;
         name = user.owner + "'s " + poke(user.id);
-        if (user.owner.toLowerCase() === this.name1.toLowerCase()) {
+        if (user.ownerID === this.idnum1) {
             party = this.team1;
             isP1 = true;
         }
-        if (user.owner.toLowerCase() === this.name2.toLowerCase()) {
+        if (user.ownerID === this.idnum2) {
             party = this.team2;
             isP2 = true;
         }
-        if (user.owner.toLowerCase() === this.name3.toLowerCase()) {
+        if (user.ownerID === this.idnum3) {
             party = this.team3;
             isP3 = true;
         }
-        if (user.owner.toLowerCase() === this.name4.toLowerCase()) {
+        if (user.ownerID === this.idnum4) {
             party = this.team4;
             isP4 = true;
         }
@@ -26154,10 +26162,10 @@ function Safari() {
         }
         return out;
     };
-    Battle2.prototype.buildTeam = function(owner, team, cherished, helds, zCrystalUser) {
+    Battle2.prototype.buildTeam = function(owner, team, idnum, cherished, helds, zCrystalUser) {
         var out = [], t, p, h = "", stats, info, held;
-        var boost = (this.npcBattle && owner === this.name2 ? this.powerBoost : 0) + 1;
-        zCrystalUser = (this.npcBattle && owner === this.name1 ? zCrystalUser : false);
+        var boost = (this.npcBattle && idnum === this.idnum2 ? this.powerBoost : 0) + 1;
+        zCrystalUser = (this.npcBattle && idnum === this.idnum1 ? zCrystalUser : false);
         var ch = 0;
 
         var getStat = function(val) {
@@ -26185,6 +26193,7 @@ function Safari() {
             info = {
                 id: p,
                 owner: owner,
+                ownerID: idnum,
                 hp: h,
                 maxhp: h,
                 stats: {
@@ -26464,14 +26473,14 @@ function Safari() {
         out.dynamax = true;
         return out;
     };
-    Battle2.prototype.generateMoves = function(id, data, name, dynamaxed) {
+    Battle2.prototype.generateMoves = function(id, data, name, idnum, dynamaxed) {
         var out = [], m, move, amt, p, types = data.types, eff, damaging, used, amt, factor;
         var boost = (this.npcBattle && (name === this.name2 || name === this.name4) ? this.powerBoost * 0.8 : 0) + 1;
         var moveBoost = (this.npcBattle && name === this.name2 ? this.powerBoost * 0.6 : 0) + 1;
-        var isP1 = (name === this.name1 ? true : false);
-        var isP3 = (name === this.name3 ? true : false);
-        var isP2 = (name === this.name2 ? true : false);
-        var isP4 = (name === this.name4 ? true : false);
+        var isP1 = (idnum === this.idnum1 ? true : false);
+        var isP3 = (idnum === this.idnum3 ? true : false);
+        var isP2 = (idnum === this.idnum2 ? true : false);
+        var isP4 = (idnum === this.idnum4 ? true : false);
         var which = (isP1 ? 1 : (isP2 ? 2 : (isP3 ? 3 : 4)));
         var needed = this.moveAmt;
 
@@ -27925,10 +27934,9 @@ function Safari() {
         }
         return out;
     };
-    Battle2.prototype.getHpPercent = function(name) {
-        name = name.toLowerCase();
+    Battle2.prototype.getHpPercent = function(idnum) {
         var out = [], t,
-            team = name === this.name2.toLowerCase() ? this.originalTeam2 : this.originalTeam1;
+            team = idnum === this.idnum2 ? this.originalTeam2 : this.originalTeam1;
         
         for (t = 0; t < team.length; t++) {
             out.push(team[t].hp/team[t].maxhp);
@@ -27938,28 +27946,34 @@ function Safari() {
     };
     Battle2.prototype.finishBattle = function(winId) {
         var winnerName = "Tie";
+        var winnerID = "";
         var loser;
         if (this.tagBattle) {
             if (winId === 1 || winId === 3) {
                 if (this.oneOnTwo) {
                     winnerName = this.name1;
+                    winnerID = this.idnum1;
                 }
                 else {
                     winnerName = (this.name1 + " & " + this.name3);
+                    winnerID = this.idnum1 + " & " + this.idnum3;
                 }
                 loser = (this.name2 + " & " + this.name4);
             }
             else if (winId === 2 || winId === 4) {
                 winnerName = (this.name2 + " & " + this.name4);
+                winnerID = this.idnum2 + " & " + this.idnum4;
                 loser = (this.name1 + " & " + this.name3);
             }
         }
         else {
             if (winId === 1) {
                 winnerName = this.name1;
+                winnerID = this.idnum1;
                 loser = this.name2;
             } else if (winId === 2) {
                 winnerName = this.name2;
+                winnerID = this.idnum2;
                 loser = this.name1;
             }
         }
@@ -27971,7 +27985,7 @@ function Safari() {
             extraArgs.turn = this.turn;
             extraArgs.loseMsg = this.loseMsg;
             extraArgs.winMsg = this.winMsg;
-            this.postBattle(this.name1, winnerName === this.name1, this.getHpPercent(this.name1), this.postArgs, this.viewers, extraArgs);
+            this.postBattle(this.name1, winnerID === this.idnum1, this.getHpPercent(this.idnum1), this.postArgs, this.viewers, extraArgs);
         }
         this.finished = true;
     };
@@ -28004,10 +28018,14 @@ function Safari() {
     };
     Battle2.prototype.abort = function(src, loser, isForfeit) {
         var winner = "Tie";
+        var winnerID = "";
+
         if (loser.toLowerCase() == this.name1.toLowerCase()) {
             winner = this.name2;
+            winnerID = this.idnum2;
         } else if (loser.toLowerCase() == this.name2.toLowerCase()) {
             winner = this.name1;
+            winnerID = this.idnum1
         }
         if (isForfeit) {
             this.sendToViewers("<b>" + loser + " forfeited! " + (winner !== "Tie" ? winner + " won!" : "") + "</b>", true);
@@ -28020,12 +28038,13 @@ function Safari() {
                 winMsg: this.winMsg,
                 loseMsg: this.loseMsg
             }
-            this.postBattle(this.name1, winner === this.name1, this.getHpPercent(this.name1), this.postArgs, this.viewers, extraArgs);
+            this.postBattle(this.name1, winnerID === this.idnum1, this.getHpPercent(this.idnum1), this.postArgs, this.viewers, extraArgs);
         }
         this.finished = true;
     };
     Battle2.prototype.isInBattle = function(name) {
-        return this.name1.toLowerCase() == name.toLowerCase() || ((!this.npcBattle) && (this.name2.toLowerCase() == name.toLowerCase() || this.name3.toLowerCase() == name.toLowerCase() || this.name4.toLowerCase() == name.toLowerCase()));
+        var idnum = getAvatar(sys.id(name)).idnum;
+        return this.idnum1 == idnum || ((!this.npcBattle) && (this.idnum2 == idnum || this.idnum3 == idnum || this.idnum4 == idnum));
     };
     
     /* Auctions */
