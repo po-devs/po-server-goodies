@@ -31895,7 +31895,7 @@ function Safari() {
                         player.cooldowns.detective = n + (30 * 1000);
                     }
                     safari.detectiveData[uid+""].wrongGuesses++;
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! That is not the right solution! Try getting more clues, or else getting more clever!", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! {0} is not the right solution! Try getting more clues, or else getting more clever!".format(readable(guesses)), safchan);
                     permObj.add("detectiveData", JSON.stringify(safari.detectiveData));
                 }
             }
