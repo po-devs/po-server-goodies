@@ -28043,7 +28043,10 @@ function Safari() {
         this.finished = true;
     };
     Battle2.prototype.isInBattle = function(name) {
-        var idnum = getAvatar(sys.id(name)).idnum;
+        var player = getAvatar(sys.id(name));
+        if (!player)
+            return false;
+        var idnum = player.idnum;
         return this.idnum1 == idnum || ((!this.npcBattle) && (this.idnum2 == idnum || this.idnum3 == idnum || this.idnum4 == idnum));
     };
     
