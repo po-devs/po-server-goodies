@@ -41835,7 +41835,8 @@ function Safari() {
         var remain = this.remainingNumbers;
         var showSlot = function(n) {
             var c = remain.contains(n) ? '#DDDDDD' : '#FCD116';
-            return '<td style="background-color:{0}"><center>{1}</center></td>'.format(c, pokeInfo.icon(n));
+            var c2 = remain.contains(n) ? '#555555' : '#FCD116';
+            return '<td><background color="'+c2+'"><font style="background-color:'+c+';"> ' + pokeInfo.icon(n) + ' </font></background></td>';
         };
         
         var table = "<table border=3 cellpadding=3 colspan=5>";
