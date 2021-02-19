@@ -41836,13 +41836,25 @@ function Safari() {
         var showSlot = function(n) {
             var c = remain.contains(n) ? '#DDDDDD' : '#FCD116';
             var c2 = remain.contains(n) ? '#555555' : '#FCD116';
-            return '<background color="'+c2+'"><font style="background-color:'+c+';"> ' + pokeInfo.icon(n) + ' </font></background>';
+            return '<td><background color="'+c2+'"><font style="background-color:'+c+';"> ' + pokeInfo.icon(n) + ' </font></background></td>';
         };
-        this.sendMessage(viewer, " " + card.slice(0, 5).map(showSlot).join(" "), null, null, true);
-        this.sendMessage(viewer, " " + card.slice(5, 10).map(showSlot).join(" "), null, null, true);
-        this.sendMessage(viewer, " " + card.slice(10, 15).map(showSlot).join(" "), null, null, true);
-        this.sendMessage(viewer, " " + card.slice(15, 20).map(showSlot).join(" "), null, null, true);
-        this.sendMessage(viewer, " " + card.slice(20, 25).map(showSlot).join(" "), null, null, true);
+        
+        var table = "<table border=3 cellpadding=3 colspan=5>";
+
+        for (var i = 0, rowDelim = 0; i < card.length; i++, rowDelim++) {
+            if (rowDelim === 0)
+                table += "<tr>";
+            
+            table += showSlot(card[i]);
+            
+            if (rowDelim === 4) {
+                table += "</tr>";
+                rowDelim = -1;
+            }
+        }
+
+        table += "</table>";
+        this.sendMessage(viewer, table, null, null, true);
     };
     Bingo.prototype.fillCard = function(name) {
         var card = this.cards[name], remain = this.remainingNumbers.concat().shuffle(), n;
