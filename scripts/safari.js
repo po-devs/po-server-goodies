@@ -49369,7 +49369,7 @@ function Safari() {
         permObj.add("elite", JSON.stringify(elite));
     };
     this.pyrBonusMons = function() {
-        var possible = [663, 426, 332, 381, 380, 121, 184, 282, 530, 230, 442, 609, 699, 144, 145, 715, 785, 212, 38, 395, 485, 635, 787, 479, 6, 368, 330, 284, 3, 169, 303, 473, 452, 189, 687, 365, 658, 880, 248, 334, 689, 437, 724];
+        var possible = [663, 426, 332, 381, 380, 121, 184, 282, 530, 230, 442, 609, 699, 144, 145, 715, 785, 212, 38, 395, 485, 635, 787, 479, 6, 330, 284, 3, 169, 303, 473, 452, 189, 687, 365, 658, 880, 248, 334, 689, 437, 724];
         possible = possible.shuffle().slice(0, 7);
         pyrBonusMons = possible;
         permObj.add("pyrBonusMons", JSON.stringify(pyrBonusMons));
