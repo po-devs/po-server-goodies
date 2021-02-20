@@ -37348,10 +37348,14 @@ function Safari() {
 
         var size = this.startingSize = 8 + level, p;
         var minBST = 130 + 60 * level;
+        var maxLegend = (level == 7 ? 1 : 0);
         while (this.horde.length < size) {
             p = sys.rand(1, highestDexNum);
-            if ((!isLegendary(p) || level == 7) && getBST(p) >= minBST) {
+            if ((!isLegendary(p) || maxLegend > 0) && getBST(p) >= minBST) {
                 this.horde.push(p);
+                if (isLegendary(p)) {
+                	maxLegend -= 1;
+                }
             }
         }
 
@@ -37377,7 +37381,7 @@ function Safari() {
             }
         }
 
-        this.hordePower = [16 + level * 16, 100 + level * 28];
+        this.hordePower = [10 + level * 10, 100 + level * 25];
 
         this.treasures = {
             starpiece: { chance: (3 + (2.1 * level)), item: "starpiece", amount: 1 },
@@ -37502,12 +37506,12 @@ function Safari() {
             points += (10 * level);
         }
         if (this.horde.length > 0) {
-            var averageDamage = Math.ceil((this.horde.length / this.startingSize) * ((this.level + 5) * 25)), c;
+            var averageDamage = Math.ceil((this.horde.length / this.startingSize) * ((this.level + 5) * 21)), c;
             if (this.horde.length > 1) {
-                averageDamage += this.level;
+                averageDamage += (0.85 * this.level);
             }
             if (this.horde.length > 2) {
-                averageDamage += this.level + 2;
+                averageDamage += (0.9 * this.level + 2);
             }
             for (p in members) {
                 id = members[p];
