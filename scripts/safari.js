@@ -51961,6 +51961,9 @@ function Safari() {
                     for (e = 0; e < list.length; e++) {
                         if (list[e].name == self) {
                             value = typeof list[e].value === "number" ? list[e].value : list[e].value.value;
+                            if (recName === "fastestCaseSolved") {
+                                value = timeString(value / 1000, true);
+                            }
                             var entry = "<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(value);
                             if (e < range.lower) {
                                 out.splice(2, 0, entry);
