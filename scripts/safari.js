@@ -23937,6 +23937,20 @@ function Safari() {
             this.sendMessage(name, "You cannot use this command!");
             return;
         }
+        if (["pause", "unpause"].contains(data.toLowerCase())) {
+            if (this.canPickMoves) {
+                this.sendMessage(name, "You can't pause during move selection!");
+                return;
+            }
+            if (data.toLowerCase() === "pause")
+                this.paused = !this.paused;
+            else if (data.toLowerCase() === "unpause" && !this.paused) {
+                this.paused = false;
+            }
+            
+            this.sendToViewers(toColor("<b>The battle has been " + (this.paused ? "paused" : "unpaused") + "!</b>", "crimson"));
+            return;
+        }
         if (this.phase === "preview") {
             var cmdData = data.toLowerCase().replace(/[^abcdef]/,"").split("");
             var letters = { a: 0, b: 1, c: 2, d: 3, e:4, f: 5 };
@@ -24019,18 +24033,6 @@ function Safari() {
                 } else if (isP4) {
                     this.p4PickedTeam = []
                 }
-            } else if (["pause", "unpause"].contains(data.toLowerCase())) {
-                if (this.canPickMoves) {
-                    this.sendMessage(name, "You can't pause during move selection!");
-                    return;
-                }
-                if (data.toLowerCase() === "pause")
-                    this.paused = !this.paused;
-                else if (data.toLowerCase() === "unpause" && !this.paused) {
-                    this.paused = false;
-                }
-                
-                this.sendToViewers(toColor("<b>The battle has been " + (this.paused ? "paused" : "unpaused") + "!</b>", "crimson"));
             } else {
                 this.sendMessage(name, "Use /bat [Codes] to choose your Pokémon! Example: " + toColor("/bat ADF", "blue") + " to choose Pokémon with code A, D and F.");
             }
@@ -49120,7 +49122,7 @@ function Safari() {
                     }
                 }
                 if (e === "fastestCaseSolved") {
-                    data = data.map(function(timestamp) {
+                    leaderboards[e] = data.map(function(timestamp) {
                         return timeString(timestamp / 1000, true);
                     });
                 }
