@@ -21937,7 +21937,7 @@ function Safari() {
         
         var self = this;
         var teamPreview = function(name, team, opponent, ally, opponent2, size) {
-            self.sendMessage(name, "Use /bat [Codes] to choose your team of " + size + " Pokémon! Example: " + toColor("/bat ADF", "blue") + " to choose Pokémon with code A, D and F.");
+            self.sendMessage(name, "Use /bat [Codes] to choose your team of " + size + " Pokémon! Example: " + toColor("/bat ADF", "blue") + " to choose Pokémon with code A, D and F. You can also use " + toColor("/bat pause", "blue") + " to pause and unpause the battle.");
             var out = [], p, codes = "ABCDEF";
             for (var e = 0; e < team.length; e++) {
                 p = team[e];
@@ -23938,6 +23938,10 @@ function Safari() {
             return;
         }
         if (["pause", "unpause"].contains(data.toLowerCase())) {
+            if (!this.npcBattle) {
+                this.sendMessage(name, "You can't pause a player vs player battle!");
+                return;
+            }
             if (this.canPickMoves) {
                 this.sendMessage(name, "You can't pause during move selection!");
                 return;
