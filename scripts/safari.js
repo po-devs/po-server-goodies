@@ -23944,7 +23944,7 @@ function Safari() {
             }
             if (data.toLowerCase() === "pause")
                 this.paused = !this.paused;
-            else if (data.toLowerCase() === "unpause" && !this.paused) {
+            else if (data.toLowerCase() === "unpause" && this.paused) {
                 this.paused = false;
             }
             
@@ -49121,11 +49121,6 @@ function Safari() {
                         }
                     }
                 }
-                if (e === "fastestCaseSolved") {
-                    leaderboards[e] = data.map(function(timestamp) {
-                        return timeString(timestamp / 1000, true);
-                    });
-                }
             }
         }
         lastLeaderboardUpdate = new Date().toUTCString();
@@ -51945,6 +51940,9 @@ function Safari() {
                 var value;
                 for (e = 0; e < list.length; e++) {
                     value = typeof list[e].value === "number" ? list[e].value : list[e].value.value;
+                    if (recName === "fastestCaseSolved") {
+                        value = timeString(value / 1000, true);
+                    }
                     out.push("<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(value));
                     if (list[e].name == self) {
                         selfFound = true;
