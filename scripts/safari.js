@@ -23942,6 +23942,10 @@ function Safari() {
                 this.sendMessage(name, "You can't pause during move selection!");
                 return;
             }
+            if (this.phase === "preview") {
+                this.sendMessage(name, "You can't pause during team preview!");
+                return;
+            }
             if (data.toLowerCase() === "pause")
                 this.paused = !this.paused;
             else if (data.toLowerCase() === "unpause" && this.paused) {
