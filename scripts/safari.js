@@ -22563,6 +22563,24 @@ function Safari() {
             };
             
             this.sendToViewers(toColor("<b>TURN " + this.turn+"</b>", "red"));
+            this.sendToViewers(this.name2 + "'s Team: " + opponentInfo(this.team2), null, (this.npcBattle ? null : [this.name2.toLowerCase()]));
+            if (this.tagBattle) {
+                this.sendToViewers(this.name4 + "'s Team: " + opponentInfo(this.team4), null, (this.npcBattle ? null : [this.name4.toLowerCase()]));
+            }
+            if (!this.npcBattle) {
+                this.sendMessage(this.name2, "Your team (use /bat [Letter] to choose a move): ");
+                if (this.tagBattle) {
+                    if (!this.oneOnTwo) {
+                        this.sendMessage(this.name3, "Your team (use /bat [Letter] to choose a move): ");
+                    }
+                    this.sendMessage(this.name4, "Your team (use /bat [Letter] to choose a move): ");
+                }
+            }
+            this.sendToViewers(this.name1 + "'s Team: " + opponentInfo(this.team1), null, [this.name1.toLowerCase()]);
+            if (this.tagBattle && (!this.oneOnTwo)) {
+                this.sendToViewers(this.name3 + "'s Team: " + opponentInfo(this.team3), null, [this.name3.toLowerCase()]);
+            }
+            
             if (this.select || this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0 || this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) {
                 var m = [];
                 if (this.select && this.npcItems) {
@@ -22589,26 +22607,9 @@ function Safari() {
                         m.push(toColor("Light Screen ({0} remaining) ".format(plural(this.side1Field.lightscreen, "turn")), "blue"));
                     }
                 }
-                if (m.length > 0 && idnum === this.idnum1) {
+                if (m.length > 0) {
                     this.sendToViewers(m.join(" || "));
                 }
-            }
-            this.sendToViewers(this.name2 + "'s Team: " + opponentInfo(this.team2), null, (this.npcBattle ? null : [this.name2.toLowerCase()]));
-            if (this.tagBattle) {
-                this.sendToViewers(this.name4 + "'s Team: " + opponentInfo(this.team4), null, (this.npcBattle ? null : [this.name4.toLowerCase()]));
-            }
-            if (!this.npcBattle) {
-                this.sendMessage(this.name2, "Your team (use /bat [Letter] to choose a move): ");
-                if (this.tagBattle) {
-                    if (!this.oneOnTwo) {
-                        this.sendMessage(this.name3, "Your team (use /bat [Letter] to choose a move): ");
-                    }
-                    this.sendMessage(this.name4, "Your team (use /bat [Letter] to choose a move): ");
-                }
-            }
-            this.sendToViewers(this.name1 + "'s Team: " + opponentInfo(this.team1), null, [this.name1.toLowerCase()]);
-            if (this.tagBattle && (!this.oneOnTwo)) {
-                this.sendToViewers(this.name3 + "'s Team: " + opponentInfo(this.team3), null, [this.name3.toLowerCase()]);
             }
             
             this.player1Input = null;
