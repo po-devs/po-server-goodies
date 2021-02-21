@@ -21470,6 +21470,8 @@ function Safari() {
     function Battle2(p1, p2, opt, p3, p4, select, viewers, difficulty, select2) {
         this.battle2 = true;
         this.paused = false;
+        this.totalPauseTime = 0;
+        this.pauseLimit = 600; // in seconds
         this.tagBattle = false;
         this.oneOnTwo = false;
         this.fullNPC = typeof p1 == "object";
@@ -23955,8 +23957,8 @@ function Safari() {
             else if (data.toLowerCase() === "unpause" && this.paused) {
                 this.paused = false;
             }
-            
-            this.sendToViewers(toColor("<b>The battle has been " + (this.paused ? "paused" : "unpaused") + "!</b>", "crimson"));
+
+            this.sendToViewers(toColor("<b>The battle has been " + (this.paused ? "paused! Note: The battle will automatically be unpaused after {0}.".format(plural(Math.floor((this.pauseLimit - this.totalPauseTime) / 60), "minute")) : "unpaused!") + "</b>", "crimson"));
             return;
         }
         if (this.phase === "preview") {
@@ -56660,8 +56662,19 @@ function Safari() {
         if (currentBattles.length > 0 && contestCooldown % 4 === 0) {
             for (var e = currentBattles.length - 1; e >= 0; e--) {
                 var battle = currentBattles[e];
-                if (!battle.paused)
+                if (battle.battle2) {
+                    if (!battle.paused)
+                        battle.nextTurn();
+                    else
+                        battle.totalPauseTime += 4;
+
+                    if (battle.totalPauseTime > battle.pauseLimit)
+                        battle.paused = false;
+                }
+                else {
                     battle.nextTurn();
+                }
+
                 if (battle.finished) {
                     currentBattles.splice(e, 1);
                     checkUpdate();
