@@ -23278,7 +23278,7 @@ function Safari() {
                     if (move.isRecharged === true) {
                         this.sendToViewers(toColor(name + " must recharge!", sColor));
                         user.mustRecharge = false;
-                        user.lastPlayed2 = true;
+                        user.lastPlayed = true;
                         continue;
                     }
                     var side1ApplicableHazards = (!hasType(user.id, "Flying") && !user.lastPlayed2 && (this.side1Field.spikes || this.side1Field.dynamicweb))
