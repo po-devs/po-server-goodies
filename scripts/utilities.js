@@ -207,7 +207,7 @@ exports = {
         return secs;
     },
     
-    getTimeString : function(sec) {
+    getTimeString : function(sec, full) {
         var s = [];
         var n;
         var d = [[7*24*60*60, "week"], [24*60*60, "day"], [60*60, "hour"], [60, "minute"], [1, "second"]];
@@ -216,7 +216,7 @@ exports = {
             if (n > 0) {
                 s.push((n + " " + d[j][1] + (n > 1 ? "s" : "")));
                 sec -= n * d[j][0];
-                if (s.length >= 2) break;
+                if (s.length >= 2 && !full) break;
             }
         }
         return s.join(", ");

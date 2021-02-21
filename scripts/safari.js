@@ -1850,7 +1850,9 @@ function Safari() {
         eliteCleared: { desc: "by cleared Elite Four challenges", alts: ["elite", "elite four", "elitefour", "elite4", "e4", "elite 4", "e 4", "elite cleared",], alias: "elite cleared" },
         baseValue: { desc: "by most valuable Secret Base", alts: ["base", "secretbase", "secret base",], alias: "base" },
         journalPoints: { desc: "by most photo points", alts: ["photos", "photo", "photo points", "photo points"], alias: "photo" },
-        missionPoints: { desc: "by most mission points", alts: ["missions", "mission", "mission points", "mission point"], alias: "mission" }
+        missionPoints: { desc: "by most mission points", alts: ["missions", "mission", "mission points", "mission point"], alias: "mission" },
+        casesSolved: { desc: "by most Detective cases solved", alts: ["detective", "cases", "detective cases", "detective solved", "detectivesolved", "cases solved", "casessolved"], alias: "detective" },
+        fastestCaseSolved: { desc: "by fastest Detective case solved", alts: ["detective fastest", "detectivefastest", "detective speed", "detectivespeed", "detective speedrun", "detectivespeedrun"], alias: "detective fastest" }
     };
     var monthlyLeaderboardTypes = {
         pokesCaught: { desc: "by successful catches during this week", alts: ["caught weekly"], alias: "caught weekly", lastAlias: "caught last", file: "scriptdata/safari/weeklyPokesCaught.txt", lastDesc: "by successful catches during the last week", reward: false  },
@@ -2884,8 +2886,8 @@ function Safari() {
     function timeLeftString(time) {
         return utilities.getTimeString(timeLeft(time));
     }
-    function timeString(time) {
-        return utilities.getTimeString(time);
+    function timeString(time, full) {
+        return utilities.getTimeString(time, full);
     }
     function getDay(time) {
         return Math.floor(time / (1000 * 60 * 60 * 24));
@@ -11926,7 +11928,7 @@ function Safari() {
             sys.sendMessage(src, "±Quests: Obtained a Celebrity score of {0} on Easy, {1} on Normal, {2} on Hard, {3} on Expert, {4} on Super Expert, and {5} on Abyssal.".format(rec.celebrityScoreEasy, rec.celebrityScore, rec.celebrityScoreHard, rec.celebrityScoreExpert, rec.celebrityScoreSuperExpert, rec.celebrityScoreAbyssal), safchan);
             sys.sendMessage(src, "±Quests: Unlocked {0} and charged skills {1} from the Idol.".format(plural(rec.idolUnlocked, "skill"), plural(rec.idolActivated, "time")), safchan);
             var detectiveStats = "±Quests: Solved {0}" + (rec.fastestCaseSolved > 0 ? " and solved a case with a record time of {1}." : ".");
-            sys.sendMessage(src, detectiveStats.format(plural(rec.casesSolved, "Detective case"), timeString(rec.fastestCaseSolved/1000)), safchan);
+            sys.sendMessage(src, detectiveStats.format(plural(rec.casesSolved, "Detective case"), timeString(rec.fastestCaseSolved/1000, true)), safchan);
             sys.sendMessage(src, "±Missions: Cleared {0} for a total of {1}.".format(plural(rec.missionCleared, "mission"), plural(rec.missionPoints, "mission point")), safchan);
             sys.sendMessage(src, "±Events: Won {0} with {1}. Won {2} ({3} as Favorite, {4} as Underdog). Won Battle Factory {5} and was Runner-up {6}. Won a Quiz {7} and was Runner-up {8}. Obtained a high score of {9} during a Quiz. Won Bingo {10}.".format(plural(rec.factionWins, "Faction War"), plural(rec.factionMVPs, "MVP"), plural(rec.pokeRaceWins, "Pokémon Race"), addComma(rec.favoriteRaceWins), addComma(rec.underdogRaceWins), plural(rec.factoryFirst, "time"), plural(rec.factorySecond, "time"), plural(rec.quizFirst, "time"), plural(rec.quizSecond, "time"), plural(rec.topQuizScore, "point"), plural(rec.bingoWon, "time")), safchan);
             sys.sendMessage(src, "", safchan);
@@ -11978,7 +11980,7 @@ function Safari() {
         for (var i = 0; i < Math.min(player.megaTimers.length, displayCap); i++) {
             var timerObj = player.megaTimers[i];
             var diff = timerObj.expires - now();
-            var diffString = (diff <= 0 ? (currentTheme ? "After this Contest" : "After the next Contest") : utilities.getTimeString(Math.round(diff / 1000)));
+            var diffString = (diff <= 0 ? (currentTheme ? "After this Contest" : "After the next Contest") : timeString(Math.round(diff / 1000), true));
             
             var out = "{0} <b>{1}</b>: {2}".format(pokeInfo.icon(timerObj.id, typeof timerObj.id === "string"), getInputPokemon(timerObj.id + (typeof timerObj.id === "string" ? "*" : "")).name, diffString);
             safaribot.sendHtmlMessage(src, out, safchan);
@@ -15772,7 +15774,7 @@ function Safari() {
         var out = res.desc.replace(/{Percent}/gi, Math.round(res.val*100) + "%")
             .replace(/{Value}/gi, res.val)
             // .replace(/{Time}/gi, utilities.getTimeString((res.deadline * 60 - now())/1000))
-            .replace(/{Time}/gi, utilities.getTimeString((res.deadline - now()+10)/1000))
+            .replace(/{Time}/gi, utilities.getTimeString((res.deadline - now()+10)/1000, true))
             .replace(/{Limit}/gi, res.limit)
             .replace(/{Item}/gi, finishName(res.prop || ""))
             .replace(/{Type}/gi, cap(res.prop || ""))
@@ -21467,6 +21469,7 @@ function Safari() {
 
     function Battle2(p1, p2, opt, p3, p4, select, viewers, difficulty, select2) {
         this.battle2 = true;
+        this.paused = false;
         this.tagBattle = false;
         this.oneOnTwo = false;
         this.fullNPC = typeof p1 == "object";
@@ -24016,6 +24019,18 @@ function Safari() {
                 } else if (isP4) {
                     this.p4PickedTeam = []
                 }
+            } else if (["pause", "unpause"].contains(data.toLowerCase())) {
+                if (this.canPickMoves) {
+                    this.sendMessage(name, "You can't pause during move selection!");
+                    return;
+                }
+                if (data.toLowerCase() === "pause")
+                    this.paused = !this.paused;
+                else if (data.toLowerCase() === "unpause" && !this.paused) {
+                    this.paused = false;
+                }
+                
+                this.sendToViewers(toColor("<b>The battle has been " + (this.paused ? "paused" : "unpaused") + "!</b>", "crimson"));
             } else {
                 this.sendMessage(name, "Use /bat [Codes] to choose your Pokémon! Example: " + toColor("/bat ADF", "blue") + " to choose Pokémon with code A, D and F.");
             }
@@ -31889,7 +31904,7 @@ function Safari() {
                         }
                     }
                     strengthtotal = Math.floor(strengthtotal);
-                    sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues totaling " + strengthtotal + " strength in " + timeString(timeTaken/1000) + " after " + (safari.detectiveData[uid+""].wrongGuesses) + " wrong guess(es)|||Received " + readable(grandprize) + "\n");
+                    sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues totaling " + strengthtotal + " strength in " + timeString(timeTaken/1000, true) + " after " + (safari.detectiveData[uid+""].wrongGuesses) + " wrong guess(es)|||Received " + readable(grandprize) + "\n");
                     safari.saveGame(player);
                     permObj.add("detectiveData", JSON.stringify(safari.detectiveData));
                 } else {
@@ -49002,6 +49017,11 @@ function Safari() {
                         case "celebrityScoreAbyssal":
                             player.value = data.records.celebrityScoreAbyssal || 0;
                         break;
+                        case "casesSolved":
+                            player.value = data.records.casesSolved || 0;
+                        break;
+                        case "fastestCaseSolved":
+                            player.value = data.records.fastestCaseSolved || 0;
                         default:
                             player.value = "records" in data ? (data.records[i] || 0 ): 0;
                         break;
@@ -49035,14 +49055,21 @@ function Safari() {
         
         var celebrityLBs = ["celebrityScoreWeekly", "celebrityScoreEasyWeekly", "celebrityScoreHardWeekly", "celebrityScoreExpertWeekly", "celebrityScoreSuperExpertWeekly", "celebrityScoreAbyssalWeekly", "celebrityScoreLast", "celebrityScoreEasyLast", "celebrityScoreHardLast", "celebrityScoreExpertLast", "celebrityScoreSuperExpertLast", "celebrityScoreAbyssalLast"];
         var noTies = [].concat(celebrityLBs);
-        
+        var lowestFirst = ["fastestCaseSolved"]; // leaderboards sorted by lowest value first
+
         var byHigherValue = function(a, b) {
             return b.value - a.value;
+        };
+        var byLowerValue = function(a, b) {
+            return a.value - b.value;
         };
         for (e in leaderboards) {
             if (noTies.contains(e)) // it'll have custom sorting logic, so don't do a simple value sort
                 continue;
-            leaderboards[e].sort(byHigherValue);
+            if (lowestFirst.contains(e))
+                leaderboards[e].sort(byLowerValue);
+            else
+                leaderboards[e].sort(byHigherValue);
         }
         for (e in monthlyLeaderboardTypes) {
             leaderboards[e + "Last"] = lastLeaderboards && lastLeaderboards.hasOwnProperty(e + "Last") ? lastLeaderboards[e + "Last"] : [];
@@ -49091,6 +49118,11 @@ function Safari() {
                             val = player.value;
                         }
                     }
+                }
+                if (e === "fastestCaseSolved") {
+                    data = data.map(function(timestamp) {
+                        return timeString(timestamp / 1000, true);
+                    });
                 }
             }
         }
@@ -56617,7 +56649,8 @@ function Safari() {
         if (currentBattles.length > 0 && contestCooldown % 4 === 0) {
             for (var e = currentBattles.length - 1; e >= 0; e--) {
                 var battle = currentBattles[e];
-                battle.nextTurn();
+                if (!battle.paused)
+                    battle.nextTurn();
                 if (battle.finished) {
                     currentBattles.splice(e, 1);
                     checkUpdate();
