@@ -21471,7 +21471,7 @@ function Safari() {
         this.battle2 = true;
         this.paused = false;
         this.totalPauseTime = 0;
-        this.pauseLimit = 600; // in seconds
+        this.pauseLimit = 600 * 3; // in seconds
         this.tagBattle = false;
         this.oneOnTwo = false;
         this.fullNPC = typeof p1 == "object";
@@ -23952,8 +23952,13 @@ function Safari() {
                 this.sendMessage(name, "You can't pause during team preview!");
                 return;
             }
-            if (data.toLowerCase() === "pause")
+            if (data.toLowerCase() === "pause") {
+                if (!this.paused && this.totalPauseTime > this.pauseLimit) {
+                    this.sendMessage(name, "You can't pause this battle for any longer!");
+                    return;
+                }
                 this.paused = !this.paused;
+            }
             else if (data.toLowerCase() === "unpause" && this.paused) {
                 this.paused = false;
             }
