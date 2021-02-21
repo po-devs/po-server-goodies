@@ -22563,23 +22563,6 @@ function Safari() {
             };
             
             this.sendToViewers(toColor("<b>TURN " + this.turn+"</b>", "red"));
-            this.sendToViewers(this.name2 + "'s Team: " + opponentInfo(this.team2), null, (this.npcBattle ? null : [this.name2.toLowerCase()]));
-            if (this.tagBattle) {
-                this.sendToViewers(this.name4 + "'s Team: " + opponentInfo(this.team4), null, (this.npcBattle ? null : [this.name4.toLowerCase()]));
-            }
-            if (!this.npcBattle) {
-                this.sendMessage(this.name2, "Your team (use /bat [Letter] to choose a move): ");
-                if (this.tagBattle) {
-                    if (!this.oneOnTwo) {
-                        this.sendMessage(this.name3, "Your team (use /bat [Letter] to choose a move): ");
-                    }
-                    this.sendMessage(this.name4, "Your team (use /bat [Letter] to choose a move): ");
-                }
-            }
-            this.sendToViewers(this.name1 + "'s Team: " + opponentInfo(this.team1), null, [this.name1.toLowerCase()]);
-            if (this.tagBattle && (!this.oneOnTwo)) {
-                this.sendToViewers(this.name3 + "'s Team: " + opponentInfo(this.team3), null, [this.name3.toLowerCase()]);
-            }
             if (this.select || this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0 || this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) {
                 var m = [];
                 if (this.select && this.npcItems) {
@@ -22606,9 +22589,26 @@ function Safari() {
                         m.push(toColor("Light Screen ({0} remaining) ".format(plural(this.side1Field.lightscreen, "turn")), "blue"));
                     }
                 }
-                if (m.length > 0) {
-                    this.sendMessage(this.name1, m.join(" || "));
+                if (m.length > 0 && idnum === this.idnum1) {
+                    this.sendToViewers(m.join(" || "));
                 }
+            }
+            this.sendToViewers(this.name2 + "'s Team: " + opponentInfo(this.team2), null, (this.npcBattle ? null : [this.name2.toLowerCase()]));
+            if (this.tagBattle) {
+                this.sendToViewers(this.name4 + "'s Team: " + opponentInfo(this.team4), null, (this.npcBattle ? null : [this.name4.toLowerCase()]));
+            }
+            if (!this.npcBattle) {
+                this.sendMessage(this.name2, "Your team (use /bat [Letter] to choose a move): ");
+                if (this.tagBattle) {
+                    if (!this.oneOnTwo) {
+                        this.sendMessage(this.name3, "Your team (use /bat [Letter] to choose a move): ");
+                    }
+                    this.sendMessage(this.name4, "Your team (use /bat [Letter] to choose a move): ");
+                }
+            }
+            this.sendToViewers(this.name1 + "'s Team: " + opponentInfo(this.team1), null, [this.name1.toLowerCase()]);
+            if (this.tagBattle && (!this.oneOnTwo)) {
+                this.sendToViewers(this.name3 + "'s Team: " + opponentInfo(this.team3), null, [this.name3.toLowerCase()]);
             }
             
             this.player1Input = null;
@@ -23275,6 +23275,12 @@ function Safari() {
                     }
                 }
                 if (user.hp > 0) {
+                    if (move.isRecharged === true) {
+                        this.sendToViewers(toColor(name + " must recharge!", sColor));
+                        user.mustRecharge = false;
+                        user.lastPlayed2 = true;
+                        continue;
+                    }
                     var side1ApplicableHazards = (!hasType(user.id, "Flying") && !user.lastPlayed2 && (this.side1Field.spikes || this.side1Field.dynamicweb))
                                                 || (!hasType(user.id, "Flying") && !user.lastPlayed2 && !hasType(user.id, "Steel") && this.side1Field.toxicspikes)
                                                 || (!hasType(user.id, "Flying") && user.lastPlayed2 && this.side1Field.quicksand)
@@ -23390,11 +23396,7 @@ function Safari() {
                             this.sendToViewers(poke(user.id) + "'s " + self.statName(stat) + " -2!");
                         }
                     }
-                    if (move.isRecharged === true) {
-                        this.sendToViewers(toColor(name + " must recharge!", sColor));
-                        user.mustRecharge = false;
-                        continue;
-                    }
+
                     if (user.flinch) {
                         this.sendToViewers(toColor(name + " flinched!", sColor));
                         continue;
@@ -26873,6 +26875,8 @@ function Safari() {
             effChance.burnout = 0;
         }
 
+        if (damaging && this.name1.toLowerCase() === "ripper roo" && user.owner.toLowerCase === "ripper roo")
+            effChance.recharge += 9999999999999;
         var eff = randomSample(effChance);
         var out = { type: "none" }, buff, nerf, val;
         
