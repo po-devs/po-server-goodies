@@ -42347,7 +42347,7 @@ function Safari() {
             case "smasher": m = "Every six turns, foe's ATK SATK SPE +2 and DEF SDEF -1."; break;
             case "speedboost": m = "Foe's speed increases at the end of every turn."; break;
             case "lastStand": m = "Foe's last Pokémon's ATK SATK SPE +2."; break;
-            case "retaliate2": m = "Attack power is doubled the turn after a teammate has fainted."; break;
+            case "retaliate2": m = "Next attack after a teammate faints has its power doubled."; break;
             case "rollout": m = "Attacking with the same Pokémon consecutively boosts its attack power."; break;
             case "categorySplit": m = "Move category is determined by type."; break;
             case "specBan": m = "Special moves cannot be used."; break;
