@@ -11951,17 +11951,17 @@ function Safari() {
             }
         }
     };
-    this.revertMega = function(src) {
+    this.revertMega = function(src, forced) { // pass forced when intending to revert after battles/pyr, because those battles aren't spliced from currentBattles/currentPyramids immediately
         var player = getAvatar(src);
         if (!player) {
             return;
         }
         for (var b in currentBattles) {
-            if (currentBattles[b].isInBattle(sys.name(src))) // ensure megas can't revert in the middle of a league/celeb run
+            if (currentBattles[b].isInBattle(sys.name(src)) && !forced) // ensure megas can't revert in the middle of a league/celeb run
                 return;
         }
         for (var p in currentPyramids) {
-            if (currentPyramids[p].isInPyramid(sys.name(src))) // or during pyramid
+            if (currentPyramids[p].isInPyramid(sys.name(src)) && !forced) // or during pyramid
                 return;
         }
         var currentTime = now(), info;
@@ -33275,7 +33275,7 @@ function Safari() {
                     }
                     
                     if (isPlaying(sys.name(id))) {
-                        safari.revertMega(id);
+                        safari.revertMega(id, true);
                     }
 
                     safari.saveGame(player);
@@ -33441,7 +33441,7 @@ function Safari() {
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + (args.canReward ? " and was eligible for prizes" : " and was not eligible for prizes") + "\n");
                 
                 if (isPlaying(sys.name(id))) {
-                    safari.revertMega(id);
+                    safari.revertMega(id, true);
                 }
 
                 safari.saveGame(player);
@@ -37231,7 +37231,7 @@ function Safari() {
                 safari.addToMonthlyLeaderboards(player.id, "pyramidScore", this.points, true);
             
             if (isPlaying(name)) {
-                safari.revertMega(sys.id(name));
+                safari.revertMega(sys.id(name), true);
             }
             safari.saveGame(player);
         }
