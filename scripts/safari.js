@@ -33308,6 +33308,7 @@ function Safari() {
                     var regen = hpLeft.map(function(x) { return Math.min(1, x + (args.heal * speedBonusHeal)); });
                     var healing = args.heal;
                     var difficultyLevel = args.difficulty;
+                    var canReward = args.canReward;
                     trainer.party = trainer.party.shuffle().slice(0, 6);
                     trainer.postBattle = postBattle;
                     trainer.postArgs = {
@@ -33316,7 +33317,7 @@ function Safari() {
                         index: next,
                         celebs: celebs,
                         difficulty: difficultyLevel,
-                        firstRun: f
+                        canReward: canReward
                     };
                     if (trainer.sprite) {
                         safaribot.sendHtmlMessage(id, "<img src='icon:" + trainer.sprite + "'>", safchan);
