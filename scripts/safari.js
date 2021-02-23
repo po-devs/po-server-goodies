@@ -11951,17 +11951,17 @@ function Safari() {
             }
         }
     };
-    this.revertMega = function(src, forced) { // pass forced when intending to revert after battles/pyr, because those battles aren't spliced from currentBattles/currentPyramids immediately
+    this.revertMega = function(src) {
         var player = getAvatar(src);
         if (!player) {
             return;
         }
         for (var b in currentBattles) {
-            if (currentBattles[b].isInBattle(sys.name(src)) && !forced) // ensure megas can't revert in the middle of a league/celeb run
+            if (currentBattles[b].isInBattle(sys.name(src))) // ensure megas can't revert in the middle of a league/celeb run
                 return;
         }
         for (var p in currentPyramids) {
-            if (currentPyramids[p].isInPyramid(sys.name(src)) && !forced) // or during pyramid
+            if (currentPyramids[p].isInPyramid(sys.name(src))) // or during pyramid
                 return;
         }
         var currentTime = now(), info;
@@ -11988,31 +11988,10 @@ function Safari() {
         for (var i = 0; i < Math.min(player.megaTimers.length, displayCap); i++) {
             var timerObj = player.megaTimers[i];
             var diff = timerObj.expires - now();
-            var diffString = (diff <= 0 ? (currentTheme ? "After this Contest" : "After the next Contest") : timeString(Math.round(diff / 1000), true));
+            var diffString = (diff < 0 ? (currentTheme ? "After this Contest" : "After the next Contest") : timeString(Math.round(diff / 1000), true));
             
             var out = "{0} <b>{1}</b>: {2}".format(pokeInfo.icon(timerObj.id, typeof timerObj.id === "string"), getInputPokemon(timerObj.id + (typeof timerObj.id === "string" ? "*" : "")).name, diffString);
             safaribot.sendHtmlMessage(src, out, safchan);
-        }
-    };
-    this.tickPokeSkills = function(src) {
-        var player = getAvatar(src);
-        if (!player) {
-            return;
-        }
-        var currentTime = now(), info, info2;
-        for (var e = player.pokeskillsArr.length - 1; e >= 0; e--) {
-            info = player.pokeskillsArr[e];
-            for (var d in info) {
-                if (d == "id") {
-                    continue;
-                }
-                info2 = info[d];
-                if (info2.expiration <= currentTime && info2.active) {
-                    info2.active = false;
-                    safaribot.sendHtmlMessage(src, "Your " + poke(parseInt(e, 10)) + "'s " + cap(d) + " skill wore off and will need to be renewed by " + link("/quest idol:alchemist", "the Idol") + "!", safchan);
-                    this.saveGame(player);
-                }
-            }
         }
     };
     this.setFavoriteBall = function(src, commandData) {
@@ -33273,10 +33252,6 @@ function Safari() {
                         default:
                         break;
                     }
-                    
-                    if (isPlaying(sys.name(id))) {
-                        safari.revertMega(id, true);
-                    }
 
                     safari.saveGame(player);
                     return;
@@ -33439,11 +33414,6 @@ function Safari() {
                 }
                 
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + (args.canReward ? " and was eligible for prizes" : " and was not eligible for prizes") + "\n");
-                
-                if (isPlaying(sys.name(id))) {
-                    safari.revertMega(id, true);
-                }
-
                 safari.saveGame(player);
             }
         };
@@ -37229,10 +37199,7 @@ function Safari() {
             var val = monthlyLeaderboards["pyramidScore"].get(player.id) || 0;
             if (val < this.points)
                 safari.addToMonthlyLeaderboards(player.id, "pyramidScore", this.points, true);
-            
-            if (isPlaying(name)) {
-                safari.revertMega(sys.id(name), true);
-            }
+
             safari.saveGame(player);
         }
 
@@ -48986,7 +48953,6 @@ function Safari() {
             safaribot.sendMessage(src, "Your Safari data was successfully loaded!", safchan);
             this.dailyReward(src, getDay(now()));
             this.revertMega(src);
-            //this.tickPokeSkills(src);
             if (player.tutorial.inTutorial) {
                 this.progressTutorial(src);
             }
@@ -56751,6 +56717,10 @@ function Safari() {
 
                 if (battle.finished) {
                     currentBattles.splice(e, 1);
+                    if (battle.npcBattle && !battle.fullNPC && isPlaying(battle.name1)) {
+                        safari.revertMega(sys.id(battle.name1));
+                    }
+                    
                     checkUpdate();
                 }
             }
@@ -56761,6 +56731,11 @@ function Safari() {
                 pyr.nextTurn();
                 if (pyr.finished) {
                     currentPyramids.splice(e, 1);
+                    for (var name in pyr.names) {
+                        if (isPlaying(pyr.names[name])) {
+                            safari.revertMega(sys.id(pyr.names[name]));
+                        }
+                    }
                     checkUpdate();
                 }
             }
@@ -57185,7 +57160,6 @@ function Safari() {
                     for (e in onChannel) {
                         safari.dailyReward(onChannel[e], today);
                         safari.revertMega(onChannel[e]);
-                        //safari.tickPokeSkills(onChannel[e]);
                     }
                     safari.updateLeaderboards();
                     rawPlayers.save();
