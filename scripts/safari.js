@@ -2831,32 +2831,33 @@ function Safari() {
     }
 
     /* Message Functions */
-    function sendAll(mess, html, system) {
+    function sendAll(mess, html, system, bypass) {
         var players = sys.playersOfChannel(safchan).filter(function(x) {
             var name = sys.name(x);
-            if (currentEvent && currentEvent.isInEvent(name)) {
+            var isBypassed = bypass && bypass === name.toLowerCase();
+            if (currentEvent && currentEvent.isInEvent(name) && !isBypassed) {
                 return false;
             }
-            if (currentGame && currentGame.playerInGame(name)) {
+            if (currentGame && currentGame.playerInGame(name) && !isBypassed) {
                 return false;
             }
             for (var p in currentPyramids) {
-                if (currentPyramids[p].isInPyramid(name)) {
+                if (currentPyramids[p].isInPyramid(name) && !isBypassed) {
                     return false;
                 }
             }
             for (var p in currentBakings) {
-                if (currentBakings[p].isInKitchen(name)) {
+                if (currentBakings[p].isInKitchen(name) && !isBypassed) {
                     return false;
                 }
             }
             for (var p in currentBattles) {
-                if (currentBattles[p].battle2 && currentBattles[p].isInBattle(name)) {
+                if (currentBattles[p].battle2 && currentBattles[p].isInBattle(name) && !isBypassed) {
                     return false;
                 }
             }
             var player = getAvatar(x);
-            if (player && player.tutorial.inTutorial) {
+            if (player && player.tutorial.inTutorial && !isBypassed) {
                 return false;
             }
             return true;
@@ -11988,31 +11989,10 @@ function Safari() {
         for (var i = 0; i < Math.min(player.megaTimers.length, displayCap); i++) {
             var timerObj = player.megaTimers[i];
             var diff = timerObj.expires - now();
-            var diffString = (diff <= 0 ? (currentTheme ? "After this Contest" : "After the next Contest") : timeString(Math.round(diff / 1000), true));
+            var diffString = (diff < 0 ? (currentTheme ? "After this Contest" : "After the next Contest") : timeString(Math.round(diff / 1000), true));
             
             var out = "{0} <b>{1}</b>: {2}".format(pokeInfo.icon(timerObj.id, typeof timerObj.id === "string"), getInputPokemon(timerObj.id + (typeof timerObj.id === "string" ? "*" : "")).name, diffString);
             safaribot.sendHtmlMessage(src, out, safchan);
-        }
-    };
-    this.tickPokeSkills = function(src) {
-        var player = getAvatar(src);
-        if (!player) {
-            return;
-        }
-        var currentTime = now(), info, info2;
-        for (var e = player.pokeskillsArr.length - 1; e >= 0; e--) {
-            info = player.pokeskillsArr[e];
-            for (var d in info) {
-                if (d == "id") {
-                    continue;
-                }
-                info2 = info[d];
-                if (info2.expiration <= currentTime && info2.active) {
-                    info2.active = false;
-                    safaribot.sendHtmlMessage(src, "Your " + poke(parseInt(e, 10)) + "'s " + cap(d) + " skill wore off and will need to be renewed by " + link("/quest idol:alchemist", "the Idol") + "!", safchan);
-                    this.saveGame(player);
-                }
-            }
         }
     };
     this.setFavoriteBall = function(src, commandData) {
@@ -14182,10 +14162,10 @@ function Safari() {
             safaribot.sendMessage(src, "Your " + info.name + " " + verb + " " + poke(evolution) + "!", safchan);
             sys.sendMessage(src, "", safchan);
         } else {
-            sendAll("", false, true);
-            sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true);
-            sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(evolution) + "!");
-            sendAll("", false, true);
+            sendAll("", false, true, sys.name(src).toLowerCase());
+            sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true, false, sys.name(src).toLowerCase());
+            sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(evolution) + "!", false, false, sys.name(src).toLowerCase());
+            sendAll("", false, true, sys.name(src).toLowerCase());
         }
         this.saveGame(player);
     };
@@ -34031,6 +34011,11 @@ function Safari() {
                     }
                     player.records.gymsCleared += 1;
                     sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||League|||Challenged " + args.gym.name + " Gym with " + readable(player.party.map(poke)) + "|||Received " + gym.badge + " and " + plural(reward[1], reward[0]) + " by defeating " + args.name + "\n");
+
+                    if (isPlaying(name)) {
+                        safari.revertMega(id, true);
+                    }
+
                     safari.saveGame(player);
                 } else {
                     var npc = JSON.parse(JSON.stringify(gym.trainers[next]));
@@ -34079,6 +34064,11 @@ function Safari() {
                 player.records.gymsLost += 1;
                 player.quests.league.cooldown = now() + Math.round(hours(2) * (1 - safari.getFortune(player, "questcd", 0, "league")));
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||League|||Challenged " + args.gym.name + " Gym with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
+
+                if (isPlaying(name)) {
+                    safari.revertMega(id, true);
+                }
+
                 safari.saveGame(player);
             }
         };
@@ -48986,7 +48976,6 @@ function Safari() {
             safaribot.sendMessage(src, "Your Safari data was successfully loaded!", safchan);
             this.dailyReward(src, getDay(now()));
             this.revertMega(src);
-            //this.tickPokeSkills(src);
             if (player.tutorial.inTutorial) {
                 this.progressTutorial(src);
             }
@@ -57185,7 +57174,6 @@ function Safari() {
                     for (e in onChannel) {
                         safari.dailyReward(onChannel[e], today);
                         safari.revertMega(onChannel[e]);
-                        //safari.tickPokeSkills(onChannel[e]);
                     }
                     safari.updateLeaderboards();
                     rawPlayers.save();
