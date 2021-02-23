@@ -14478,7 +14478,7 @@ function Safari() {
                 }
                 else {
                     var hit = false;
-                    if (player.costume == "explorer" && chance(0.2) && safari.detectiveData.hasOwnProperty(player.idnum+"")) {
+                    if (player.costume == "explorer" && chance(0.2) && safari.detectiveData.hasOwnProperty(player.idnum+"") && safari.detectiveData[player.idnum].date === getDay(now()) && !safari.detectiveData[player.idnum].solved) {
                         for (var i = 0; i < safari.detectiveData[player.idnum+""].clues.length; i++) {
                             if (safari.detectiveData[player.idnum+""].clues[i].unlock == "explorerfinder") {
                                 safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! " +(freefinder ? "<i>Additionally, no charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
@@ -21635,8 +21635,8 @@ function Safari() {
             }
             this.selectData = {};
             if (select.analytic) {
-                this.selectData.analyticType1 = "---"; //not ???, since this would make it hit single type Pokémon turn 1
-                this.selectData.analyticType2 = "---";
+                this.selectData.analyticType1 = "???";
+                this.selectData.analyticType2 = "???";
                 this.selectData.analyticCount = 0;
             }
             if (select.rollout) {
@@ -24471,9 +24471,8 @@ function Safari() {
             bonus *= ((this.select.arenaBattle && (!((canLearnMove(pokeInfo.species(target.id), 69))))) ? 1.25 : 1);
             bonus *= ((this.select.blueBoost && (pokeColors.blue.contains(pokeInfo.species(user.id)))) ? 1.2 : 1);
             bonus *= ((this.select.pinkBoost && (pokeColors.pink.contains(pokeInfo.species(user.id)))) ? 1.2 : 1);
-            var analytic = (this.select.analytic && (hasType(user.id, this.selectData.analyticType1) || (hasType(user.id, this.selectData.analyticType2))));
             if (isP2 || isP4) {
-                bonus *= (analytic ? (1 + Math.max(this.selectData.analyticCount/6, 1)) : 1);
+                bonus *= (this.select.analytic ? (1 + Math.max(this.selectData.analyticCount/6, 0)) : 1);
             }
             if (this.select.rollout) {
                 if (this.selectData.rolloutUser == user.id && (isP1 || isP3)) {
@@ -25352,6 +25351,14 @@ function Safari() {
                         out.push(name + " lost " + placeholder + " HP from the shell burn!");
                     }
                     if (self.select.analytic && (isP2 || isP4)) {
+                        if ((self.selectData.analyticType1 !== "???" && hasType(target.id, self.selectData.analyticType1)) || (self.selectData.analyticType2 !== "???" && hasType(target.id, self.selectData.analyticType2))) {
+                            self.selectData.analyticCount++;
+                            out.push(name + " became better at analyzing " + poke(target.id) + "'s typing!");
+                        }
+                        else {
+                            self.selectData.analyticCount = 0;
+                            out.push(name + " is trying to adapt to " + poke(target.id) + "'s typing!");
+                        }
                         self.selectData.analyticType1 = type1(target.id);
                         self.selectData.analyticType2 = type2(target.id);
                     }
@@ -31628,7 +31635,7 @@ function Safari() {
                     var pk1 = getBST(answer[ind]);
                     var pk2 = getBST(answer[otherind]);
                     
-                    if (pk1 < pk2) {
+                    if (pk1 <= pk2) {
                         return false;
                     }
                     value = "greater stat total";
@@ -33188,7 +33195,7 @@ function Safari() {
                 for (e = 0; e < viewers.length; e++) {
                     safaribot.sendMessage(sys.id(viewers[e]), "Announcer: " + name + " has defeated " + next + " trainer(s)! (Difficulty: " + level + ").", safchan);
                 }
-                if (player.firstCelebrityRun) {
+                if (args.canReward) {
                     if (Array.isArray(reward[0])) {
                         reward = reward.random();
                     }
@@ -33205,10 +33212,9 @@ function Safari() {
                     sys.sendAll("", safchan);
                     safaribot.sendHtmlAll("<b>Announcer: " + name + " has defeated all 13 Celebrity Trainers (Difficulty: " + level + ")! Please congratulate our champion!</b>", safchan);
                     sys.sendAll("", safchan);
-                    sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity|||Difficulty: " + level + "|||Challenged with " + readable(player.party.map(poke)) + "|||" + (player.firstCelebrityRun ? "Received " + plural(reward[1], reward[0]) + " by defeating " + next + " Trainers" : "Was not eligible for prizes") + "\n");
+                    sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity|||Difficulty: " + level + "|||Challenged with " + readable(player.party.map(poke)) + "|||" + (args.canReward ? "Received " + plural(reward[1], reward[0]) + " by defeating " + next + " Trainers" : "Was not eligible for prizes") + "\n");
                     var description = "Cleared " + player.celebrityRegion.toUpperCase() + " Celebrities on " + level.toUpperCase() + " (" + new Date(now()).toUTCString() + ")";
                     var ic = [253, 252, 251, 249, 258, 255][args.difficulty+1];
-                    player.firstCelebrityRun = false;
                     safari.awardMedal(
                         player,
                         {
@@ -33264,7 +33270,6 @@ function Safari() {
                 }
                 else {
                     if (!id) {
-                        player.firstCelebrityRun = false;
                         safari.saveGame(player);
                         for (e = 0; e < viewers.length; e++) {
                             safaribot.sendMessage(sys.id(viewers[e]), "Announcer: The challenge was cancelled because " + name + " is nowhere to be found for their next match!", safchan);
@@ -33419,8 +33424,7 @@ function Safari() {
                     break;
                 }
                 
-                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + (player.firstCelebrityRun ? " and was eligible for prizes" : " and was not eligible for prizes") + "\n");
-                player.firstCelebrityRun = false;
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + (args.canReward ? " and was eligible for prizes" : " and was not eligible for prizes") + "\n");
                 safari.saveGame(player);
             }
         };
@@ -33437,6 +33441,7 @@ function Safari() {
 
         var npc = celebs.gym[0];
         npc.postBattle = postBattle;
+
         var heal, desc;
         switch (difficulty) {
             case -1: heal = 0.25; desc = "Easy"; break;
@@ -33452,9 +33457,11 @@ function Safari() {
             heal: heal,
             index: 0,
             difficulty: difficulty,
-            celebs: celebs
+            celebs: celebs,
+            canReward: player.firstCelebrityRun
         };
 
+        player.firstCelebrityRun = false;
         npc.desc = desc + " Celebrity NPC";
         safaribot.sendHtmlMessage(src, "Announcer: Looking for fame, are you? Please enjoy your first battle against " + npc.name + "!!", safchan);
         var battle = new Battle2(src, npc, {
@@ -37431,7 +37438,7 @@ function Safari() {
             if ((!isLegendary(p) || maxLegend > 0) && getBST(p) >= minBST) {
                 this.horde.push(p);
                 if (isLegendary(p)) {
-                	maxLegend -= 1;
+                    maxLegend -= 1;
                 }
             }
         }
