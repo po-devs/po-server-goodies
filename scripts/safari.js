@@ -11956,6 +11956,14 @@ function Safari() {
         if (!player) {
             return;
         }
+        for (var b in currentBattles) {
+            if (currentBattles[b].isInBattle(sys.name(src))) // ensure megas can't revert in the middle of a league/celeb run
+                return;
+        }
+        for (var p in currentPyramids) {
+            if (currentPyramids[p].isInPyramid(sys.name(src))) // or during pyramid
+                return;
+        }
         var currentTime = now(), info;
         for (var e = player.megaTimers.length - 1; e >= 0; e--) {
             info = player.megaTimers[e];
@@ -33265,6 +33273,11 @@ function Safari() {
                         default:
                         break;
                     }
+                    
+                    if (isPlaying(sys.name(id))) {
+                        safari.revertMega(id);
+                    }
+
                     safari.saveGame(player);
                     return;
                 }
@@ -33426,6 +33439,11 @@ function Safari() {
                 }
                 
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + (args.canReward ? " and was eligible for prizes" : " and was not eligible for prizes") + "\n");
+                
+                if (isPlaying(sys.name(id))) {
+                    safari.revertMega(id);
+                }
+
                 safari.saveGame(player);
             }
         };
@@ -37212,6 +37230,9 @@ function Safari() {
             if (val < this.points)
                 safari.addToMonthlyLeaderboards(player.id, "pyramidScore", this.points, true);
             
+            if (isPlaying(name)) {
+                safari.revertMega(sys.id(name));
+            }
             safari.saveGame(player);
         }
 
