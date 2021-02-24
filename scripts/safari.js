@@ -25751,7 +25751,7 @@ function Safari() {
             }
             else {
                 var typeMultiplier = safari.checkEffective(move.type, "???", type1(target.id), type2(target.id), null, inver, this.select, this.select2);
-                if (move.type == "Ground" && target.item.balloon || (hasType(target.id, "Flying") && typeMultiplier === 0))) {
+                if (move.type == "Ground" && (target.item.balloon || (hasType(target.id, "Flying") && typeMultiplier === 0))) {
                     typeMultiplier = 0;
                     if (!this.fullNPC && this.npcBattle && target.ownerID !== this.idnum1 && !target.protect) {
                         var thousandArrowsSkill = safari.pokeSkillActivated(this.name1, user, "thousandArrows");
