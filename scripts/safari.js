@@ -28667,7 +28667,9 @@ function Safari() {
             safaribot.sendMessage(src, "This person cannot receive trade requests right now!", safchan);
             return;
         }
-        if (info[0].toLowerCase() == userName || sys.ip(targetId) === sys.ip(src)) {
+        
+        var allowShared = allowedSharedIPNames.contains(targetName) || allowedSharedIPNames.contains(userName);
+        if (info[0].toLowerCase() == userName || (sys.ip(targetId) === sys.ip(src) && !allowShared)) {
             safaribot.sendMessage(src, "You can't trade with yourself!", safchan);
             return;
         }
