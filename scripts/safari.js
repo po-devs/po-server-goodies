@@ -2568,7 +2568,8 @@ function Safari() {
                 safaribot.sendMessage(src, "No such person!", safchan);
                 return false;
             }
-            if ((targetId == src || sys.ip(targetId) === sys.ip(src)) && selfmsg) {
+            var allowShared = allowedSharedIPNames.contains(sys.name(src)) || allowedSharedIPNames.contains(sys.name(tar));
+            if ((targetId == src || (sys.ip(targetId) === sys.ip(src) && !allowShared)) && selfmsg) {
                 safaribot.sendMessage(src, selfmsg, safchan);
                 return false;
             }
