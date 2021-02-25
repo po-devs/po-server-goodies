@@ -10305,7 +10305,7 @@ function Safari() {
         if (data === "*") {
             sys.sendHtmlMessage(src, this.showParty(src, true), safchan);
             var n = now();
-            safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader. You can also manage saved parties with /party save:[slot], /party delete:[slot] or /party load:[slot], or quickly change your party with /qload Pokémon1,Pokémon2,Pokémon3,etc.", safchan);
+            safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader. Use /remove active to remove your active Pokémon. You can also manage saved parties with /party save:[slot], /party delete:[slot] or /party load:[slot], or quickly change your party with /qload Pokémon1,Pokémon2,Pokémon3,etc.", safchan);
             if (safari.validDailyBoost(player)) {
                 safaribot.sendHtmlMessage(src, "<b>Your lead Pokémon is the current Pokémon-of-the-Day!</b>", safchan);
             }
@@ -10442,12 +10442,7 @@ function Safari() {
                 index = 0;
             }
             else {
-                for (var i = player.party.length - 1; i >= 0; i--) { // remove starting from the back of the party instead of the front
-                    if (player.party[i] === id) {
-                        index = i;
-                        break;
-                    }
-                }
+                index = player.party.length - player.party.slice(0).reverse().indexOf(id) - 1; // take from the back of party instead of front, unless player specified "/remove active"
             }
             if (index === 0) {
                 restrictions = restrictions.concat(["wild", "contest"]);
@@ -10789,7 +10784,7 @@ function Safari() {
             out += "</tr>";
             if (showLinks) {
                 out += "<tr><td align='center' style='white-space: pre;'>";
-                out += "[" + link("/party active:" + name, "Active") + " / " + link("/party remove:" + name, "Remove") + "]";
+                out += "[" + link("/party active:" + name, "Active") + " / " + link("/party remove:" + (e === 0 ? "active" : name), "Remove") + "]";
                 out += "</td></tr>"
             }
             out += "</table></td>";
