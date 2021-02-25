@@ -32068,7 +32068,7 @@ function Safari() {
             
             if (d2 === "all") {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Check out all the Pokémon you've unlocked skills for already!", safchan);
-                var keys = Object.keys(skillUnlocks[pid]).sort(function(a, b) { return parseInt(a) - parseInt(b) });
+                var keys = Object.keys(skillUnlocks[pid]).sort(function(a, b) { return parseInt(pokeInfo.species(a)) - parseInt(pokeInfo.species(b)) });
                 var displayLimit = 10,
                     pageNum = Math.abs(parseInt(d3)) || 0;
                 var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit); // maybe turn this whole thing into a function
