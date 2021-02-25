@@ -10364,7 +10364,12 @@ function Safari() {
 
         var info, id, slots = 10;
         if (!["save", "delete", "load"].contains(action)) {
-            info = getInputPokemon(targetId);
+            if (targetId === "active") {
+                info = getInputPokemon(player.party[0]);
+            }
+            else {
+                info = getInputPokemon(targetId);
+            }
             if (!info.num) {
                 safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
                 return;
@@ -10421,16 +10426,7 @@ function Safari() {
         } else if (action === "remove") {
             var restrictions = ["auction", "battle", "event", "tutorial", "pyramid"];
             var reason = "modify your party";
-            //Allow selling of pokemon that are not the lead if the rest of the party doesn't matter at that point
-            if (player.party[0] === id) {
-                restrictions = restrictions.concat(["wild", "contest"]);
-                reason = "remove your active Pokémon";
-            }
-            if (cantBecause(src, reason, restrictions)) {
-                pendingActiveChanges[player.id] = "remove:" + info.name;
-                safaribot.sendMessage(src, "Your " + info.name + " will be removed from your party at the next opportunity!", safchan);
-                return;
-            }
+            var index;
 
             if (player.party.indexOf(id) === -1) {
                 safaribot.sendMessage(src, "This Pokémon is not in your party!", safchan);
@@ -10440,9 +10436,32 @@ function Safari() {
                 safaribot.sendMessage(src, "You must have at least 1 Pokémon in your party!", safchan);
                 return;
             }
+
+            //Allow selling of pokemon that are not the lead if the rest of the party doesn't matter at that point
+            if (targetId === "active") {
+                index = 0;
+            }
+            else {
+                for (var i = player.party.length - 1; i >= 0; i--) { // remove starting from the back of the party instead of the front
+                    if (player.party[i] === id) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+            if (index === 0) {
+                restrictions = restrictions.concat(["wild", "contest"]);
+                reason = "remove your active Pokémon";
+            }
+            if (cantBecause(src, reason, restrictions)) {
+                pendingActiveChanges[player.id] = "remove:" + info.name;
+                safaribot.sendMessage(src, "Your " + info.name + " will be removed from your party at the next opportunity!", safchan);
+                return;
+            }
+
             
             var before = id,
-                isLead = player.party.indexOf(before) === 0;
+                isLead = index === 0;
                 
             var getItem = player.helds[player.party.length - 1]; // entire second half of the party shifts forward, so take the item back from the last slot if there is one
             if (getItem > -1) {
@@ -10452,7 +10471,7 @@ function Safari() {
                 player.helds.splice(player.party.length - 1, 1);
             }
             
-            player.party.splice(player.party.indexOf(id), 1);
+            player.party.splice(index, 1);
             
             if (isLead && player.party[0] !== before) { // if the Pokemon you removed was your lead, and the new Pokemon taking its place is a different species, reset petaya
                 player.berries.petayaCombo = 0;
