@@ -10349,7 +10349,7 @@ function Safari() {
             input = data.split(" ");
             if (input.length < 2) {
                 sys.sendMessage(src, "", safchan);
-                safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader. To quickly change your party, use /qload Pokémon1,Pokémon2,Pokémon3,etc.", safchan);
+                safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader. Use /remove active to remove your active Pokémon. To quickly change your party, use /qload Pokémon1,Pokémon2,Pokémon3,etc.", safchan);
                 safaribot.sendMessage(src, "You can also manage saved parties with /party save:[slot] and /party load:[slot]. " + (player.savedParties.length > 0 ? "You have the following parties saved: " : ""), safchan);
                 this.showSavedParties(src);
                 sys.sendMessage(src, "", safchan);
@@ -10365,7 +10365,7 @@ function Safari() {
         var info, id, slots = 10;
         if (!["save", "delete", "load"].contains(action)) {
             if (targetId === "active") {
-                info = getInputPokemon(player.party[0]);
+                info = getInputPokemon(player.party[0] + "");
             }
             else {
                 info = getInputPokemon(targetId);
@@ -10784,7 +10784,7 @@ function Safari() {
             out += "</tr>";
             if (showLinks) {
                 out += "<tr><td align='center' style='white-space: pre;'>";
-                out += "[" + link("/party active:" + name, "Active") + " / " + link("/party remove:" + (e === 0 ? "active" : name), "Remove") + "]";
+                out += "[" + link("/party active:" + name, "Active") + " / " + link("/party remove:" + (e == 0 ? "active" : name), "Remove") + "]";
                 out += "</td></tr>"
             }
             out += "</table></td>";
