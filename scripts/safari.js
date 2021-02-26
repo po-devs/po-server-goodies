@@ -51126,7 +51126,7 @@ function Safari() {
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details. Use /findt for a text-only version or /finds for a text version with links to sell them.",
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /box. Criteria are Alphabetical, Number, BST, Type and Duplicate.",
             "/bst [pokémon]: To view the BST of a Pokémon and price you can sell a Pokémon.",
-            "/showdex [stats | effectiveness |  trivia]: Enable additional information when using /bst. Use /hidedex to disable the select option.",
+            "/showdex [stats|effectiveness|trivia]: Enable additional information when using /bst. Use /hidedex to disable the select option.",
             "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version or /boxs for a text version with links to sell them. Use /smallbox to toggle an option to use a narrower box width.",
             "/favorite [ball]: Sets your favorite ball. This will be thrown automatically if you do not specify a different ball to throw.",
             "/bag: To view all money and items. Use /bagt for a text-only version.",
