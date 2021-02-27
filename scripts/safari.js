@@ -13988,10 +13988,10 @@ function Safari() {
         }
 
         var evoData = devolutions[species];
-        var dustRegained = Math.floor((evolutions[evoData].candies || 300) * (info.shiny ? 1.15 : 1) * 0.5);
+        var dustRegained = Math.min(Math.floor((evolutions[evoData].candies || 300) * (info.shiny ? 1.15 : 1) * 0.5), itemData.dust.cap);
 
         if (!["confirm", "starter", "normal"].contains(starter)) {
-            safaribot.sendHtmlMessage(src, info.name + " can devolve into " + poke(evoData) + " with " + an(finishName("spray")) + " to regain " + plural(dustRegained, "dust") + ". ", safchan);
+            safaribot.sendHtmlMessage(src, info.name + " can devolve into " + poke(evoData) + " with " + an(finishName("spray")) + " to regain " + plural(dustRegained, "dust") + ".", safchan);
             safaribot.sendHtmlMessage(src, "If you really wish to devolve " + info.name + ", type " + link("/spray " + info.input + ":confirm") + ".", safchan);
             return;
         }
