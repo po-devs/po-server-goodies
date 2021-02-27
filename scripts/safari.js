@@ -16490,6 +16490,10 @@ function Safari() {
             safaribot.sendMessage(src, "You cannot get your last sold Pokémon back because you used the money you earned from selling your last Pokémon!", safchan);
             return;
         }
+        if (player.pokemon.length >= getPerkBonus(player, "box")) {
+            safaribot.sendMessage(src, "You cannot get your last sold Pokémon back because your boxes are full!", safchan);
+            return;
+        }
 
         player.records.pokeSoldEarnings -= player.lastSold.price;
         player.money -= player.lastSold.price;
