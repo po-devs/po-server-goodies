@@ -49000,17 +49000,15 @@ function Safari() {
     };
     this.showNextContest = function(src) {
         if (contestCount > 0) {
-            var min = Math.floor(contestCount/60);
-            var sec = contestCount%60;
+            var hasExtension = wildEvent && contestCount === 1 && contestExtension <= contestExtensionLimit;
             safaribot.sendMessage(src, "Current Contest's theme: " + (currentTheme ? themeName(currentTheme) : "Default") + ".", safchan);
             if (currentRules) {
                 safaribot.sendHtmlMessage(src, "Contest's Rules: " + this.translateRules(currentRules, true), safchan);
             }
-            safaribot.sendMessage(src, "Time until the Contest ends: " + plural(min, "minute") + ", " + plural(sec, "seconds") + ".", safchan);
+            safaribot.sendHtmlMessage(src, "Time until the Contest ends: " + (hasExtension ? toColor(timeString(contestExtensionLimit - contestExtension) + " [Event Extension]", "crimson") : timeString(contestCount)) + ".", safchan);
         } else {
-            var min = Math.floor(contestCooldown/60);
-            var sec = contestCooldown%60;
-            safaribot.sendMessage(src, "Time until next Contest: " + plural(min, "minute") + ", " + plural(sec, "second") + ".", safchan);
+
+            safaribot.sendMessage(src, "Time until next Contest: " + timeString(contestCooldown) + ".", safchan);
             if (nextTheme) {
                 safaribot.sendMessage(src, "Next Contest's theme: " + (nextTheme !== "none" ? themeName(nextTheme) : "Default") + ".", safchan);
 
