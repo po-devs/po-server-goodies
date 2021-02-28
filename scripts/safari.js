@@ -22589,7 +22589,7 @@ function Safari() {
                 }
                 if (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0) {
                     if (this.side2Field.reflect > 0) {
-                        m.push(toColor("{0}'s Reflect ({1} remaining) ".format(this.name1 + (this.tagBattle && !this.oneOnTwo ? " & " + this.name3 : ""), plural(this.side2Field.reflect, "turn")), "red"));
+                        m.push(toColor("{0}'s Reflect ({1} remaining) ".format(this.name2 + (this.tagBattle ? " & " + this.name4 : ""), plural(this.side2Field.reflect, "turn")), "red"));
                     }
                     if (this.side2Field.lightscreen > 0) {
                         m.push(toColor("{0}'s Light Screen ({1} remaining) ".format(this.name2 + (this.tagBattle ? " & " + this.name4 : ""), plural(this.side2Field.lightscreen, "turn")), "red"));
@@ -22597,10 +22597,10 @@ function Safari() {
                 }
                 if (this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) {
                     if (this.side1Field.reflect > 0) {
-                        m.push(toColor("Reflect ({0} remaining) ".format(plural(this.side1Field.reflect, "turn")), "blue"));
+                        m.push(toColor("{0}'s Reflect ({1} remaining) ".format(this.name1 + (this.tagBattle && !this.oneOnTwo ? " & " + this.name3 : ""), plural(this.side1Field.reflect, "turn")), "blue"));
                     }
                     if (this.side1Field.lightscreen > 0) {
-                        m.push(toColor("Light Screen ({0} remaining) ".format(plural(this.side1Field.lightscreen, "turn")), "blue"));
+                        m.push(toColor("{0}'s Light Screen ({1} remaining) ".format(this.name1 + (this.tagBattle && !this.oneOnTwo ? " & " + this.name3 : ""), plural(this.side1Field.lightscreen, "turn")), "blue"));
                     }
                 }
                 if (m.length > 0) {
