@@ -22160,7 +22160,7 @@ function Safari() {
     };
     Battle2.prototype.nextTurn = function() {
         if (!isPlaying(this.name1) && this.phase !== "preview" && this.canPickMoves && this.npcBattle && !this.paused && this.totalPauseTime < this.pauseLimit) {
-            this.sendToViewers(toColor("<b>The battle was paused since {0} left the channel! (Battle can only remain paused for {1})</b>".format(sys.name(src), timeString(battle.pauseLimit - battle.totalPauseTime)), "crimson"));
+            this.sendToViewers(toColor("<b>The battle was paused since {0} left the channel! (Battle can only remain paused for {1})</b>".format(sys.name(src), timeString(this.pauseLimit - this.totalPauseTime)), "crimson"));
             this.paused = true;
             return;
         }
