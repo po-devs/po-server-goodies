@@ -1891,6 +1891,7 @@ function Safari() {
     var nextRules;
     var RULES_NERF = 0.95;
     var RULES_BUFF = 0.25;
+    var RULES_NERF_CAP = 0.5;
     var defaultRules = {
         "onlyTypes": { //Picks one of the random sets and excludes all types not in that array
             "chance": 0,
@@ -8861,7 +8862,7 @@ function Safari() {
 
         var finalChance = Math.max((tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true) {
-            finalChance = Math.min(0.5, finalChance);
+            finalChance = Math.min(RULES_NERF_CAP, finalChance);
         }
         if (ball == "clone") {
             var maxCloneRate = itemData.clone.bonusRate + (player.costume === "scientist" ? costumeData.scientist.rate : 0) + this.getFortune(player, "scientist", 0);
@@ -52486,7 +52487,7 @@ function Safari() {
                 var out = [
                     "",
                     "*** CONTEST RULES EXPLANATION *** ",
-                    "NERF: Any number of nerfs reduces the catch rate to " + (RULES_NERF * 100) + "% of its initial value. Final catch rate cannot exceed 50%.",
+                    "NERF: Any number of nerfs reduces the catch rate to " + (RULES_NERF * 100) + "% of its initial value. However, if the final catch rate is higher than " + (RULES_NERF_CAP * 100) + "%, it will be capped at " + (RULES_NERF_CAP * 100) + "%.",
                     "BUFF: Each buff increases the catch rate by " + (RULES_BUFF * 100) + "%.",
                     "Nerf is only applied once, but Buffs can stack.",
                     "",
