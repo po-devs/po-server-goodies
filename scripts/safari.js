@@ -17040,7 +17040,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "No online player with " + input.name + " in their shop found!", safchan);
         }
         
-        player.cooldowns.price = currentTime + 30*1000;
+        player.cooldowns.price = currentTime + 10*1000;
         this.saveGame(player);
     };
     this.editShop = function(src, data, editNPCShop, isSilver) {
