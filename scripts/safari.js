@@ -56643,7 +56643,7 @@ function Safari() {
             for (var b in currentBattles) {
                 var battle = currentBattles[b];
                 if (battle.name1 === sys.name(src) && battle.battle2 && battle.npcBattle && && !battle.paused && battle.totalPauseTime < battle.pauseLimit) {
-                    battle.sendToViewers(toColor("The battle was paused since {0} left the channel!".format(sys.name(src)), "crimson"));
+                    battle.sendToViewers(toColor("The battle was paused since {0} left the channel! (Battle can only remain paused for {1})".format(sys.name(src), plural(Math.floor((battle.pauseLimit - battle.totalPauseTime) / 60), "more minute")), "crimson"));
                     battle.paused = true;
                 }
             }
