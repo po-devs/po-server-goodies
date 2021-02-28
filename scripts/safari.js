@@ -52486,7 +52486,7 @@ function Safari() {
                 var out = [
                     "",
                     "*** CONTEST RULES EXPLANATION *** ",
-                    "NERF: Any number of nerfs reduces the catch rate to " + (RULES_NERF * 100) + "%.",
+                    "NERF: Any number of nerfs reduces the catch rate to " + (RULES_NERF * 100) + "% of its initial value. Final catch rate cannot exceed 50%.",
                     "BUFF: Each buff increases the catch rate by " + (RULES_BUFF * 100) + "%.",
                     "Nerf is only applied once, but Buffs can stack.",
                     "",
