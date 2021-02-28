@@ -22159,6 +22159,11 @@ function Safari() {
         }
     };
     Battle2.prototype.nextTurn = function() {
+        if (!isPlaying(this.name1) && this.phase !== "preview" && this.canPickMoves && this.npcBattle && !this.paused && this.totalPauseTime < this.pauseLimit) {
+            this.sendToViewers(toColor("<b>The battle was paused since {0} left the channel! (Battle can only remain paused for {1})</b>".format(sys.name(src), timeString(battle.pauseLimit - battle.totalPauseTime)), "crimson"));
+            this.paused = true;
+            return;
+        }
         if (this.phase === "preview") {
             this.subturn++;
             if (this.fullNPC && this.subturn >= 2) {
@@ -56622,7 +56627,7 @@ function Safari() {
             for (var b in currentBattles) {
                 var battle = currentBattles[b];
                 if (battle.name1 === sys.name(src) && battle.battle2 && battle.npcBattle && battle.paused) {
-                    battle.sendMessage(battle.name1, toColor("Your battle is currently paused! Type {0} to unpause it! (Battle can only remain paused for {1})".format(link("/bat pause"), timeString(battle.pauseLimit - battle.totalPauseTime)), "crimson"));
+                    battle.sendMessage(battle.name1, toColor("<b>Your battle is currently paused! Type {0} to unpause it! (Battle can only remain paused for {1})</b>".format(link("/bat pause"), timeString(battle.pauseLimit - battle.totalPauseTime)), "crimson"));
                 }
             }
         }
@@ -56639,14 +56644,6 @@ function Safari() {
                 sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||was locked for leaving channel while unregistered\n");
             }
             this.saveGame(player);
-            
-            for (var b in currentBattles) {
-                var battle = currentBattles[b];
-                if (battle.name1 === sys.name(src) && battle.battle2 && battle.npcBattle && !battle.paused && battle.totalPauseTime < battle.pauseLimit) {
-                    battle.sendToViewers(toColor("The battle was paused since {0} left the channel! (Battle can only remain paused for {1})".format(sys.name(src), timeString(battle.pauseLimit - battle.totalPauseTime)), "crimson"));
-                    battle.paused = true;
-                }
-            }
         }
         return false;
     };
