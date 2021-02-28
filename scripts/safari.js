@@ -56618,6 +56618,13 @@ function Safari() {
                 sys.sendHtmlMessage(src, "There's a wild " + poke(currentDisplay) + "! Type " + link("/catch") + " to catch it!", safchan);
             }
             sys.sendHtmlMessage(src, link("/dashboard", "«Dashboard»"), safchan);
+            
+            for (var b in currentBattles) {
+                var battle = currentBattles[b];
+                if (battle.name1 === sys.name(src) && battle.battle2 && battle.npcBattle && battle.paused) {
+                    battle.sendMessage(battle.name1, toColor("Your battle is currently paused! Type {0} to unpause it! (Battle can only remain paused for {1})".format(link("/bat pause"), plural(Math.floor((battle.pauseLimit - battle.totalPauseTime) / 60), "more minute")), "crimson"));
+                }
+            }
         }
         return false;
     };
@@ -56632,6 +56639,14 @@ function Safari() {
                 sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||was locked for leaving channel while unregistered\n");
             }
             this.saveGame(player);
+            
+            for (var b in currentBattles) {
+                var battle = currentBattles[b];
+                if (battle.name1 === sys.name(src) && battle.battle2 && battle.npcBattle && && !battle.paused && battle.totalPauseTime < battle.pauseLimit) {
+                    battle.sendToViewers(toColor("The battle was paused since {0} left the channel!".format(sys.name(src)), "crimson"));
+                    battle.paused = true;
+                }
+            }
         }
         return false;
     };
