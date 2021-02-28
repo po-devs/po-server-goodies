@@ -23948,7 +23948,7 @@ function Safari() {
                 this.paused = false;
             }
 
-            this.sendToViewers(toColor("<b>The battle has been " + (this.paused ? "paused! Note: The battle will automatically be unpaused after {0}.".format(plural(Math.floor((this.pauseLimit - this.totalPauseTime) / 60), "minute")) : "unpaused!") + "</b>", "crimson"));
+            this.sendToViewers(toColor("<b>The battle has been " + (this.paused ? "paused! Note: The battle will automatically be unpaused after {0}.".format(timeString(this.pauseLimit - this.totalPauseTime)) : "unpaused!") + "</b>", "crimson"));
             return;
         }
         if (this.phase === "preview") {
@@ -56622,7 +56622,7 @@ function Safari() {
             for (var b in currentBattles) {
                 var battle = currentBattles[b];
                 if (battle.name1 === sys.name(src) && battle.battle2 && battle.npcBattle && battle.paused) {
-                    battle.sendMessage(battle.name1, toColor("Your battle is currently paused! Type {0} to unpause it! (Battle can only remain paused for {1})".format(link("/bat pause"), plural(Math.floor((battle.pauseLimit - battle.totalPauseTime) / 60), "more minute")), "crimson"));
+                    battle.sendMessage(battle.name1, toColor("Your battle is currently paused! Type {0} to unpause it! (Battle can only remain paused for {1})".format(link("/bat pause"), timeString(battle.pauseLimit - battle.totalPauseTime)), "crimson"));
                 }
             }
         }
@@ -56642,8 +56642,8 @@ function Safari() {
             
             for (var b in currentBattles) {
                 var battle = currentBattles[b];
-                if (battle.name1 === sys.name(src) && battle.battle2 && battle.npcBattle && && !battle.paused && battle.totalPauseTime < battle.pauseLimit) {
-                    battle.sendToViewers(toColor("The battle was paused since {0} left the channel! (Battle can only remain paused for {1})".format(sys.name(src), plural(Math.floor((battle.pauseLimit - battle.totalPauseTime) / 60), "more minute")), "crimson"));
+                if (battle.name1 === sys.name(src) && battle.battle2 && battle.npcBattle && !battle.paused && battle.totalPauseTime < battle.pauseLimit) {
+                    battle.sendToViewers(toColor("The battle was paused since {0} left the channel! (Battle can only remain paused for {1})".format(sys.name(src), timeString(battle.pauseLimit - battle.totalPauseTime)), "crimson"));
                     battle.paused = true;
                 }
             }
