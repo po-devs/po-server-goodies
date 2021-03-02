@@ -11434,7 +11434,7 @@ function Safari() {
         }
         else if (crit == "notevolved") {
             current.forEach(function(x) {
-                if (pokeInfo.species(x) in evolutions && !(pokeInfo.species(x) in devolutions)) {
+                if (!(pokeInfo.species(x) in devolutions)) {
                     list.push(x);
                 }
             });
