@@ -32265,7 +32265,7 @@ function Safari() {
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Effect:</b></font> " + skillInfo.description.format(skillInfo.rate[0], skillInfo.rate[1], skillInfo.rate2[0], skillInfo.rate2[1]) + ".", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Number of Uses per Charge:</b></font> " + skillInfo.uses, safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Unlock Cost:</b></font> " + readable(progress), safchan);
-                sys.sendHtmlMessage(src, "<font color='#C0C0C0'><timestamp/><b>Charge Cost:</b> " + readable(progress2) + "</font>", safchan);
+                sys.sendHtmlMessage(src, "<font color='grey'><timestamp/><b>Charge Cost:</b> " + readable(progress2) + "</font>", safchan);
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Anyway, {0} if you're sure you want your <b>{1}</b> to unlock <b>{2}</b>.".format(link("/quest idol:unlock:" + monName + ":" + skillName + ":confirm", "click here"), monName, skillName), safchan);
                 return;
