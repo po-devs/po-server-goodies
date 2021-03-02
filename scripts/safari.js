@@ -32157,7 +32157,7 @@ function Safari() {
             }
 
             player.pokeskillsDisabled = !player.pokeskillsDisabled;
-            safaribot.sendHtmlMessage(src, "Idol: Voilà! Your skills have been <b>" + (player.pokeskillsDisabled ? "disabled" : "enabled") + "</b> for future battles, come back if you'd like to change it again!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Voilà! Your skills have been <b>" + (player.pokeskillsDisabled ? "disabled" : "enabled") + "</b> for future battles, come back if you'd like to change it again!", safchan);
             safari.saveGame(player);
         }
         else if (d1 === "unlock") {
