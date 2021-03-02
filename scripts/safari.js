@@ -32236,6 +32236,7 @@ function Safari() {
             var canMake = true,
                 progress = [], ingUsed = [],
                 asset, val, req;
+            var asset2, val2, req2, progress2 = []; // for displaying charge cost only
                 
             for (var e in skillInfo.unlock) {
                 asset = translateAsset(e);
@@ -32248,6 +32249,13 @@ function Safari() {
                 }
                 progress.push(val + "/" + req);
             }
+            for (e in skillInfo.activate) { // for displaying charge cost only
+                asset2 = translateAsset(e);
+                val2 = player.balls[asset2.id];
+                req2 = plural(skillInfo.activate[e], asset2.input);
+
+                progress2.push(val2 + "/" + req2);
+            }
             
             if (!d4 || d4 !== "confirm") {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Here are the details on this skill:", safchan);
@@ -32256,6 +32264,7 @@ function Safari() {
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Effect:</b></font> " + skillInfo.description.format(skillInfo.rate[0], skillInfo.rate[1], skillInfo.rate2[0], skillInfo.rate2[1]) + ".", safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Number of Uses per Charge:</b></font> " + skillInfo.uses, safchan);
                 sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>Unlock Cost:</b></font> " + readable(progress), safchan);
+                sys.sendHtmlMessage(src, "<font color='#C0C0C0'><timestamp/><b>Charge Cost:</b> " + readable(progress2) + "</font>", safchan);
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Anyway, {0} if you're sure you want your <b>{1}</b> to unlock <b>{2}</b>.".format(link("/quest idol:unlock:" + monName + ":" + skillName + ":confirm", "click here"), monName, skillName), safchan);
                 return;
