@@ -32006,7 +32006,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks", "Show me which skills I've unlocked/charged"), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:unlock", "I want to unlock a skill!"), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol:charge", "I want to charge a skill!"), safchan);
-            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:toggle", "I want to enable/disable my skills!") + "<b>[Currently " + (player.pokeskillsDisabled ? "Disabled" : "Enabled")+ "]</b>", safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol:toggle", "I want to enable/disable my skills!") + " <b>[Currently " + (player.pokeskillsDisabled ? "Disabled" : "Enabled")+ "]</b>", safchan);
         }
         else if (d1 === "aboutunlock") {
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Ya see, every Pokémon species has their skills locked to begin with. By bringing us some {0} and {1}, we can <b>permanently unlock some of their skills</b>.".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
@@ -32148,11 +32148,11 @@ function Safari() {
             }
         }
         else if (d1 === "toggle") {
-            if (d2 !== "toggle") {
+            if (d2 !== "confirm") {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Idol: If you feel like battling for a bit without using up your precious skill charges, you can choose to temporarily disable your skills here!", safchan);
                 safaribot.sendHtmlMessage(src, "Idol: Of course, if you decide that you want your skills to start activating again, you can also re-enable them any time you feel like. It's all free of charge!", safchan);
                 safaribot.sendHtmlMessage(src, "Idol: Note that this affects <b>all</b> your skills at once, none of them will activate when disabled.", safchan);
-                safaribot.sendHtmlMessage(src, "Idol: Looks like your skills are currently <b>" + (player.pokeskillsDisabled ? "disabled" : "enabled") + "</b>, use " + link("/quest idol:toggle") + " to change it.", safchan);
+                safaribot.sendHtmlMessage(src, "Idol: Looks like your skills are currently <b>" + (player.pokeskillsDisabled ? "disabled" : "enabled") + "</b>, use " + link("/quest idol:toggle:confirm") + " to change it.", safchan);
                 return;
             }
 
