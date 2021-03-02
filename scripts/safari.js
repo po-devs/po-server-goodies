@@ -8641,7 +8641,7 @@ function Safari() {
         var typeBonus;
         var pType1 = type1(player.party[0]), pType2 = type2(player.party[0]), wType1 = type1(wild), wType2 = type2(wild);
         
-        if (currentPokemon == 132 && currentTypeOverride) { // Kecleon
+        if (currentPokemon == 352 && currentTypeOverride) { // Kecleon
             wType1 = currentTypeOverride;
         }
         var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0);
@@ -9489,7 +9489,7 @@ function Safari() {
             }
             sendAll(pokeName + " broke out of " + (ball == "spy" ? "an anonymous person" : name) + "'s " + ballName + "!");
             
-            if (currentPokemon == 132) { // Kecleon
+            if (currentPokemon == 352) { // Kecleon
                 if (type2(player.party[0]) !== "???") { // If has 2 types
                     currentTypeOverride = [type1(player.party[0]), type2(player.party[0])].random(); // Pick a random one
                 }
