@@ -1789,6 +1789,7 @@ function Safari() {
     /* Wild Pokemon Variables */
     var shinyChance = 1024; //Chance for Shiny Pokémon
     var currentPokemon = null;
+    var currentTypeOverride = null;
     var currentPokemonCount = 1;
     var lastPokemonCount = 1;
     var currentDisplay = null;
@@ -2802,6 +2803,7 @@ function Safari() {
         goldenBaitCooldown = sys.rand(8,10);
         deluxeBaitCooldown = 1;
         currentPokemon = null;
+        currentTypeOverride = null;
         currentDisplay = null;
         wildEvent = false;
         currentPokemonCount = 1;
@@ -7822,6 +7824,7 @@ function Safari() {
         }
         
         currentPokemon = null;
+        currentTypeOverride = null;
         this.runPendingActive();
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
@@ -8637,6 +8640,10 @@ function Safari() {
         var wildWeight = getWeight(wild);
         var typeBonus;
         var pType1 = type1(player.party[0]), pType2 = type2(player.party[0]), wType1 = type1(wild), wType2 = type2(wild);
+        
+        if (currentPokemon == 132 && currentTypeOverride) { // Kecleon
+            wType1 = currentTypeOverride;
+        }
         var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0);
         if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
             if (ball === "mono") {
@@ -9434,6 +9441,7 @@ function Safari() {
             if (amt < 1) {
                 sendAll("", true, true);
                 currentPokemon = null;
+                currentTypeOverride = null;
                 currentDisplay = null;
                 wildEvent = false;
                 wildSpirit = false;
@@ -9480,6 +9488,17 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "<b>Oh no! The " + pokeName + " broke free!</b>", safchan);
             }
             sendAll(pokeName + " broke out of " + (ball == "spy" ? "an anonymous person" : name) + "'s " + ballName + "!");
+            
+            if (currentPokemon == 132) { // Kecleon
+                if (type2(player.party[0]) !== "???") { // If has 2 types
+                    currentTypeOverride = [type1(player.party[0]), type2(player.party[0])].random(); // Pick a random one
+                }
+                else {
+                    currentTypeOverride = type1(player.party[0]); // Else pick their only type
+                }
+
+                sendAll(pokeName + "'s Color Change changes its type to " + currentTypeOverride + "!");
+            }
             player.records.pokesNotCaught += 1;
 
             currentThrows -= 1;
@@ -9564,6 +9583,7 @@ function Safari() {
         safaribot.sendAll(runmsgs.random().format(pokeName), safchan);
         sys.sendAll("", safchan);
         currentPokemon = null;
+        currentTypeOverride = null;
         currentDisplay = null;
         currentPokemonCount = lastPokemonCount = 1;
         isBaited = false;
