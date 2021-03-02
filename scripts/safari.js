@@ -32152,7 +32152,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Idol: If you feel like battling for a bit without using up your precious skill charges, you can choose to temporarily disable your skills here!", safchan);
                 safaribot.sendHtmlMessage(src, "Idol: Of course, if you decide that you want your skills to start activating again, you can also re-enable them any time you feel like. It's all free of charge!", safchan);
                 safaribot.sendHtmlMessage(src, "Idol: Note that this affects <b>all</b> your skills at once, none of them will activate when disabled.", safchan);
-                safaribot.sendHtmlMessage(src, "Idol: Looks like your skills are currently <b>" + (player.pokeskillsDisabled ? "disabled" : "enabled") + "</b>, use " link("/quest idol:toggle") + " to change it.", safchan);
+                safaribot.sendHtmlMessage(src, "Idol: Looks like your skills are currently <b>" + (player.pokeskillsDisabled ? "disabled" : "enabled") + "</b>, use " + link("/quest idol:toggle") + " to change it.", safchan);
                 return;
             }
 
