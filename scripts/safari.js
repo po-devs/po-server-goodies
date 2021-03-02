@@ -32000,6 +32000,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: I bet you've ever wondered how to make your Pokémon stronger!", safchan);
             safaribot.sendHtmlMessage(src, "Idol: Well you're in luck, because I'm an expert when it comes to identifying the shining talents of Pokémon!", safchan);
             safaribot.sendHtmlMessage(src, "Idol: Perhaps you're {0}? Or what say we {1}?".format(link("/quest idol:about1", "wondering what this is about"), link("/quest idol:menu", "get started immediately")), safchan);
+            safaribot.sendHtmlMessage(src, "Idol: Please note that to promote fairness, <b>{0}</b>".format(toColor("you cannot use these skills in battles against other players!", "red")), safchan);
         }
         else if (d1 === "about1") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You see, EVERY Pokémon has powerful skills hidden deep within. If you bring me some {0} and {1}, I can unlock and charge these skills for your Pokémon!".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
