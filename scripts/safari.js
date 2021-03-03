@@ -25457,7 +25457,7 @@ function Safari() {
                     }
                     if (self.select2.zapcannon && chance(0.5) && target.condition === "none" && move.type === "Electric" && (!hasType(target.id, "Electric"))) {
                         out.push(tname + " was paralyzed!");
-                        target.condition = "paralyze";
+                        target.condition = "paralyzed";
                     }
                     if (self.select2.toxic && chance(0.75) && target.condition === "none" && move.type === "Poison" && (!hasType(target.id, "Poison"))) {
                         if (hasType(user.id, "Poison")) {
@@ -25487,7 +25487,7 @@ function Safari() {
                     }
                     if (self.select.zapcannon && chance(0.5) && target.condition === "none" && move.type === "Electric" && (!hasType(target.id, "Electric"))) {
                         out.push(tname + " was paralyzed!");
-                        target.condition = "paralyze";
+                        target.condition = "paralyzed";
                     }
                     if (self.select.toxic && chance(0.75) && target.condition === "none" && move.type === "Poison" && (!hasType(target.id, "Poison"))) {
                         if (hasType(user.id, "Poison")) {
