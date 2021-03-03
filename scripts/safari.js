@@ -32539,6 +32539,7 @@ function Safari() {
         if (!data[1] || data[1].toLowerCase() !== "finish") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: See them apricorns? Bring 'em here so I can make y'all the sweetest catching materials around, 'kay? (If you have the required materials you can use " + link("/quest arborist:" + item + ":finish") + " to create an item)", safchan);
             safaribot.sendHtmlMessage(src, "<b>" + cap(item, true) + "</b> Recipe: " + toColor(recipeString, "red") + " --> " + readable(coloredRewards, "or"), safchan);
+            safaribot.sendHtmlMessage(src, "Progress: " + progress.join(", "), safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
