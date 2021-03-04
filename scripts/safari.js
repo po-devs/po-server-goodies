@@ -29199,7 +29199,7 @@ function Safari() {
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol", "Idol") + " " + (stopQuests.idol ? " <b>[Disabled]</b>" : " [Available]"), safchan);
             
-            safaribot.sendHtmlMessage(src, "-" + link("/quest detective", "Detective") + " " + (stopQuests.detective ? " <b>[Disabled]</b>" : (this.detectiveData[idnum] && this.detectiveData[idnum].solved && getDay(now()) == this.detectiveData[idnum].date ? "[Available in " + timeLeftString(new Date().setHours(25, 0, 0, 0)) + "] " : "[Available]")), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest detective", "Detective") + " " + (stopQuests.detective ? " <b>[Disabled]</b>" : (this.detectiveData[idnum] && this.detectiveData[idnum].solved && getDay(now()) == this.detectiveData[idnum].date ? "[Available in " : "[Ends in ") + timeLeftString(new Date().setHours(25, 0, 0, 0)) + "]"), safchan);
             
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
