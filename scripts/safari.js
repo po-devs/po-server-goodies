@@ -29169,7 +29169,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "<b>Quests available:</b>" + sprites.join(""), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest collector", "Collector") + " " + (quest.collector.cooldown > n ? "[Available in " + timeLeftString(quest.collector.cooldown) + "]" : (quest.collector.deadline > n ? "[Ends in " + timeLeftString(quest.collector.deadline) + "]" : "[Available]")) + (stopQuests.collector ? " <b>[Disabled]</b>" : ""), safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest scientist", "Scientist") + " " + (quest.scientist.cooldown >= now() && quest.scientist.pokemon == scientistQuest.pokemon ? "<b>[Completed]</b> " : "") + (scientistQuest.expires > n ? "[Ends in " + timeLeftString(scientistQuest.expires) + "]" : "[Standby]") + (stopQuests.scientist ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest scientist", "Scientist") + " " + (scientistQuest.expires > n ? (quest.scientist.cooldown >= now() && quest.scientist.pokemon == scientistQuest.pokemon ? "[Available in " : "[Ends in ") + timeLeftString(scientistQuest.expires) + "]" : "[Standby]") + (stopQuests.scientist ? " <b>[Disabled]</b>" : ""), safchan);
 
             safaribot.sendHtmlMessage(src, "-" + link("/quest arena", "Arena") + " " + (quest.arena.cooldown > n ? "[Available in " + timeLeftString(quest.arena.cooldown) + "]" : "[Available]") + (stopQuests.arena ? " <b>[Disabled]</b>" : ""), safchan);
 
@@ -29199,7 +29199,7 @@ function Safari() {
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol", "Idol") + " " + (stopQuests.idol ? " <b>[Disabled]</b>" : " [Available]"), safchan);
             
-            safaribot.sendHtmlMessage(src, "-" + link("/quest detective", "Detective") + " " + (this.detectiveData[idnum] && this.detectiveData[idnum].solved && getDay(now()) == this.detectiveData[idnum].date ? "<b>[Completed]</b> " : "") + (stopQuests.detective ? " <b>[Disabled]</b>" : " [Available]"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest detective", "Detective") + " " + (stopQuests.detective ? " <b>[Disabled]</b>" : (this.detectiveData[idnum] && this.detectiveData[idnum].solved && getDay(now()) == this.detectiveData[idnum].date ? "[Available in " + timeLeftString(new Date().setHours(25, 0, 0, 0)) + "] " : "[Available]")), safchan);
             
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
