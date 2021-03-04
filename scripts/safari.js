@@ -29160,7 +29160,7 @@ function Safari() {
             return;
         }
         if (data == "*") {
-            var n = now(), quest = getAvatar(src).quests;
+            var n = now(), quest = getAvatar(src).quests, idnum = getAvatar(src).idnum;
             var qs = Object.keys(base64trainers);
             var sprites = [];
             for (var i = 0; i < qs.length; i++) {
@@ -29197,9 +29197,9 @@ function Safari() {
 
             safaribot.sendHtmlMessage(src, "-" + link("/quest baking", "Baking") + " " + (quest.baking.cooldown > n ? "[Available in " + timeLeftString(quest.baking.cooldown) + "]" : "[Available]") + (stopQuests.baking ? " <b>[Disabled]</b>" : ""), safchan);
             
-            safaribot.sendHtmlMessage(src, "-" + link("/quest idol", "Idol") + (stopQuests.idol ? " <b>[Disabled]</b>" : " [Available]"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol", "Idol") + " " + (stopQuests.idol ? " <b>[Disabled]</b>" : " [Available]"), safchan);
             
-            safaribot.sendHtmlMessage(src, "-" + link("/quest detective", "Detective") + (stopQuests.detective ? " <b>[Disabled]</b>" : " [Available]"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest detective", "Detective") + " " + (this.detectiveData[idnum] && this.detectiveData[idnum].solved && getDay(now()) == this.detectiveData[idnum].date ? "<b>[Completed]</b> " : "") + (stopQuests.detective ? " <b>[Disabled]</b>" : " [Available]"), safchan);
             
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
