@@ -25287,7 +25287,7 @@ function Safari() {
                             out.push("<b>" + tname + " endured the hit!</b>");
                         }
                     }
-                    if (target.berry == "miracle") {
+                    if (target.berry == "miracle" && target.hp <= 0) { // check HP again, otherwise may consume berry even if hit was endured above
                         target.hp = 1;
                         out.push("<b>" + tname + " ate its Miracle Berry and survived the hit!</b>");
                         target.berry = "";
