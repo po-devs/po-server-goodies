@@ -7748,9 +7748,19 @@ function Safari() {
                 //At this point changing shiny is purely aesthetic and won't affect the caught pokemon
                 shiny = appearAs.shiny;
             } else {
-                disguise = [132, 151, 570, 571, 778].contains(num);
+                disguise = [132, 151, 185, 570, 571, 778].contains(num); // Ditto, Mew, Sudowoodo, Zorua, Zoroark, Mimikyu
                 if (disguise && chance(0.6)) {
-                    appearance = num === 778 ? 25 : sys.rand(1,highestDexNum); // mimikyu can only disguise as pikachu
+                    switch (num) {
+                        case 778: // Mimikyu
+                            appearance = 25; // Pikachu
+                            break;
+                        case 185: // Sudowoodo
+                            appearance = [103, 709].random(); // Exeggutor or Trevenant
+                            break;
+                        default:
+                            appearance = sys.rand(1, highestDexNum);
+                            break;
+                    }
                     if (shiny) {
                         multiplier = 5;
                     }
