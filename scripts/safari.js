@@ -20955,7 +20955,7 @@ function Safari() {
             return;
         }
         if (data !== "abort") {
-            if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+            if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid"])) {
                 return;
             }
         }
@@ -21087,7 +21087,7 @@ function Safari() {
             return;
         }
 
-        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+        if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid"])) {
             return;
         }
         if (isRotation && stopQuests.league) {
