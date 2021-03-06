@@ -32654,7 +32654,7 @@ function Safari() {
             return;
         }
         var recipes = recipeData;
-        if (player.costume && costumeData[player.costume].expItem) {
+        if (player.costume && costumeData[player.costume].expItem && player.costumeInfo[player.costume].level < 20) {
             var ing = {"dust": 300};
             ing[costumeData[player.costume].expItem] = 1;
             recipes["exp up"] = {ingredients: ing, reward: "@expup", immediate: true, failChance: 0, cooldown: 6}
