@@ -23509,11 +23509,11 @@ function Safari() {
                     }
                     if (user.condition === "freeze") {
                         if (move.type === "Fire" && chance(0.5)) {
-                            this.sendToViewers(toColor(name + " thawed out!", sColor));
+                            this.sendToViewers(toColor(name + " thawed out due to the flames!", sColor));
                             user.condition = "none";
                         }
                         else if (move.type === "Water" && (this.select && this.select.scald)) {
-                            this.sendToViewers(toColor(name + " thawed out!", sColor));
+                            this.sendToViewers(toColor(name + " thawed out due to the boiling water!", sColor));
                             user.condition = "none";
                         }
                         else if (chance(0.25)) {
