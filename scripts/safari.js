@@ -4230,6 +4230,14 @@ function Safari() {
         }
         */
     };
+    var moveBlacklist = {
+        307: [255, 256, 390, 391, 498, 499, 653, 654, 725, 726],
+        308: [258, 289, 393, 394, 501, 502, 656, 657, 728, 729],
+        338: [252, 253, 387, 388, 495, 496, 650, 651, 722, 723],
+        431: [3, 9, 31, 34, 55, 56, 57, 59, 62, 66, 67, 68, 104, 105, 106, 107, 113, 115, 125, 126, 127, 139, 141, 143, 150, 151, 154, 157, 160, 181, 210, 217, 242, 243, 244, 245, 248, 254, 257, 260, 272, 288, 289, 295, 296, 297, 306, 335, 377, 378, 379, 383, 387, 388, 389, 390, 391, 392, 395, 408, 409, 446, 448, 452, 453, 454, 460, 466, 467, 473, 485, 486, 487, 491, 493],
+        457: [299, 476],
+        571: [401]
+    };
     function movenum(name) {
         if (name.toLowerCase() === "vise grip") {
             name = "Vice Grip";
@@ -6435,6 +6443,15 @@ function Safari() {
             }
         }
         
+        if (moves) {
+            for (var i = 0; i < moves.length; i++) {
+                var moveNum = moves[i];
+                if (Object.keys(moveBlacklist).contains(moveNum) && moveBlacklist[moveNum].contains(id)) { // if mon is listed under that move's blacklist
+                    moves.splice(i, 1); // override pokdedex.getAllMoves by deleting it here
+                    i--;
+                }
+            }
+        }
         if ((!moves) || (moves && moves.length == 0)) {
             return removeDuplicates(out);
         }
