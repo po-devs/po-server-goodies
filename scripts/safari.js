@@ -1254,7 +1254,7 @@ function Safari() {
         },
         scientist: {
             icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], acqReq: 6, record: "pokesCloned", acqReq2: 50, record2: "scientistEarnings", rate: 0.02, bonusChance: 0.05,
-            effect: "A master in genetics. Recent breakthroughs in science allows easier modification of DNA, granting an increases success rate of cloning, a small chance to clone muiltiple times in a single attempt, and the ability to clone very rare Pokémon!",
+            effect: "A master in genetics. Recent breakthroughs in science allow easier modification of DNA, granting an increased success rate in cloning, a small chance to clone multiple times in a single attempt, and the ability to clone very rare Pokémon!",
             effect2: "Has less success befriending Pokémon in the daycare.",
             noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest",
             expTypes: ["soda", "clonepoke", "scientist", "catch", "wintrivia"],
