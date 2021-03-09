@@ -1170,7 +1170,7 @@ function Safari() {
         },
         breeder: {
             icon: 379, name: "breeder", fullName: "PokeBreeder", aliases: ["pokébreeder", "breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], 
-            acqReq: 15, record: "pokesEvolved", rate: 0.9, effect: "A master in evolution. Taps into years of experience in order to reduce the Rare Candies for evolution.", 
+            acqReq: 15, record: "pokesEvolved", rate: 0.9, effect: "A master in evolution. Taps into years of experience in order to reduce the number of Rare Candies required for evolution.", 
             effect2: "Has slightly increased cooldown when throwing Pokéballs other than Safari or Love.",
             noAcq: "Evolve {0} more Pokémon",
             expTypes: ["daycareplay", "bait", "wincontest", "catch"],
@@ -1188,7 +1188,7 @@ function Safari() {
         pokefan: {
             icon: 398, name: "pokefan", fullName: "PokeFan", aliases: ["pokéfan", "pokefan", "poke fan"],
             acqReq: 200, record: "collectorGiven", rate: 1.2,
-            effect: "A master in Pokémon. Aficionados of Pokémon tend to stick together and help each other out, granting a bonus when finding Pokémon for the Collector's collection.", noAcq: "Turn in {0} more Pokémon to the Collector",
+            effect: "A master in Pokémon. Aficionados of Pokémon tend to stick together and help each other out, granting a bonus payout when finding Pokémon for the Collector's collection.", noAcq: "Turn in {0} more Pokémon to the Collector",
             effect2: "Pokémon with BST > 500 have their BST count as 500 while catching.",
             expTypes: ["daycareplay", "catchlowbst", "wincontest", "catch", "wintrivia"],
             expItem: "eviolite",
@@ -1204,7 +1204,7 @@ function Safari() {
         },
         explorer: {
             icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], acqReq: 500, record: "itemsFound", rate: 0.1, rate2: 0.5,
-            effect: "A master in scavenging. Uses knowledge from past finds to slightly increase the likelihood of finding an item with Itemfinder. Rarely you can even find multiple items or exclusive items!",
+            effect: "A master in scavenging. Uses knowledge from past finds to slightly increase the likelihood of finding an item with Itemfinder. Rarely, you can even find multiple items or exclusive items!",
             noAcq: "Find {0} more items",
             effect2: "Has slightly increased cooldown when throwing Pokéballs other than Safari or Heavy.",
             expTypes: ["findrare", "wincontest", "catch", "winmafia"],
@@ -1220,7 +1220,7 @@ function Safari() {
         },
         chef: {
             icon: 423, name: "chef", fullName: "Chef", aliases: ["chef"], acqReq: 500, record: "baitNothing", rate: 12,
-            effect: "A master in cooking. After years of throwing bait that even a Garbodor wouldn't eat, all it took was simply adding a dash seasoning and some ketchup help to make the bait more irresistable to Pokémon with type disadvantages.",
+            effect: "A master in cooking. After years of throwing bait that even a Garbodor wouldn't eat, all it took was a simple dash of seasoning and some ketchup to help make the bait more irresistable to Pokémon with a type disadvantage against their lead.",
             effect2: "Has slightly increased cooldown when sucessfully catching.",
             noAcq: "Fail to attract {0} more Pokémon with Bait",
             expTypes: ["bait", "wincontest", "catch", "wintour"],
@@ -1236,7 +1236,7 @@ function Safari() {
         },
         battle: {
             icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 20,
-            effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in NPC Battles.",
+            effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offensive techniques, attacks deal more damage in NPC Battles.",
             effect2: "Has slightly increased cooldown when sucessfully catching.",
             noAcq: "Accumulate {0} more Arena Points",
             expTypes: ["wintour", "arenasilver", "fighttower", "catch"],
@@ -1286,7 +1286,7 @@ function Safari() {
         },
         rocket: {
             icon: 999, name: "rocket", fullName: "Rocket", aliases: ["rocket"], acqReq: 100, record: "notBaitedCaught", acqReq2: 150000, record2: "pokeSoldEarnings", rate: 0.05, rate2: 0.03,
-            effect: "A master in deception. Years of trickery have granted a small chance to keep a Pokémon given to NPCs!",
+            effect: "A master in deception. Years of trickery have granted a small chance to steal back a Pokémon given to NPCs!",
             effect2: "Has less success befriending Pokémon in the daycare.",
             noAcq: "Catch {0} Pokémon attracted by other players and earn ${1} more from selling Pokémon",
             expTypes: ["stealpoke", "arenasilver", "wincontest", "catch", "winmafia"],
@@ -1323,7 +1323,7 @@ function Safari() {
         },
         fisherman: {
             icon: 359, name: "fisherman", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], acqReq: 80, record: "baitWater", rate: 0.2,
-            effect: "A master in angling. Superb technique at handling fishing rods allow to pull back Poké Balls that failed to catch a Pokémon!",
+            effect: "A master in angling. Superb technique at handling fishing rods allows them to reel back Poké Balls that failed to catch a Pokémon!",
             effect2: "Has higher cooldown using the Itemfinder.",
             noAcq: "Bait {0} more pure Water-type Pokémon",
             expTypes: ["bait", "catchwater", "wincontest", "catch"],
@@ -1339,7 +1339,7 @@ function Safari() {
         },
         backpacker: {
             icon: 372, name: "backpacker", fullName: "Backpacker", aliases: ["backpacker", "back packer"], acqReq: 36, record: "wonderStarter", rate: 1.2,
-            effect: "A master in traveling. Can easily fit more Honey, Silk Scarves and Cell Batteries into the bag to benefit from its effects!",
+            effect: "A master in traveling. Can easily fit more Honey, Silk Scarves and Cell Batteries into the bag to benefit more from its effects!",
             effect2: "Unsuccessful bait cooldown increased since cooking takes longer in the woods.",
             noAcq: "Obtain {0} more starters from Wonder Trade",
             expTypes: ["journal", "catchhighbst", "wincontest", "catch"],
@@ -1356,7 +1356,7 @@ function Safari() {
         },
         rich: {
             icon: 395, name: "rich", fullName: "Rich Girl", aliases: ["rich", "rich girl", "rich boy"], acqReq: 200000, record: "pawnComet", acqReq2: 50000, record2: "luxuryEarnings", rate: 1.1,
-            effect: "A master in money. Personal wealth gives the experience necessary to use more Amulet Coins, Relic Crowns and Soothe Bells than normal people!",
+            effect: "A master in money. Personal wealth grants the experience necessary to use more Amulet Coins, Relic Crowns and Soothe Bells than normal people!",
             effect2: "Peasant balls (Safari Balls) are more likely to fail.",
             noAcq: "Obtain ${0} more by pawning Comet Shards and earn ${1} more from Luxury Balls",
             expTypes: ["bait", "wincontest", "findrare", "catch"],
@@ -1373,7 +1373,7 @@ function Safari() {
         },
         inver: {
             icon: 387, name: "inver", fullName: "Inver", aliases: ["inver"], acqReq: 25, record: "catchInvert", acqReq2: 15, record2: "catchInkay",
-            effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super effective moves not very effective, and vice versa.",
+            effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super-effective moves not very effective, and vice versa.",
             noAcq: "Catch {0} more Pokémon with an Inver Ball and {1} more Inkay",
             expTypes: ["daycareplay", "wincontest", "catch"],
             skills: {
@@ -32978,7 +32978,7 @@ function Safari() {
             var usePebble = morph.pebble;
             
             if (!confirmation) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Hmm... To transform that " + info.name + " into " +  into.name + " I guess I will need " + plural(cost, (usePebble ? "philosopherpebble" : "philosopher")) + "! If you got them all, use " + link("/quest alchemist:philosopher:" + info.input + ":" + into.input + ":finish", null, true) + " and I will begin the transmutation right away!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Hmm... To transform that " + info.name + " into " +  (info.shiny ? "Shiny " : "") + into.name + " I guess I will need " + plural(cost, (usePebble ? "philosopherpebble" : "philosopher")) + "! If you got them all, use " + link("/quest alchemist:philosopher:" + info.input + ":" + into.input + ":finish", null, true) + " and I will begin the transmutation right away!", safchan);
                 return;
             } else {
                 if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
