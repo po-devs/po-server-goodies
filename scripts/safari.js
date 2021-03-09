@@ -15119,9 +15119,9 @@ function Safari() {
             if (isRare(id)) {
                 sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::hatched from Egg"+(twins ? " (Twins)" : "")+"::" + sys.name(src) + "\n");
                 player.records.rareHatched +=1;
-                safaribot.sendHtmlAll("", safchan);
+                sys.sendAll("", safchan);
                 safaribot.sendHtmlAll("<b>Wow!</b> {0} hatched <b>{1}</b> from {2}!".format(sys.name(src), pokeInfo.icon(id, shiny) + " " + poke(id) + (twins ? " TWINS" : ""), an(finishName("egg"))), safchan);
-                safaribot.sendHtmlAll("", safchan);
+                sys.sendAll("", safchan);
             }
             this.saveGame(player);
             return;
@@ -15177,9 +15177,9 @@ function Safari() {
             if (isRare(id)) {
                 sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::hatched from Bright Egg::" + sys.name(src) + "\n");
                 player.records.rareHatched +=1;
-                safaribot.sendHtmlAll("", safchan);
+                sys.sendAll("", safchan);
                 safaribot.sendHtmlAll("<b>Wow!</b> {0} hatched <b>{1}</b> from {2}!".format(sys.name(src), pokeInfo.icon(id, shiny) + " " + poke(id), an(finishName("bright"))), safchan);
-                safaribot.sendHtmlAll("", safchan);
+                sys.sendAll("", safchan);
             }
             this.saveGame(player);
             return;
@@ -30588,9 +30588,9 @@ function Safari() {
         sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Wonder Trade|||Gave " + input.name + "|||Received " + (twins ? "two " : "") +poke(receivedId) + "\n");
         if (isRare(receivedId)) {
             sys.appendToFile(mythLog, now() + "|||" + (twins ? "Two " : "") + poke(receivedId) + "::wonder traded::" + sys.name(src) + "\n");
-            safaribot.sendHtmlAll("", safchan);
+            sys.sendAll("", safchan);
             safaribot.sendHtmlAll("<b>Wow!</b> {0} received <b>{1}</b> from a Wonder Trade!".format(sys.name(src), pokeInfo.icon(receivedId, typeof receivedId === "string") + " " + poke(receivedId) + (twins ? " TWINS" : "")), safchan);
-            safaribot.sendHtmlAll("", safchan);
+            sys.sendAll("", safchan);
         }
         safari.toRecentQuests(player, "wonder trade");
     };
