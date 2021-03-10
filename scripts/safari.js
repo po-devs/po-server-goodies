@@ -43468,7 +43468,8 @@ function Safari() {
                     } else {
                         daycarebot.sendMessage(src, pokeName + " grew some berries for you!", safchan);
                         var g = giveStuff(player, toStuffObj(pokemon.berry.amount + "@" + pokemon.berry.name));
-                        daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#228B22"), safchan);                        
+                        daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#228B22"), safchan);   
+                        daycarebot.sendHtmlMessage(src, "Want to grow more{0}? Use {1} to do so!".format(plural("", itemAlias(pokemon.berry.name, false, true)), link("/daycare berry:" + pokeName + ":" + pokemon.berry.name)), safchan);
                         pokemon.berry = null;
                         this.saveGame(player);
                         safari.saveDaycare();
