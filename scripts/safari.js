@@ -8531,6 +8531,8 @@ function Safari() {
                 return true;
             }
         }
+
+        return false;
     };
     this.isInAlter = function(id, name) {
         return contestThemes[name].alter && contestThemes[name].alter.contains(id);
@@ -8546,9 +8548,9 @@ function Safari() {
                             hasDailyVariation = true;
                             themeList.push(contestThemes[theme]["day" + day + "name"]);
                         }
-                        if (!hasDailyVariation) { // themes with daily variations already had their variation names added above, so don't add the root theme's name
-                            themeList.push(contestThemes[theme].name);
-                        }
+                    }
+                    if (!hasDailyVariation) { // themes with daily variations already had their variation names added above, so don't add the root theme's name
+                        themeList.push(contestThemes[theme].name);
                     }
                 }
                 else {
@@ -52508,13 +52510,11 @@ function Safari() {
                 if (!isMega(info.num) && info.num in megaEvolutions) {
                     safaribot.sendMessage(src, info.name + " can Mega Evolve into " + readable(megaEvolutions[info.num].map(poke), "or") + ". ", safchan);
                 }
-                if (isLegendary(info.num) || SESSION.channels(safchan).isChannelOwner(src)) {
-                    var themes = safari.getAllThemesForPoke(info.num, true);
-                    if (themes.length > 0) {
-                        safaribot.sendMessage(src, info.name + " can be found in the following " + plural(themes.length, "theme") + ": " + readable(themes, "and") + ".", safchan);
-                    } else {
-                        safaribot.sendMessage(src, info.name + " cannot be found in any theme currently.", safchan);
-                    }
+                var themes = safari.getAllThemesForPoke(info.num, true);
+                if (themes.length > 0) {
+                    safaribot.sendMessage(src, info.name + " can be found in the following " + plural(themes.length, "theme") + ": " + readable(themes, "and") + ".", safchan);
+                } else {
+                    safaribot.sendMessage(src, info.name + " cannot be found in any theme currently.", safchan);
                 }
                 if (opt.contains("trivia")) {
                     if (triviaData.hasOwnProperty(info.num+"")) {
