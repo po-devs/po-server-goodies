@@ -8564,6 +8564,41 @@ function Safari() {
         
         return themeList;
     };
+    this.getAllRaresInTheme = function(themeName) {
+        var ret = [];
+        if (!contestThemes.hasOwnProperty(themeName)) {
+            return ret;
+        }
+        
+        var include = contestThemes[themeName].include;
+        for (var pokeId in include) {
+            if (isRare(include[pokeId])) {
+                ret.push(include[pokeId]);
+            }
+        }
+
+        for (var day = 1; day <= 7; day++) {
+            if (contestThemes[themeName].hasOwnProperty("day"+day)) {
+                var dayIncludes = contestThemes[themeName]["day"+day];
+                for (var pokeId in dayIncludes) {
+                    if (isRare(dayIncludes[pokeId])) {
+                        ret.push(dayIncludes[pokeId]);
+                    }
+                }
+            }
+        }
+
+        var alterIncludes = contestThemes[themeName].alter;
+        if (alterIncludes) {
+            for (var pokeId in alterIncludes) {
+                if (isRare(alterIncludes[pokeId])) {
+                    ret.push(alterIncludes[pokeId]);
+                }
+            }
+        }
+
+        return ret.map(poke);
+    };
     this.getTier = function(pokeId) {
         if (ultraPokes.hasOwnProperty(pokeId+"")) {
             return ultraPokes[pokeId+""].tier;
