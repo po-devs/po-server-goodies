@@ -8635,11 +8635,15 @@ function Safari() {
         }
 
        var themeRares = safari.getAllRaresInTheme(themeKey);
-       safaribot.sendHtmlMessage(src, "Rare Pokémon that appear in the {0} theme:".format(contestThemes[themeKey].name), safchan);
        
+       sys.sendMessage(src, "", safchan);
+       safaribot.sendHtmlMessage(src, "<u>Rare Pokémon that appear in the following themes</u>:", safchan);
+
        for (var key in themeRares) {
            safaribot.sendHtmlMessage(src, "<b>{0}</b>: {1}".format(key, readable(themeRares[key])), safchan);
        }
+
+       sys.sendMessage(src, "", safchan);
     };
     this.getTier = function(pokeId) {
         if (ultraPokes.hasOwnProperty(pokeId+"")) {
