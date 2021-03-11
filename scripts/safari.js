@@ -8535,7 +8535,7 @@ function Safari() {
     this.isInAlter = function(id, name) {
         return contestThemes[name].alter && contestThemes[name].alter.contains(id);
     };
-    this.getAllThemesForPoke(pokeId, retFull) {
+    this.getAllThemesForPoke = function(pokeId, retFull) {
         var themeList = [];
         for (var theme in contestThemes) {
             if (this.isInTheme(pokeId, theme)) {
