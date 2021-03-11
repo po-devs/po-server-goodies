@@ -8602,6 +8602,11 @@ function Safari() {
             if (theme === name || contestThemes[theme].name.toLowerCase() === name || (contestThemes[theme].alterName && contestThemes[theme].alterName.toLowerCase() === name)) {
                 return theme;
             }
+            for (var day = 1; day <= 7; day++) {
+                if (contestThemes[theme]["day"+day] && contestThemes[theme]["day"+day+"name"].toLowerCase() === name) {
+                    return theme;
+                }
+            }
         }
 
         return null;
