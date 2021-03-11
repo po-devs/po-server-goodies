@@ -8564,40 +8564,63 @@ function Safari() {
         
         return themeList;
     };
-    this.getAllRaresInTheme = function(themeName) {
+    this.getAllRaresInTheme = function(theme) {
         var ret = [];
-        if (!contestThemes.hasOwnProperty(themeName)) {
+        if (!contestThemes.hasOwnProperty(theme)) {
             return ret;
         }
         
-        var include = contestThemes[themeName].include;
+        var include = contestThemes[theme].include;
         for (var pokeId in include) {
             if (isRare(include[pokeId])) {
-                ret.push(include[pokeId]);
+                ret.push(pokeInfo.icon(include[pokeId]) + " " + poke(include[pokeId]) + " <b>[" + contestThemes[theme].name + "]</b>");
             }
         }
 
         for (var day = 1; day <= 7; day++) {
-            if (contestThemes[themeName].hasOwnProperty("day"+day)) {
-                var dayIncludes = contestThemes[themeName]["day"+day];
-                for (var pokeId in dayIncludes) {
-                    if (isRare(dayIncludes[pokeId])) {
-                        ret.push(dayIncludes[pokeId]);
-                    }
+            var dayIncludes = contestThemes[theme]["day"+day] || [];
+            for (var pokeId in dayIncludes) {
+                if (isRare(dayIncludes[pokeId])) {
+                    ret.push(pokeInfo.icon(dayIncludes[pokeId]) + " " + poke(dayIncludes[pokeId]) + " <b>[" + contestThemes[theme]["day" + day + "name"] + "]</b>");
                 }
             }
         }
 
-        var alterIncludes = contestThemes[themeName].alter;
-        if (alterIncludes) {
-            for (var pokeId in alterIncludes) {
-                if (isRare(alterIncludes[pokeId])) {
-                    ret.push(alterIncludes[pokeId]);
-                }
+        var alterIncludes = contestThemes[theme].alter || [];
+        for (var pokeId in alterIncludes) {
+            if (isRare(alterIncludes[pokeId])) {
+                ret.push(pokeInfo.icon(alterIncludes[pokeId]) + " " + poke(alterIncludes[pokeId]) + " <b>[" + contestThemes[theme].alterName + "]</b>");
             }
         }
 
-        return ret.map(poke);
+        return ret.join(", ");
+    };
+    this.getThemeKeyByName(name) {
+        name = name.toLowerCase();
+
+        for (var theme in currentThemes) {
+            if (theme === name || contestThemes[theme].name.toLowerCase() === name || (contestThemes[theme].alterName && contestThemes[theme].alterName.toLowerCase() === name)) {
+                return theme;
+            }
+        }
+
+        return null;
+    };
+    this.showThemeRares(src, theme) {
+        var themeKey = safari.getThemeKeyByName(theme);
+ 
+        if (!themeKey || themeKey === "default") {
+            var valid = Object.keys(contestThemes).filter(function(e) {
+                return e !== "default";
+            }).map(function(e) {
+                return link("/themerares " + contestThemes[e].name, contestThemes[e].name);
+            });
+            
+            safaribot.sendHtmlMessage(src, "Valid theme inputs are: " + readable(valid) + ".", safchan);
+            return;
+        }
+
+       safaribot.sendHtmlMessage(src, "Rare Pokémon that appear in the {0} theme: {1}".format(contestThemes[themeKey].name, safari.getAllRaresInTheme(themeKey)), safchan);
     };
     this.getTier = function(pokeId) {
         if (ultraPokes.hasOwnProperty(pokeId+"")) {
@@ -51365,6 +51388,7 @@ function Safari() {
             "/view: To view another player's party. If no player is specified, all of your data will show up. You can also use /view on or /view off to enable/disable others from viewing your party/battles. Use /viewt for a text-only version of your data (excluding party).",
             "/mail [Name]։[Message]: To send a message to another player's inbox. Requires a Mail.",
             "/changealt: To pass your Safari data to another alt.",
+            "/themerares: Show rare Pokémon that appear in a specified theme.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -51784,6 +51808,10 @@ function Safari() {
             }
             if (command === "changealt") {
                 safari.changeAlt(src, commandData);
+                return true;
+            }
+            if (command === "themerare" || command === "themerares") {
+                safari.showThemeRares(src, commandData);
                 return true;
             }
             if (command === "bait") {
@@ -52575,7 +52603,7 @@ function Safari() {
                         }
                     }
                 }
-                safaribot.sendHtmlMessage(src, "Use {0} or {1} to show or hide additional information!".format(link("/showdex ", "/showdex [stats|effectiveness|trivia]"), link("/hidedex ", "/hidedex [stats|effectiveness|trivia]")), safchan);
+                safaribot.sendHtmlMessage(src, "Use {0} or {1} to show or hide additional information!".format(link("/showdex ", "/showdex [stats|effectiveness|trivia]", true), link("/hidedex ", "/hidedex [stats|effectiveness|trivia]", true)), safchan);
                 sys.sendMessage(src, "", safchan);
                 if (player) {
                     if (player.tutorial.inTutorial && player.tutorial.step === 7 && (commandData.toLowerCase() == "pikachu")) {
