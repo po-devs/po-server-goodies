@@ -52441,7 +52441,7 @@ function Safari() {
                 var type_1 = type1(info.num);
                 var type_2 = type2(info.num);
                 var ic = pokeInfo.icon(info.num);
-                var stats = getStatsNamed(info.num), statsmsg = [], efmsg = [];, efmsg2 = [];
+                var stats = getStatsNamed(info.num), statsmsg = [], efmsg = [], efmsg2 = [];
                 for (var i in stats) {
                     statsmsg.push(i + ": " + stats[i]);
                 }
