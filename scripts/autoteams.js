@@ -256,8 +256,8 @@ AutoTeams.addTeam = function(teamName, tier, player) {
             "hiddenpower": sys.teamPokeHiddenPower(player, teamIndex, p)
         };
         for (var s = 0; s < 6; s++) {
-            pokemon.evs.push(sys.teamPokeEV(player, teamIndex, p, s));
-            pokemon.ivs.push(sys.teamPokeDV(player, teamIndex, p, s));
+            pokemon.evs[s] = sys.teamPokeEV(player, teamIndex, p, s);
+            pokemon.ivs[s] = sys.teamPokeDV(player, teamIndex, p, s);
         }
         for (var m = 0; m < 4; m++) {
             pokemon.moves.push(sys.teamPokeMove(player, teamIndex, p, m));
