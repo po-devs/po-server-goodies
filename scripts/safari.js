@@ -34582,11 +34582,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: I'm still editing the last photo that you brought, come back in " + timeLeftString(player.quests.journal.cooldown) + "!", safchan);
             return;
         }
-        if (contestCount > 0) {
-            safaribot.sendMessage(src, "You can't finish this quest during a contest.", safchan);
-            return;
-        }
-        
+
         if (!offer || isNaN(offer) || offer < 1 || offer > player.photos.length) {
             safaribot.sendMessage(src, "Editor-in-chief: That's not a valid photo!", safchan);
             return;
