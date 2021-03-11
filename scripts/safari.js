@@ -8569,19 +8569,19 @@ function Safari() {
             return null;
         }
 
-        var ret = {};
-        var include = contestThemes[theme].include;
-        for (var pokeId in include) {
-            if (!ret.hasOwnProperty(contestThemes[theme].name)) {
-                ret[contestThemes[theme].name] = [];
-            }
-            if (isRare(include[pokeId])) {
-                ret[contestThemes[theme].name].push(pokeInfo.icon(include[pokeId]) + " " + poke(include[pokeId]));
-            } // e.g. {"Desert": ["Regirock, Registeel"...]}
-        }
+        var ret = {},
+            include = contestThemes[theme].include,
+            hasDailyVariation = false;
 
         for (var day = 1; day <= 7; day++) {
-            var dayIncludes = contestThemes[theme]["day"+day] || [];
+            var dayIncludes = contestThemes[theme]["day"+day];
+            
+            if (!dayIncludes) {
+                continue;
+            }
+
+            hasDailyVariation = true;
+            dayIncludes = dayIncludes.concat(include);
             for (var pokeId in dayIncludes) {
                 if (!ret.hasOwnProperty(contestThemes[theme]["day" + day + "name"])) {
                     ret[contestThemes[theme]["day" + day + "name"]] = [];
@@ -8589,6 +8589,17 @@ function Safari() {
                 if (isRare(dayIncludes[pokeId])) {
                     ret[contestThemes[theme]["day" + day + "name"]].push(pokeInfo.icon(dayIncludes[pokeId]) + " " + poke(dayIncludes[pokeId]));
                 }  // e.g. {"Festival": ["Jirachi, Furfrou-Kabuki"...], "Moon Festival": ["Lunala"], "Fire Festival": [""]}
+            }
+        }
+
+        if (!hasDailyVariation) { // themes with daily variations already had their base rares concatenated above, so don't add the root theme's rares as a separate entry
+            for (var pokeId in include) {
+                if (!ret.hasOwnProperty(contestThemes[theme].name)) {
+                    ret[contestThemes[theme].name] = [];
+                }
+                if (isRare(include[pokeId])) {
+                    ret[contestThemes[theme].name].push(pokeInfo.icon(include[pokeId]) + " " + poke(include[pokeId]));
+                } // e.g. {"Desert": ["Regirock, Registeel"...]}
             }
         }
 
