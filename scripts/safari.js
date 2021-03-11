@@ -8451,7 +8451,7 @@ function Safari() {
 
         return out.join(" | ");
     };
-    this.validForTheme = function(pokeId, name) {
+    this.validForTheme = function(pokeId, name) { // this checks poke validity in a theme based on current factors like current contest theme/alter, current time, current day, etc.
         var theme = contestThemes[name];
         var pokeNum = parseInt(pokeId, 10);
 
@@ -8511,8 +8511,56 @@ function Safari() {
         }
         return false;
     };
-    this.isInTheme = function(id, name) {
-        return (((contestThemes[name].include.contains(id)) && this.validForTheme(id, name)) || (contestThemes[name].alter && contestThemes[name].alter.contains(id)) || ((contestThemes[name].morning && contestThemes[name].morning.contains(id)) ||(contestThemes[name].night && contestThemes[name].night.contains(id)) ||(contestThemes[name].afternoon && contestThemes[name].afternoon.contains(id)) ||(contestThemes[name].evening && contestThemes[name].evening.contains(id)) || (contestThemes[name].hasOwnProperty("day"+currentDay) && contestThemes[name]["day"+currentDay].contains(id))));
+    this.isInTheme = function(id, name) { // this checks poke validity in a theme excluding alters and across all periods of the day, and if a theme has daily variations, across all daily variations of that theme
+        if (this.validForTheme(id, name)) { // pokes that pass validForTheme are automatically a subset of isInTheme
+            return true;
+        }
+        if (contestThemes[name].include.contains(id) && this.validForTheme(id, name)) {
+            return true;
+        }
+        if (
+            (contestThemes[name].morning && contestThemes[name].morning.contains(id))
+            || (contestThemes[name].night && contestThemes[name].night.contains(id))
+            || (contestThemes[name].afternoon && contestThemes[name].afternoon.contains(id))
+            || (contestThemes[name].evening && contestThemes[name].evening.contains(id))
+        ) {
+            return true;
+        }
+        for (var day = 1; day <= 7; day++) {
+            if (contestThemes[name].hasOwnProperty("day"+day) && contestThemes[name]["day"+day].contains(id)) {
+                return true;
+            }
+        }
+    };
+    this.isInAlter = function(id, name) {
+        return contestThemes[name].alter && contestThemes[name].alter.contains(id);
+    };
+    this.getAllThemesForPoke(pokeId, retFull) {
+        var themeList = [];
+        for (var theme in contestThemes) {
+            if (this.isInTheme(pokeId, theme)) {
+                if (retFull) {
+                    var hasDailyVariation = false;
+                    for (var day = 1; day <= 7; day++) { // for retFull we want the full names of all possible daily variations of the theme
+                        if (contestThemes[theme].hasOwnProperty("day" + day)) {
+                            hasDailyVariation = true;
+                            themeList.push(contestThemes[theme]["day" + day + "name"]);
+                        }
+                        if (!hasDailyVariation) { // themes with daily variations already had their variation names added above, so don't add the root theme's name
+                            themeList.push(contestThemes[theme].name);
+                        }
+                    }
+                }
+                else {
+                    themeList.push(theme);
+                }
+            }
+            if (retFull && this.isInAlter(pokeId, theme)) {
+                themeList.push(contestThemes[theme].alterName);
+            }
+        }
+        
+        return themeList;
     };
     this.getTier = function(pokeId) {
         if (ultraPokes.hasOwnProperty(pokeId+"")) {
@@ -52461,12 +52509,7 @@ function Safari() {
                     safaribot.sendMessage(src, info.name + " can Mega Evolve into " + readable(megaEvolutions[info.num].map(poke), "or") + ". ", safchan);
                 }
                 if (isLegendary(info.num) || SESSION.channels(safchan).isChannelOwner(src)) {
-                    var themes = [];
-                    for (var e in contestThemes) {
-                        if (e !== "none" && safari.isInTheme(info.num, e)) {
-                            themes.push(themeName(e));
-                        }
-                    }
+                    var themes = safari.getAllThemesForPoke(info.num, true);
                     if (themes.length > 0) {
                         safaribot.sendMessage(src, info.name + " can be found in the following " + plural(themes.length, "theme") + ": " + readable(themes, "and") + ".", safchan);
                     } else {
