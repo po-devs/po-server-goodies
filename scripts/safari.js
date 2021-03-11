@@ -8614,9 +8614,9 @@ function Safari() {
     this.showThemeRares = function(src, theme) {
         var themeKey = safari.getThemeKeyByName(theme);
  
-        if (!themeKey || themeKey === "default") {
+        if (!themeKey || themeKey === "none") {
             var valid = Object.keys(contestThemes).filter(function(e) {
-                return e !== "default";
+                return e !== "none";
             }).map(function(e) {
                 return link("/themerares " + contestThemes[e].name, contestThemes[e].name);
             });
