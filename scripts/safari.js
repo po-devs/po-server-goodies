@@ -52441,7 +52441,7 @@ function Safari() {
                 var type_1 = type1(info.num);
                 var type_2 = type2(info.num);
                 var ic = pokeInfo.icon(info.num);
-                var stats = getStatsNamed(info.num), statsmsg = [], efmsg = "";
+                var stats = getStatsNamed(info.num), statsmsg = [], efmsg = [];, efmsg2 = [];
                 for (var i in stats) {
                     statsmsg.push(i + ": " + stats[i]);
                 }
@@ -52452,9 +52452,12 @@ function Safari() {
                     statsmsg = ". [" + statsmsg + "]." 
                 }
                 if (opt.contains("effectiveness")) {
-                    var val, se = [], nve = [], im = [];
+                    var val, se = [], nve = [], im = []; // incoming
+                    var val2, se2 = [], nve2 = [], im2 = [];  // outgoing
                     for (var e in effectiveness) {
                         val = safari.checkEffective(e, "???", type_1, type_2, false, false);
+                        val2 = safari.checkEffective(type_1, type_2, e, "???", false, false);
+
                         if (val > 1) {
                             se.push(typeIcon(e));
                         } else if (val == 0) {
@@ -52462,21 +52465,29 @@ function Safari() {
                         } else if (val < 1) {
                             nve.push(typeIcon(e));
                         }
+
+                        if (val2 > 1) {
+                            se2.push(typeIcon(e));
+                        } else if (val2 == 0) {
+                            im2.push(typeIcon(e));
+                        } else if (val2 < 1) {
+                            nve2.push(typeIcon(e));
+                        }
                     }
-                    if (se.length > 0) {
-                        efmsg += " Weaknesses: " + se.join("");
-                    }
-                    if (nve.length > 0) {
-                        efmsg += ", Resistances: " + nve.join("");
-                    }
-                    if (im.length > 0) {
-                        efmsg += ", Immunities: " + im.join("");
-                    }
+
+                    efmsg.push("Weaknesses: " + (se.join("") || "None"));
+                    efmsg.push("Resistances: " + (nve.join("") || "None"));
+                    efmsg.push("Immunities: " + (im.join("") || "None"));
+                    
+                    efmsg2.push("Super-Effective Against: " + (se2.join("") || "None"));
+                    efmsg2.push("Not-Very-Effective Against: " + (nve2.join("") || "None"));
+                    efmsg2.push("No Effect Against: " + (im2.join("") || "None"));
                 }
                 safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + statsmsg, safchan);
                 safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Tier: " + safari.getTier(info.num) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +".", safchan);
-                if (efmsg !== "") {
-                    safaribot.sendHtmlMessage(src, efmsg, safchan);
+                if (opt.contains("effectiveness")) {
+                    safaribot.sendHtmlMessage(src, efmsg.join(", "), safchan);
+                    safaribot.sendHtmlMessage(src, efmsg2.join(", "), safchan);
                 }
                 if (player) {
                     if (isMega(info.num)) {
@@ -52529,6 +52540,7 @@ function Safari() {
                         }
                     }
                 }
+                safaribot.sendHtmlMessage(src, "Use {0} or {1} to show or hide additional information!".format(link("/showdex ", "/showdex [stats|effectiveness|trivia]"), link("/hidedex ", "/hidedex [stats|effectiveness|trivia]")), safchan);
                 sys.sendMessage(src, "", safchan);
                 if (player) {
                     if (player.tutorial.inTutorial && player.tutorial.step === 7 && (commandData.toLowerCase() == "pikachu")) {
