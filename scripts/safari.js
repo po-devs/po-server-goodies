@@ -8595,7 +8595,7 @@ function Safari() {
 
         return ret.join(", ");
     };
-    this.getThemeKeyByName(name) {
+    this.getThemeKeyByName = function(name) {
         name = name.toLowerCase();
 
         for (var theme in currentThemes) {
@@ -8606,7 +8606,7 @@ function Safari() {
 
         return null;
     };
-    this.showThemeRares(src, theme) {
+    this.showThemeRares = function(src, theme) {
         var themeKey = safari.getThemeKeyByName(theme);
  
         if (!themeKey || themeKey === "default") {
