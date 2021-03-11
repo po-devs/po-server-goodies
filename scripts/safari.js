@@ -8544,7 +8544,7 @@ function Safari() {
                 if (retFull) {
                     var hasDailyVariation = false;
                     for (var day = 1; day <= 7; day++) { // for retFull we want the full names of all possible daily variations of the theme
-                        if (contestThemes[theme].hasOwnProperty("day" + day) && contestThemes[theme]["day" + day].contains(pokeId)) {
+                        if (contestThemes[theme].hasOwnProperty("day" + day) && (contestThemes[theme]["day" + day].contains(pokeId) || contestThemes[theme].include.contains(pokeId))) {
                             hasDailyVariation = true;
                             themeList.push(contestThemes[theme]["day" + day + "name"]);
                         }
