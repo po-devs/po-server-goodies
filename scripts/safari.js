@@ -8565,35 +8565,44 @@ function Safari() {
         return themeList;
     };
     this.getAllRaresInTheme = function(theme) {
-        var ret = [];
         if (!contestThemes.hasOwnProperty(theme)) {
-            return ret;
+            return null;
         }
-        
+
+        var ret = {};
         var include = contestThemes[theme].include;
         for (var pokeId in include) {
-            if (isRare(include[pokeId])) {
-                ret.push(pokeInfo.icon(include[pokeId]) + " " + poke(include[pokeId]) + " <b>[" + contestThemes[theme].name + "]</b>");
+            if (!ret.hasOwnProperty(contestThemes[theme].name)) {
+                ret[contestThemes[theme].name] = [];
             }
+            if (isRare(include[pokeId])) {
+                ret[contestThemes[theme].name].push(pokeInfo.icon(include[pokeId]) + " " + poke(include[pokeId]));
+            } // e.g. {"Desert": ["Regirock, Registeel"...]}
         }
 
         for (var day = 1; day <= 7; day++) {
             var dayIncludes = contestThemes[theme]["day"+day] || [];
             for (var pokeId in dayIncludes) {
-                if (isRare(dayIncludes[pokeId])) {
-                    ret.push(pokeInfo.icon(dayIncludes[pokeId]) + " " + poke(dayIncludes[pokeId]) + " <b>[" + contestThemes[theme]["day" + day + "name"] + "]</b>");
+                if (!ret.hasOwnProperty(contestThemes[theme]["day" + day + "name"])) {
+                    ret[contestThemes[theme]["day" + day + "name"]] = [];
                 }
+                if (isRare(dayIncludes[pokeId])) {
+                    ret[contestThemes[theme]["day" + day + "name"]].push(pokeInfo.icon(dayIncludes[pokeId]) + " " + poke(dayIncludes[pokeId]));
+                }  // e.g. {"Festival": ["Jirachi, Furfrou-Kabuki"...], "Moon Festival": ["Lunala"], "Fire Festival": [""]}
             }
         }
 
         var alterIncludes = contestThemes[theme].alter || [];
         for (var pokeId in alterIncludes) {
-            if (isRare(alterIncludes[pokeId])) {
-                ret.push(pokeInfo.icon(alterIncludes[pokeId]) + " " + poke(alterIncludes[pokeId]) + " <b>[" + contestThemes[theme].alterName + "]</b>");
+            if (!ret.hasOwnProperty(contestThemes[theme].alterName)) {
+                ret[contestThemes[theme].alterName] = [];
             }
+            if (isRare(alterIncludes[pokeId])) {
+                ret[contestThemes[theme].alterName].push(pokeInfo.icon(alterIncludes[pokeId]) + " " + poke(alterIncludes[pokeId]));
+            } // e.g. {"Desert": ["Regirock, Registeel"...], "Cursed Pharaoh's Treasury":["Runerigus, Groudon"...]}
         }
 
-        return ret.join(", ");
+        return ret;
     };
     this.getThemeKeyByName = function(name) {
         name = name.toLowerCase();
@@ -8625,7 +8634,12 @@ function Safari() {
             return;
         }
 
-       safaribot.sendHtmlMessage(src, "Rare Pokémon that appear in the {0} theme: {1}".format(contestThemes[themeKey].name, safari.getAllRaresInTheme(themeKey)), safchan);
+       var themeRares = safari.getAllRaresInTheme(themeKey);
+       safaribot.sendHtmlMessage(src, "Rare Pokémon that appear in the {0} theme:".format(contestThemes[themeKey].name), safchan);
+       
+       for (var key in themeRares) {
+           safaribot.sendHtmlMessage(src, "<b>{0}</b>: {1}".format(key, readable(themeRares[key])), safchan);
+       }
     };
     this.getTier = function(pokeId) {
         if (ultraPokes.hasOwnProperty(pokeId+"")) {
