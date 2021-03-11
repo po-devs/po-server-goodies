@@ -8598,7 +8598,7 @@ function Safari() {
     this.getThemeKeyByName = function(name) {
         name = name.toLowerCase();
 
-        for (var theme in currentThemes) {
+        for (var theme in contestThemes) {
             if (theme === name || contestThemes[theme].name.toLowerCase() === name || (contestThemes[theme].alterName && contestThemes[theme].alterName.toLowerCase() === name)) {
                 return theme;
             }
