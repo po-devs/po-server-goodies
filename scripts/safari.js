@@ -7051,7 +7051,7 @@ function Safari() {
         var ret = "", hasBalls = false, isAndroid = sys.os(src) === "android";
         for (var i = 0; i < allBalls.length; i++) {
             var e = allBalls[i];
-            if (e === "master" && (currentPokemon && !isRare(currentPokemon) && !player.alwaysShowMasterBall)) {
+            if (e === "master" && (currentPokemon && !isRare(currentDisplay) && !player.alwaysShowMasterBall)) { // use currentDisplay instead of currentPokemon, otherwise ballMacro can be used to see through disguises/illusions
                 continue;
             }
             if (isBallAvailable(player, e) && (e !== "master" || !isAndroid)) {
@@ -7061,7 +7061,7 @@ function Safari() {
         }
         var ph = player.story.inStory ? "" : "«" + link("/photo", "Take Photo") + "» ";
         var pkblk = player.story.inStory ? "" : (wildEvent ? "" : "«" + link("/pokeblock", "Feed") + "» ");
-        if (isAndroid && isBallAvailable(player, "master") && !(currentPokemon && !isRare(currentPokemon) && !player.alwaysShowMasterBall)) {
+        if (isAndroid && isBallAvailable(player, "master") && !(currentPokemon && !isRare(currentDisplay) && !player.alwaysShowMasterBall)) { // use currentDisplay instead of currentPokemon, otherwise ballMacro can be used to see through disguises/illusions
             sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±Throw:</b></font> «" + link("/" + ccatch + " " + itemData.master.name, cap(itemData.master.name)) + "»", safchan);
         }
         if (hasBalls) {
@@ -15928,7 +15928,7 @@ function Safari() {
         this.saveGame(targetPlayer);
         
     };
-    this.setShowMaster = function(src, data) {
+    this.setShowMasterBall = function(src, data) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -51630,7 +51630,7 @@ function Safari() {
                 return true;
             }
             if (["showmaster", "showmb", "showmasterball"].contains(command)) {
-                safari.setShowMaster(src, commandData);
+                safari.setShowMasterBall(src, commandData);
                 return true;
             }
             if (command === "sell") {
