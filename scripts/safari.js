@@ -6109,7 +6109,7 @@ function Safari() {
         },
         "66428": {
             "types": ["Fighting", "Water"],
-            "name": "Urshifu-Rapid-Strike",
+            "name": "Urshifu-Rapid Strike",
             "stats": [100, 130, 100, 63, 60, 97],
             "abilities": [ "Unseen Fist" ],
             "tier": "SM OU",
@@ -29661,7 +29661,7 @@ function Safari() {
                 if (level >= 3) {
                     var legend = 0;
                     var legendNeeded = (level == 3 ? 1 : 3);
-                    var excludedLegends = ["Phione", "Meltan", "Cosmog", "Cosmoem", "Kubfu", "Urshifu-Single-Strike", "Urshifu-Rapid-Strike", "Calyrex"].map(function(e) { return getPokeNum(e) });
+                    var excludedLegends = ["Phione", "Meltan", "Cosmog", "Cosmoem", "Kubfu", "Urshifu", "Urshifu-Rapid Strike", "Calyrex"].map(function(e) { return getPokeNum(e) });
                     for (var i = 0; i < legendNeeded; i++) {
                         legend = 0;
                         while (((level == 3) && (legend == 0 || getBST(legend) > 600)) || legend === 0 || excludedLegends.contains(legend)) {
