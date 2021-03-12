@@ -15928,24 +15928,24 @@ function Safari() {
         this.saveGame(targetPlayer);
         
     };
-    this.setShowMaster(src, data) {
+    this.setShowMaster = function(src, data) {
         if (!validPlayers("self", src)) {
             return;
         }
         var player = getAvatar(src);
         
         if (!["on", "off"].contains(data)) {
-            safaribot.sendHtmlMessage(src, "Your {0} links are currently being <b>{1} on regular Pokémon</b>. Use {2} to change it!".format(finishName("master"), (player.alwaysShowMasterBall ? "shown" : "hidden"), link("/showmb " + (player.alwaysShowMasterBall ? "off" : "on"))), safchan);
+            safaribot.sendHtmlMessage(src, "Your {0} throw links are currently being <b>{1} on regular Pokémon</b>. Use {2} to change it!".format(finishName("master"), (player.alwaysShowMasterBall ? "shown" : "hidden"), link("/showmb " + (player.alwaysShowMasterBall ? "off" : "on"))), safchan);
             return;
         }
         
         if (data === "on") {
             player.alwaysShowMasterBall = true;
-            safaribot.sendHtmlMessage(src, "Your {0} links will now be <b>shown on regular Pokémon</b>!".format(finishName("master")), safchan);
+            safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>shown on regular Pokémon</b>!".format(finishName("master")), safchan);
         }
         else {
             player.alwaysShowMasterBall = false;
-            safaribot.sendHtmlMessage(src, "Your {0} links will now be <b>hidden on regular Pokémon</b>!".format(finishName("master")), safchan);
+            safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>hidden on regular Pokémon</b>!".format(finishName("master")), safchan);
         }
 
         safari.saveGame(player);
