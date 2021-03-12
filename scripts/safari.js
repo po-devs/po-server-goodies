@@ -8693,16 +8693,6 @@ function Safari() {
         (rules.nerfDual && type_2 !== "???")) {
             val = RULES_NERF;
             anyNerf = true;
-            if (player.helds.length > 0 && player.helds[0] == 2) {
-                player.berries.pecha = true;
-                needsPechaCleared.push(player.id.toLowerCase());
-                player.helds[0] = -1;
-                var src = sys.id(player.id);
-                safaribot.sendMessage(src, "Your " + poke(player.party[0]) + " ate its Pecha Berry and weakened the nerf!", safchan)
-            }
-            if (player.berries.pecha) {
-                val = (val + 1) * 0.5;
-            }
         }
 
         if ("bonusTypes" in rules) {
@@ -9082,7 +9072,14 @@ function Safari() {
 
         var finalChance = Math.max((tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true) {
-            finalChance = Math.min(RULES_NERF_CAP, finalChance);
+            if (player.helds.length > 0 && player.helds[0] == 2) {
+                player.berries.pecha = true;
+                needsPechaCleared.push(player.id.toLowerCase());
+                player.helds[0] = -1;
+                safaribot.sendMessage(sys.id(player.id), "Your " + poke(player.party[0]) + " ate its Pecha Berry and weakened the nerf!", safchan);
+            }
+
+            finalChance = Math.min(RULES_NERF_CAP * (player.berries.pecha ? 1.5 : 1), finalChance);
         }
         if (ball == "clone") {
             var maxCloneRate = itemData.clone.bonusRate + (player.costume === "scientist" ? costumeData.scientist.rate : 0) + this.getFortune(player, "scientist", 0);
