@@ -15945,11 +15945,11 @@ function Safari() {
         }
         
         if (data === "off") {
-            player.alwaysShowMasterBall = true;
+            player.alwaysShowMasterBall = false;
             safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>disabled on regular Pokémon</b>! Remember that you can still use /throw or /catch to manually throw a {0}!".format(finishName("master")), safchan);
         }
         else {
-            player.alwaysShowMasterBall = false;
+            player.alwaysShowMasterBall = true;
             safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>enabled on regular Pokémon</b>!".format(finishName("master")), safchan);
         }
 
