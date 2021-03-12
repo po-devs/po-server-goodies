@@ -8524,7 +8524,7 @@ function Safari() {
         if (this.validForTheme(id, name)) { // pokes that pass validForTheme are automatically a subset of isInTheme
             return true;
         }
-        if (contestThemes[name].include.contains(id) && this.validForTheme(id, name)) {
+        if (contestThemes[name].include.contains(id)) {
             return true;
         }
         if (
