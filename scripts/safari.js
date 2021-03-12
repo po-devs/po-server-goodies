@@ -8578,8 +8578,11 @@ function Safari() {
             return null;
         }
 
+        var ascendingSpecies = function(a, b) {
+            return pokeInfo.species(a) - pokeInfo.species(b);
+        };
         var ret = {},
-            include = contestThemes[theme].include,
+            include = contestThemes[theme].include.slice(0).sort(ascendingSpecies),
             hasDailyVariation = false;
 
         for (var day = 1; day <= 7; day++) {
@@ -8590,7 +8593,7 @@ function Safari() {
             }
 
             hasDailyVariation = true;
-            dayIncludes = dayIncludes.concat(include);
+            dayIncludes = dayIncludes.concat(include).slice(0).sort(ascendingSpecies);
             for (var pokeId in dayIncludes) {
                 if (!ret.hasOwnProperty(contestThemes[theme]["day" + day + "name"])) {
                     ret[contestThemes[theme]["day" + day + "name"]] = [];
@@ -8612,16 +8615,17 @@ function Safari() {
             }
         }
 
-        var alterIncludes = contestThemes[theme].alter || [];
-        for (var pokeId in alterIncludes) {
-            if (!ret.hasOwnProperty(contestThemes[theme].alterName)) {
-                ret[contestThemes[theme].alterName] = [];
+        if (contestThemes[theme].alter) {
+            var alterIncludes = contestThemes[theme].alter.slice(0).sort(ascendingSpecies);
+            for (var pokeId in alterIncludes) {
+                if (!ret.hasOwnProperty(contestThemes[theme].alterName)) {
+                    ret[contestThemes[theme].alterName] = [];
+                }
+                if (isRare(alterIncludes[pokeId])) {
+                    ret[contestThemes[theme].alterName].push(pokeInfo.icon(alterIncludes[pokeId]) + " " + poke(alterIncludes[pokeId]));
+                } // e.g. {"Desert": ["Regirock, Registeel"...], "Cursed Pharaoh's Treasury":["Runerigus, Groudon"...]}
             }
-            if (isRare(alterIncludes[pokeId])) {
-                ret[contestThemes[theme].alterName].push(pokeInfo.icon(alterIncludes[pokeId]) + " " + poke(alterIncludes[pokeId]));
-            } // e.g. {"Desert": ["Regirock, Registeel"...], "Cursed Pharaoh's Treasury":["Runerigus, Groudon"...]}
         }
-
         return ret;
     };
     this.getThemeKeyByName = function(name) {
