@@ -862,7 +862,8 @@ function Safari() {
                 }
             */
         ],
-        excludeFromEconomy: false
+        excludeFromEconomy: false,
+        alwaysShowMasterBall: true
     };
 
     /* Item Variables */
@@ -6098,7 +6099,7 @@ function Safari() {
         },
         "892": {
             "types": ["Fighting", "Dark"],
-            "name": "Urshifu-Single-Strike",
+            "name": "Urshifu",
             "stats": [100, 130, 100, 63, 60, 97],
             "abilities": [ "Unseen Fist" ],
             "tier": "SM Ubers",
@@ -7050,6 +7051,9 @@ function Safari() {
         var ret = "", hasBalls = false, isAndroid = sys.os(src) === "android";
         for (var i = 0; i < allBalls.length; i++) {
             var e = allBalls[i];
+            if (e === "master" && (currentPokemon && !isRare(currentPokemon) && !player.alwaysShowMasterBall)) {
+                continue;
+            }
             if (isBallAvailable(player, e) && (e !== "master" || !isAndroid)) {
                 ret += "«" + link("/" + ccatch + " " + itemData[e].name, itemData[e].fullName.split(" ")[0]) + "» ";
                 hasBalls = true;
@@ -7057,7 +7061,7 @@ function Safari() {
         }
         var ph = player.story.inStory ? "" : "«" + link("/photo", "Take Photo") + "» ";
         var pkblk = player.story.inStory ? "" : (wildEvent ? "" : "«" + link("/pokeblock", "Feed") + "» ");
-        if (isAndroid && isBallAvailable(player, "master")) {
+        if (isAndroid && isBallAvailable(player, "master") && !(currentPokemon && !isRare(currentPokemon) && !player.alwaysShowMasterBall)) {
             sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±Throw:</b></font> «" + link("/" + ccatch + " " + itemData.master.name, cap(itemData.master.name)) + "»", safchan);
         }
         if (hasBalls) {
@@ -15923,6 +15927,28 @@ function Safari() {
         this.saveGame(player);
         this.saveGame(targetPlayer);
         
+    };
+    this.setShowMaster(src, data) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        
+        if (!["on", "off"].contains(data)) {
+            safaribot.sendHtmlMessage(src, "Your {0} links are currently being <b>{1} on regular Pokémon</b>. Use {2} to change it!".format(finishName("master"), (player.alwaysShowMasterBall ? "shown" : "hidden"), link("/showmb " + (player.alwaysShowMasterBall ? "off" : "on"))), safchan);
+            return;
+        }
+        
+        if (data === "on") {
+            player.alwaysShowMasterBall = true;
+            safaribot.sendHtmlMessage(src, "Your {0} links will now be <b>shown on regular Pokémon</b>!".format(finishName("master")), safchan);
+        }
+        else {
+            player.alwaysShowMasterBall = false;
+            safaribot.sendHtmlMessage(src, "Your {0} links will now be <b>hidden on regular Pokémon</b>!".format(finishName("master")), safchan);
+        }
+
+        safari.saveGame(player);
     };
     this.setMonoType = function(src, data) {
         if (!validPlayers("self", src)) {
@@ -51416,6 +51442,7 @@ function Safari() {
             "/mail [Name]։[Message]: To send a message to another player's inbox. Requires a Mail.",
             "/changealt: To pass your Safari data to another alt.",
             "/themerares: Show rare Pokémon that appear in a specified theme.",
+            "/showmb [on|off]: Set whether you want Master Ball throw links to appear on regular Pokémon",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -51600,6 +51627,10 @@ function Safari() {
             }
             if (command === "mono") {
                 safari.setMonoType(src, commandData);
+                return true;
+            }
+            if (["showmaster", "showmb", "showmasterball"].contains(command)) {
+                safari.setShowMaster(src, commandData);
                 return true;
             }
             if (command === "sell") {
