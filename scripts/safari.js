@@ -729,6 +729,11 @@ function Safari() {
                 cooldown: 0
             }
         },
+        altTimeline: {
+        	lead: 0,
+        	buff: 1,
+        	cooldown: 0
+        },
         npcBets: {
             giovanni: 0,
             koga: 0,
@@ -1885,6 +1890,8 @@ function Safari() {
     var contestantsWild = [];
     var currentTheme;
     var currentThemeAlter;
+    var currentThemeEffect;
+    var currentThemeSecondary;
     var contestVotes;
     var contestVotingCooldown = 4;
     var contestVotingCount = (SESSION.global() && SESSION.global().contestVotingCount ? SESSION.global().contestVotingCount : contestVotingCooldown);
@@ -2813,6 +2820,17 @@ function Safari() {
         if (!saveContest) {
             currentTheme = null;
             currentThemeAlter = false;
+            if (currentThemeEffect) {
+				if (currentThemeEffect == "portal") {
+					safaribot.sendHtmlAll("The portal was sealed!", safchan);
+				} else if (currentThemeEffect == "past") {
+					safaribot.sendHtmlAll("The timeline was reverted!", safchan);
+				} else if (currentThemeEffect == "distortion") {
+					safaribot.sendHtmlAll("The twisted dimensions returned to normal!", safchan);
+				}            	
+				currentThemeEffect = false;
+				currentThemeSecondary = false;
+            }
             contestVotes = null;
         }
     }
@@ -3081,6 +3099,26 @@ function Safari() {
         }
         return outList;
     }
+	function isBranchedEvolved(num, getOther) {
+		if (devolutions.hasOwnProprty(num+"")) {
+			var entry = devolutions[num+""];
+			if (evolutions.hasOwnProperty(entry+"") && Array.isArray(evolutions[entry+""])) {
+				if (getOther) {
+					var out = [];
+					for (var i = 0; i < evolutions[entry+""].length; i++) {
+						if (evolutions[entry+""][i] == num) {
+							continue;
+						}
+						out.push(evolutions[entry+""][i]);
+					}
+					return out;
+				} else {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
     function compare(a,b) {
         if (a.sort < b.sort) {
             return -1;
@@ -7575,8 +7613,13 @@ function Safari() {
             }
         } else {
             var cTheme = themeOverride || currentTheme;
+            var isPortaled = false;
             if (cTheme) {
                 var theme = contestThemes[cTheme], list = [];
+                if (currentThemeSecondary && currentThemeEffect == "portal" && chance(0.5)) {
+                	cTheme = currentThemeSecondary;
+                	isPortaled = true;
+                }
                 if (spiritMon) {
                     statCap = [810, 740, 695, 630, 605, 590][safari.events.spiritDuelsTeams.length - 2];
                     statMin = [480, 450, 420, 380, 320, 0][safari.events.spiritDuelsTeams.length - 2];
@@ -7745,7 +7788,7 @@ function Safari() {
         else {
             if ((isRare(num) || shiny) && !dexNum) {
                 amount = 1;
-                if ((isLegendary(num) || shiny) && ((contestCount > 0 && contestCount % 2 === 0) || (!dexNum && contestCount === 0 && getBST(num) > 600))) { // if legendary or shiny and either contest active + 1 in 2 chance or contest no active and BST over 600
+                if ((isLegendary(num) || shiny) && ((contestCount > 0 && contestCount % 2 === 0) || (getBST(num) > 600))) { // if legendary or shiny and either contest active + 1 in 2 chance or contest no active and BST over 600
                     wildEvent = true;
                 }
             }
@@ -7815,7 +7858,12 @@ function Safari() {
             if (spiritMon) {
                 term = "Spirit Realm "
             }
-            var appmsg = wildPokemonMessage.format(displayId.join(""), bst, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
+            var appmsg;
+            if (isPortaled) {
+            	appmsg = "A wild {2}{0} came through the portal! <i>(BST: {1})</i>".format(displayId.join(""), bst, term);
+            } else {
+            	appmsg = wildPokemonMessage.format(displayId.join(""), bst, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
+			}
             var sprite = (cageMode ? cage : pokeInfo.sprite(currentPokemonDisplay));
 
             var cTheme = currentTheme;
@@ -7909,11 +7957,14 @@ function Safari() {
         contestCount = contestDuration;
         spiritSpawn = true;
         wildSpirit = false;
+        var themesListed = [].concat(nextTheme);
         
         var votesResult;
         if (commandData.toLowerCase() === "none") {
             currentTheme = null;
             currentThemeAlter = false;
+            currentThemeEffect = null;
+            currentThemeSecondary = null;
             currentRules = this.pickRules(currentTheme);
         } else if (commandData.toLowerCase() in contestThemes) {
             currentTheme = commandData.toLowerCase();
@@ -7980,10 +8031,14 @@ function Safari() {
             }
         }
         if (!(icon)) {
-            icon = currentTheme && contestThemes[currentTheme].icon ? pokeInfo.icon(contestThemes[currentTheme].icon) + " " : "";
-            if (icon && currentTheme && contestThemes[currentTheme].icon2) {
-                icon += (pokeInfo.icon(contestThemes[currentTheme].icon2) + " ");
-            }
+            if (currentTheme && contestThemes[currentTheme].iconAlts) {
+            	icon = contestThemes[currentTheme].iconAlts.random();
+            } else {
+				icon = currentTheme && contestThemes[currentTheme].icon ? pokeInfo.icon(contestThemes[currentTheme].icon) + " " : "";
+				if (icon && currentTheme && contestThemes[currentTheme].icon2) {
+					icon += (pokeInfo.icon(contestThemes[currentTheme].icon2) + " ");
+				}
+			}
         }
         if (icon) {
             sys.sendHtmlAll(toColor("<timestamp/> *** *********************************************************** ", "magenta") + icon, safchan);
@@ -7997,7 +8052,66 @@ function Safari() {
         if (currentRules && Object.keys(currentRules).length > 0) {
             safaribot.sendHtmlAll("Rules: " + this.translateRules(currentRules, true), safchan);
         }
+        
         sys.sendAll(separator, safchan);
+        
+        var messOut = {};
+        var onChannel = sys.playersOfChannel(safchan);
+		for (var i in onChannel) {
+			player = getAvatar(onChannel[i]);
+			player.altTimeline.lead = 0;
+			player.altTimeline.buff = 1;
+		}
+        if (currentTheme && contestThemes[currentTheme].realityTwister) {
+        	currentThemeEffect = ["past", "portal", "distortion"].random();
+        	if (currentThemeEffect == "portal") {
+        		var ph = [];
+        		for (var i = 0; i < themesListed.length; i++) {
+        			if (themesListed[i].toLowerCase() == currentTheme.toLowerCase()) {
+        				continue;
+        			}
+        			ph.push(themesListed[i]);
+        		}
+        		if (ph.length > 0) {
+        			currentThemeSecondary = ph.random();
+					safaribot.sendHtmlAll(pokeInfo.icon(484) + " Palkia appeared and opened a portal to " + contestThemes[currentThemeSecondary].name + "!", safchan);
+        		} else {
+        			currentThemeSecondary = null;
+        		}
+        	} else if (currentThemeEffect == "past") {
+        		var player, party, mon, branched, buffAmt, isShiny, n = now();
+        		messOut = {};
+				safaribot.sendHtmlAll(pokeInfo.icon(483) + " Dialga appeared and opened a rift in time!", safchan);
+        		for (var i in onChannel) {
+        			player = getAvatar(onChannel[i]);
+        			party = player.party || [];
+        			mon = party[0];
+        			if (mon) {
+        				branched = isBranchedEvolved(mon, true);
+        				if (branched && branched.length > 0) {
+        					isShiny = typeof mon == "string";
+        					buffAmt = (1.25 + 0.05 * branched.length);
+        					branched = branched.random();
+        					messOut[player.id] = [pokeInfo.icon(mon) + " -> " + pokeInfo.icon(parseInt(branched, 10)), "You got sent into a parallel timeline where your " + poke(mon) + " was actually a " + (isShiny ? "Shiny " : "") + poke(branched) + "! You have a " + buffAmt + "x catch rate during this effect!"];
+        					player.altTimeline.lead = branched + (isShiny ?  "" : 0);
+        					player.altTimeline.buff = buffAmt;
+        				} else {
+        					player.altTimeline.lead = 0;
+        					player.altTimeline.buff = 1;
+							player.altTimeline.cooldown = n + 60 * 5 * 1000;
+        				}
+        			}
+        		}
+        	} else if (currentThemeEffect == "distortion") {
+				safaribot.sendHtmlAll(pokeInfo.icon(487) + " Giratina appeared and twisted the dimensions!", safchan);
+			}
+        }
+        
+        for (var x in messOut) {
+        	for (var i = 0; i < messOut[x].length; i++) {
+        		safaribot.sendHtmlMessage(sys.id(x), messOut[x][i], safchan);
+        	}
+        }
 
         if (contestBroadcast) {
             sys.sendAll("", 0);
@@ -8471,6 +8585,23 @@ function Safari() {
                 return false;
             }
         }
+        if (currentThemeEffect) {
+        	if (currentThemeEffect == "distortion" && theme.hasOwnProperty("distortion")) {
+        		if (theme.distortion.contains(pokeId)) {
+        			return true;
+        		}
+        	}
+        	if (currentThemeEffect == "past" && theme.hasOwnProperty("past")) {
+        		if (theme.past.contains(pokeId)) {
+        			return true;
+        		}
+        	}
+        	if (currentThemeEffect == "portal" && theme.hasOwnProperty("portal")) {
+        		if (theme.portal.contains(pokeId)) {
+        			return true;
+        		}
+        	}
+        }
         if (pokeNum > 807) {
             if (!(currentThemeAlter)) {
                 if (!(theme.include.contains(pokeId))) {
@@ -8539,6 +8670,15 @@ function Safari() {
             if (contestThemes[name].hasOwnProperty("day"+day) && contestThemes[name]["day"+day].contains(id)) {
                 return true;
             }
+        }
+        if (contestThemes[name].hasOwnProperty("distortion") && contestThemes[name]["distortion"].contains(id)) {
+        	return true;
+        }
+        if (contestThemes[name].hasOwnProperty("past") && contestThemes[name]["past"].contains(id)) {
+        	return true;
+        }
+        if (contestThemes[name].hasOwnProperty("portal") && contestThemes[name]["portal"].contains(id)) {
+        	return true;
         }
 
         return false;
@@ -9082,8 +9222,12 @@ function Safari() {
         var anyballbuff = this.getFortune(player, "anyballbuff", 0);
         var typebuff = 1 + (this.getFortune(player, "typebuff", 0, pType1) || this.getFortune(player, "typebuff", 0, pType2));
         var wildtypebuff = 1 + (this.getFortune(player, "typebuffwild", 0, wType1) || this.getFortune(player, "typebuffwild", 0, wType2));
+        
+        var n = now();
+        
+        var timelinemod = (currentThemeEffect == "past" && player.altTimeline.lead && player.altTimeline.cooldown < n ?  player.altTimeline.buff : 1);
 
-        var finalChance = Math.max((tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
+        var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true) {
             if (player.helds.length > 0 && player.helds[0] == 2) {
                 player.berries.pecha = true;
@@ -9109,7 +9253,7 @@ function Safari() {
             finalChance = Math.min(finalChance, maxCloneRate);
         }
         if (!(story)) {
-            if (player.truesalt >= now() && chance(player.srate)) {
+            if (player.truesalt >= n && chance(player.srate)) {
                 finalChance = 0;
             }
             if (currentTheme && contestThemes && contestThemes[currentTheme]) {
@@ -9277,7 +9421,14 @@ function Safari() {
                 }
             }
             var ch = "";
-            if (player.cherished.indexOf(pokeInfo.species(getInputPokemon(poke(player.party[0])).num)) !== -1) {
+            var catchingMon = player.party[0];
+            if (currentThemeEffect == "past" && player.altTimeline.lead !== 0) {
+            	catchingMon = player.altTimeline.lead;
+            }
+            if (currentThemeEffect == "distortion") {
+            	catchingMon = player.party[player.party.length-1];
+            }
+            if (player.cherished.indexOf(pokeInfo.species(getInputPokemon(poke(catchingMon)).num)) !== -1) {
                 if (!player.cherishOff) {
                     ch = "Cherished ";
                 }
@@ -9293,14 +9444,14 @@ function Safari() {
                     team = "Unemployed"
                 }
                 var title = player.spiritDuels.rankName;
-                safaribot.sendHtmlAll(team + " " + title + " " + name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their "  + ch + poke(player.party[0]), safchan);
+                safaribot.sendHtmlAll(team + " " + title + " " + name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their "  + ch + poke(catchingMon), safchan);
                 wildSpirit = false;
             } else if ((ball === "mono") || (player.scaleDeadline >= now())) {
-                var stype = ball === "mono" && type2(player.party[0]) !== "???" ? "pure " + (!player.monoSecondary ? type1(player.party[0]) : type2(player.party[0])) + " " : "";
+                var stype = ball === "mono" && type2(catchingMon) !== "???" ? "pure " + (!player.monoSecondary ? type1(catchingMon) : type2(catchingMon)) + " " : "";
                 var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
-                safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + ch + stype + scolor + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + ch + stype + scolor + poke(catchingMon) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             } else {
-                safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + ch + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + ch + poke(catchingMon) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
             if (baitCooldown <= 5) {
@@ -9544,6 +9695,9 @@ function Safari() {
                 }
                 party2.push(player.party[0]);
                 player.party = party2;
+                if (currentThemeEffect == "past") {
+                	player.altTimeline.lead = 0;
+                }
             }
             if (ball == "love") {
                 for (var t in this.daycarePokemon) {
@@ -10951,11 +11105,20 @@ function Safari() {
             party = player.party.map(pokeInfo.sprite),
             costumed = (player.costume !== "none");
         
+        var partyShown = [].concat(player.party);
+        if (currentThemeEffect == "distortion") {
+        	partyShown = player.party.reverse();
+        } else if (currentThemeEffect == "distortion") {
+        	partyShown = [].concat(player.party);
+        	if (player.altTimeline.lead !== 0) {
+        		partyShown[0] = player.altTimeline.lead;
+        	}
+		}
         if (textOnly) {
             var ret = [""];
             var partyText = [];
-            for (var i = 0; i < player.party.length; i++) {
-                var pNum = player.party[i];
+            for (var i = 0; i < partyShown.length; i++) {
+                var pNum = partyShown[i];
                 partyText.push("#" + pokeInfo.readableNum(pNum) + " " + pokePlain(pNum) + (typeof pNum === "string" ? "*" : "") + (player.helds[i] && player.helds[i] > -1 ? " (" + finishName(heldCodes[player.helds[i]]) + ")" : ""));
             }
             ret.push("<b>" + sys.name(id) + "'s Party: </b>" + partyText.join(", "));
@@ -11011,8 +11174,8 @@ function Safari() {
             out += "<td align='center'>" + costumeAlias(player.costume, false, true) + "<br>(Level: " + this.getCostumeLevel(player) + ")" + "</td>";
         }
         var showLinks = ownParty && sys.os(id) !== "android";
-        for (var e in player.party) {
-            var member = getPokemonInfo(player.party[e]);
+        for (var e in partyShown) {
+            var member = getPokemonInfo(partyShown[e]);
             var name = pokePlain(member[0]) + (member[1] ? "*" : "");
             out += "<td><table width='100%'><tr>";
             out += "<td align='center' style='white-space: pre;'>#" + pokeInfo.readableNum(member[0]) + " " + name + "</td>";
@@ -35350,8 +35513,17 @@ function Safari() {
         }
         var os = sys.os(sys.id(player.id));
         line1 += costumeSprite(player, os) + " ";
-        for (var i = 0; i < player.party.length; i++) {
-            line1 += pokeInfo.icon(player.party[i]) + " ";
+        var partyShown = [].concat(player.party);
+        if (currentThemeEffect == "distortion") {
+        	partyShown = player.party.reverse();
+        } else if (currentThemeEffect == "distortion") {
+        	partyShown = [].concat(player.party);
+        	if (player.altTimeline.lead !== 0) {
+        		partyShown[0] = player.altTimeline.lead;
+        	}
+		}
+        for (var i = 0; i < partyShown.length; i++) {
+            line1 += pokeInfo.icon(partyShown[i]) + " ";
         }
         var line2 = "";
         if (player.costume !== "none") {
@@ -49306,7 +49478,19 @@ function Safari() {
             if (currentRules) {
                 safaribot.sendHtmlMessage(src, "Contest's Rules: " + this.translateRules(currentRules, true), safchan);
             }
-            safaribot.sendHtmlMessage(src, "Time until the Contest ends: " + (hasExtension ? toColor(timeString(contestExtensionLimit - contestExtension) + " [Event Extension]", "crimson") : timeString(contestCount)) + ".", safchan);
+            var shownTime = contestCount;
+            if (currentThemeEffect == "past" && (chance(0.95))) {
+            	if (chance(0.45)) {
+					shownTime = contestCount + 400 * 365 * 24 * 60 * 60 * 1000;
+				} else if (chance(0.15)) {
+					shownTime = contestCount - Math.round((Math.random() + 0.2) * 18 * 60 * 60) * 1000;
+				} else if (chance(0.5)) {
+					shownTime = contestCount + Math.round((Math.random() + 0.1) * 10 * 60) * 1000;
+				} else {
+					shownTime = contestCount - Math.round((Math.random() + 0.1) * 10 * 60) * 1000;
+				}
+            }
+            safaribot.sendHtmlMessage(src, "Time until the Contest ends: " + (hasExtension ? toColor(timeString(contestExtensionLimit - contestExtension) + " [Event Extension]", "crimson") : timeString(shownTime)) + ".", safchan);
         } else {
 
             safaribot.sendMessage(src, "Time until next Contest: " + timeString(contestCooldown) + ".", safchan);
@@ -54364,6 +54548,8 @@ function Safari() {
                     contestCount = 0;
                     currentTheme = null;
                     currentThemeAlter = false;
+                    currentThemeEffect = null;
+                    currentThemeSecondary = null;
                     nextRules = null;
                     nextTheme = null;
                     contestCatchers = {};
@@ -57338,7 +57524,11 @@ function Safari() {
                                         maxBST = bst;
                                     }
                                     tieBreaker.push(name);
-                                    pokeWinners.push(poke(player.party[0]));
+                                    if ((currentThemeEffect == "past") && (player.altTimeline.lead !== 0)) {
+										pokeWinners.push(poke(player.altTimeline.lead));
+                                    } else {
+										pokeWinners.push(poke(player.party[0]));
+									}
                                     fullWinners.push(name.toCorrectCase() + " (using " + poke(player.party[0]) + ")");
                                 }
                             }
