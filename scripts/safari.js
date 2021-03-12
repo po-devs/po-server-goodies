@@ -7051,18 +7051,23 @@ function Safari() {
         var ret = "", hasBalls = false, isAndroid = sys.os(src) === "android";
         for (var i = 0; i < allBalls.length; i++) {
             var e = allBalls[i];
-            if (e === "master" && (currentPokemon && !isRare(currentDisplay) && !player.alwaysShowMasterBall)) { // use currentDisplay instead of currentPokemon, otherwise ballMacro can be used to see through disguises/illusions
-                continue;
+            if (isBallAvailable(player, e) && e === "master" && (currentPokemon && !isRare(currentDisplay) && !player.alwaysShowMasterBall)) { // use currentDisplay instead of currentPokemon, otherwise ballMacro can be used to see through disguises/illusions
+                ret += "<font color='grey'>«" + itemData[e].fullName.split(" ")[0] + "»</font>";
             }
-            if (isBallAvailable(player, e) && (e !== "master" || !isAndroid)) {
+            else if (isBallAvailable(player, e) && (e !== "master" || !isAndroid)) {
                 ret += "«" + link("/" + ccatch + " " + itemData[e].name, itemData[e].fullName.split(" ")[0]) + "» ";
                 hasBalls = true;
             }
         }
         var ph = player.story.inStory ? "" : "«" + link("/photo", "Take Photo") + "» ";
         var pkblk = player.story.inStory ? "" : (wildEvent ? "" : "«" + link("/pokeblock", "Feed") + "» ");
-        if (isAndroid && isBallAvailable(player, "master") && !(currentPokemon && !isRare(currentDisplay) && !player.alwaysShowMasterBall)) { // use currentDisplay instead of currentPokemon, otherwise ballMacro can be used to see through disguises/illusions
-            sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±Throw:</b></font> «" + link("/" + ccatch + " " + itemData.master.name, cap(itemData.master.name)) + "»", safchan);
+        if (isAndroid && isBallAvailable(player, "master")) { // use currentDisplay instead of currentPokemon, otherwise ballMacro can be used to see through disguises/illusions
+            if (currentPokemon && !isRare(currentDisplay) && !player.alwaysShowMasterBall) {
+                sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±Throw:</b></font> <font color='grey'>«" + cap(itemData.master.name) + "»</font>", safchan);
+            }
+            else {
+                sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±Throw:</b></font> «" + link("/" + ccatch + " " + itemData.master.name, cap(itemData.master.name)) + "»", safchan);
+            }
         }
         if (hasBalls) {
             safaribot.sendHtmlMessage(src, "Throw: " + ret +  "[" + link("/" + ccatch + " cancel", "Cancel") + "] " + (player.balls.lens > 0 ? ph : "") + (player.balls.pokeblock > 0 ? pkblk : ""), safchan);
@@ -15928,24 +15933,24 @@ function Safari() {
         this.saveGame(targetPlayer);
         
     };
-    this.setShowMasterBall = function(src, data) {
+    this.setEnableMasterBall = function(src, data) {
         if (!validPlayers("self", src)) {
             return;
         }
         var player = getAvatar(src);
         
         if (!["on", "off"].contains(data)) {
-            safaribot.sendHtmlMessage(src, "Your {0} throw links are currently being <b>{1} on regular Pokémon</b>. Use {2} to change it!".format(finishName("master"), (player.alwaysShowMasterBall ? "shown" : "hidden"), link("/showmb " + (player.alwaysShowMasterBall ? "off" : "on"))), safchan);
+            safaribot.sendHtmlMessage(src, "Your {0} throw links are currently being <b>{1} on regular Pokémon</b>. Use {2} to change it!".format(finishName("master"), (player.alwaysShowMasterBall ? "enabled" : "disabled"), link("/enablemb " + (player.alwaysShowMasterBall ? "off" : "on"))), safchan);
             return;
         }
         
         if (data === "on") {
             player.alwaysShowMasterBall = true;
-            safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>shown on regular Pokémon</b>!".format(finishName("master")), safchan);
+            safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>disabled on regular Pokémon</b>! Remember that you can still use /throw or /catch to manually throw a {0}!".format(finishName("master")), safchan);
         }
         else {
             player.alwaysShowMasterBall = false;
-            safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>hidden on regular Pokémon</b>!".format(finishName("master")), safchan);
+            safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>enabled on regular Pokémon</b>!".format(finishName("master")), safchan);
         }
 
         safari.saveGame(player);
@@ -51442,7 +51447,7 @@ function Safari() {
             "/changealt: To pass your Safari data to another alt.",
             "/mono [1/2]: To set if you want your Mono Balls to always use your active Pokémon's primary or secondary type. Omit the command data to check your current Mono Ball configuration.",
             "/themerares: Show rare Pokémon that appear in a specified theme.",
-            "/showmb [on|off]: Set whether you want Master Ball throw links to appear on regular Pokémon. Omit the command data to check your current configuration.",
+            "/enablemb [on|off]: Set whether you want Master Ball throw links to appear on regular Pokémon. Omit the command data to check your current configuration.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -51629,8 +51634,8 @@ function Safari() {
                 safari.setMonoType(src, commandData);
                 return true;
             }
-            if (["showmaster", "showmb", "showmasterball"].contains(command)) {
-                safari.setShowMasterBall(src, commandData);
+            if (["enablemaster", "enablemb", "enablemasterball"].contains(command)) {
+                safari.setEnableMasterBall(src, commandData);
                 return true;
             }
             if (command === "sell") {
