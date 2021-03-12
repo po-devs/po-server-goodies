@@ -51395,7 +51395,6 @@ function Safari() {
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
             "/photo: To take photos of wild Pokémon! Use /album to view your photos.",
             "/use: To use a consumable item.",
-            "/mono [1/2]: To set if you want your Mono Balls to always use your active Pokémon's primary or secondary type. Omit the command data to check your current Mono Ball configuration.",
             "/sell: To sell one of your Pokémon.",
             "/multisell: To sell off multiple Pokémon at once. Alias(es): /msell",
             "/turbosell: To easily sell off multiple Pokémon of the SAME SPECIES at once. Alias(es): /tsell",
@@ -51441,8 +51440,9 @@ function Safari() {
             "/view: To view another player's party. If no player is specified, all of your data will show up. You can also use /view on or /view off to enable/disable others from viewing your party/battles. Use /viewt for a text-only version of your data (excluding party).",
             "/mail [Name]։[Message]: To send a message to another player's inbox. Requires a Mail.",
             "/changealt: To pass your Safari data to another alt.",
+            "/mono [1/2]: To set if you want your Mono Balls to always use your active Pokémon's primary or secondary type. Omit the command data to check your current Mono Ball configuration.",
             "/themerares: Show rare Pokémon that appear in a specified theme.",
-            "/showmb [on|off]: Set whether you want Master Ball throw links to appear on regular Pokémon",
+            "/showmb [on|off]: Set whether you want Master Ball throw links to appear on regular Pokémon. Omit the command data to check your current configuration.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
