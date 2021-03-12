@@ -15940,7 +15940,7 @@ function Safari() {
         var player = getAvatar(src);
         
         if (!["on", "off"].contains(data)) {
-            safaribot.sendHtmlMessage(src, "Your {0} throw links are currently being <b>{1} on regular Pokémon</b>. Use {2} to change it!".format(finishName("master"), (player.alwaysShowMasterBall ? "enabled" : "disabled"), link("/enablemb " + (player.alwaysShowMasterBall ? "off" : "on"))), safchan);
+            safaribot.sendHtmlMessage(src, "Your {0} throw links are currently being <b>{1} on regular Pokémon</b>. Use {2} to change it!".format(finishName("master"), (player.alwaysShowMasterBall ? "enabled" : "disabled"), link("/mblink " + (player.alwaysShowMasterBall ? "off" : "on"))), safchan);
             return;
         }
         
