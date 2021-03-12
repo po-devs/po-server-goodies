@@ -7052,7 +7052,7 @@ function Safari() {
         for (var i = 0; i < allBalls.length; i++) {
             var e = allBalls[i];
             if (isBallAvailable(player, e) && e === "master" && (currentPokemon && !isRare(currentDisplay) && !player.alwaysShowMasterBall)) { // use currentDisplay instead of currentPokemon, otherwise ballMacro can be used to see through disguises/illusions
-                ret += "<font color='grey'>«" + itemData[e].fullName.split(" ")[0] + "»</font>";
+                ret += "<font color='grey'>«" + itemData[e].fullName.split(" ")[0] + "»</font> ";
             }
             else if (isBallAvailable(player, e) && (e !== "master" || !isAndroid)) {
                 ret += "«" + link("/" + ccatch + " " + itemData[e].name, itemData[e].fullName.split(" ")[0]) + "» ";
@@ -51447,7 +51447,7 @@ function Safari() {
             "/changealt: To pass your Safari data to another alt.",
             "/mono [1/2]: To set if you want your Mono Balls to always use your active Pokémon's primary or secondary type. Omit the command data to check your current Mono Ball configuration.",
             "/themerares: Show rare Pokémon that appear in a specified theme.",
-            "/enablemb [on|off]: Set whether you want Master Ball throw links to appear on regular Pokémon. Omit the command data to check your current configuration.",
+            "/mblink [on|off]: Set whether you want Master Ball throw links to appear on regular Pokémon. Omit the command data to check your current configuration.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -51634,7 +51634,7 @@ function Safari() {
                 safari.setMonoType(src, commandData);
                 return true;
             }
-            if (["enablemaster", "enablemb", "enablemasterball"].contains(command)) {
+            if (["mblink", "masterballlink", "mbmacro", "masterballmacro"].contains(command)) {
                 safari.setEnableMasterBall(src, commandData);
                 return true;
             }
