@@ -8081,7 +8081,7 @@ function Safari() {
         	} else if (currentThemeEffect == "past") {
         		var player, party, mon, branched, buffAmt, isShiny, n = now();
         		messOut = {};
-				safaribot.sendHtmlAll(pokeInfo.icon(483) + " Dialga appeared and opened a rift in time!", safchan);
+				safaribot.sendHtmlAll(pokeInfo.icon(483) + " Dialga appeared and opened a rift to the past!", safchan);
         		for (var i in onChannel) {
         			player = getAvatar(onChannel[i]);
         			party = player.party || [];
@@ -8092,7 +8092,7 @@ function Safari() {
         					isShiny = typeof mon == "string";
         					buffAmt = (1.25 + 0.05 * branched.length);
         					branched = branched.random();
-        					messOut[player.id] = [pokeInfo.icon(mon) + " -> " + pokeInfo.icon(parseInt(branched, 10)), "You got sent into a parallel timeline where your " + poke(mon) + " was actually a " + (isShiny ? "Shiny " : "") + poke(branched) + "! You have a " + buffAmt + "x catch rate during this effect!"];
+        					messOut[player.id] = [pokeInfo.icon(mon) + " -> " + pokeInfo.icon(parseInt(branched, 10)), "Time traveling to the past created a parallel timeline where your " + poke(mon) + " was actually a " + (isShiny ? "Shiny " : "") + poke(branched) + "! You have a " + buffAmt + "x catch rate during this effect!"];
         					player.altTimeline.lead = branched + (isShiny ?  "" : 0);
         					player.altTimeline.buff = buffAmt;
         				} else {
