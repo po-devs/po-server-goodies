@@ -8604,18 +8604,10 @@ function Safari() {
             }
         }
         if (currentThemeEffect) {
-            if (currentThemeEffect == "distortion" && theme.hasOwnProperty("distortion")) {
-                if (theme.distortion.contains(pokeId)) {
-                    return true;
-                }
-            }
-            if (currentThemeEffect == "past" && theme.hasOwnProperty("past")) {
-                if (theme.past.contains(pokeId)) {
-                    return true;
-                }
-            }
-            if (currentThemeEffect == "portal" && theme.hasOwnProperty("portal")) {
-                if (theme.portal.contains(pokeId)) {
+            for (var ef in contestPermaVariations) {
+                var variation = contestPermaVariations[ef];
+                
+                if (currentThemeEffect === variation && theme[variation] && theme[variation].contains(pokeId)) {
                     return true;
                 }
             }
