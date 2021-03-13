@@ -3111,7 +3111,7 @@ function Safari() {
         return outList;
     }
     function isBranchedEvolved(num, getOther) {
-        if (devolutions.hasOwnProprty(num+"")) {
+        if (devolutions.hasOwnProperty(num+"")) {
             var entry = devolutions[num+""];
             if (evolutions.hasOwnProperty(entry+"") && Array.isArray(evolutions[entry+""])) {
                 if (getOther) {
