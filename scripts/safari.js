@@ -8717,9 +8717,10 @@ function Safari() {
                         }
                     }
                     for (var i = 0; i < contestPermaVariations.length; i++) {
-                        if (contestThemes[name].hasOwnProperty(contestPermaVariations[i]) && (contestThemes[name][contestPermaVariations[i]].contains(pokeId) || contestThemes[theme].include.contains(pokeId))) {
+                        var variation = contestPermaVariations[i];
+                        if (contestThemes[theme].hasOwnProperty(variation) && (contestThemes[theme][variation].contains(pokeId) || contestThemes[theme].include.contains(pokeId))) {
                             hasPermanentVariation = true;
-                            themeList.push(contestThemes[theme].name + " [" + cap(contestPermaVariations[i]) + "]");
+                            themeList.push(contestThemes[theme].name + " [" + cap(variation) + "]");
                         }
                     }
                     if (!hasPermanentVariation) { // themes with perma variations already had their variation names added above, so don't add the root theme's name
@@ -8769,7 +8770,8 @@ function Safari() {
         }
         
         for (var i = 0; i < contestPermaVariations.length; i++) {
-            var variationIncludes = contestThemes[theme][contestPermaVariations[i]];
+            var variation = contestPermaVariations[i];
+            var variationIncludes = contestThemes[theme][variation];
             
             if (!variationIncludes) {
                 continue;
@@ -8778,11 +8780,11 @@ function Safari() {
             hasPermanentVariation = true;
             variationIncludes = variationIncludes.concat(include).slice(0).sort(ascendingSpecies);
             for (var pokeId in variationIncludes) {
-                if (!ret.hasOwnProperty(contestThemes[theme][contestPermaVariations[i]])) {
-                    ret[contestThemes[theme][contestPermaVariations[i]]] = [];
+                if (!ret.hasOwnProperty(contestThemes[theme][variation])) {
+                    ret[contestThemes[theme][variation]] = [];
                 }
                 if (isRare(variationIncludes[pokeId])) {
-                    ret[contestThemes[theme][contestPermaVariations[i]]].push(pokeInfo.icon(variationIncludes[pokeId]) + " " + link("/bst " + variationIncludes[pokeId], poke(variationIncludes[pokeId])));
+                    ret[contestThemes[theme][variation]].push(pokeInfo.icon(variationIncludes[pokeId]) + " " + link("/bst " + variationIncludes[pokeId], poke(variationIncludes[pokeId])));
                 }
             }
         }
