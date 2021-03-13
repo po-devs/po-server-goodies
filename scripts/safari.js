@@ -8061,8 +8061,11 @@ function Safari() {
         var onChannel = sys.playersOfChannel(safchan);
         for (var i in onChannel) {
             player = getAvatar(onChannel[i]);
-            player.altTimeline.lead = 0;
-            player.altTimeline.buff = 1;
+            
+            if (player) {
+                player.altTimeline.lead = 0;
+                player.altTimeline.buff = 1;
+            }
         }
         if (currentTheme && contestThemes[currentTheme].realityTwister) {
             currentThemeEffect = ["past", "portal", "distortion"].random();
