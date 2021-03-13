@@ -52890,6 +52890,19 @@ function Safari() {
                 } else {
                     safaribot.sendMessage(src, info.name + " cannot be found in any theme currently.", safchan);
                 }
+                
+                if (SESSION.channels(safchan).isChannelOwner(src)) {
+                    var editBST = [];
+                    for (var theme in contestThemes) {
+                        if (contestThemes[theme].editBST && info.num in contestThemes[theme].editBST) {
+                            editBST.push(contestThemes[theme].name + " (" + contestThemes[theme].editBST[info.num] + ")");
+                        }
+                    }
+                    
+                    if (editBST.length > 0) {
+                        safaribot.sendMessage(src, info.name + " has a custom BST value in the following themes: " + readable(editBST), safchan);
+                    }
+                }
                 if (opt.contains("trivia")) {
                     if (triviaData.hasOwnProperty(info.num+"")) {
                         var l = [], td = triviaData[info.num+""];
