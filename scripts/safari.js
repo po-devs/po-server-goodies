@@ -2839,7 +2839,7 @@ function Safari() {
                     safaribot.sendHtmlAll("The twisted dimensions returned to normal!", safchan);
                 }                
                 currentThemeEffect = false;
-                //currentThemeSecondary = false;
+                currentThemeSecondary = false;
                 chosenThemes = null;
             }
             contestVotes = null;
@@ -7626,11 +7626,11 @@ function Safari() {
             var cTheme = themeOverride || currentTheme;
             var isPortaled = false;
             if (cTheme) {
+                var theme = contestThemes[cTheme], list = [];
                 if (currentThemeSecondary && currentThemeEffect == "portal" && chance(0.5)) {
                     cTheme = currentThemeSecondary;
                     isPortaled = true;
                 }
-                var theme = contestThemes[cTheme], list = [];
                 if (spiritMon) {
                     statCap = [810, 740, 695, 630, 605, 590][safari.events.spiritDuelsTeams.length - 2];
                     statMin = [480, 450, 420, 380, 320, 0][safari.events.spiritDuelsTeams.length - 2];
@@ -7975,7 +7975,7 @@ function Safari() {
             currentTheme = null;
             currentThemeAlter = false;
             currentThemeEffect = null;
-            //currentThemeSecondary = null;
+            currentThemeSecondary = null;
             currentThemeFlavor = null;
             currentRules = this.pickRules(currentTheme);
         } else if (commandData.toLowerCase() in contestThemes) {
