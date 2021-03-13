@@ -8945,6 +8945,14 @@ function Safari() {
     };
     this.computeCatchRate = function(src, ball) {
         var player = getAvatar(src), wild, isShiny, wildStats, story = false, storyMultiplier = 1;
+        
+        var leader = parseInt(player.party[0], 10);
+        if (currentThemeEffect == "distortion") {
+			leader = parseInt(player.party[player.party.length-1], 10);
+        }
+        if (currentThemeEffect == "past" && player.altTimeline.lead !== 0) {
+			leader = parseInt(player.altTimeline.lead, 10);
+        }
 
         var ballBonus = itemData[ball].ballBonus;
 
@@ -8965,7 +8973,7 @@ function Safari() {
         var legendaryChance = isLegend ? 0.50 : 1;
         var spiritMonBonus = wildSpirit ? 0.50 : 1;
         var flowerGirlBonus = 1;
-        var cherishBonus = Math.min(countDuplicates(pokeInfo.species(getInputPokemon(poke(player.party[0])).num)), 10);
+        var cherishBonus = Math.min(countDuplicates(pokeInfo.species(getInputPokemon(poke(leader)).num)), 10);
         var scaleColor = player.scaleDeadline >= now() ? player.scaleColor : null;
 
         var costumeBonus = 1;
@@ -9020,11 +9028,11 @@ function Safari() {
         if (ball == "safari" && player.costume == "rich") {
             ballBonus *= 0.5;
         }
-        if (isLegendary(player.party[0]) && player.costume == "ninja") {
+        if (isLegendary(leader) && player.costume == "ninja") {
             ballBonus *= 0.85;
         }
 
-        var userStats = (getBST(player.party[0]));
+        var userStats = (getBST(leader));
         if (!(currentRules && currentRules.invertedBST)) {
             if (player.costume == "pokefan") {
                 userStats = Math.min(userStats, 500);
@@ -9044,13 +9052,13 @@ function Safari() {
             statsBonus = (userStats - wildStats) / -8000;
         }
         else {
-            userStats += 0 + (ball === "level" ? 80 : 0) + (player.costume === "flower" && type2(player.party[0]) === "???" ? 50 : 0);
+            userStats += 0 + (ball === "level" ? 80 : 0) + (player.costume === "flower" && type2(leader) === "???" ? 50 : 0);
             userStats += (cherishBonus * 6);
             var statsBonus = (userStats - wildStats) / 8000;
         }
         var wildWeight = getWeight(wild);
         var typeBonus;
-        var pType1 = type1(player.party[0]), pType2 = type2(player.party[0]), wType1 = type1(wild), wType2 = type2(wild);
+        var pType1 = type1(leader), pType2 = type2(leader), wType1 = type1(wild), wType2 = type2(wild);
         
         if (currentPokemon == 352 && currentTypeOverride) { // Kecleon
             wType1 = currentTypeOverride;
@@ -9165,7 +9173,7 @@ function Safari() {
             }
         }
         if (ball === "uturn") {
-            if (canLearnMove(player.party[0], 369) || canLearnMove(player.party[0], 521)) {
+            if (canLearnMove(leader, 369) || canLearnMove(leader, 521)) {
                 ballBonus = itemData[ball].bonusRate;
             }
             else {
@@ -9173,7 +9181,7 @@ function Safari() {
             }
         }
         if (ball === "love") {
-            if (hasCommonEggGroup(player.party[0], wild)) {
+            if (hasCommonEggGroup(leader, wild)) {
                 ballBonus = itemData[ball].bonusRate;
             }
             else {
@@ -9222,7 +9230,7 @@ function Safari() {
         }
         if (ball === "mirror" || (currentRules && currentRules.similarityMode)) {
             typeBonus = 1;
-            ballBonus = this.checkSimilarity(player.party[0], wild, scaleColor);
+            ballBonus = this.checkSimilarity(leader, wild, scaleColor);
 
             if (ball == "mirror") {
                 legendaryChance = 1;
@@ -9239,7 +9247,6 @@ function Safari() {
 
         var tierChance = safari.getTierChance(wild);
         
-        var leader = parseInt(player.party[0], 10);
         var species = pokeInfo.species(leader);
         var dailyBonus = safari.validDailyBoost(player) ? (dailyBoost.bonus * this.hasCostumeSkill(player, "botdboost") ? 1.1 : 1) : 1;
         var rulesMod = currentRules ? this.getRulesMod(player, player.party[0], currentRules, scaleColor) : [1, false];
@@ -9264,16 +9271,16 @@ function Safari() {
         }
 
         if (ball === "premier") {
-            if (hasType(player.party[0], "Normal") && player.costume !== "inver") {
-                ballBonus = hasType(player.party[0], "???") ? itemData.premier.maxBonus : itemData.premier.bonusRate;
-            } else if (hasType(player.party[0], "???")) {
+            if (hasType(leader, "Normal") && player.costume !== "inver") {
+                ballBonus = hasType(leader, "???") ? itemData.premier.maxBonus : itemData.premier.bonusRate;
+            } else if (hasType(leader, "???")) {
                 ballBonus = itemData.premier.bonusRate;
             }
             if (this.hasCostumeSkill(player, "quickBallBoost")) {
                 costumeBonus *= costumeBoost(player);
             }
         }
-        else if ((player.costume === "flower") && (hasType(player.party[0], "???"))) {
+        else if ((player.costume === "flower") && (hasType(leader, "???"))) {
             flowerGirlBonus = 1.125;
         }
 
@@ -11175,8 +11182,9 @@ function Safari() {
         
         var partyShown = [].concat(player.party);
         if (currentThemeEffect == "distortion") {
-            partyShown = player.party.reverse();
-        } else if (currentThemeEffect == "distortion") {
+            partyShown = [].concat(player.party)
+            partyShown = partyShown.reverse();
+        } else if (currentThemeEffect == "past") {
             partyShown = [].concat(player.party);
             if (player.altTimeline.lead !== 0) {
                 partyShown[0] = player.altTimeline.lead;
@@ -35583,8 +35591,9 @@ function Safari() {
         line1 += costumeSprite(player, os) + " ";
         var partyShown = [].concat(player.party);
         if (currentThemeEffect == "distortion") {
-            partyShown = player.party.reverse();
-        } else if (currentThemeEffect == "distortion") {
+            partyShown = [].concat(player.party)
+            partyShown = partyShown.reverse();
+        } else if (currentThemeEffect == "past") {
             partyShown = [].concat(player.party);
             if (player.altTimeline.lead !== 0) {
                 partyShown[0] = player.altTimeline.lead;
