@@ -57461,16 +57461,16 @@ function Safari() {
         	var possibleThemes;
         	if (chosenThemes) {
         		possibleThemes = [].concat(chosenThemes);
-        		chosenThemes = null;
         	} else {
         		possibleThemes = Object.keys(contestThemes).concat();
 			}
-            var repetitionCooldown = 4;
+            var repetitionCooldown = chosenThemes ? 0 : 4;
             for (var e = lastContests.length - 1, i = 0; e >= 0 && i < repetitionCooldown; e--, i++) {
                 if (possibleThemes.contains(lastContests[e].themeId) && (lastContests[e].themeId !== "seasonal" && lastContests[e].themeId !== "seasonal2")) {
                     possibleThemes.splice(possibleThemes.indexOf(lastContests[e].themeId), 1);
                 }
             }
+			chosenThemes = null;
             if (possibleThemes.contains("none")) {
                 possibleThemes.splice(possibleThemes.indexOf("none"), 1);
             }
