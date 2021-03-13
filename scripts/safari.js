@@ -1888,6 +1888,7 @@ function Safari() {
     var contestCooldown = (SESSION.global() && SESSION.global().safariContestCooldown ? SESSION.global().safariContestCooldown : contestCooldownLength);
     var contestantsCount = {};
     var contestantsWild = [];
+    var contestPermaVariations = ["distortion", "portal", "past"];
     var currentTheme;
     var currentThemeAlter;
     var currentThemeEffect;
@@ -8708,14 +8709,20 @@ function Safari() {
         for (var theme in contestThemes) {
             if (this.isInTheme(pokeId, theme)) {
                 if (retFull) {
-                    var hasDailyVariation = false;
+                    var hasPermanentVariation = false;
                     for (var day = 1; day <= 7; day++) { // for retFull we want the full names of all possible daily variations of the theme
                         if (contestThemes[theme].hasOwnProperty("day" + day) && (contestThemes[theme]["day" + day].contains(pokeId) || contestThemes[theme].include.contains(pokeId))) {
-                            hasDailyVariation = true;
+                            hasPermanentVariation = true;
                             themeList.push(contestThemes[theme]["day" + day + "name"]);
                         }
                     }
-                    if (!hasDailyVariation) { // themes with daily variations already had their variation names added above, so don't add the root theme's name
+                    for (var i = 0; i < contestPermaVariations.length; i++) {
+                        if (contestThemes[name].hasOwnProperty(contestPermaVariations[i]) && (contestThemes[name][contestPermaVariations[i]].contains(pokeId) || contestThemes[theme].include.contains(pokeId))) {
+                            hasPermanentVariation = true;
+                            themeList.push(contestThemes[theme].name + "[" + cap(contestPermaVariations[i]) + "]");
+                        }
+                    }
+                    if (!hasPermanentVariation) { // themes with perma variations already had their variation names added above, so don't add the root theme's name
                         themeList.push(contestThemes[theme].name);
                     }
                 }
@@ -8740,7 +8747,7 @@ function Safari() {
         };
         var ret = {},
             include = contestThemes[theme].include.slice(0).sort(ascendingSpecies),
-            hasDailyVariation = false;
+            hasPermanentVariation = false;
 
         for (var day = 1; day <= 7; day++) {
             var dayIncludes = contestThemes[theme]["day"+day];
@@ -8749,7 +8756,7 @@ function Safari() {
                 continue;
             }
 
-            hasDailyVariation = true;
+            hasPermanentVariation = true;
             dayIncludes = dayIncludes.concat(include).slice(0).sort(ascendingSpecies);
             for (var pokeId in dayIncludes) {
                 if (!ret.hasOwnProperty(contestThemes[theme]["day" + day + "name"])) {
@@ -8760,14 +8767,33 @@ function Safari() {
                 }  // e.g. {"Festival": ["Jirachi, Furfrou-Kabuki"...], "Moon Festival": ["Lunala"], "Fire Festival": [""]}
             }
         }
+        
+        for (var i = 0; i < contestPermaVariations.length; i++) {
+            var variationIncludes = contestThemes[theme][contestPermaVariations[i]];
+            
+            if (!variationIncludes) {
+                continue;
+            }
+            
+            hasPermanentVariation = true;
+            variationIncludes = variationIncludes.concat(include).slice(0).sort(ascendingSpecies);
+            for (var pokeId in variationIncludes) {
+                if (!ret.hasOwnProperty(contestThemes[theme][contestPermaVariations[i]])) {
+                    ret[contestThemes[theme][contestPermaVariations[i]]] = [];
+                }
+                if (isRare(variationIncludes[pokeId])) {
+                    ret[contestThemes[theme][contestPermaVariations[i]]].push(pokeInfo.icon(variationIncludes[pokeId]) + " " + link("/bst " + variationIncludes[pokeId], poke(variationIncludes[pokeId])));
+                }
+            }
+        }
 
-        if (!hasDailyVariation) { // themes with daily variations already had their base rares concatenated above, so don't add the root theme's rares as a separate entry
+        if (!hasPermanentVariation) { // themes with daily variations already had their base rares concatenated above, so don't add the root theme's rares as a separate entry
             for (var pokeId in include) {
                 if (!ret.hasOwnProperty(contestThemes[theme].name)) {
                     ret[contestThemes[theme].name] = [];
                 }
                 if (isRare(include[pokeId])) {
-                    ret[contestThemes[theme].name].push(pokeInfo.icon(include[pokeId]) + " " + link("/bst " + includes[pokeId], poke(include[pokeId])));
+                    ret[contestThemes[theme].name].push(pokeInfo.icon(include[pokeId]) + " " + link("/bst " + include[pokeId], poke(include[pokeId])));
                 } // e.g. {"Desert": ["Regirock, Registeel"...]}
             }
         }
