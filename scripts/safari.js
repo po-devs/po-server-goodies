@@ -7626,11 +7626,11 @@ function Safari() {
             var cTheme = themeOverride || currentTheme;
             var isPortaled = false;
             if (cTheme) {
-                var theme = contestThemes[cTheme], list = [];
                 if (currentThemeSecondary && currentThemeEffect == "portal" && chance(0.5)) {
                     cTheme = currentThemeSecondary;
                     isPortaled = true;
                 }
+                var theme = contestThemes[cTheme], list = [];
                 if (spiritMon) {
                     statCap = [810, 740, 695, 630, 605, 590][safari.events.spiritDuelsTeams.length - 2];
                     statMin = [480, 450, 420, 380, 320, 0][safari.events.spiritDuelsTeams.length - 2];
@@ -52865,7 +52865,7 @@ function Safari() {
                     efmsg2.push("Not-Very-Effective Against: " + (nve2.join("") || "None"));
                     efmsg2.push("No Effect Against: " + (im2.join("") || "None"));
                 }
-                safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + (pokeInfo.forme(info.num) > 0 ? "-" + pokeInfo.forme(info.num) : "") + (pokeInfo.species(info.num) !== info.num ? " (" + info.num + "). " : ". ") + info.name + "'s BST is " + getBST(info.num) + statsmsg, safchan);
+                safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + (pokeInfo.forme(info.num) > 0 ? "-" + pokeInfo.forme(info.num) : "") + (pokeInfo.species(info.num) !== info.num ? "(" + info.num + "). " : ". ") + info.name + "'s BST is " + getBST(info.num) + statsmsg, safchan);
                 safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Tier: " + safari.getTier(info.num) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +".", safchan);
                 if (opt.contains("effectiveness")) {
                     safaribot.sendHtmlMessage(src, efmsg.join(", "), safchan);
