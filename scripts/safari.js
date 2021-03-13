@@ -54605,18 +54605,16 @@ function Safari() {
                 } else {
                     contestCooldown = 181;
                     safaribot.sendMessage(src, "Entering the pre-contest preparation phase!", safchan);
-					var data = commandData.split(":");
+					var data = commandData.split(",");
 					if (data.length >= 3) {
 						chosenThemes = [];
 						for (var i = 0; i < data.length; i++) {
 							if (contestThemes.hasOwnProperty(data[i].toLowerCase)) {
 								chosenThemes.push(data[i].toLowerCase);
-								safaribot.sendMessage(src, "Adding theme " + data[i].toLowerCase() + " to the precontest.", safchan);
 							}
 						}
 						if (chosenThemes.length < 3) {
 							chosenThemes = null;
-							safaribot.sendMessage(src, "Submit 3 valid themes to start or random ones will be chosen!", safchan);
 						}
 					}
                 }
