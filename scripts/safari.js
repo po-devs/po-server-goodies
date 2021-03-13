@@ -8076,9 +8076,9 @@ function Safari() {
             }
         }
         if (currentTheme && contestThemes[currentTheme].flavor) {
-        	currentThemeFlavor = contestThemes[currentTheme].flavor;
+            currentThemeFlavor = contestThemes[currentTheme].flavor;
         } else {
-        	currentThemeFlavor = null;
+            currentThemeFlavor = null;
         }
         if (currentTheme && contestThemes[currentTheme].realityTwister) {
             currentThemeEffect = ["past", "portal", "distortion"].random();
@@ -9491,10 +9491,10 @@ function Safari() {
             }
             var catchVerb = "caught the ";
             if (currentThemeFlavor && currentThemeFlavor == "rocket") {
-            	catchVerb = player.costume == "rocket" ? "stole the " : "liberated the ";
+                catchVerb = player.costume == "rocket" ? "stole the " : "liberated the ";
             }
             if (ball == "spy") {
-                safaribot.sendHtmlAll("Some stealthy person " catchVerb + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendHtmlAll("Some stealthy person " + catchVerb + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
                 player.records.catchSpy += 1;
             } else if (ball == "spirit") {
                 safari.catchSpiritMon(player, currentPokemon);
@@ -9852,9 +9852,9 @@ function Safari() {
             this.missionProgress(player, "catchAny", currentPokemon, 1);
             this.costumeEXP(player, "catch");
             if (currentThemeFlavor) {
-            	if (currentThemeFlavor.toLowerCase() == player.costume.toLowerCase()) {
-            		this.costumeEXP(player, "catch"); //double exp
-            	}
+                if (currentThemeFlavor.toLowerCase() == player.costume.toLowerCase()) {
+                    this.costumeEXP(player, "catch"); //double exp
+                }
             }
             if (hasType(currentPokemon, "Water")) {
                 this.costumeEXP(player, "catchwater");
