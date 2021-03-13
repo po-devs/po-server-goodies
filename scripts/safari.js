@@ -1964,6 +1964,7 @@ function Safari() {
             "premier": 0.125,
             "mono": 0.10
         },
+        "buffBalls": {},
         "bst": { //Both min and max are optional. It's possible to have only one of them in this object
             "minChance": 0,
             "min": [230, 400],
@@ -8304,6 +8305,19 @@ function Safari() {
                 removables.push("excludeBalls");
             }
         }
+        if ("buffBalls" in rules) {
+            bonusBalls = [];
+            obj = getRule("buffBalls");
+            for (e in obj) {
+                if (chance(obj[e])) {
+                    bonusBalls.push(e);
+                    if (bonusBalls.length >= 3) {
+                        break;
+                    }
+                }
+            }
+            out.buffBalls = bonusBalls;
+        }
         if ("bst" in rules) {
             var bst = getRule("bst");
             if ("min" in bst && "minChance" in bst && chance(bst.minChance)) {
@@ -8541,6 +8555,9 @@ function Safari() {
             } else {
                 out.push(optionalColor("Forbidden Balls: " + readable(rules.excludeBalls.map(cap), "and"), colored, "red"));
             }
+        }
+        if ("buffBalls" in rules && rules.buffBalls.length > 0) {
+			out.push(optionalColor("Buffed Balls: " + readable(rules.buffBalls.map(cap), "and"), colored, "red"));
         }
         if ("rewards" in rules) {
             list = [];
@@ -9160,6 +9177,9 @@ function Safari() {
                     break;
                 }
             }
+        }
+        if (currentTheme && currentRules && currentRules.ballBuff && currentRules.ballBuff.contains(ball)) {
+        	ballBonus *= 1.15;
         }
         if (ball === "mirror" || (currentRules && currentRules.similarityMode)) {
             typeBonus = 1;
