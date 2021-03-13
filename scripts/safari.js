@@ -8782,7 +8782,7 @@ function Safari() {
         for (var i = 0; i < contestPermaVariations.length; i++) {
             var variation = contestPermaVariations[i];
             var variationIncludes = contestThemes[theme][variation];
-            var key = contestThemes[theme].name + " [" + variation + "]";
+            var key = contestThemes[theme].name + " [" + cap(variation) + "]";
             
             if (!variationIncludes) {
                 continue;
