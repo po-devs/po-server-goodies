@@ -1894,6 +1894,7 @@ function Safari() {
     var currentThemeEffect;
     var currentThemeFlavor;
     var currentThemeSecondary;
+    var chosenThemes;
     var contestVotes;
     var contestVotingCooldown = 4;
     var contestVotingCount = (SESSION.global() && SESSION.global().contestVotingCount ? SESSION.global().contestVotingCount : contestVotingCooldown);
