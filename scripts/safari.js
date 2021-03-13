@@ -2839,6 +2839,7 @@ function Safari() {
                 }                
                 currentThemeEffect = false;
                 currentThemeSecondary = false;
+                chosenThemes = null;
             }
             contestVotes = null;
         }
@@ -54603,6 +54604,18 @@ function Safari() {
                 } else {
                     contestCooldown = 181;
                     safaribot.sendMessage(src, "Entering the pre-contest preparation phase!", safchan);
+					var data = commandData.split(",");
+					if (data.length >= 3) {
+						chosenThemes = [];
+						for (var i = 0; i < data.length; i++) {
+							if (contestThemes.hasOwnProperty(data[i].toLowerCase)) {
+								chosenThemes.push(data[i].toLowerCase);
+							}
+						}
+						if (chosenThemes.length < 3) {
+							chosenThemes = null;
+						}
+					}
                 }
                 return true;
             }
@@ -57441,7 +57454,13 @@ function Safari() {
             }
         }
         if (contestCooldown === 180) {
-            var possibleThemes = Object.keys(contestThemes).concat();
+        	var possibleThemes;
+        	if (chosenThemes) {
+        		possibleThemes = [].concat(chosenThemes);
+        		chosenThemes = null;
+        	} else {
+        		possibleThemes = Object.keys(contestThemes).concat();
+			}
             var repetitionCooldown = 4;
             for (var e = lastContests.length - 1, i = 0; e >= 0 && i < repetitionCooldown; e--, i++) {
                 if (possibleThemes.contains(lastContests[e].themeId) && (lastContests[e].themeId !== "seasonal" && lastContests[e].themeId !== "seasonal2")) {
