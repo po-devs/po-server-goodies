@@ -15476,7 +15476,7 @@ function Safari() {
                     }
                 }
             }
-            var shiny = sys.rand(0, shinyChance) < 1;
+            var shiny = sys.rand(0, shinyChanceFinal) < 1;
 
             if (shiny) {
                 id = id + "";
