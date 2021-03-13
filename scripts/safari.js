@@ -2692,6 +2692,12 @@ function Safari() {
                 return true;
             }
         }
+        if (arr.contains("distortion")) {
+            if (contestCount > 0 && currentThemeEffect == "distortion") {
+                safaribot.sendMessage(src, "You can't " + action + " during the twisted dimensions!", safchan);
+                return true;
+            }
+        }
         if (arr.contains("wild")) {
             if (currentPokemon) {
                 safaribot.sendMessage(src, "You can't " + action + " while a Wild Pokemon is out!", safchan);
@@ -7790,7 +7796,7 @@ function Safari() {
         else {
             if ((isRare(num) || shiny) && !dexNum) {
                 amount = 1;
-                if ((isLegendary(num) || shiny) && ((contestCount > 0 && contestCount % 2 === 0))) { // if legendary or shiny and either contest active + 1 in 2 chance or contest no active and BST over 600
+                if ((isLegendary(num) || shiny) && ((contestCount > 0 && contestCount % 2 === 0)) || getBST(num) > 600 && goldenBonus) { // if legendary or shiny and either contest active + 1 in 2 chance or contest no active and BST over 600
                     wildEvent = true;
                 }
             }
@@ -10846,7 +10852,7 @@ function Safari() {
                     return;
                 }
             }
-            if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid"])) {
+            if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid", "distortion"])) {
                 return;
             }
             if (player.party.length >= 6) {
@@ -10866,7 +10872,7 @@ function Safari() {
             }
             this.saveGame(player);
         } else if (action === "remove") {
-            var restrictions = ["auction", "battle", "event", "tutorial", "pyramid"];
+            var restrictions = ["auction", "battle", "event", "tutorial", "pyramid", "distortion"];
             var reason = "modify your party";
             var index;
 
@@ -11000,7 +11006,7 @@ function Safari() {
             safaribot.sendMessage(src, "Deleted saved party at slot " + targetId + "!", safchan);
             this.saveGame(player);
         } else if (action === "load") {
-            if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid", "tutorial"])) {
+            if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid", "tutorial", "distortion"])) {
                 return;
             }
             var num = targetId - 1;
