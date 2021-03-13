@@ -8756,7 +8756,7 @@ function Safari() {
                     ret[contestThemes[theme]["day" + day + "name"]] = [];
                 }
                 if (isRare(dayIncludes[pokeId])) {
-                    ret[contestThemes[theme]["day" + day + "name"]].push(pokeInfo.icon(dayIncludes[pokeId]) + " " + poke(dayIncludes[pokeId]));
+                    ret[contestThemes[theme]["day" + day + "name"]].push(pokeInfo.icon(dayIncludes[pokeId]) + " " + link("/bst " + dayIncludes[pokeId], poke(dayIncludes[pokeId])));
                 }  // e.g. {"Festival": ["Jirachi, Furfrou-Kabuki"...], "Moon Festival": ["Lunala"], "Fire Festival": [""]}
             }
         }
@@ -8767,7 +8767,7 @@ function Safari() {
                     ret[contestThemes[theme].name] = [];
                 }
                 if (isRare(include[pokeId])) {
-                    ret[contestThemes[theme].name].push(pokeInfo.icon(include[pokeId]) + " " + poke(include[pokeId]));
+                    ret[contestThemes[theme].name].push(pokeInfo.icon(include[pokeId]) + " " + link("/bst " + includes[pokeId], poke(include[pokeId])));
                 } // e.g. {"Desert": ["Regirock, Registeel"...]}
             }
         }
@@ -8779,7 +8779,7 @@ function Safari() {
                     ret[contestThemes[theme].alterName] = [];
                 }
                 if (isRare(alterIncludes[pokeId])) {
-                    ret[contestThemes[theme].alterName].push(pokeInfo.icon(alterIncludes[pokeId]) + " " + poke(alterIncludes[pokeId]));
+                    ret[contestThemes[theme].alterName].push(pokeInfo.icon(alterIncludes[pokeId]) + " " + link("/bst " + alterIncludes[pokeId], poke(alterIncludes[pokeId])));
                 } // e.g. {"Desert": ["Regirock, Registeel"...], "Cursed Pharaoh's Treasury":["Runerigus, Groudon"...]}
             }
         }
@@ -8821,8 +8821,7 @@ function Safari() {
        safaribot.sendHtmlMessage(src, "<u>Rare Pokémon that appear in the following themes</u>:", safchan);
 
        for (var key in themeRares) {
-           var mapped = themeRares[key].map(function(e) { return link("/bst " + e, e) });
-           safaribot.sendHtmlMessage(src, "<b>{0}</b>: {1}".format(key, readable(mapped)), safchan);
+           safaribot.sendHtmlMessage(src, "<b>{0}</b>: {1}".format(key, readable(themeRares[key])), safchan);
        }
 
        sys.sendMessage(src, "", safchan);
