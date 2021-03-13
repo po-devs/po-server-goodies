@@ -730,9 +730,9 @@ function Safari() {
             }
         },
         altTimeline: {
-        	lead: 0,
-        	buff: 1,
-        	cooldown: 0
+            lead: 0,
+            buff: 1,
+            cooldown: 0
         },
         npcBets: {
             giovanni: 0,
@@ -2822,15 +2822,15 @@ function Safari() {
             currentTheme = null;
             currentThemeAlter = false;
             if (currentThemeEffect) {
-				if (currentThemeEffect == "portal") {
-					safaribot.sendHtmlAll("The portal was sealed!", safchan);
-				} else if (currentThemeEffect == "past") {
-					safaribot.sendHtmlAll("The timeline was reverted!", safchan);
-				} else if (currentThemeEffect == "distortion") {
-					safaribot.sendHtmlAll("The twisted dimensions returned to normal!", safchan);
-				}            	
-				currentThemeEffect = false;
-				currentThemeSecondary = false;
+                if (currentThemeEffect == "portal") {
+                    safaribot.sendHtmlAll("The portal was sealed!", safchan);
+                } else if (currentThemeEffect == "past") {
+                    safaribot.sendHtmlAll("The timeline was reverted!", safchan);
+                } else if (currentThemeEffect == "distortion") {
+                    safaribot.sendHtmlAll("The twisted dimensions returned to normal!", safchan);
+                }                
+                currentThemeEffect = false;
+                currentThemeSecondary = false;
             }
             contestVotes = null;
         }
@@ -3100,26 +3100,26 @@ function Safari() {
         }
         return outList;
     }
-	function isBranchedEvolved(num, getOther) {
-		if (devolutions.hasOwnProprty(num+"")) {
-			var entry = devolutions[num+""];
-			if (evolutions.hasOwnProperty(entry+"") && Array.isArray(evolutions[entry+""])) {
-				if (getOther) {
-					var out = [];
-					for (var i = 0; i < evolutions[entry+""].length; i++) {
-						if (evolutions[entry+""][i] == num) {
-							continue;
-						}
-						out.push(evolutions[entry+""][i]);
-					}
-					return out;
-				} else {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    function isBranchedEvolved(num, getOther) {
+        if (devolutions.hasOwnProprty(num+"")) {
+            var entry = devolutions[num+""];
+            if (evolutions.hasOwnProperty(entry+"") && Array.isArray(evolutions[entry+""])) {
+                if (getOther) {
+                    var out = [];
+                    for (var i = 0; i < evolutions[entry+""].length; i++) {
+                        if (evolutions[entry+""][i] == num) {
+                            continue;
+                        }
+                        out.push(evolutions[entry+""][i]);
+                    }
+                    return out;
+                } else {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     function compare(a,b) {
         if (a.sort < b.sort) {
             return -1;
@@ -7618,8 +7618,8 @@ function Safari() {
             if (cTheme) {
                 var theme = contestThemes[cTheme], list = [];
                 if (currentThemeSecondary && currentThemeEffect == "portal" && chance(0.5)) {
-                	cTheme = currentThemeSecondary;
-                	isPortaled = true;
+                    cTheme = currentThemeSecondary;
+                    isPortaled = true;
                 }
                 if (spiritMon) {
                     statCap = [810, 740, 695, 630, 605, 590][safari.events.spiritDuelsTeams.length - 2];
@@ -7861,10 +7861,10 @@ function Safari() {
             }
             var appmsg;
             if (isPortaled) {
-            	appmsg = "A wild {2}{0} came through the portal! <i>(BST: {1})</i>".format(displayId.join(""), bst, term);
+                appmsg = "A wild {2}{0} came through the portal! <i>(BST: {1})</i>".format(displayId.join(""), bst, term);
             } else {
-            	appmsg = wildPokemonMessage.format(displayId.join(""), bst, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
-			}
+                appmsg = wildPokemonMessage.format(displayId.join(""), bst, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
+            }
             var sprite = (cageMode ? cage : pokeInfo.sprite(currentPokemonDisplay));
 
             var cTheme = currentTheme;
@@ -8033,13 +8033,13 @@ function Safari() {
         }
         if (!(icon)) {
             if (currentTheme && contestThemes[currentTheme].iconAlts) {
-            	icon = contestThemes[currentTheme].iconAlts.random();
+                icon = contestThemes[currentTheme].iconAlts.random();
             } else {
-				icon = currentTheme && contestThemes[currentTheme].icon ? pokeInfo.icon(contestThemes[currentTheme].icon) + " " : "";
-				if (icon && currentTheme && contestThemes[currentTheme].icon2) {
-					icon += (pokeInfo.icon(contestThemes[currentTheme].icon2) + " ");
-				}
-			}
+                icon = currentTheme && contestThemes[currentTheme].icon ? pokeInfo.icon(contestThemes[currentTheme].icon) + " " : "";
+                if (icon && currentTheme && contestThemes[currentTheme].icon2) {
+                    icon += (pokeInfo.icon(contestThemes[currentTheme].icon2) + " ");
+                }
+            }
         }
         if (icon) {
             sys.sendHtmlAll(toColor("<timestamp/> *** *********************************************************** ", "magenta") + icon, safchan);
@@ -8058,60 +8058,60 @@ function Safari() {
         
         var messOut = {};
         var onChannel = sys.playersOfChannel(safchan);
-		for (var i in onChannel) {
-			player = getAvatar(onChannel[i]);
-			player.altTimeline.lead = 0;
-			player.altTimeline.buff = 1;
-		}
+        for (var i in onChannel) {
+            player = getAvatar(onChannel[i]);
+            player.altTimeline.lead = 0;
+            player.altTimeline.buff = 1;
+        }
         if (currentTheme && contestThemes[currentTheme].realityTwister) {
-        	currentThemeEffect = ["past", "portal", "distortion"].random();
-        	if (currentThemeEffect == "portal") {
-        		var ph = [];
-        		for (var i = 0; i < themesListed.length; i++) {
-        			if (themesListed[i].toLowerCase() == currentTheme.toLowerCase()) {
-        				continue;
-        			}
-        			ph.push(themesListed[i]);
-        		}
-        		if (ph.length > 0) {
-        			currentThemeSecondary = ph.random();
-					safaribot.sendHtmlAll(pokeInfo.icon(484) + " Palkia appeared and opened a portal to " + contestThemes[currentThemeSecondary].name + "!", safchan);
-        		} else {
-        			currentThemeSecondary = null;
-        		}
-        	} else if (currentThemeEffect == "past") {
-        		var player, party, mon, branched, buffAmt, isShiny, n = now();
-        		messOut = {};
-				safaribot.sendHtmlAll(pokeInfo.icon(483) + " Dialga appeared and opened a rift to the past!", safchan);
-        		for (var i in onChannel) {
-        			player = getAvatar(onChannel[i]);
-        			party = player.party || [];
-        			mon = party[0];
-        			if (mon) {
-        				branched = isBranchedEvolved(mon, true);
-        				if (branched && branched.length > 0) {
-        					isShiny = typeof mon == "string";
-        					buffAmt = (1.25 + 0.05 * branched.length);
-        					branched = branched.random();
-        					messOut[player.id] = [pokeInfo.icon(mon) + " -> " + pokeInfo.icon(parseInt(branched, 10)), "Time traveling to the past created a parallel timeline where your " + poke(mon) + " was actually a " + (isShiny ? "Shiny " : "") + poke(branched) + "! You have a " + buffAmt + "x catch rate during this effect!"];
-        					player.altTimeline.lead = branched + (isShiny ?  "" : 0);
-        					player.altTimeline.buff = buffAmt;
-        				} else {
-        					player.altTimeline.lead = 0;
-        					player.altTimeline.buff = 1;
-							player.altTimeline.cooldown = n + 60 * 5 * 1000;
-        				}
-        			}
-        		}
-        	} else if (currentThemeEffect == "distortion") {
-				safaribot.sendHtmlAll(pokeInfo.icon(487) + " Giratina appeared and twisted the dimensions!", safchan);
-			}
+            currentThemeEffect = ["past", "portal", "distortion"].random();
+            if (currentThemeEffect == "portal") {
+                var ph = [];
+                for (var i = 0; i < themesListed.length; i++) {
+                    if (themesListed[i].toLowerCase() == currentTheme.toLowerCase()) {
+                        continue;
+                    }
+                    ph.push(themesListed[i]);
+                }
+                if (ph.length > 0) {
+                    currentThemeSecondary = ph.random();
+                    safaribot.sendHtmlAll(pokeInfo.icon(484) + " Palkia appeared and opened a portal to " + contestThemes[currentThemeSecondary].name + "!", safchan);
+                } else {
+                    currentThemeSecondary = null;
+                }
+            } else if (currentThemeEffect == "past") {
+                var player, party, mon, branched, buffAmt, isShiny, n = now();
+                messOut = {};
+                safaribot.sendHtmlAll(pokeInfo.icon(483) + " Dialga appeared and opened a rift to the past!", safchan);
+                for (var i in onChannel) {
+                    player = getAvatar(onChannel[i]);
+                    party = player.party || [];
+                    mon = party[0];
+                    if (mon) {
+                        branched = isBranchedEvolved(mon, true);
+                        if (branched && branched.length > 0) {
+                            isShiny = typeof mon == "string";
+                            buffAmt = (1.25 + 0.05 * branched.length);
+                            branched = branched.random();
+                            messOut[player.id] = [pokeInfo.icon(mon) + " -> " + pokeInfo.icon(parseInt(branched, 10)), "Time traveling to the past created a parallel timeline where your " + poke(mon) + " was actually a " + (isShiny ? "Shiny " : "") + poke(branched) + "! You have a " + buffAmt + "x catch rate during this effect!"];
+                            player.altTimeline.lead = branched + (isShiny ?  "" : 0);
+                            player.altTimeline.buff = buffAmt;
+                        } else {
+                            player.altTimeline.lead = 0;
+                            player.altTimeline.buff = 1;
+                            player.altTimeline.cooldown = n + 60 * 5 * 1000;
+                        }
+                    }
+                }
+            } else if (currentThemeEffect == "distortion") {
+                safaribot.sendHtmlAll(pokeInfo.icon(487) + " Giratina appeared and twisted the dimensions!", safchan);
+            }
         }
         
         for (var x in messOut) {
-        	for (var i = 0; i < messOut[x].length; i++) {
-        		safaribot.sendHtmlMessage(sys.id(x), messOut[x][i], safchan);
-        	}
+            for (var i = 0; i < messOut[x].length; i++) {
+                safaribot.sendHtmlMessage(sys.id(x), messOut[x][i], safchan);
+            }
         }
 
         if (contestBroadcast) {
@@ -8557,7 +8557,7 @@ function Safari() {
             }
         }
         if ("buffBalls" in rules && rules.buffBalls.length > 0) {
-			out.push(optionalColor("Buffed Balls: " + readable(rules.buffBalls.map(cap), "and"), colored, "red"));
+            out.push(optionalColor("Buffed Balls: " + readable(rules.buffBalls.map(cap), "and"), colored, "red"));
         }
         if ("rewards" in rules) {
             list = [];
@@ -8603,21 +8603,21 @@ function Safari() {
             }
         }
         if (currentThemeEffect) {
-        	if (currentThemeEffect == "distortion" && theme.hasOwnProperty("distortion")) {
-        		if (theme.distortion.contains(pokeId)) {
-        			return true;
-        		}
-        	}
-        	if (currentThemeEffect == "past" && theme.hasOwnProperty("past")) {
-        		if (theme.past.contains(pokeId)) {
-        			return true;
-        		}
-        	}
-        	if (currentThemeEffect == "portal" && theme.hasOwnProperty("portal")) {
-        		if (theme.portal.contains(pokeId)) {
-        			return true;
-        		}
-        	}
+            if (currentThemeEffect == "distortion" && theme.hasOwnProperty("distortion")) {
+                if (theme.distortion.contains(pokeId)) {
+                    return true;
+                }
+            }
+            if (currentThemeEffect == "past" && theme.hasOwnProperty("past")) {
+                if (theme.past.contains(pokeId)) {
+                    return true;
+                }
+            }
+            if (currentThemeEffect == "portal" && theme.hasOwnProperty("portal")) {
+                if (theme.portal.contains(pokeId)) {
+                    return true;
+                }
+            }
         }
         if (pokeNum > 807) {
             if (!(currentThemeAlter)) {
@@ -8689,13 +8689,13 @@ function Safari() {
             }
         }
         if (contestThemes[name].hasOwnProperty("distortion") && contestThemes[name]["distortion"].contains(id)) {
-        	return true;
+            return true;
         }
         if (contestThemes[name].hasOwnProperty("past") && contestThemes[name]["past"].contains(id)) {
-        	return true;
+            return true;
         }
         if (contestThemes[name].hasOwnProperty("portal") && contestThemes[name]["portal"].contains(id)) {
-        	return true;
+            return true;
         }
 
         return false;
@@ -8821,7 +8821,8 @@ function Safari() {
        safaribot.sendHtmlMessage(src, "<u>Rare Pokémon that appear in the following themes</u>:", safchan);
 
        for (var key in themeRares) {
-           safaribot.sendHtmlMessage(src, "<b>{0}</b>: {1}".format(key, readable(themeRares[key])), safchan);
+           var mapped = themeRares[key].map(function(e) { return link("/bst " + e, e) });
+           safaribot.sendHtmlMessage(src, "<b>{0}</b>: {1}".format(key, readable(mapped)), safchan);
        }
 
        sys.sendMessage(src, "", safchan);
@@ -9179,7 +9180,7 @@ function Safari() {
             }
         }
         if (currentTheme && currentRules && currentRules.ballBuff && currentRules.ballBuff.contains(ball)) {
-        	ballBonus *= 1.15;
+            ballBonus *= 1.15;
         }
         if (ball === "mirror" || (currentRules && currentRules.similarityMode)) {
             typeBonus = 1;
@@ -9443,10 +9444,10 @@ function Safari() {
             var ch = "";
             var catchingMon = player.party[0];
             if (currentThemeEffect == "past" && player.altTimeline.lead !== 0) {
-            	catchingMon = player.altTimeline.lead;
+                catchingMon = player.altTimeline.lead;
             }
             if (currentThemeEffect == "distortion") {
-            	catchingMon = player.party[player.party.length-1];
+                catchingMon = player.party[player.party.length-1];
             }
             if (player.cherished.indexOf(pokeInfo.species(getInputPokemon(poke(catchingMon)).num)) !== -1) {
                 if (!player.cherishOff) {
@@ -9716,7 +9717,7 @@ function Safari() {
                 party2.push(player.party[0]);
                 player.party = party2;
                 if (currentThemeEffect == "past") {
-                	player.altTimeline.lead = 0;
+                    player.altTimeline.lead = 0;
                 }
             }
             if (ball == "love") {
@@ -11127,13 +11128,13 @@ function Safari() {
         
         var partyShown = [].concat(player.party);
         if (currentThemeEffect == "distortion") {
-        	partyShown = player.party.reverse();
+            partyShown = player.party.reverse();
         } else if (currentThemeEffect == "distortion") {
-        	partyShown = [].concat(player.party);
-        	if (player.altTimeline.lead !== 0) {
-        		partyShown[0] = player.altTimeline.lead;
-        	}
-		}
+            partyShown = [].concat(player.party);
+            if (player.altTimeline.lead !== 0) {
+                partyShown[0] = player.altTimeline.lead;
+            }
+        }
         if (textOnly) {
             var ret = [""];
             var partyText = [];
@@ -35535,13 +35536,13 @@ function Safari() {
         line1 += costumeSprite(player, os) + " ";
         var partyShown = [].concat(player.party);
         if (currentThemeEffect == "distortion") {
-        	partyShown = player.party.reverse();
+            partyShown = player.party.reverse();
         } else if (currentThemeEffect == "distortion") {
-        	partyShown = [].concat(player.party);
-        	if (player.altTimeline.lead !== 0) {
-        		partyShown[0] = player.altTimeline.lead;
-        	}
-		}
+            partyShown = [].concat(player.party);
+            if (player.altTimeline.lead !== 0) {
+                partyShown[0] = player.altTimeline.lead;
+            }
+        }
         for (var i = 0; i < partyShown.length; i++) {
             line1 += pokeInfo.icon(partyShown[i]) + " ";
         }
@@ -49500,15 +49501,15 @@ function Safari() {
             }
             var shownTime = contestCount;
             if (currentThemeEffect == "past" && (chance(0.95))) {
-            	if (chance(0.45)) {
-					shownTime = contestCount + 400 * 365 * 24 * 60 * 60 * 1000;
-				} else if (chance(0.15)) {
-					shownTime = contestCount - Math.round((Math.random() + 0.2) * 18 * 60 * 60) * 1000;
-				} else if (chance(0.5)) {
-					shownTime = contestCount + Math.round((Math.random() + 0.1) * 10 * 60) * 1000;
-				} else {
-					shownTime = contestCount - Math.round((Math.random() + 0.1) * 10 * 60) * 1000;
-				}
+                if (chance(0.45)) {
+                    shownTime = contestCount + 400 * 365 * 24 * 60 * 60 * 1000;
+                } else if (chance(0.15)) {
+                    shownTime = contestCount - Math.round((Math.random() + 0.2) * 18 * 60 * 60) * 1000;
+                } else if (chance(0.5)) {
+                    shownTime = contestCount + Math.round((Math.random() + 0.1) * 10 * 60) * 1000;
+                } else {
+                    shownTime = contestCount - Math.round((Math.random() + 0.1) * 10 * 60) * 1000;
+                }
             }
             safaribot.sendHtmlMessage(src, "Time until the Contest ends: " + (hasExtension ? toColor(timeString(contestExtensionLimit - contestExtension) + " [Event Extension]", "crimson") : timeString(shownTime)) + ".", safchan);
         } else {
@@ -57545,10 +57546,10 @@ function Safari() {
                                     }
                                     tieBreaker.push(name);
                                     if ((currentThemeEffect == "past") && (player.altTimeline.lead !== 0)) {
-										pokeWinners.push(poke(player.altTimeline.lead));
+                                        pokeWinners.push(poke(player.altTimeline.lead));
                                     } else {
-										pokeWinners.push(poke(player.party[0]));
-									}
+                                        pokeWinners.push(poke(player.party[0]));
+                                    }
                                     fullWinners.push(name.toCorrectCase() + " (using " + poke(player.party[0]) + ")");
                                 }
                             }
