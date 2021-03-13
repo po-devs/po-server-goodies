@@ -8719,7 +8719,7 @@ function Safari() {
                     for (var i = 0; i < contestPermaVariations.length; i++) {
                         if (contestThemes[name].hasOwnProperty(contestPermaVariations[i]) && (contestThemes[name][contestPermaVariations[i]].contains(pokeId) || contestThemes[theme].include.contains(pokeId))) {
                             hasPermanentVariation = true;
-                            themeList.push(contestThemes[theme].name + "[" + cap(contestPermaVariations[i]) + "]");
+                            themeList.push(contestThemes[theme].name + " [" + cap(contestPermaVariations[i]) + "]");
                         }
                     }
                     if (!hasPermanentVariation) { // themes with perma variations already had their variation names added above, so don't add the root theme's name
