@@ -54610,8 +54610,8 @@ function Safari() {
 					if (data.length >= 3) {
 						chosenThemes = [];
 						for (var i = 0; i < data.length; i++) {
-							if (contestThemes.hasOwnProperty(data[i].toLowerCase)) {
-								chosenThemes.push(data[i].toLowerCase);
+							if (contestThemes.hasOwnProperty(data[i].toLowerCase())) {
+								chosenThemes.push(data[i].toLowerCase());
 								safaribot.sendMessage(src, "Adding theme " + data[i].toLowerCase() + " to the precontest.", safchan);
 							}
 						}
