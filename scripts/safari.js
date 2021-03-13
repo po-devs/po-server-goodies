@@ -7789,7 +7789,7 @@ function Safari() {
         else {
             if ((isRare(num) || shiny) && !dexNum) {
                 amount = 1;
-                if ((isLegendary(num) || shiny) && ((contestCount > 0 && contestCount % 2 === 0) || (getBST(num) > 600))) { // if legendary or shiny and either contest active + 1 in 2 chance or contest no active and BST over 600
+                if ((isLegendary(num) || shiny) && ((contestCount > 0 && contestCount % 2 === 0))) { // if legendary or shiny and either contest active + 1 in 2 chance or contest no active and BST over 600
                     wildEvent = true;
                 }
             }
