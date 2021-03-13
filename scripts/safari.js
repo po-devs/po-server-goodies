@@ -33327,7 +33327,7 @@ function Safari() {
                 return readable(morph.forms.filter(function(e) {
                     return e !== info.num;
                 }).map(function(e) {
-                    return link("/quest alchemist:philosopher:{0}:{1}".format(info.name, e), getInputPokemon(e + "").name);
+                    return link("/quest alchemist:philosopher:{0}:{1}".format(info.name, e), (info.shiny ? "Shiny " : "") + getInputPokemon(e + "").name);
                 }));
             };
             if (!into) {
