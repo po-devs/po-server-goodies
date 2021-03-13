@@ -8782,6 +8782,7 @@ function Safari() {
         for (var i = 0; i < contestPermaVariations.length; i++) {
             var variation = contestPermaVariations[i];
             var variationIncludes = contestThemes[theme][variation];
+            var key = contestThemes[theme].name + " [" + variation + "]";
             
             if (!variationIncludes) {
                 continue;
@@ -8790,11 +8791,11 @@ function Safari() {
             hasPermanentVariation = true;
             variationIncludes = variationIncludes.concat(include).slice(0).sort(ascendingSpecies);
             for (var pokeId in variationIncludes) {
-                if (!ret.hasOwnProperty(contestThemes[theme][variation])) {
-                    ret[contestThemes[theme][variation]] = [];
+                if (!ret.hasOwnProperty(key)) {
+                    ret[key] = [];
                 }
                 if (isRare(variationIncludes[pokeId])) {
-                    ret[contestThemes[theme][variation]].push(pokeInfo.icon(variationIncludes[pokeId]) + " " + link("/bst " + variationIncludes[pokeId], poke(variationIncludes[pokeId])));
+                    ret[key].push(pokeInfo.icon(variationIncludes[pokeId]) + " " + link("/bst " + variationIncludes[pokeId], poke(variationIncludes[pokeId])));
                 }
             }
         }
