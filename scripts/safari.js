@@ -3115,7 +3115,7 @@ function Safari() {
             var entry = devolutions[num+""];
             if (evolutions.hasOwnProperty(entry+"") && Array.isArray(evolutions[entry+""].evo)) {
                 if (getOther) {
-                    return evolutions[entry].evo.slice(0).filter(function(e) { return e !== num });
+                    return evolutions[entry].evo.filter(function(e) { return e !== num });
                 } else {
                     return true;
                 }
