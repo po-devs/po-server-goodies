@@ -8044,7 +8044,7 @@ function Safari() {
         }
         if (!(icon)) {
             if (currentTheme && contestThemes[currentTheme].iconAlts) {
-                icon = contestThemes[currentTheme].iconAlts.random();
+                icon = pokeInfo.icon(contestThemes[currentTheme].iconAlts.random());
             } else {
                 icon = currentTheme && contestThemes[currentTheme].icon ? pokeInfo.icon(contestThemes[currentTheme].icon) + " " : "";
                 if (icon && currentTheme && contestThemes[currentTheme].icon2) {
@@ -9276,7 +9276,7 @@ function Safari() {
             } else if (hasType(leader, "???")) {
                 ballBonus = itemData.premier.bonusRate;
             }
-            if (this.hasCostumeSkill(player, "quickBallBoost")) {
+            if (this.hasCostumeSkill(player, "premierBallBoost")) {
                 costumeBonus *= costumeBoost(player);
             }
         }
