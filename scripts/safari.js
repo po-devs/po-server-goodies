@@ -8584,7 +8584,7 @@ function Safari() {
             }
         }
         if ("buffBalls" in rules && rules.buffBalls.length > 0) {
-            out.push(optionalColor("Buffed Balls: " + readable(rules.buffBalls.map(cap), "and"), colored, "red"));
+            out.push(optionalColor("Buffed Balls: " + readable(rules.buffBalls.map(cap), "and"), colored, "blue"));
         }
         if ("rewards" in rules) {
             list = [];
