@@ -8104,6 +8104,9 @@ function Safari() {
                 safaribot.sendHtmlAll(pokeInfo.icon(483) + " Dialga appeared and opened a rift to the past!", safchan);
                 for (var i in onChannel) {
                     player = getAvatar(onChannel[i]);
+                    if (!(player)) {
+                    	continue;
+                    }
                     party = player.party || [];
                     mon = party[0];
                     if (mon) {
