@@ -8717,19 +8717,26 @@ function Safari() {
                 if (retFull) {
                     var hasPermanentVariation = false;
                     for (var day = 1; day <= 7; day++) { // for retFull we want the full names of all possible daily variations of the theme
-                        if (contestThemes[theme].hasOwnProperty("day" + day) && (contestThemes[theme]["day" + day].contains(pokeId) || contestThemes[theme].include.contains(pokeId))) {
+                        if (contestThemes[theme].hasOwnProperty("day" + day)) {
                             hasPermanentVariation = true;
-                            themeList.push(contestThemes[theme]["day" + day + "name"]);
+                            if (contestThemes[theme]["day" + day].contains(pokeId)) {
+                                themeList.push(contestThemes[theme]["day" + day + "name"]);
+                            }
                         }
                     }
                     for (var i = 0; i < contestPermaVariations.length; i++) {
                         var variation = contestPermaVariations[i];
-                        if (contestThemes[theme].hasOwnProperty(variation) && (contestThemes[theme][variation].contains(pokeId) || contestThemes[theme].include.contains(pokeId))) {
+                        if (contestThemes[theme].hasOwnProperty(variation)) {
                             hasPermanentVariation = true;
-                            themeList.push(contestThemes[theme].name + " [" + cap(variation) + "]");
+                            if (contestThemes[theme][variation].contains(pokeId)) {
+                                themeList.push(contestThemes[theme].name + " [" + cap(variation) + "]");
+                            }
                         }
                     }
-                    if (!hasPermanentVariation) { // themes with perma variations already had their variation names added above, so don't add the root theme's name
+                    if (hasPermanentVariation && contestThemes[theme].include.contains(pokeId)) { // theme has variations but they're in the base include i.e. will be in every variation
+                        themeList.push(contestThemes[theme].name + " [All Variations]");
+                    }
+                    else {
                         themeList.push(contestThemes[theme].name);
                     }
                 }
@@ -8764,7 +8771,7 @@ function Safari() {
             }
 
             hasPermanentVariation = true;
-            dayIncludes = dayIncludes.concat(include).slice(0).sort(ascendingSpecies);
+            dayIncludes = dayIncludes.slice(0).sort(ascendingSpecies);
             for (var pokeId in dayIncludes) {
                 if (!ret.hasOwnProperty(contestThemes[theme]["day" + day + "name"])) {
                     ret[contestThemes[theme]["day" + day + "name"]] = [];
@@ -8785,7 +8792,7 @@ function Safari() {
             }
             
             hasPermanentVariation = true;
-            variationIncludes = variationIncludes.concat(include).slice(0).sort(ascendingSpecies);
+            variationIncludes = variationIncludes.slice(0).sort(ascendingSpecies);
             for (var pokeId in variationIncludes) {
                 if (!ret.hasOwnProperty(key)) {
                     ret[key] = [];
@@ -8796,15 +8803,21 @@ function Safari() {
             }
         }
 
-        if (!hasPermanentVariation) { // themes with daily variations already had their base rares concatenated above, so don't add the root theme's rares as a separate entry
-            for (var pokeId in include) {
-                if (!ret.hasOwnProperty(contestThemes[theme].name)) {
-                    ret[contestThemes[theme].name] = [];
-                }
-                if (isRare(include[pokeId])) {
-                    ret[contestThemes[theme].name].push(pokeInfo.icon(include[pokeId]) + " " + link("/bst " + include[pokeId], poke(include[pokeId])));
-                } // e.g. {"Desert": ["Regirock, Registeel"...]}
+        for (var pokeId in include) {
+            if (!ret.hasOwnProperty(contestThemes[theme].name)) {
+                ret[contestThemes[theme].name] = [];
             }
+            if (isRare(include[pokeId])) {
+                if (hasPermanentVariation) { // theme has variations but they're in the base include i.e. will be in every variation
+                    if (!ret.hasOwnProperty()) {
+                        ret[contestThemes[theme].name + " [All Variations]"] = [];
+                    }
+                    ret[contestThemes[theme].name + " [All Variations]"].push(pokeInfo.icon(include[pokeId]) + " " + link("/bst " + include[pokeId], poke(include[pokeId])));
+                }
+                else {
+                    ret[contestThemes[theme].name].push(pokeInfo.icon(include[pokeId]) + " " + link("/bst " + include[pokeId], poke(include[pokeId])));
+                }
+            } // e.g. {"Desert": ["Regirock, Registeel"...]}
         }
 
         if (contestThemes[theme].alter) {
