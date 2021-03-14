@@ -33753,6 +33753,7 @@ function Safari() {
                 }
                 
                 if (next >= 13) {
+                    args.index = next;
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> I have the great honor of saying that you have triumphed over all of the Celebrity Trainers today!", safchan);
                     sys.sendAll("", safchan);
                     safaribot.sendHtmlAll("<b>Announcer: " + name + " has defeated all 13 Celebrity Trainers (Difficulty: " + level + ")! Please congratulate our champion!</b>", safchan);
