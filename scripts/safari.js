@@ -9317,7 +9317,7 @@ function Safari() {
 
         var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true) {
-            if (player.helds.length > 0 && player.helds[0] == 2) {
+            if (player.helds.length > 0 && player.helds[0] == 2 && !needsPechaCleared.contains(player.id.toLowerCase())) {
                 player.berries.pecha = true;
                 needsPechaCleared.push(player.id.toLowerCase());
                 player.helds[0] = -1;
