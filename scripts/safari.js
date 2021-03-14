@@ -8809,7 +8809,7 @@ function Safari() {
             }
             if (isRare(include[pokeId])) {
                 if (hasPermanentVariation) { // theme has variations but they're in the base include i.e. will be in every variation
-                    if (!ret.hasOwnProperty()) {
+                    if (!ret.hasOwnProperty(contestThemes[theme].name + " [All Variations]")) {
                         ret[contestThemes[theme].name + " [All Variations]"] = [];
                     }
                     ret[contestThemes[theme].name + " [All Variations]"].push(pokeInfo.icon(include[pokeId]) + " " + link("/bst " + include[pokeId], poke(include[pokeId])));
