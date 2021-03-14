@@ -9886,6 +9886,7 @@ function Safari() {
             if (currentThemeFlavor) {
                 if (currentThemeFlavor.toLowerCase() == player.costume.toLowerCase()) {
                     this.costumeEXP(player, "catch"); //double exp
+                    safaribot.sendMessage(src, "You gained extra EXP for your {0} costume from the {1} theme!".format(costumeData[player.costume].fullName, themeName(currentTheme)), safchan);
                 }
             }
             if (hasType(currentPokemon, "Water")) {
