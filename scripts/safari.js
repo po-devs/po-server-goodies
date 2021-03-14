@@ -8736,7 +8736,7 @@ function Safari() {
                     if (hasPermanentVariation && contestThemes[theme].include.contains(pokeId)) { // theme has variations but they're in the base include i.e. will be in every variation
                         themeList.push(contestThemes[theme].name + " [All Variations]");
                     }
-                    else {
+                    else if (!hasPermanentVariation) {
                         themeList.push(contestThemes[theme].name);
                     }
                 }
@@ -8804,9 +8804,6 @@ function Safari() {
         }
 
         for (var pokeId in include) {
-            if (!ret.hasOwnProperty(contestThemes[theme].name)) {
-                ret[contestThemes[theme].name] = [];
-            }
             if (isRare(include[pokeId])) {
                 if (hasPermanentVariation) { // theme has variations but they're in the base include i.e. will be in every variation
                     if (!ret.hasOwnProperty(contestThemes[theme].name + " [All Variations]")) {
@@ -8815,6 +8812,9 @@ function Safari() {
                     ret[contestThemes[theme].name + " [All Variations]"].push(pokeInfo.icon(include[pokeId]) + " " + link("/bst " + include[pokeId], poke(include[pokeId])));
                 }
                 else {
+                    if (!ret.hasOwnProperty(contestThemes[theme].name)) {
+                        ret[contestThemes[theme].name] = [];
+                    }
                     ret[contestThemes[theme].name].push(pokeInfo.icon(include[pokeId]) + " " + link("/bst " + include[pokeId], poke(include[pokeId])));
                 }
             } // e.g. {"Desert": ["Regirock, Registeel"...]}
