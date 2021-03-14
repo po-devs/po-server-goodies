@@ -8119,7 +8119,7 @@ function Safari() {
                     }
                 }
             } else if (currentThemeEffect == "distortion") {
-                safaribot.sendHtmlAll(pokeInfo.icon(487) + " Giratina appeared and twisted the dimensions!", safchan);
+                safaribot.sendHtmlAll(pokeInfo.icon(66023) + " Giratina appeared and twisted the dimensions!", safchan);
             }
         }
         
