@@ -9971,12 +9971,12 @@ function Safari() {
                     currentTypeOverride = type1(player.party[0]); // Else pick their only type
                 }
 
-                sendAll("The " + pokeName + " changed " + (currentPokemonCount > 1 ? "their" : "its") + " type to " + currentTypeOverride + "!");
+                sendAll("The wild " + pokeName + " changed " + (currentPokemonCount > 1 ? "their" : "its") + " type to " + currentTypeOverride + "!");
             }
             if (canHaveAbility(currentPokemon, abilitynum("Moxie")) && currentExtraBST < moxieBoostLimit) {
                 currentExtraBST += moxieBoost;
                 
-                sendAll("The " + pokeName + " " + (currentPokemonCount > 1 ? "are" : "is") + " getting stronger!");
+                sendAll("The wild " + pokeName + " " + (currentPokemonCount > 1 ? "are" : "is") + " getting stronger!");
             }
             player.records.pokesNotCaught += 1;
 
