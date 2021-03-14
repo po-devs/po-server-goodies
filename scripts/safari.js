@@ -9313,7 +9313,7 @@ function Safari() {
         
         var n = now();
         
-        var timelinemod = (currentThemeEffect == "past" && player.altTimeline.lead !== 0 && player.altTimeline.cooldown > n ? player.altTimeline.buff : 1);
+        var timelinemod = (currentThemeEffect == "past" && player.altTimeline.lead !== 0 && player.altTimeline.cooldown > n ? (player.altTimeline.buff && player.altTimeline.buff > 1 ? player.altTimeline.buff : 1.3) : 1);
 
         var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true) {
