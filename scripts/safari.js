@@ -7938,10 +7938,10 @@ function Safari() {
             }
 
             if (canHaveAbility(currentPokemon, abilitynum("Contrary"))) {
-                sendAll("The wild {0} {1} inverting type matchups!".format(currentDisplay, amt > 1 ? "are" : "is"));
+                sendAll("The wild {0} {1} inverting type matchups!".format(poke(currentDisplay), amt > 1 ? "are" : "is"));
             }
             if (canHaveAbility(currentPokemon, abilitynum("Levitate"))) {
-                sendAll("The wild {0} {1} airborne!".format(currentDisplay, amt > 1 ? "are" : "is"));
+                sendAll("The wild {0} {1} airborne!".format(poke(currentDisplay), amt > 1 ? "are" : "is"));
             }
             preparationPhase = sys.rand(5, 8);
             preparationThrows = {};
