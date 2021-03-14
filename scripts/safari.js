@@ -2844,7 +2844,8 @@ function Safari() {
                 }                
                 currentThemeEffect = false;
                 currentThemeSecondary = false;
-                chosenThemes = null;
+                chosenThemes = null;                
+				currentThemeFlavor = null;
             }
             contestVotes = null;
         }
