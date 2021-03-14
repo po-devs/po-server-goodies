@@ -10153,7 +10153,6 @@ function Safari() {
             if ((select.resistMode) || (select2 && select2.resistMode)) {
                 return (this.checkEffective(def1, def2, atk1, "???", "???", (inverted ? false : true)));
             }
-            return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
         }
 
         var countImmune = function(value) {
