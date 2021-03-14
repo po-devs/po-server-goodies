@@ -8123,10 +8123,10 @@ function Safari() {
                             messOut[player.id] = [pokeInfo.icon(mon) + " -> " + pokeInfo.icon(parseInt(branched, 10)), "Time traveling to the past created a parallel timeline where your " + poke(mon) + " was actually a " + (isShiny ? "Shiny " : "") + poke(branched) + "! You have a " + buffAmt + "x catch rate during this effect!"];
                             player.altTimeline.lead = branched + (isShiny ?  "" : 0);
                             player.altTimeline.buff = buffAmt;
+                            player.altTimeline.cooldown = n + 60 * 5 * 1000;
                         } else {
                             player.altTimeline.lead = 0;
                             player.altTimeline.buff = 1;
-                            player.altTimeline.cooldown = n + 60 * 5 * 1000;
                         }
                     }
                 }
@@ -9313,7 +9313,7 @@ function Safari() {
         
         var n = now();
         
-        var timelinemod = (currentThemeEffect == "past" && player.altTimeline.lead && player.altTimeline.cooldown < n ?  player.altTimeline.buff : 1);
+        var timelinemod = (currentThemeEffect == "past" && player.altTimeline.lead !== 0 && player.altTimeline.cooldown > n ? player.altTimeline.buff : 1);
 
         var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true) {
