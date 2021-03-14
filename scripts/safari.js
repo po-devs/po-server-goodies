@@ -11213,7 +11213,6 @@ function Safari() {
     };
     this.showParty = function(id, ownParty, srcId, textOnly) {
         var player = getAvatar(id),
-            party = player.party.map(pokeInfo.sprite),
             costumed = (player.costume !== "none");
         
         var partyShown = [].concat(player.party);
@@ -11226,6 +11225,7 @@ function Safari() {
                 partyShown[0] = player.altTimeline.lead;
             }
         }
+        var party = partyShown.map(pokeInfo.sprite),
         if (textOnly) {
             var ret = [""];
             var partyText = [];
@@ -11278,8 +11278,8 @@ function Safari() {
             }
             out += "</td>";
         }
-        for (var e in partyShown) {
-            out += "<td align='center' style='vertical-align: middle;'>" + partyShown[e] + "</td>";
+        for (var e in party) {
+            out += "<td align='center' style='vertical-align: middle;'>" + party[e] + "</td>";
         }
         out += "</tr><tr>";
         if (costumed) {
