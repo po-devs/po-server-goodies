@@ -11183,7 +11183,7 @@ function Safari() {
         var partyShown = [].concat(player.party);
         if (currentThemeEffect == "distortion") {
             partyShown = [].concat(player.party)
-            partyShown = partyShown.reverse();
+            partyShown.reverse();
         } else if (currentThemeEffect == "past") {
             partyShown = [].concat(player.party);
             if (player.altTimeline.lead !== 0) {
@@ -35592,7 +35592,7 @@ function Safari() {
         var partyShown = [].concat(player.party);
         if (currentThemeEffect == "distortion") {
             partyShown = [].concat(player.party)
-            partyShown = partyShown.reverse();
+            partyShown.reverse();
         } else if (currentThemeEffect == "past") {
             partyShown = [].concat(player.party);
             if (player.altTimeline.lead !== 0) {
