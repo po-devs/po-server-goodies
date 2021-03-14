@@ -49562,12 +49562,8 @@ function Safari() {
             if (currentThemeEffect == "past" && (chance(0.95))) {
                 if (chance(0.45)) {
                     shownTime = contestCount + 400 * 365 * 24 * 60 * 60 * 1000;
-                } else if (chance(0.15)) {
-                    shownTime = contestCount - Math.round((Math.random() + 0.2) * 18 * 60 * 60) * 1000;
-                } else if (chance(0.5)) {
-                    shownTime = contestCount + Math.round((Math.random() + 0.1) * 10 * 60) * 1000;
                 } else {
-                    shownTime = contestCount - Math.round((Math.random() + 0.1) * 10 * 60) * 1000;
+                    shownTime = contestCount + Math.round((Math.random() + 0.2) * 18 * 60 * 60) * 1000;
                 }
             }
             safaribot.sendHtmlMessage(src, "Time until the Contest ends: " + (hasExtension ? toColor(timeString(contestExtensionLimit - contestExtension) + " [Event Extension]", "crimson") : timeString(shownTime)) + ".", safchan);
