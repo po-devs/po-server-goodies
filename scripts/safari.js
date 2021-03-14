@@ -11225,7 +11225,7 @@ function Safari() {
                 partyShown[0] = player.altTimeline.lead;
             }
         }
-        var party = partyShown.map(pokeInfo.sprite),
+        var party = partyShown.map(pokeInfo.sprite);
         if (textOnly) {
             var ret = [""];
             var partyText = [];
