@@ -11277,8 +11277,8 @@ function Safari() {
             }
             out += "</td>";
         }
-        for (var e in party) {
-            out += "<td align='center' style='vertical-align: middle;'>" + party[e] + "</td>";
+        for (var e in partyShown) {
+            out += "<td align='center' style='vertical-align: middle;'>" + partyShown[e] + "</td>";
         }
         out += "</tr><tr>";
         if (costumed) {
