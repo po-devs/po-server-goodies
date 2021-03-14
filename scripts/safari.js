@@ -32455,11 +32455,13 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "orangered"), safchan);
                     player.records.casesSolved += 1;
                     var timeTaken = 0;
-                    if (safari.detectiveData[uid+""].started) {
-                        var timeTaken = now() - safari.detectiveData[uid+""].started;
-                        if (player.records.fastestCaseSolved === 0 || player.records.fastestCaseSolved > timeTaken) {
-                            player.records.fastestCaseSolved = timeTaken;
-                        }
+                    var timeTaken = now() - safari.detectiveData[uid+""].started;
+                    if (player.records.fastestCaseSolved === 0 || player.records.fastestCaseSolved > timeTaken) {
+                        player.records.fastestCaseSolved = timeTaken;
+                        safaribot.sendHtmlMessage(src, "Detective: Wow, you solved this case in " + timeString(timeTaken / 1000, true) + "! That's a new personal record!", safchan);
+                    }
+                    else {
+                        safaribot.sendHtmlMessage(src, "Detective: You solved this case in " + timeString(timeTaken / 1000, true) + ". Maybe you can do even better next time!", safchan);
                     }
                     var unlocked = 0, strengthtotal = 0;
                     for (var i = 0; i < safari.detectiveData[uid+""].clues.length; i++) {
