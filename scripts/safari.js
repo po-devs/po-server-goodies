@@ -1796,12 +1796,15 @@ function Safari() {
     var shinyChance = 1024; //Chance for Shiny Pokémon
     var currentPokemon = null;
     var currentTypeOverride = null;
+    var currentExtraBST = 0;
     var currentPokemonCount = 1;
     var lastPokemonCount = 1;
     var currentDisplay = null;
     var currentPokemonAction = null;
     var currentPokemonMood = null;
     var currentPokemonMoodRate = null;
+    var moxieBoost = 5;
+    var moxieBoostLimit = moxieBoost * 10;
     var maxThrows = 10;
     var pokeblockThrows = 0;
     var currentThrows;
@@ -2822,6 +2825,7 @@ function Safari() {
         deluxeBaitCooldown = 1;
         currentPokemon = null;
         currentTypeOverride = null;
+        currentExtraBST = 0;
         currentDisplay = null;
         wildEvent = false;
         currentPokemonCount = 1;
@@ -7919,7 +7923,7 @@ function Safari() {
                 ret += "</center><hr>";
                 sendAll(ret, true, true);
             } else {
-                sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + "</center><hr>", true, true);
+                sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + (wildEvent ? "<br/><b>All ball cooldowns were reset!</b>" : "") + "</center><hr>", true, true);
             }
             var onChannel = sys.playersOfChannel(safchan);
             for (var e in onChannel) {
@@ -7931,6 +7935,13 @@ function Safari() {
                         continue;
                     p.cooldowns.ball = 0;
                 }
+            }
+
+            if (canHaveAbility(currentPokemon, abilitynum("Contrary"))) {
+                sendAll("The wild {0} {1} inverting type matchups!".format(currentDisplay, amt > 1 ? "are" : "is"));
+            }
+            if (canHaveAbility(currentPokemon, abilitynum("Levitate"))) {
+                sendAll("The wild {0} {1} airborne!".format(currentDisplay, amt > 1 ? "are" : "is"));
             }
             preparationPhase = sys.rand(5, 8);
             preparationThrows = {};
@@ -7956,6 +7967,7 @@ function Safari() {
         
         currentPokemon = null;
         currentTypeOverride = null;
+        currentExtraBST = 0;
         this.runPendingActive();
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
@@ -8975,7 +8987,7 @@ function Safari() {
         else {
             isShiny = typeof currentPokemon == "string";
             wild = isShiny ? parseInt(currentPokemon, 10) : currentPokemon;
-            wildStats = getBST(wild);
+            wildStats = getBST(wild) + currentExtraBST;
         }
         var shinyChance = isShiny ? 0.30 : 1;
         var isLegend = isLegendary(wild);
@@ -9072,7 +9084,8 @@ function Safari() {
         if (currentPokemon == 352 && currentTypeOverride) { // Kecleon
             wType1 = currentTypeOverride;
         }
-        var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0);
+        var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || canHaveAbility(currentPokemon, abilitynum("Contrary"));
+        var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) };
         if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
             if (ball === "mono") {
                 typeBonus = this.checkEffective(wType1, wType2, (pType2 === "???" || !player.monoSecondary ? pType1 : pType2), "???", false, !inverse);
@@ -9081,9 +9094,9 @@ function Safari() {
             }
         } else {
             if (ball === "mono") {
-                typeBonus = this.checkEffective((pType2 === "???" || !player.monoSecondary ? pType1 : pType2), "???", wType1, wType2, false, inverse);
+                typeBonus = this.checkEffective((pType2 === "???" || !player.monoSecondary ? pType1 : pType2), "???", wType1, wType2, false, inverse, select);
             } else {
-                typeBonus = this.checkEffective(pType1, pType2, wType1, wType2, false, inverse);
+                typeBonus = this.checkEffective(pType1, pType2, wType1, wType2, false, inverse, select);
             }
             if (this.hasCostumeSkill(player, "monoBallBoost")) {
                 costumeBonus *= costumeBoost(player);
@@ -9902,6 +9915,7 @@ function Safari() {
                 sendAll("", true, true);
                 currentPokemon = null;
                 currentTypeOverride = null;
+                currentExtraBST = 0;
                 currentDisplay = null;
                 wildEvent = false;
                 wildSpirit = false;
@@ -9957,7 +9971,12 @@ function Safari() {
                     currentTypeOverride = type1(player.party[0]); // Else pick their only type
                 }
 
-                sendAll(pokeName + "'s Color Change changes its type to " + currentTypeOverride + "!");
+                sendAll("The " + pokeName + " changed " + (currentPokemonCount > 1 ? "their" : "its") + " type to " + currentTypeOverride + "!");
+            }
+            if (canHaveAbility(currentPokemon, abilitynum("Moxie")) && currentExtraBST < moxieBoostLimit) {
+                currentExtraBST += moxieBoost;
+                
+                sendAll("The " + pokeName + " " + (currentPokemonCount > 1 ? "are" : "is") + " getting stronger!");
             }
             player.records.pokesNotCaught += 1;
 
@@ -10045,6 +10064,7 @@ function Safari() {
         currentPokemon = null;
         currentTypeOverride = null;
         currentDisplay = null;
+        currentExtraBST = 0;
         currentPokemonCount = lastPokemonCount = 1;
         isBaited = false;
         wildSpirit = false;
@@ -10160,6 +10180,9 @@ function Safari() {
         if (def3 && def3 in attacker) {
             result *= countImmune(inverse(attacker[def3]));
         }
+        if (select && select.levitate && atk1 === "Ground") {
+            result *= countImmune(0);
+        }
 
         if (atk2 !== "???") {
             typeCount++;
@@ -10172,6 +10195,9 @@ function Safari() {
             }
             if (def3 && def3 in attacker) {
                 result *= countImmune(inverse(attacker[def3]));
+            }
+            if (select && select.levitate && atk2 === "Ground") {
+                result *= countImmune(0);
             }
         }
         if (immuneCount >= typeCount) {
