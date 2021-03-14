@@ -3113,16 +3113,9 @@ function Safari() {
     function isBranchedEvolved(num, getOther) {
         if (devolutions.hasOwnProperty(num+"")) {
             var entry = devolutions[num+""];
-            if (evolutions.hasOwnProperty(entry+"") && Array.isArray(evolutions[entry+""])) {
+            if (evolutions.hasOwnProperty(entry+"") && Array.isArray(evolutions[entry+""].evo)) {
                 if (getOther) {
-                    var out = [];
-                    for (var i = 0; i < evolutions[entry+""].length; i++) {
-                        if (evolutions[entry+""][i] == num) {
-                            continue;
-                        }
-                        out.push(evolutions[entry+""][i]);
-                    }
-                    return out;
+                    return evolutions[entry].evo.slice(0).filter(function(e) { return e !== num });
                 } else {
                     return true;
                 }
