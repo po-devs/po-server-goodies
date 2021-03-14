@@ -57479,7 +57479,6 @@ function Safari() {
                     possibleThemes.splice(possibleThemes.indexOf(lastContests[e].themeId), 1);
                 }
             }
-			chosenThemes = null;
             if (possibleThemes.contains("none")) {
                 possibleThemes.splice(possibleThemes.indexOf("none"), 1);
             }
@@ -57513,10 +57512,14 @@ function Safari() {
             }
             contestVotingCount--;
             contestVotes = null;
+			if (chosenThemes) {
+				contestVotingCount = 0;
+			}
             if (contestVotingCount <= 0) {
                 contestVotes = {};
                 contestVotingCount = contestVotingCooldown;
             }
+			chosenThemes = null;
 
             sys.sendAll(separator, safchan);
             safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all the Poké Balls you need!", safchan);
