@@ -3115,6 +3115,12 @@ function Safari() {
         return outList;
     }
     function getAlternateEvolutions(num) {
+        /*
+            this doesn't accurately return ingame alt evos, only safari-based ones
+            e.g. spewpa only evolving into base vivillon etc.
+            stuff like floette that each share a base species, but evolve from different variants of that same base species are also not included here
+            for best results, concatenate with getAllForms()
+        */
         if (devolutions.hasOwnProperty(num+"")) {
             var entry = devolutions[num+""];
             if (evolutions.hasOwnProperty(entry+"") && Array.isArray(evolutions[entry+""].evo)) {
@@ -3141,7 +3147,7 @@ function Safari() {
                 currentId = species + 65536 * currentForm++;
             }
         }
-        return ret.filter(function(e) { return excludeSelf && e === num });;
+        return ret.filter(function(e) { return excludeSelf ? e !== num : true });
     }
     function compare(a,b) {
         if (a.sort < b.sort) {
