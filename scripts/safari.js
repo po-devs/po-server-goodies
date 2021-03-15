@@ -8140,7 +8140,7 @@ function Safari() {
                     party = player.party || [];
                     mon = party[0];
                     if (mon) {
-                        validAlts = getAlternateEvolutions(mon).concat(getAllForms(mon, true));
+                        validAlts = getAlternateEvolutions(mon).concat(getAllForms(mon, true)).filter(function(e) { return !isMega(e) });
                         if (validAlts.length > 0) {
                             isShiny = typeof mon == "string";
                             buffAmt = (1.25 + 0.05 * Math.min(validAlts.length, 10));
@@ -8501,7 +8501,7 @@ function Safari() {
         }
         if (rules.buffMoves) {
             for (var i = 0; i < rules.buffMoves.length; i++) {
-                buffed.push("Pokémon that learn " + moveOff(parseInt(rules.buffMoves[i], 10)));
+                buffed.push(moveOff(parseInt(rules.buffMoves[i], 10)) + "-compatible");
             }
         }
         if (rules.buffMons && rules.buffMonsDesc) {
@@ -25085,11 +25085,11 @@ function Safari() {
         name = user.owner + "'s " + poke(user.id);
         if (wide) {
             tname = "All Pokémon on the field";
-            if (this.poke3.hp <= 0 && this.poke1.hp <= 0 && (user.owner.toLowerCase() === this.name2.toLowerCase() || user.owner.toLowerCase() === this.name4.toLowerCase())) {
+            if (this.poke3.hp <= 0 && this.poke1.hp <= 0 && (user.ownerID === this.idnum2 || user.ownerID === this.idnum4)) {
                 out.push("But there was no target remaining...");
                 return out;
             }
-            if (this.poke2.hp <= 0 && this.poke4.hp <= 0 && (user.owner.toLowerCase() === this.name3.toLowerCase() || user.owner.toLowerCase() === this.name1.toLowerCase())) {
+            if (this.poke2.hp <= 0 && this.poke4.hp <= 0 && (user.ownerID === this.idnum1 || user.ownerID === this.idnum3)) {
                 out.push("But there was no target remaining...");
                 return out;
             }
@@ -25101,7 +25101,7 @@ function Safari() {
             if ((target.hp <= 0) && target.ownerID === this.idnum4) {
                 target = this.poke2;
             }
-            if ((target.hp <= 0) && target.ownerID === this.idnum3) {
+            if ((target.hp <= 0) && target.ownerID === this.idnum3 && this.idnum3 !== undefined) {
                 target = this.poke1;
             }
             if ((target.hp <= 0) && target.ownerID === this.idnum1) {
@@ -52988,8 +52988,8 @@ function Safari() {
                 if (!isMega(info.num) && info.num in megaEvolutions) {
                     safaribot.sendMessage(src, info.name + " can Mega Evolve into " + readable(megaEvolutions[info.num].map(poke), "or") + ".", safchan);
                 }
-                if (getAllForms(info.num).length > 1) {
-                    safaribot.sendMessage(src, info.name + " has a total of " + plural(getAllForms(info.num).length, "alternate forme") + ", including itself.", safchan);
+                if (getAllForms(info.num, true).length > 0) {
+                    safaribot.sendMessage(src, info.name + " has a total of " + plural(getAllForms(info.num, true).length, "alternate forme") + ".", safchan);
                 }
                 var themes = safari.getAllThemesForPoke(info.num, true);
                 if (themes.length > 0) {
@@ -57431,8 +57431,10 @@ function Safari() {
                     else
                         battle.totalPauseTime += 4;
 
-                    if (battle.totalPauseTime > battle.pauseLimit)
+                    if (battle.totalPauseTime > battle.pauseLimit) {
                         battle.paused = false;
+                        battle.sendToViewers(toColor("<b>The battle has been unpaused since the time limit is up!</b>", "crimson"));
+                    }
                 }
                 else {
                     battle.nextTurn();
