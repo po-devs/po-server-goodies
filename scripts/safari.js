@@ -3115,18 +3115,31 @@ function Safari() {
         }
         return outList;
     }
-    function isBranchedEvolved(num, getOther) {
+    function getBranchEvolutions(num) {
         if (devolutions.hasOwnProperty(num+"")) {
             var entry = devolutions[num+""];
             if (evolutions.hasOwnProperty(entry+"") && Array.isArray(evolutions[entry+""].evo)) {
-                if (getOther) {
-                    return evolutions[entry].evo.filter(function(e) { return e !== num });
-                } else {
-                    return true;
-                }
+                return evolutions[entry].evo.filter(function(e) { return e !== num });
             }
         }
-        return false;
+        
+        return [];
+    }
+    function getAllForms(num, excludeSelf) {
+        var currentId= pokeInfo.species(num),
+            ret = [],
+            currentForm = 1;
+        
+        while (pokeInfo.valid(currentId)) {
+            if (excludeSelf && currentId === num) {
+                continue;
+            }
+
+            ret.push(currentId);
+            currentId += 65536 * currentForm++;
+        }
+        
+        return ret;
     }
     function compare(a,b) {
         if (a.sort < b.sort) {
@@ -8108,7 +8121,7 @@ function Safari() {
                     currentThemeSecondary = null;
                 }
             } else if (currentThemeEffect == "past") {
-                var player, party, mon, branched, buffAmt, isShiny, n = now();
+                var player, party, mon, validAlts, buffAmt, isShiny, n = now();
                 messOut = {};
                 safaribot.sendHtmlAll(pokeInfo.icon(483) + " Dialga appeared and opened a rift to the past!", safchan);
                 for (var i in onChannel) {
@@ -8119,13 +8132,13 @@ function Safari() {
                     party = player.party || [];
                     mon = party[0];
                     if (mon) {
-                        branched = isBranchedEvolved(mon, true);
-                        if (branched && branched.length > 0) {
+                        validAlts = getBranchEvolutions(mon).concat(getAllForms(mon, true));
+                        if (validAlts.length > 0) {
                             isShiny = typeof mon == "string";
-                            buffAmt = (1.25 + 0.05 * branched.length);
-                            branched = branched.random();
-                            messOut[player.id] = [pokeInfo.icon(mon) + " -> " + pokeInfo.icon(parseInt(branched, 10)), "Time traveling to the past created a parallel timeline where your " + poke(mon) + " was actually a " + (isShiny ? "Shiny " : "") + poke(branched) + "! You have a " + buffAmt + "x catch rate during this effect!"];
-                            player.altTimeline.lead = branched + (isShiny ?  "" : 0);
+                            buffAmt = (1.25 + 0.05 * Math.min(validAlts.length, 10));
+                            validAlts = validAlts.random();
+                            messOut[player.id] = [pokeInfo.icon(mon) + " -> " + pokeInfo.icon(parseInt(validAlts, 10)), "Time traveling to the past created a parallel timeline where your " + poke(mon) + " was actually a " + (isShiny ? "Shiny " : "") + poke(validAlts) + "! You have a " + buffAmt + "x catch rate during this effect!"];
+                            player.altTimeline.lead = validAlts + (isShiny ?  "" : 0);
                             player.altTimeline.buff = buffAmt;
                             player.altTimeline.cooldown = n + 60 * 5 * 1000;
                         } else {
@@ -9981,7 +9994,7 @@ function Safari() {
                     currentTypeOverride = type1(player.party[0]); // Else pick their only type
                 }
 
-                sendAll("The wild " + pokeName + " changed " + (currentPokemonCount > 1 ? "their" : "its") + " type to " + currentTypeOverride + "!");
+                sendAll("The wild " + pokeName + "'s Color Change changed " + (currentPokemonCount > 1 ? "their" : "its") + " type to " + currentTypeOverride + "!");
             }
             if (canHaveAbility(currentPokemon, abilitynum("Moxie")) && currentExtraBST < moxieBoostLimit) {
                 currentExtraBST += moxieBoost;
