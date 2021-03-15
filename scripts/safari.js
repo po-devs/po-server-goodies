@@ -8505,7 +8505,7 @@ function Safari() {
             }
         }
         if (rules.buffMons && rules.buffMonsDesc) {
-            buffed.push(rules.buffMonsDesc + " Pokémon");
+            buffed.push(rules.buffMonsDesc);
         }
         if (rules.nerfSingle) {
             nerfed.push("Single-type");
