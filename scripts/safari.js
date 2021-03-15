@@ -3089,7 +3089,6 @@ function Safari() {
         }
     }
     function removeNonDuplicates(arr) {
-        //move this up to useful function later
         var hit = [];
         for (var j = arr.length; j--;) {
             if (hit.contains(arr[j])) {
@@ -8136,7 +8135,7 @@ function Safari() {
                         if (validAlts.length > 0) {
                             isShiny = typeof mon == "string";
                             buffAmt = (1.25 + 0.05 * Math.min(validAlts.length, 10));
-                            validAlts = validAlts.random();
+                            validAlts = removeDuplicates(validAlts).random();
                             messOut[player.id] = [pokeInfo.icon(mon) + " -> " + pokeInfo.icon(parseInt(validAlts, 10)), "Time traveling to the past created a parallel timeline where your " + poke(mon) + " was actually a " + (isShiny ? "Shiny " : "") + poke(validAlts) + "! You have a " + buffAmt + "x catch rate during this effect!"];
                             player.altTimeline.lead = validAlts + (isShiny ?  "" : 0);
                             player.altTimeline.buff = buffAmt;
