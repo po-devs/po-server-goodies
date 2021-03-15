@@ -57514,7 +57514,7 @@ function Safari() {
                                     safaribot.sendMessage(sys.id(p.id), "Your {0}'s Speed Boost allowed you to throw slightly faster!".format(poke(p.party[0])), safchan);
                                 }
 
-                                throwChances[i] += Math.ceil(size / 2); 
+                                throwChances[i] += Math.ceil(size * 0.75); 
                             }
                         }
                     }
