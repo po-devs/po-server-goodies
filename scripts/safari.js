@@ -3114,7 +3114,7 @@ function Safari() {
         }
         return outList;
     }
-    function getBranchEvolutions(num) {
+    function getAlternateEvolutions(num) {
         if (devolutions.hasOwnProperty(num+"")) {
             var entry = devolutions[num+""];
             if (evolutions.hasOwnProperty(entry+"") && Array.isArray(evolutions[entry+""].evo)) {
@@ -3125,20 +3125,23 @@ function Safari() {
         return [];
     }
     function getAllForms(num, excludeSelf) {
-        var currentId = pokeInfo.species(num),
+        num = parseInt(num);
+        var species = pokeInfo.species(num),
             ret = [],
             currentForm = 1;
         
-        while (pokeInfo.valid(currentId)) {
-            if (excludeSelf && currentId === num) {
-                continue;
-            }
+        var currentId = species;
 
-            ret.push(currentId);
-            currentId += 65536 * currentForm++;
+        if (currentId === 351) { // special case for castform which has a mislabeled form number (castform-sunny is 351-4 instead of 351-3)
+            ret = [351, 65887, 131423, 262495];
         }
-        
-        return ret;
+        else {
+            while (pokeInfo.valid(currentId)) {
+                ret.push(currentId);
+                currentId = species + 65536 * currentForm++;
+            }
+        }
+        return ret.filter(function(e) { return excludeSelf && e === num });;
     }
     function compare(a,b) {
         if (a.sort < b.sort) {
@@ -8131,7 +8134,7 @@ function Safari() {
                     party = player.party || [];
                     mon = party[0];
                     if (mon) {
-                        validAlts = getBranchEvolutions(mon).concat(getAllForms(mon, true));
+                        validAlts = getAlternateEvolutions(mon).concat(getAllForms(mon, true));
                         if (validAlts.length > 0) {
                             isShiny = typeof mon == "string";
                             buffAmt = (1.25 + 0.05 * Math.min(validAlts.length, 10));
@@ -52980,7 +52983,7 @@ function Safari() {
                     safaribot.sendMessage(src, info.name + " can Mega Evolve into " + readable(megaEvolutions[info.num].map(poke), "or") + ".", safchan);
                 }
                 if (getAllForms(info.num).length > 1) {
-                    safaribot.sendMessage(src, info.name + " has a total of " + plural(getAllForms(info.num), "alternate forme") + ", including itself.", safchan);
+                    safaribot.sendMessage(src, info.name + " has a total of " + plural(getAllForms(info.num).length, "alternate forme") + ", including itself.", safchan);
                 }
                 var themes = safari.getAllThemesForPoke(info.num, true);
                 if (themes.length > 0) {
