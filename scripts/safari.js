@@ -32603,7 +32603,7 @@ function Safari() {
         }
         else if (d1 === "aboutunlock") {
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Ya see, every Pokémon species has their skills locked to begin with. By bringing us some {0} and {1}, we can <b>permanently unlock some of their skills</b>.".format(es(finishName("sunshard")), es(finishName("moonshard"))), safchan);
-            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's right, an <b>unlock</b> is permanent. Note than when we unlock a skill, it only applies to <b>that particular skill for that particular Pokémon</b>.", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's right, an <b>unlock</b> is permanent. Note than when we unlock a skill, it only applies to <b>that particular skill for that particular Pokémon forme</b>.", safchan);
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Unlocking a skill won't do anything for you by itself though. After you unlock a skill, you will gain the option of <b>{0}</b> it. THAT's where the real magic happens!".format(link("/quest idol:aboutcharge", "charging")), safchan);
             safaribot.sendHtmlMessage(src, link("/quest idol:menu", "«Back to Menu»"), safchan);
         }
@@ -37154,9 +37154,6 @@ function Safari() {
                     bst = 510;
                     rareForm = true;
                 }
-                if ([892, 66428].contains(mon.num)) {
-                    bst = 9001;
-                }
                 if ((legendaries.contains(mon.num)) || ultraBeasts.contains(mon.num)) {
                     if (bst >= 650) {
                         if (chance((aggregateScore - 276) * 0.007)) {
@@ -37313,7 +37310,7 @@ function Safari() {
             if (loop > 200) {
                 break;
             }
-            var get = sys.rand(1, 891);
+            var get = sys.rand(1, highestDexNum);
             bst = getBST(get);
             if (bst < 481 && (!(legendaries.contains(get)))) {
                 out.uncommons.list.push(get);
