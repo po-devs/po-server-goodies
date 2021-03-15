@@ -2842,11 +2842,11 @@ function Safari() {
                 } else if (currentThemeEffect == "distortion") {
                     safaribot.sendHtmlAll("The twisted dimensions returned to normal!", safchan);
                 }                
-                currentThemeEffect = false;
-                currentThemeSecondary = false;
-                chosenThemes = null;                
-				currentThemeFlavor = null;
             }
+            currentThemeEffect = false;
+            currentThemeSecondary = false;
+            chosenThemes = null;                
+            currentThemeFlavor = null;
             contestVotes = null;
         }
     }
@@ -8111,7 +8111,7 @@ function Safari() {
                 for (var i in onChannel) {
                     player = getAvatar(onChannel[i]);
                     if (!(player)) {
-                    	continue;
+                        continue;
                     }
                     party = player.party || [];
                     mon = party[0];
@@ -8970,10 +8970,10 @@ function Safari() {
         
         var leader = parseInt(player.party[0], 10);
         if (currentThemeEffect == "distortion") {
-			leader = parseInt(player.party[player.party.length-1], 10);
+            leader = parseInt(player.party[player.party.length-1], 10);
         }
         if (currentThemeEffect == "past" && player.altTimeline.lead !== 0) {
-			leader = parseInt(player.altTimeline.lead, 10);
+            leader = parseInt(player.altTimeline.lead, 10);
         }
 
         var ballBonus = itemData[ball].ballBonus;
@@ -54650,20 +54650,20 @@ function Safari() {
                 } else {
                     contestCooldown = 181;
                     safaribot.sendMessage(src, "Entering the pre-contest preparation phase!", safchan);
-					var data = commandData.split(":");
-					if (data.length >= 3) {
-						chosenThemes = [];
-						for (var i = 0; i < data.length; i++) {
-							if (contestThemes.hasOwnProperty(data[i].toLowerCase())) {
-								chosenThemes.push(data[i].toLowerCase());
-								safaribot.sendMessage(src, "Adding theme " + data[i].toLowerCase() + " to the precontest.", safchan);
-							}
-						}
-						if (chosenThemes.length < 3) {
-							chosenThemes = null;
-							safaribot.sendMessage(src, "Submit 3 valid themes to start or random ones will be chosen!", safchan);
-						}
-					}
+                    var data = commandData.split(":");
+                    if (data.length >= 3) {
+                        chosenThemes = [];
+                        for (var i = 0; i < data.length; i++) {
+                            if (contestThemes.hasOwnProperty(data[i].toLowerCase())) {
+                                chosenThemes.push(data[i].toLowerCase());
+                                safaribot.sendMessage(src, "Adding theme " + data[i].toLowerCase() + " to the precontest.", safchan);
+                            }
+                        }
+                        if (chosenThemes.length < 3) {
+                            chosenThemes = null;
+                            safaribot.sendMessage(src, "Submit 3 valid themes to start or random ones will be chosen!", safchan);
+                        }
+                    }
                 }
                 return true;
             }
@@ -57502,12 +57502,12 @@ function Safari() {
             }
         }
         if (contestCooldown === 180) {
-        	var possibleThemes;
-        	if (chosenThemes) {
-        		possibleThemes = [].concat(chosenThemes);
-        	} else {
-        		possibleThemes = Object.keys(contestThemes).concat();
-			}
+            var possibleThemes;
+            if (chosenThemes) {
+                possibleThemes = [].concat(chosenThemes);
+            } else {
+                possibleThemes = Object.keys(contestThemes).concat();
+            }
             var repetitionCooldown = chosenThemes ? 0 : 4;
             for (var e = lastContests.length - 1, i = 0; e >= 0 && i < repetitionCooldown; e--, i++) {
                 if (possibleThemes.contains(lastContests[e].themeId) && (lastContests[e].themeId !== "seasonal" && lastContests[e].themeId !== "seasonal2")) {
@@ -57547,14 +57547,14 @@ function Safari() {
             }
             contestVotingCount--;
             contestVotes = null;
-			if (chosenThemes) {
-				contestVotingCount = 0;
-			}
+            if (chosenThemes) {
+                contestVotingCount = 0;
+            }
             if (contestVotingCount <= 0) {
                 contestVotes = {};
                 contestVotingCount = contestVotingCooldown;
             }
-			chosenThemes = null;
+            chosenThemes = null;
 
             sys.sendAll(separator, safchan);
             safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all the Poké Balls you need!", safchan);
