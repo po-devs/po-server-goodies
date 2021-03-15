@@ -57505,9 +57505,16 @@ function Safari() {
                             aType = type1(p.party[0]);
                             crystalEffect = !["master", "takephoto"].contains(preparationThrows[i]) && p.zcrystalDeadline >= now() && p.zcrystalUser === p.party[0] && chance(zCrystalData[aType].chance) ? zCrystalData[aType] : { effect: "none" };
                             
-                            throwChances[i] = size * (["quick", "lightning", "spy"].indexOf(preparationThrows[i]) !== -1 ? itemData[preparationThrows[i]].bonusRate : 1) * (crystalEffect.effect === "priority" ? sys.rand(crystalEffect.rate[0], crystalEffect.rate[1]) : 1);
+                            throwChances[i] = size * (["quick", "lightning", "spy"].contains(preparationThrows[i]) ? itemData[preparationThrows[i]].bonusRate : 1) * (crystalEffect.effect === "priority" ? sys.rand(crystalEffect.rate[0], crystalEffect.rate[1]) : 1);
                             if (preparationThrows[i] == "takephoto" && this.hasCostumeSkill(p, "fasterPhotos")) {
                                 throwChances[i] *= 3;
+                            }
+                            if (preparationFirst !== p.id && canHaveAbility(p.party[0], abilitynum("Speed Boost"))) {
+                                if (isPlaying(p.id)) {
+                                    safaribot.sendMessage(sys.id(p.id), "Your {0}'s Speed Boost allowed you to throw slightly faster!".format(poke(p.party[0])), safchan);
+                                }
+
+                                throwChances[i] += Math.ceil(size / 2); 
                             }
                         }
                     }
