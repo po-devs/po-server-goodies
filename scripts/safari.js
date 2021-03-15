@@ -13781,7 +13781,7 @@ function Safari() {
             }
             else if (canHaveAbility(player.party[0], abilitynum("Stench"))) {
                 safaribot.sendMessage(src, "Your {0} is emitting a repugnant odor due to its Stench that seems very unappealing to wild Pokémon...".format(poke(player.party[0])), safchan);
-                finalChance *= 0.8
+                finalChance *= 0.95
             }
         }
         if (chance(finalChance)) {
