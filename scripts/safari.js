@@ -7939,10 +7939,13 @@ function Safari() {
             }
 
             if (canHaveAbility(currentPokemon, abilitynum("Contrary"))) {
-                sendAll("The wild {0} {1} inverting type matchups!".format(poke(currentDisplay), amt > 1 ? "are" : "is"));
+                sendAll("The wild {0} {1} inverting type matchups with Contrary!".format(poke(currentDisplay), amt > 1 ? "are" : "is"));
             }
             if (canHaveAbility(currentPokemon, abilitynum("Levitate"))) {
-                sendAll("The wild {0} {1} airborne!".format(poke(currentDisplay), amt > 1 ? "are" : "is"));
+                sendAll("The wild {0} {1} airborne due to Levitate!".format(poke(currentDisplay), amt > 1 ? "are" : "is"));
+            }
+            if (canHaveAbility(currentPokemon, abilitynum("Pressure"))) {
+                sendAll("The wild {0} {1} exerting {2} Pressure!".format(poke(currentDisplay), amt > 1 ? "are" : "is", amt > 1 ? "their" : "its"));
             }
             preparationPhase = sys.rand(5, 8);
             preparationThrows = {};
@@ -9547,6 +9550,11 @@ function Safari() {
                 safaribot.sendHtmlAll(name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their " + ch + poke(catchingMon) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
+            
+            if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !["cherish", "master"].contains(ball) && player.balls[ball] > 1) {
+                safaribot.sendAll("The wild {0}'s Pressure caused {1} to use up an extra {2}...".format(poke(currentPokemon), ball === "spy" ? "the stealthy person" : name, finishName(ball)), safchan);
+                player.balls[ball] -= 1;
+            }
             if (baitCooldown <= 5) {
                 baitCooldown = sys.rand(5, 8);
             }
@@ -9978,7 +9986,7 @@ function Safari() {
             if (canHaveAbility(currentPokemon, abilitynum("Moxie")) && currentExtraBST < moxieBoostLimit) {
                 currentExtraBST += moxieBoost;
                 
-                sendAll("The wild " + pokeName + " " + (currentPokemonCount > 1 ? "are" : "is") + " getting stronger!");
+                sendAll("The wild " + pokeName + " " + (currentPokemonCount > 1 ? "are" : "is") + " getting stronger due to Moxie!");
             }
             player.records.pokesNotCaught += 1;
 
@@ -13764,7 +13772,19 @@ function Safari() {
         }
 
         var perkBonus = getPerkBonus(player, "honey");
-        if (chance(itemData[item].successRate + perkBonus + this.getFortune(player, "honey", 0))) {
+        var finalChance = itemData[item].successRate + perkBonus + this.getFortune(player, "honey", 0);
+        
+        if (!deluxe) {
+            if (canHaveAbility(player.party[0], abilitynum("Illuminate"))) {
+                safaribot.sendMessage(src, "Your {0} is emitting a beautiful glow due to its Illuminate that helps attract wild Pokémon!".format(poke(player.party[0])), safchan);
+                finalChance *= 1.3
+            }
+            else if (canHaveAbility(player.party[0], abilitynum("Stench"))) {
+                safaribot.sendMessage(src, "Your {0} is emitting a repugnant odor due to its Stench that seems very unappealing to wild Pokémon...".format(poke(player.party[0])), safchan);
+                finalChance *= 0.8
+            }
+        }
+        if (chance(finalChance)) {
             if (!(deluxe)) {
                 var showTheme = player.mushroomDeadline > now() ? " from the " + contestThemes[player.mushroomTheme].name + " theme" : "";
                 safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon" + showTheme + "!", safchan);
