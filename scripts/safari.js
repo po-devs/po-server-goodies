@@ -8980,12 +8980,8 @@ function Safari() {
                 }
             }
         }
-        if (rules.buffMons) {
-            for (var i = 0; i < rules.buffMons.length; i++) {
-                if (id == parseInt(rules.buffMons[i], 10)) {
-                    val += RULES_BUFF;
-                }
-            }
+        if (rules.buffMons && rules.buffMons.contains(pokeInfo.species(id))) {
+            val += RULES_BUFF;
         }
         return [val, anyNerf];
     };
