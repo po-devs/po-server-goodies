@@ -9563,7 +9563,7 @@ function Safari() {
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
             
-            if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !["cherish", "master"].contains(ball) && player.balls[ball] > 1) {
+            if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !["cherish", "master"].contains(ball) && player.balls[ball] > 1 && chance(0.3)) {
                 safaribot.sendAll("The wild {0}'s Pressure caused {1} to use up an extra {2}...".format(poke(currentPokemon), ball === "spy" ? "the stealthy person" : name, finishName(ball)), safchan);
                 player.balls[ball] -= 1;
             }
