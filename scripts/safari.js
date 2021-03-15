@@ -52989,7 +52989,7 @@ function Safari() {
                     safaribot.sendMessage(src, info.name + " can Mega Evolve into " + readable(megaEvolutions[info.num].map(poke), "or") + ".", safchan);
                 }
                 if (getAllForms(info.num, true).length > 0) {
-                    safaribot.sendMessage(src, info.name + " has a total of " + plural(getAllForms(info.num, true).length, "alternate forme") + ".", safchan);
+                    safaribot.sendMessage(src, info.name + " has " + plural(getAllForms(info.num, true).length, "alternate forme") + ".", safchan);
                 }
                 var themes = safari.getAllThemesForPoke(info.num, true);
                 if (themes.length > 0) {
@@ -57431,7 +57431,7 @@ function Safari() {
                     else
                         battle.totalPauseTime += 4;
 
-                    if (battle.totalPauseTime > battle.pauseLimit) {
+                    if (battle.paused && battle.totalPauseTime > battle.pauseLimit) {
                         battle.paused = false;
                         battle.sendToViewers(toColor("<b>The battle has been unpaused since the time limit is up!</b>", "crimson"));
                     }
