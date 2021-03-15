@@ -24902,7 +24902,7 @@ function Safari() {
         if (((this.select && this.select.sandBoostGround) || (this.select2 && this.select2.sandBoostGround)) && (stat == "spe")) {
             base = base * 2;
         }
-        if (((this.select && this.weather == "rain" && this.select.SwiftSwim && stat == "spe" && hasType(user.id, "Water")))) {
+        if (((this.select && this.weather == "Rain" && this.select.SwiftSwim && stat == "spe" && hasType(user.id, "Water")))) {
             base = base * 2;
         }
         if (this.select && this.select.trickRoom && stat == "spe") {
@@ -25003,8 +25003,6 @@ function Safari() {
             bonus *= ((isP1 || isP3) && (this.select.furcoat) && (move.category === "physical") ? 0.5 : 1);
             bonus *= (hasType(target.id, "Rock") && (this.weather == "Sand") && (move.category === "special") ? 0.667 : 1);
             bonus *= ((this.select.sandBoostGround && (hasType(target.id, "Ground") && (this.weather == "Sand") && (move.category === "special"))) ? 0.667 : 1);
-            bonus *= (move.type == "Fire" && (this.select.sun) ? 1.5 : 1);
-            bonus *= (move.type == "Water" && (this.select.sun) ? 0.5 : 1);
             bonus *= (move.type == "Fire" && (this.weather == "Sun") ? 1.5 : 1);
             bonus *= (move.type == "Water" && (this.weather == "Sun") ? 0.5 : 1);
             bonus *= (move.type == "Water" && (this.weather == "Rain") ? 1.5 : 1);
