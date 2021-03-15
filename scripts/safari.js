@@ -3125,7 +3125,7 @@ function Safari() {
         return [];
     }
     function getAllForms(num, excludeSelf) {
-        var currentId= pokeInfo.species(num),
+        var currentId = pokeInfo.species(num),
             ret = [],
             currentForm = 1;
         
@@ -52977,7 +52977,10 @@ function Safari() {
                     }
                 }
                 if (!isMega(info.num) && info.num in megaEvolutions) {
-                    safaribot.sendMessage(src, info.name + " can Mega Evolve into " + readable(megaEvolutions[info.num].map(poke), "or") + ". ", safchan);
+                    safaribot.sendMessage(src, info.name + " can Mega Evolve into " + readable(megaEvolutions[info.num].map(poke), "or") + ".", safchan);
+                }
+                if (getAllForms(info.num).length > 1) {
+                    safaribot.sendMessage(src, info.name + " has a total of " + plural(getAllForms(info.num), "alternate forme") + ", including itself.", safchan);
                 }
                 var themes = safari.getAllThemesForPoke(info.num, true);
                 if (themes.length > 0) {
