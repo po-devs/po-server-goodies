@@ -1145,8 +1145,8 @@ function Safari() {
             nugget: {name: "nugget", fullName: "Nugget", type: "valuables", icon: 108, price: 4000, aliases:["nugget"], tradable: true},
             bignugget: {name: "bignugget", fullName: "Big Nugget", type: "valuables", icon: 269, price: 10000, aliases:["bignugget", "big nugget"], tradable: true},
             cometshard: {name: "cometshard", fullName: "Comet Shard", type: "valuables", icon: 271, price: 15000, aliases:["cometshard", "comet", "cshard", "comet shard"], tradable: true},
-            moonshard: {name: "moonshard", fullName: "Moon Shard", type: "valuables", icon: 271, price: 3000, aliases:["moonshard", "moon", "moon shard", "mshard"], tradable: true},
-            sunshard: {name: "sunshard", fullName: "Sun Shard", type: "valuables", icon: 271, price: 3000, aliases:["sunshard", "sun", "sun shard", "sshard"], tradable: true}
+            moonshard: {name: "moonshard", fullName: "Moon Shard", type: "alchemy", icon: 271, price: 3000, aliases:["moonshard", "moon", "moon shard", "mshard"], tradable: true},
+            sunshard: {name: "sunshard", fullName: "Sun Shard", type: "alchemy", icon: 271, price: 3000, aliases:["sunshard", "sun", "sun shard", "sshard"], tradable: true}
         };
     };
 
@@ -8663,13 +8663,6 @@ function Safari() {
                 }
             }
         }
-        if (pokeNum > 807) {
-            if (!(currentThemeAlter)) {
-                if (!(theme.include.contains(pokeId))) {
-                    return false;
-                }
-            }
-        }
 
         var today = "day" + currentDay;
         if (theme.hasOwnProperty(today)) {
@@ -8695,10 +8688,6 @@ function Safari() {
         if (theme.include.indexOf(pokeNum) !== -1) {
             return true;
         }
-        var bst = theme.editBST[pokeNum] || getBST(pokeNum);
-        if (bst > theme.maxBST) {
-            return false;
-        }
         for (var e in theme.excludeTypes) {
             if (hasType(pokeNum, theme.excludeTypes[e])) {
                 return false;
@@ -8712,40 +8701,58 @@ function Safari() {
         }
         return false;
     };
-    this.isInTheme = function(id, name) { // this checks poke validity in a theme excluding alters and across all periods of the day, and if a theme has daily variations, across all daily variations of that theme
-        if (this.validForTheme(id, name)) { // pokes that pass validForTheme are automatically a subset of isInTheme
+    this.isInTheme = function(pokeId, name) { // this checks poke validity in a theme excluding alters and across all periods of the day, and if a theme has daily variations, across all daily variations of that theme
+        if (this.validForTheme(pokeId, name)) { // pokes that pass validForTheme are automatically a subset of isInTheme
             return true;
         }
-        if (contestThemes[name].include.contains(id)) {
-            return true;
+        
+        var theme = contestThemes[name];
+        
+        if (!theme) {
+            return false;
         }
-        if (
-            (contestThemes[name].morning && contestThemes[name].morning.contains(id))
-            || (contestThemes[name].night && contestThemes[name].night.contains(id))
-            || (contestThemes[name].afternoon && contestThemes[name].afternoon.contains(id))
-            || (contestThemes[name].evening && contestThemes[name].evening.contains(id))
-        ) {
-            return true;
-        }
-        for (var day = 1; day <= 7; day++) {
-            if (contestThemes[name].hasOwnProperty("day"+day) && contestThemes[name]["day"+day].contains(id)) {
+        for (var ef in contestPermaVariations) {
+            var variation = contestPermaVariations[ef];
+            
+            if (theme[variation] && theme[variation].contains(pokeId)) {
                 return true;
             }
         }
-        if (contestThemes[name].hasOwnProperty("distortion") && contestThemes[name]["distortion"].contains(id)) {
+        if (theme.exclude.contains(pokeId)) {
+            return false;
+        }
+        if (theme.include.contains(pokeId)) {
             return true;
         }
-        if (contestThemes[name].hasOwnProperty("past") && contestThemes[name]["past"].contains(id)) {
-            return true;
+        for (var e in theme.excludeTypes) {
+            if (hasType(pokeId, theme.excludeTypes[e])) {
+                return false;
+            }
         }
-        if (contestThemes[name].hasOwnProperty("portal") && contestThemes[name]["portal"].contains(id)) {
-            return true;
+        for (e in theme.types) {
+            //Legendary can only be manually added.
+            if (hasType(pokeId, theme.types[e]) && !isRare(pokeId)) {
+                return true;
+            }
+        }
+        
+        var periods = ["night", "morning", "afternoon", "evening"];
+        
+        for (var p = 0 ; p < periods.length; p++) {
+            if (theme[periods[p]] && theme[periods[p]].contains(pokeId)) {
+                return true;
+            }
+        }
+        for (var day = 1; day <= 7; day++) {
+            if (theme.hasOwnProperty("day"+day) && theme["day"+day].contains(pokeId)) {
+                return true;
+            }
         }
 
         return false;
     };
-    this.isInAlter = function(id, name) {
-        return contestThemes[name].alter && contestThemes[name].alter.contains(id);
+    this.isInAlter = function(pokeId, name) {
+        return contestThemes[name].alter && contestThemes[name].alter.contains(pokeId);
     };
     this.getAllThemesForPoke = function(pokeId, retFull) {
         var themeList = [];
@@ -11442,8 +11449,8 @@ function Safari() {
         var line6 = ["pack", "water", "soda", "cookie", "cherry", "gem", "mega", "crystal", "spray", "mail", "burn", "form"]
         var line7 = ["celebrityTicket", "scale", "mushroom", "brush", "egg", "bright", "easteregg"];
         var line8 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens"];
-        var line9 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "sunshard", "moonshard"];
-        var line10 = ["stick", "rock", "fossil", "coupon", "materia", "fragment", "philosopher", "philosopherpebble", "ash"];
+        var line9 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard"];
+        var line10 = ["stick", "rock", "fossil", "coupon", "materia", "fragment", "sunshard", "moonshard", "philosopher", "philosopherpebble", "ash"];
 
         if (["wallet", "utility", "utilities", "balls", "ball", "apricorn", "apricorns", "usable", "usables", "consumable", "consumables", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities", "berries", "berry"].indexOf(search) === -1) {
             search = "*";
@@ -16729,10 +16736,15 @@ function Safari() {
         if (cantBecause(src, reason, ["tutorial"])) {
             return;
         }
-        var validItems = [];
+        var validItems = [], blockedItems = [];
         for (var e in itemData) {
             if (itemData[e].type === "valuables" && itemData[e].price > 0) {
-                validItems.push(itemData[e].name);
+                if (player.tradeBlacklist.contains("@" + e)) {
+                    blockedItems.push(itemData[e].name);
+                }
+                else {
+                    validItems.push(itemData[e].name);
+                }
             }
         }
 
@@ -16779,6 +16791,10 @@ function Safari() {
                 }
             }
 
+            if (blockedItems.contains(item)) {
+                safaribot.sendMessage(src, "We'd like to buy " + finishName(item) + " from you, but it's currently in your Tradeblocked list.", safchan);
+                return;
+            }
             if (!validItems.contains(item)) {
                 safaribot.sendMessage(src, "We do not buy \"" + info[0] +  "\" at this location.", safchan);
                 return;
