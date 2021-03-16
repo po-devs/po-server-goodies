@@ -57897,7 +57897,7 @@ function Safari() {
                     }
 
                     contestInfo.themeId = currentTheme ? currentTheme : "none";
-                    contestInfo.theme = currentTheme ? themeName(currentTheme) : "Default";
+                    contestInfo.theme = currentTheme ? themeName(currentTheme) + (currentThemeAlter ? " (" + contestThemes[currentTheme].alterName + ")" : "") : "Default";
                     contestInfo.rules = safari.translateRules(currentRules, true);
                     lastContests.push(contestInfo);
                     if (lastContests.length > 10) {
