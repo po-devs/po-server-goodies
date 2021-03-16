@@ -8688,6 +8688,11 @@ function Safari() {
         if (theme.include.indexOf(pokeNum) !== -1) {
             return true;
         }
+        
+        var bst = theme.editBST[pokeNum] || getBST(pokeNum);
+        if (bst > theme.maxBST) {
+            return false;
+        }
         for (var e in theme.excludeTypes) {
             if (hasType(pokeNum, theme.excludeTypes[e])) {
                 return false;
@@ -8706,6 +8711,7 @@ function Safari() {
             return true;
         }
         
+        pokeId = parseInt(pokeId);
         var theme = contestThemes[name];
         
         if (!theme) {
@@ -8723,6 +8729,10 @@ function Safari() {
         }
         if (theme.include.contains(pokeId)) {
             return true;
+        }
+        var bst = theme.editBST[pokeId] || getBST(pokeId);
+        if (bst > theme.maxBST) {
+            return false;
         }
         for (var e in theme.excludeTypes) {
             if (hasType(pokeId, theme.excludeTypes[e])) {
