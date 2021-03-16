@@ -11928,7 +11928,7 @@ function Safari() {
                 }
             }
             for (i in shinyCount) {
-                if (shinyCount[i] >= val) {
+                if (shinyCount[i] === val) {
                     for (e = 0, l = shinyCount[i]; e < l; e++) {
                         list.push(i);
                     }
