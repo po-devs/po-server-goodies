@@ -11648,10 +11648,11 @@ function Safari() {
         if (commandData === "*") {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "How to use /find:", safchan);
-            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Move, Shiny, NotEvolved, CanEvolve, HasEvolved, FinalForm, CanMega, Duplicate, Duplicate+, Region or Tier) and a value to find Pokémon in your box. Examples: ", safchan);
+            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Move, Ability, Shiny, NotEvolved, CanEvolve, HasEvolved, FinalForm, CanMega, Duplicate, Duplicate+, Region or Tier) and a value to find Pokémon in your box. Examples: ", safchan);
             safaribot.sendMessage(src, "For Name: Type any part of the Pokémon's name. e.g.: /find name LUG (both Lugia and Slugma will be displayed, among others with LUG on the name)", safchan);
             safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
             safaribot.sendMessage(src, "For Move: Type any move. e.g.: /find move tackle (will show all Pokémon that can learn Tackle)", safchan);
+            safaribot.sendMessage(src, "For Ability: Type any ability. e.g.: /find ability overgrow (will show all Pokémon that can have Overgrow)", safchan);
             safaribot.sendMessage(src, "For Duplicate: Type a number. e.g.: /find duplicate 3 (will display all Pokémon that you have exactly 3 copies of)", safchan);
             safaribot.sendMessage(src, "For Duplicate+: Type a number greater than 1. e.g.: /find duplicate+ 3 (will display all Pokémon that you have at least 3 copies of)", safchan);
             safaribot.sendMessage(src, "For Region: Select any valid region (" +  readable(generations.slice(1, generations.length), "or") + ") to display all currently owned Pokémon from that region", safchan);
@@ -11677,7 +11678,7 @@ function Safari() {
         var sets = commandData.split(" or ");
         var multi;
         var str, info, crit, val, m, def, title = [], finalTitle = [], list, current = player.pokemon.concat(), finalList = [];
-        var spacedVal = ["move","learn","canlearn", "tier"];
+        var spacedVal = ["move","learn","canlearn", "tier", "ability", "hasability"];
 
         for (var i = 0; i < sets.length; i++) {
             multi = sets[i].split("&&");
@@ -11804,6 +11805,10 @@ function Safari() {
                 case "canlearn":
                     crit = "move";
                     break;
+                case "ability":
+                case "hasability":
+                    crit = "ability";
+                    break;
                 case "start":
                 case "starting":
                 case "initial":
@@ -11879,6 +11884,20 @@ function Safari() {
                 }
             });
             return "with " + type_1 + (type_2 ? "/" + type_2 : "") + " type";
+        }
+        else if (crit == "ability") {
+            var old = val;
+            val = abilitynum(val);
+            if (!val) {
+                safaribot.sendMessage(src, old + " is not a valid ability!", safchan);
+                return false;
+            }
+            current.forEach(function(x) {
+                if (canHaveAbility(x, val)) {
+                    list.push(x);
+                }
+            });
+            return "that have the ability " + abilityOff(val);
         }
         else if (crit == "move") {
             var old = val;
