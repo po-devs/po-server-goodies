@@ -9923,7 +9923,7 @@ function Safari() {
             this.missionProgress(player, "catchAny", currentPokemon, 1);
             this.costumeEXP(player, "catch");
             if (currentThemeFlavor) {
-                if (currentThemeFlavor.toLowerCase() == player.costume.toLowerCase()) {
+                if (currentThemeFlavor.toLowerCase() == player.costume.toLowerCase() && player.costumeInfo[player.costume].level < 20) {
                     this.costumeEXP(player, "catch"); //double exp
                     safaribot.sendMessage(src, "You gained extra EXP for your {0} costume from the {1} theme!".format(costumeData[player.costume].fullName, themeName(currentTheme)), safchan);
                 }
@@ -11661,7 +11661,7 @@ function Safari() {
             safaribot.sendMessage(src, "-Less than. e.g.: /find bst 350 < (displays all Pokémon with BST of 350 or less)", safchan);
             safaribot.sendMessage(src, "-Range. e.g.: /find number 1 150 (displays all Pokémon with pokédex number between 1 and 150)", safchan);
             safaribot.sendMessage(src, "For Shiny, NotEvolved, CanEvolve, HasEvolved, FinalForm and CanMega: No additional parameter required.", safchan);
-            safaribot.sendMessage(src, "To look for more than one paramater, use && (e.g.: '/find region johto && duplicate 3' to look for Pokémon from Johto that you have 3 copies of)", safchan);
+            safaribot.sendMessage(src, "To look for more than one parameter, use && (e.g.: '/find region johto && duplicate 3' to look for Pokémon from Johto that you have 3 copies of)", safchan);
             safaribot.sendMessage(src, "To look for any of more than one parameter, use or (e.g.: '/find type steel or color green' to look for Pokémon that's Steel type or green.)", safchan);
             sys.sendMessage(src, "", safchan);
             return;
