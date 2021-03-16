@@ -8707,10 +8707,6 @@ function Safari() {
         return false;
     };
     this.isInTheme = function(pokeId, name) { // this checks poke validity in a theme excluding alters and across all periods of the day, and if a theme has daily variations, across all daily variations of that theme
-        if (this.validForTheme(pokeId, name)) { // pokes that pass validForTheme are automatically a subset of isInTheme
-            return true;
-        }
-        
         pokeId = parseInt(pokeId);
         var theme = contestThemes[name];
         
