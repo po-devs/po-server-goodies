@@ -9736,7 +9736,7 @@ function Safari() {
                             berryChance += 0.1;
                         }
                         else {
-                            berryChance += 0.3;
+                            berryChance += 0.2;
                         }
                     }
                     if (chance(berryChance)) {
