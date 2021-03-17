@@ -7978,14 +7978,18 @@ function Safari() {
                 }
             }
 
+            var is_are = amt > 1 ? "are" : "is"
             if (canHaveAbility(currentPokemon, abilitynum("Contrary"))) {
-                sendAll("The wild {0} {1} inverting type matchups with Contrary!".format(poke(currentDisplay), amt > 1 ? "are" : "is"));
+                sendAll("The wild {0} {1} inverting type matchups with Contrary!".format(poke(currentDisplay), is_are));
             }
             if (canHaveAbility(currentPokemon, abilitynum("Levitate"))) {
-                sendAll("The wild {0} {1} airborne due to Levitate!".format(poke(currentDisplay), amt > 1 ? "are" : "is"));
+                sendAll("The wild {0} {1} airborne due to Levitate!".format(poke(currentDisplay), is_are));
             }
             if (canHaveAbility(currentPokemon, abilitynum("Pressure"))) {
-                sendAll("The wild {0} {1} exerting {2} Pressure!".format(poke(currentDisplay), amt > 1 ? "are" : "is", amt > 1 ? "their" : "its"));
+                sendAll("The wild {0} {1} exerting {2} Pressure!".format(poke(currentDisplay), is_are, amt > 1 ? "their" : "its"));
+            }
+            if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard"))) {
+                sendAll("The wild {0} {1} protected by Wonder Guard!".format(poke(currentDisplay), is_are));
             }
             
             for (var user in ignoreList) {
@@ -9365,6 +9369,17 @@ function Safari() {
         
         var timelinemod = (currentThemeEffect == "past" && player.altTimeline.lead !== 0 && player.altTimeline.cooldown > n ? (player.altTimeline.buff && player.altTimeline.buff > 1 ? player.altTimeline.buff : 1.3) : 1);
 
+        var wonderGuardBreak = false;
+        if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard"))) {
+            if (typeBonus >= 2) {
+                safaribot.sendAll("The wild {0}'s Wonder Guard shattered instantly!".format(poke(currentPokemon)), safchan);
+                wonderGuardBreak = true;
+            }
+            else {
+                typeBonus = Math.min(typeBonus, immuneMultiplier);
+                safaribot.sendAll("The wild {0}'s Wonder Guard is protecting it!".format(poke(currentPokemon)), safchan);
+            }
+        }
         var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true) {
             if (player.helds.length > 0 && player.helds[0] == 2 && !needsPechaCleared.contains(player.id.toLowerCase())) {
@@ -9404,7 +9419,7 @@ function Safari() {
             }
         }
 
-        return finalChance;
+        return wonderGuardBreak ? 1 : finalChance;
     };
     this.throwBall = function(src, data, bypass, suppress, command, baitThrow, freeThrow) {
         if (!validPlayers("self", src)) {
