@@ -1803,8 +1803,8 @@ function Safari() {
     var currentPokemonAction = null;
     var currentPokemonMood = null;
     var currentPokemonMoodRate = null;
-    var moxieBoost = 5;
-    var moxieBoostLimit = moxieBoost * 10;
+    var wildAbilityBoost = 5;
+    var wildAbilityBoostLimit = wildAbilityBoost * 10;
     var maxThrows = 10;
     var pokeblockThrows = 0;
     var currentThrows;
@@ -3127,7 +3127,7 @@ function Safari() {
                 return evolutions[entry].evo.filter(function(e) { return e !== num });
             }
         }
-        
+
         return [];
     }
     function getAllForms(num, excludeSelf) {
@@ -3147,7 +3147,19 @@ function Safari() {
                 currentId = species + 65536 * currentForm++;
             }
         }
+
         return ret.filter(function(e) { return excludeSelf ? e !== num : true });
+    }
+    function ignoresWildAbilities(player) {
+        var abilities = [104, 163, 164, 256]; // Mold Breaker, Turboblaze, Teravolt, Neutralizing Gas
+        
+        for (var a in abilities) {
+            if (canHaveAbility(p.party[0], abilities[a])) {
+                return abilities[a];
+            }
+        }
+
+        return false;
     }
     function compare(a,b) {
         if (a.sort < b.sort) {
@@ -6555,7 +6567,7 @@ function Safari() {
                 if (!(ultraAbilities[i].hasOwnProperty("name"))) {
                     continue
                 }
-                if (ultraAbilities[i].name == name) {
+                if (ultraAbilities[i].name.toLowerCase() == name.toLowerCase()) {
                     out = parseInt(i, 10);
                     break;
                 }
@@ -7948,14 +7960,21 @@ function Safari() {
                 sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + (wildEvent ? "<br/><b>All ball cooldowns were reset!</b>" : "") + "</center><hr>", true, true);
             }
             var onChannel = sys.playersOfChannel(safchan);
+            var ignoreList = {};
             for (var e in onChannel) {
                 ballMacro(onChannel[e]);
                 
+                var p = getAvatar(onChannel[e]);
+                if (!p) {
+                    continue;
+                }
                 if (wildEvent) { // if an Event spawns, reset ball cooldown so everyone can attempt a throw
-                    var p = getAvatar(onChannel[e]);
-                    if (!p)
-                        continue;
                     p.cooldowns.ball = 0;
+                }
+                
+                var ignore = ignoresWildAbilities(p);
+                if (ignore) {
+                    ignoreList[onChannel[e]] = "Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(p.party[0]), ignore, poke(currentDisplay));
                 }
             }
 
@@ -7967,6 +7986,10 @@ function Safari() {
             }
             if (canHaveAbility(currentPokemon, abilitynum("Pressure"))) {
                 sendAll("The wild {0} {1} exerting {2} Pressure!".format(poke(currentDisplay), amt > 1 ? "are" : "is", amt > 1 ? "their" : "its"));
+            }
+            
+            for (var user in ignoreList) {
+                safaribot.sendMessage(user, ignoreList[user], safchan);
             }
             preparationPhase = sys.rand(5, 8);
             preparationThrows = {};
@@ -9111,8 +9134,8 @@ function Safari() {
         if (currentPokemon == 352 && currentTypeOverride) { // Kecleon
             wType1 = currentTypeOverride;
         }
-        var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || canHaveAbility(currentPokemon, abilitynum("Contrary"));
-        var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) };
+        var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(currentPokemon, abilitynum("Contrary")) && !ignoresWildAbilities(player));
+        var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) && !ignoresWildAbilities(player) };
         if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
             if (ball === "mono") {
                 typeBonus = this.checkEffective(wType1, wType2, (pType2 === "???" || !player.monoSecondary ? pType1 : pType2), "???", false, !inverse);
@@ -9574,7 +9597,7 @@ function Safari() {
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
             
-            if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !["cherish", "master"].contains(ball) && player.balls[ball] > 1 && chance(0.3)) {
+            if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !ignoresWildAbilities(player) && !["cherish", "master"].contains(ball) && player.balls[ball] > 1 && chance(0.3)) {
                 safaribot.sendAll("The wild {0}'s Pressure caused {1} to use up an extra {2}...".format(poke(currentPokemon), ball === "spy" ? "the stealthy person" : name, finishName(ball)), safchan);
                 player.balls[ball] -= 1;
             }
@@ -9610,7 +9633,12 @@ function Safari() {
             } else if (ball !== "spirit") {
                 player.pokemon.push(currentPokemon);
             }
-            
+
+            var heldChanceBoost = false;
+            if (canHaveAbility(player.party[0], abilitynum("Compound Eyes"))) {
+                safaribot.sendMessage(src, "Your {0}'s Compound Eyes helps you find held items more often!".format(poke(player.party[0])), safchan);
+                heldChanceBoost = true;
+            }
             if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"")) {
                 var wildItemHeldList = globalWildItems[currentPokemon+""];
                 var drop = [], gained = [], discarded = [], lost = [];
@@ -9626,6 +9654,18 @@ function Safari() {
                     
                     if (item in customItems) {
                         item = customItems[item].random();
+                    }
+                    
+                    if (heldChanceBoost) {
+                        if (perc >= 0.5) {
+                            perc += 0.1;
+                        }
+                        else if (perc >= 0.2) {
+                            perc += 0.2;
+                        }
+                        else {
+                            perc *= 2;
+                        }
                     }
                     if (chance(perc)) {
                         var stuff = giveStuff(player, item, true);
@@ -9690,6 +9730,14 @@ function Safari() {
                     var berryChance = 0.05 + (safari.hasCostumeSkill(player, "berryCatcher") ? 0.2 : 0);
                     if (currentRules.doubleBerry) {
                         berryChance *= 2;
+                    }
+                    if (heldChanceBoost) {
+                        if (berryChance >= 0.5) {
+                            berryChance += 0.1;
+                        }
+                        else {
+                            berryChance += 0.3;
+                        }
                     }
                     if (chance(berryChance)) {
                         if (itemPower > 600 && berry.length > 1) {
@@ -9996,7 +10044,7 @@ function Safari() {
             }
             sendAll(pokeName + " broke out of " + (ball == "spy" ? "an anonymous person" : name) + "'s " + ballName + "!");
             
-            if (currentPokemon == 352) { // Kecleon
+            if (currentPokemon == 352 && !ignoresWildAbilities(player)) { // Kecleon
                 if (type2(player.party[0]) !== "???") { // If has 2 types
                     currentTypeOverride = [type1(player.party[0]), type2(player.party[0])].random(); // Pick a random one
                 }
@@ -10006,10 +10054,15 @@ function Safari() {
 
                 sendAll("The wild " + pokeName + "'s Color Change changed " + (currentPokemonCount > 1 ? "their" : "its") + " type to " + currentTypeOverride + "!");
             }
-            if (canHaveAbility(currentPokemon, abilitynum("Moxie")) && currentExtraBST < moxieBoostLimit) {
-                currentExtraBST += moxieBoost;
+            if (canHaveAbility(currentPokemon, abilitynum("Moxie")) && currentExtraBST < wildAbilityBoostLimit && !ignoresWildAbilities(player)) {
+                currentExtraBST += wildAbilityBoost;
                 
                 sendAll("The wild " + pokeName + " " + (currentPokemonCount > 1 ? "are" : "is") + " getting stronger due to Moxie!");
+            }
+            if (canHaveAbility(currentPokemon, abilitynum("Defeatist")) && -currentExtraBST < wildAbilityBoostLimit && !ignoresWildAbilities(player)) {
+                currentExtraBST -= wildAbilityBoost;
+
+                sendAll("The wild " + pokeName + " " + (currentPokemonCount > 1 ? "are" : "is") + " losing confidence due to Defeatist!");
             }
             player.records.pokesNotCaught += 1;
 
@@ -52981,6 +53034,7 @@ function Safari() {
                 }
                 safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + (pokeInfo.forme(info.num) > 0 ? "-" + pokeInfo.forme(info.num) : "") + (pokeInfo.species(info.num) !== info.num ? " (" + info.num + "). " : ". ") + info.name + "'s BST is " + getBST(info.num) + statsmsg, safchan);
                 safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Tier: " + safari.getTier(info.num) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +".", safchan);
+                safaribot.sendHtmlMessage(src, "Abilities: " + [0, 1, 2].map(function(e) { return getPokeAbility(info.num, e) }).filter(function(e) { return !!e }).map(abilityOff) + ".", safchan);
                 if (opt.contains("effectiveness")) {
                     safaribot.sendHtmlMessage(src, efmsg.join(", "), safchan);
                     safaribot.sendHtmlMessage(src, efmsg2.join(", "), safchan);
