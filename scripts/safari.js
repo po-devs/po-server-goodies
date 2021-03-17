@@ -6636,7 +6636,7 @@ function Safari() {
         return Math.round(getBST(pokeNum) * (getBST(pokeNum) >= 600 ? 2 : 1) * (getBST(pokeNum) >= 660 ? 4 : 1) * (shiny ? 5 : 1) * (isLegendary(pokeNum) ? 10 : 1) * (perkBonus ? perkBonus : 1));
     }
     function isMega(num) {
-        return megaPokemon.indexOf(num) !== -1;
+        return megaPokemon.indexOf(parseInt(num)) !== -1;
     }
     function isLegendary(num) {
         return legendaries.indexOf(pokeInfo.species(num)) !== -1;
@@ -7974,7 +7974,7 @@ function Safari() {
                 
                 var ignore = ignoresWildAbilities(p);
                 if (ignore) {
-                    ignoreList[onChannel[e]] = "Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(p.party[0]), ignore, poke(currentDisplay));
+                    ignoreList[onChannel[e]] = "Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(p.party[0]), abilityOff(ignore), poke(currentDisplay));
                 }
             }
 
@@ -8158,7 +8158,7 @@ function Safari() {
                     player.altTimeline.buff = 1;
                     party = player.party || [];
                     mon = party[0];
-                    if (mon) {
+                    if (mon && !isMega(mon)) {
                         validAlts = getAlternateEvolutions(mon).concat(getAllForms(mon, true)).filter(function(e) { return !isMega(e) });
                         if (validAlts.length > 0) {
                             isShiny = typeof mon == "string";
@@ -53034,7 +53034,7 @@ function Safari() {
                 }
                 safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + (pokeInfo.forme(info.num) > 0 ? "-" + pokeInfo.forme(info.num) : "") + (pokeInfo.species(info.num) !== info.num ? " (" + info.num + "). " : ". ") + info.name + "'s BST is " + getBST(info.num) + statsmsg, safchan);
                 safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Tier: " + safari.getTier(info.num) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +".", safchan);
-                safaribot.sendHtmlMessage(src, "Abilities: " + [0, 1, 2].map(function(e) { return getPokeAbility(info.num, e) }).filter(function(e) { return !!e }).map(abilityOff) + ".", safchan);
+                safaribot.sendHtmlMessage(src, "Abilities: " + readable([0, 1, 2].map(function(e) { return getPokeAbility(info.num, e) }).filter(function(e) { return !!e }).map(abilityOff)) + ".", safchan);
                 if (opt.contains("effectiveness")) {
                     safaribot.sendHtmlMessage(src, efmsg.join(", "), safchan);
                     safaribot.sendHtmlMessage(src, efmsg2.join(", "), safchan);
