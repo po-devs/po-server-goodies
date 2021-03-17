@@ -3154,7 +3154,7 @@ function Safari() {
         var abilities = [104, 163, 164, 256]; // Mold Breaker, Turboblaze, Teravolt, Neutralizing Gas
         
         for (var a in abilities) {
-            if (canHaveAbility(p.party[0], abilities[a])) {
+            if (canHaveAbility(player.party[0], abilities[a])) {
                 return abilities[a];
             }
         }
