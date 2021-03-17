@@ -15142,7 +15142,7 @@ function Safari() {
                 case "silver2": amount = 84; reward = "silver"; break;
                 case "bluapricorn": case "grnapricorn": case "pnkapricorn": amount = 20; break;
             }
-            safaribot.sendMessage(src, "You excitedly open your " + finishName("pack") + " to reveal " + plural(amount, item) + "!", safchan);
+            safaribot.sendMessage(src, "You excitedly open your " + finishName("pack") + " to reveal " + plural(amount, reward) + "!", safchan);
             if (item === "mega") {
                 safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("mega")) + " in their " + finishName("pack") + "!</b>", safchan);
             }
