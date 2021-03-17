@@ -9017,12 +9017,12 @@ function Safari() {
     this.computeCatchRate = function(src, ball) {
         var player = getAvatar(src), wild, isShiny, wildStats, story = false, storyMultiplier = 1;
         
-        var leader = parseInt(player.party[0], 10);
+        var leader = player.party[0];
         if (currentThemeEffect == "distortion") {
-            leader = parseInt(player.party[player.party.length-1], 10);
+            leader = player.party[player.party.length-1];
         }
         if (currentThemeEffect == "past" && player.altTimeline.lead !== 0) {
-            leader = parseInt(player.altTimeline.lead, 10);
+            leader = player.altTimeline.lead;
         }
 
         var ballBonus = itemData[ball].ballBonus;
@@ -9321,12 +9321,12 @@ function Safari() {
         
         var species = pokeInfo.species(leader);
         var dailyBonus = safari.validDailyBoost(player) ? (dailyBoost.bonus * this.hasCostumeSkill(player, "botdboost") ? 1.1 : 1) : 1;
-        var rulesMod = currentRules ? this.getRulesMod(player, player.party[0], currentRules, scaleColor) : [1, false];
+        var rulesMod = currentRules ? this.getRulesMod(player, leader, currentRules, scaleColor) : [1, false];
         var costumeMod = 1;
         if (story) {
             rulesMod = storyMultiplier;
         }
-        if (player.party[0] === player.starter || player.starter2.contains(player.party[0])) {
+        if (leader === player.starter || player.starter2.contains(leader)) {
             if (player.costume === "preschooler") {
                 var c = costumeData.preschooler;
                 costumeMod = c.rate;
@@ -9371,7 +9371,7 @@ function Safari() {
                 player.berries.pecha = true;
                 needsPechaCleared.push(player.id.toLowerCase());
                 player.helds[0] = -1;
-                safaribot.sendMessage(sys.id(player.id), "Your " + poke(player.party[0]) + " ate its Pecha Berry and weakened the nerf!", safchan);
+                safaribot.sendMessage(sys.id(player.id), "Your " + poke(leader) + " ate its Pecha Berry and weakened the nerf!", safchan);
             }
 
             finalChance = Math.min(RULES_NERF_CAP * (player.berries.pecha ? 1.5 : 1), finalChance);
