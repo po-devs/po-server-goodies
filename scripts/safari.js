@@ -9370,7 +9370,7 @@ function Safari() {
         var timelinemod = (currentThemeEffect == "past" && player.altTimeline.lead !== 0 && player.altTimeline.cooldown > n ? (player.altTimeline.buff && player.altTimeline.buff > 1 ? player.altTimeline.buff : 1.3) : 1);
 
         var wonderGuardBreak = false;
-        if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard"))) {
+        if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard")) && !ignoresWildAbilities(player)) {
             if (typeBonus >= 2) {
                 safaribot.sendAll("The wild {0}'s Wonder Guard shattered instantly!".format(poke(currentPokemon)), safchan);
                 wonderGuardBreak = true;
