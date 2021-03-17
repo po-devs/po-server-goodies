@@ -3135,7 +3135,7 @@ function Safari() {
         var species = pokeInfo.species(num),
             ret = [],
             currentForm = 1;
-        
+
         var currentId = species;
 
         if (currentId === 351) { // special case for castform which has a mislabeled form number (castform-sunny is 351-4 instead of 351-3)
@@ -8099,14 +8099,7 @@ function Safari() {
         
         var messOut = {};
         var onChannel = sys.playersOfChannel(safchan);
-        for (var i in onChannel) {
-            player = getAvatar(onChannel[i]);
-            
-            if (player) {
-                player.altTimeline.lead = 0;
-                player.altTimeline.buff = 1;
-            }
-        }
+
         if (currentTheme && contestThemes[currentTheme].flavor) {
             currentThemeFlavor = contestThemes[currentTheme].flavor;
         } else {
@@ -8137,6 +8130,9 @@ function Safari() {
                     if (!(player)) {
                         continue;
                     }
+
+                    player.altTimeline.lead = 0;
+                    player.altTimeline.buff = 1;
                     party = player.party || [];
                     mon = party[0];
                     if (mon) {
@@ -8144,14 +8140,11 @@ function Safari() {
                         if (validAlts.length > 0) {
                             isShiny = typeof mon == "string";
                             buffAmt = (1.25 + 0.05 * Math.min(validAlts.length, 10));
-                            validAlts = removeDuplicates(validAlts).random();
+                            validAlts = removeDuplicates(validAlts, true).random();
                             messOut[player.id] = [pokeInfo.icon(mon) + " -> " + pokeInfo.icon(parseInt(validAlts, 10)), "Time traveling to the past created a parallel timeline where your " + poke(mon) + " was actually a " + (isShiny ? "Shiny " : "") + poke(validAlts) + "! You have a " + buffAmt + "x catch rate during this effect!"];
-                            player.altTimeline.lead = validAlts + (isShiny ?  "" : 0);
+                            player.altTimeline.lead = validAlts + (isShiny ? "" : 0);
                             player.altTimeline.buff = buffAmt;
                             player.altTimeline.cooldown = n + 60 * 5 * 1000;
-                        } else {
-                            player.altTimeline.lead = 0;
-                            player.altTimeline.buff = 1;
                         }
                     }
                 }
@@ -15137,9 +15130,10 @@ function Safari() {
             return;
         }
         if (item === "pack") {
-            var reward = randomSample(packItems);
+            var item = randomSample(packItems);
+            var reward = item;
             var amount = 1;
-            switch (reward) {
+            switch (item) {
                 case "gem": amount = 3; break;
                 case "rock": amount = 50; break;
                 case "bait": amount = 10; break;
@@ -15148,21 +15142,24 @@ function Safari() {
                 case "silver2": amount = 84; reward = "silver"; break;
                 case "bluapricorn": case "grnapricorn": case "pnkapricorn": amount = 20; break;
             }
-            safaribot.sendMessage(src, "You excitedly open your " + finishName("pack") + " to reveal " + plural(amount, reward) + "!", safchan);
-            if (reward === "mega") {
+            safaribot.sendMessage(src, "You excitedly open your " + finishName("pack") + " to reveal " + plural(amount, item) + "!", safchan);
+            if (item === "mega") {
                 safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("mega")) + " in their " + finishName("pack") + "!</b>", safchan);
             }
-            if (reward === "bignugget") {
+            if (item === "bignugget") {
                 safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("bignugget")) + " in their " + finishName("pack") + "!</b>", safchan);
             }
-            if (reward === "water") {
+            if (item === "water") {
                 safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("water")) + " in their " + finishName("pack") + "!</b>", safchan);
             }
-            if (reward === "celebrityTicket") {
+            if (item === "celebrityTicket") {
                 safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("celebrityTicket")) + " in their " + finishName("pack") + "!</b>", safchan);
             }
-            if (reward === "spray") {
+            if (item === "spray") {
                 safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("spray")) + " in their " + finishName("pack") + "!</b>", safchan);
+            }
+            if (item === "silver2") {
+                safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + plural(amount, reward) + " in their " + finishName("pack") + "!</b>", safchan);
             }
             rewardCapCheck(player, reward, amount);
             player.balls.pack -= 1;
