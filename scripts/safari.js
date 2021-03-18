@@ -49728,7 +49728,7 @@ function Safari() {
     this.showNextContest = function(src) {
         if (contestCount > 0) {
             var hasExtension = wildEvent && contestCount === 1 && contestExtension <= contestExtensionLimit;
-            safaribot.sendMessage(src, "Current Contest's theme: " + (currentTheme ? themeName(currentTheme) : "Default") + ".", safchan);
+            safaribot.sendMessage(src, "Current Contest's theme: " + (currentTheme ? themeName(currentTheme) + (currentThemeAlter ? " (" + contestThemes[currentTheme].alterName + ")" : "") + (currentThemeEffect ? " [" + cap(currentThemeEffect) + "]": "") : "Default") + ".", safchan);
             if (currentRules) {
                 safaribot.sendHtmlMessage(src, "Contest's Rules: " + this.translateRules(currentRules, true), safchan);
             }
@@ -57963,7 +57963,7 @@ function Safari() {
                     }
 
                     contestInfo.themeId = currentTheme ? currentTheme : "none";
-                    contestInfo.theme = currentTheme ? themeName(currentTheme) + (currentThemeAlter ? " (" + contestThemes[currentTheme].alterName + ")" : "") : "Default";
+                    contestInfo.theme = currentTheme ? themeName(currentTheme) + (currentThemeAlter ? " (" + contestThemes[currentTheme].alterName + ")" : "") + (currentThemeEffect ? " [" + cap(currentThemeEffect) + "]": "") : "Default";
                     contestInfo.rules = safari.translateRules(currentRules, true);
                     lastContests.push(contestInfo);
                     if (lastContests.length > 10) {
