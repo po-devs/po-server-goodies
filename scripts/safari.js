@@ -11554,7 +11554,7 @@ function Safari() {
     };
     this.showCostumes = function (player) {
         var out = [], n, i;
-        var costumes = player.costumes.slice(0).sort();
+        var costumes = player.costumes.slice(0).sort(function(a, b) { return costumeAlias(a, false, true) < costumeAlias(b, false, true) ? -1 : 1 });
         for (i = 0; i < costumes.length; i++) {
             n = costumeAlias(costumes[i], false, true);
             out.push(link("/dressup " + n, n));
