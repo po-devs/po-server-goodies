@@ -11554,8 +11554,9 @@ function Safari() {
     };
     this.showCostumes = function (player) {
         var out = [], n, i;
-        for (i = 0; i < player.costumes.length; i++) {
-            n = costumeAlias(player.costumes[i], false, true);
+        var costumes = player.costumes.slice(0).sort();
+        for (i = 0; i < costumes.length; i++) {
+            n = costumeAlias(costumes[i], false, true);
             out.push(link("/dressup " + n, n));
         }
         return "Owned Costumes: " + (out.length > 0 ? out.join(", ") : "None");
