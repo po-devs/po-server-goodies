@@ -16600,10 +16600,13 @@ function Safari() {
         }
 
         if (!player.costumes.contains(costume)) {
-            safaribot.sendHtmlMessage(src, toColor("<b>You do not have this costume yet!</b>", "red"), safchan);
+            safaribot.sendHtmlMessage(src, toColor("<b>You do not have this costume yet!</b>", "crimson"), safchan);
         }
         if (Object.keys(costumeData[costume].skills).length === 0) {
-            safaribot.sendMessage(src, "This costume has no extra skills and cannot level up!", safchan);
+            safaribot.sendHtmlMessage(src, "<b><u>This costume has no extra skills and cannot level up!</u></b>", safchan);
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendHtmlMessage(src, "<b><u>Effects & EXP Types</u></b>", safchan);
+            safaribot.sendMessage(src, safari.getCostumeHelp(costume), safchan);
             return;
         }
 
@@ -16614,7 +16617,7 @@ function Safari() {
                 nextexp = " [Max]";
             }
 
-            safaribot.sendHtmlMessage(src, "<b>" + costumeAlias(costume, true, true) + "</b> is Level: " + lev + nextexp + ".", safchan);
+            safaribot.sendHtmlMessage(src, "<u><b>" + costumeAlias(costume, true, true) + "</b> is Level: " + lev + nextexp + ".</u>", safchan);
         }
 
         sys.sendMessage(src, "", safchan);
@@ -16633,7 +16636,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "- {0} <b><font color='{2}'>[{1}]</font></b>".format(
                 costumeSkillInfo[skill],
                 verb + (singleLevelUnlock ? " at" : " between") + " Level " + (singleLevelUnlock ? skills[skill][0] : readable(skills[skill])),
-                (hasSkill ? "green" : "red")
+                (hasSkill ? "green" : "crimson")
             ), safchan);       
         }
 
