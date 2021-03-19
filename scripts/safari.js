@@ -14052,7 +14052,7 @@ function Safari() {
                     target.records.rocksDodged += 1;
                 } else {
                     safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! *THUD* A direct hit! " + targetName + " was " + verb + "!", safchan);
-                    target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + itemData.rock.targetCD : currentTime + itemData.rock.targetCD;
+                    //target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + itemData.rock.targetCD : currentTime + itemData.rock.targetCD;
                     player.records.rocksHit += 1;
                     target.records.rocksHitBy += 1;
                     safari.missionProgress(player,"rockHit",0,1,{})
@@ -14065,7 +14065,7 @@ function Safari() {
                     target.records.rocksDodged += 1;
                 } else {
                     safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! " + targetName + " evaded, but their " + poke(target.party[0]) + " got hit and " + verb + "!", safchan);
-                    target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + Math.floor(itemData.rock.targetCD/2) : currentTime + Math.floor(itemData.rock.targetCD/2);
+                    //target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + Math.floor(itemData.rock.targetCD/2) : currentTime + Math.floor(itemData.rock.targetCD/2);
                     player.records.rocksHit += 1;
                     target.records.rocksHitBy += 1;
                 }
@@ -14112,7 +14112,7 @@ function Safari() {
                 safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
                 // safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but it broke apart before it was thrown and covered " + sys.name(src) + " in snow! That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
 
-                player.cooldowns.ball = currentTime + itemData.rock.bounceCD;
+                //player.cooldowns.ball = currentTime + itemData.rock.bounceCD;
                 player.records.rocksBounced += 1;
             }
             else if (rng2 < 0.25) {
