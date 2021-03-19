@@ -16602,6 +16602,7 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
         if (!player.costumes.contains(costume)) {
             safaribot.sendHtmlMessage(src, toColor("<b>You do not have this costume yet!</b>", "crimson"), safchan);
+            sys.sendMessage(src, "", safchan);
         }
         if (Object.keys(costumeData[costume].skills).length === 0) {
             safaribot.sendHtmlMessage(src, "<b><u>This costume has no extra skills and cannot level up!</u></b>", safchan);
@@ -16612,7 +16613,7 @@ function Safari() {
             return;
         }
 
-        if (player.costumeInfo[costume]) {
+        if (player.costumes.contains(costume)) {
             var lev = this.getCostumeLevel(player, costume);
             var nextexp = (lev < 20 ? " (" + (lev * 100 - player.costumeInfo[costume].exp) + " EXP until next level)" : "");
             if (lev >= 20) {
