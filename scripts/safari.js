@@ -11574,7 +11574,7 @@ function Safari() {
             if (player.cooldowns.costume > now()) {
                 safaribot.sendMessage(src, "You can change your costume in " + timeLeftString(player.cooldowns.costume) + ".", safchan);
             } else {
-                safaribot.sendMessage(src, "You are able to change your costume right now! " + this.showCostumes(src), safchan);
+                safaribot.sendHtmlMessage(src, "You are able to change your costume right now! " + this.showCostumes(src), safchan);
             }
             return;
         }
@@ -52331,7 +52331,7 @@ function Safari() {
                 return true;
             }
             if (command === "costumes" || command === "costume") {
-                safari.showCostumes(src);
+                safaribot.sendHtmlMessage(src, safari.showCostumes(src), safchan);
                 return true;
             }
             if (command === "dressup" || command === "changecostume") {
