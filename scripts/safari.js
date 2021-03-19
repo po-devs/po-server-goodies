@@ -16595,7 +16595,7 @@ function Safari() {
         costume = costumeAlias(costume.toLowerCase());
         
         if (!costume || !costumeData.hasOwnProperty(costume)) {
-            safaribot.sendHtmlMessage(src, "That's not a valid costume! The existing costumes are: " + readable(Object.keys(costumeData).map(function(e) { return link("/costumeinfo " + e, costumeData[e].fullName) })), safchan);
+            safaribot.sendHtmlMessage(src, "That's not a valid costume! The existing costumes are: " + readable(Object.keys(costumeData).map(function(e) { return link("/showcostume " + e, costumeData[e].fullName) })), safchan);
             return;
         }
 
