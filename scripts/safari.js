@@ -16599,7 +16599,7 @@ function Safari() {
             return;
         }
 
-        if (!player.costumeInfo[costume]) {
+        if (!player.costumes.contains[costume]) {
             safaribot.sendHtmlMessage(src, "<b>You do not have this costume yet!</b>", safchan);
         }
         if (Object.keys(costumeData[costume].skills).length === 0) {
@@ -16657,9 +16657,9 @@ function Safari() {
             }
         }
         
-        ret.push(expInfo.join(", "));
+        ret.push("<b>EXP Types:</b> " + expInfo.join(", "));
         
-        return ret;
+        return ret.join(" ");
     };
     this.getCostumeLevel = function(player, costume) {
         var cos = costume || player.costume;
@@ -43567,6 +43567,9 @@ function Safari() {
     };
     this.handleDayCareCommand = function(src, cdata, auth) {
         var player = getAvatar(src);
+        if (!player) {
+            return false;
+        }
         var command = cdata[0], c2 = "", c3 = "";
         if (cdata.length > 1) {
             c2 = cdata[1];
