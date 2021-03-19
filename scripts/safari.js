@@ -16657,7 +16657,7 @@ function Safari() {
             }
         }
         
-        ret.push("<b>EXP Types:</b> " + expInfo.join(", "));
+        ret.push("EXP Types: " + expInfo.join(", "));
         
         return ret.join(" ");
     };
