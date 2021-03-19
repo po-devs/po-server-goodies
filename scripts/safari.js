@@ -1803,7 +1803,7 @@ function Safari() {
     var currentPokemonMood = null;
     var currentPokemonMoodRate = null;
     var wildAbilityBoost = 5;
-    var wildAbilityBoostLimit = wildAbilityBoost * 10;
+    var wildAbilityBoostLimit = wildAbilityBoost * 5;
     var maxThrows = 10;
     var pokeblockThrows = 0;
     var currentThrows;
@@ -16602,9 +16602,11 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
         if (!player.costumes.contains(costume)) {
             safaribot.sendHtmlMessage(src, toColor("<b>You do not have this costume yet!</b>", "crimson"), safchan);
-            sys.sendMessage(src, "", safchan);
         }
         if (Object.keys(costumeData[costume].skills).length === 0) {
+            if (!player.costumes.contains(costume)) {
+                sys.sendMessage(src, "", safchan);
+            }
             safaribot.sendHtmlMessage(src, "<b><u>This costume has no extra skills and cannot level up!</u></b>", safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, "<b><u>Effects & EXP Types</u></b>", safchan);
