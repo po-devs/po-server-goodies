@@ -16624,8 +16624,11 @@ function Safari() {
                 singleLevelUnlock = skills[skill][0] === skills[skill][1];
             var verb = hasSkill ? "Unlocked" : "Unlocks";
 
-            safaribot.sendHtmlMessage(src, "- {0} <b><font color='{2}'>[{1}]</font></b>".format(costumeSkillInfo[skill], verb + (singleLevelUnlock ? "at" : "between") + " Level " + (singleLevelUnlock ? skills[skill][0] : readable(skills[skill])), hasSkill ? "green", "red"), safchan);
-            
+            safaribot.sendHtmlMessage(src, "- {0} <b><font color='{2}'>[{1}]</font></b>".format(
+                costumeSkillInfo[skill],
+                verb + (singleLevelUnlock ? " at" : " between") + " Level " + (singleLevelUnlock ? skills[skill][0] : readable(skills[skill])),
+                (hasSkill ? "green" : "red")
+            ), safchan);       
         }
 
         return true;
