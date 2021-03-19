@@ -1183,8 +1183,8 @@ function Safari() {
             expItem: "soothe",
             skills: {
                 evolveCheap: [2, 5],
-                loveBallBoost: [4, 8],
                 extraDust: [3, 7],
+                loveBallBoost: [4, 8],
                 pokeblockBoost: [5, 9],
                 daycarePlay: [10, 15],
                 catchNormal: [12, 17],
@@ -1266,8 +1266,8 @@ function Safari() {
             expTypes: ["soda", "clonepoke", "scientist", "catch", "wintrivia"],
             expItem: "battery",
             skills: {
-                extraScientistSilver: [5, 7],
                 extraTriviaSoda: [4, 9],
+                extraScientistSilver: [5, 7],
                 cloneBallBoost: [6, 10],
                 catchElectric: [9, 12],
                 tripleChance: [15, 19],
@@ -1299,8 +1299,8 @@ function Safari() {
             expItem: "amulet",
             skills: {
                 extraScientistSilver: [2, 3],
-                extraMafiaShady: [5, 6],
                 spyBallBoost: [4, 5],
+                extraMafiaShady: [5, 6],
                 catchThief: [7, 9],
                 catchPoison: [9, 12],
                 betterGacha: [13, 16],
@@ -1318,8 +1318,8 @@ function Safari() {
             skills: {
                 catchGrass: [2, 3],
                 berryCatcher: [4, 4],
-                pokeblockBoost: [5, 8],
                 monoBallBoost: [4, 10],
+                pokeblockBoost: [5, 8],
                 finderBasedOnLead: [7, 12],
                 extraApricornsFromContest: [10, 11],
                 catchSing: [12, 15],
@@ -1336,8 +1336,8 @@ function Safari() {
             expItem: "soothe",
             skills: {
                 catchWater: [2, 3],
-                reducedCatchFailCD: [6, 8],
                 switchBallBoost: [4, 10],
+                reducedCatchFailCD: [6, 8],
                 catchSplash: [10, 11],
                 extraDust: [13, 16],
                 fisherPack: [20, 20],
@@ -1352,8 +1352,8 @@ function Safari() {
             expItem: "crown",
             skills: {
                 catchRockClimb: [3, 5],
-                catchIce: [6, 9],
                 fasterPhotos: [5, 11],
+                catchIce: [6, 9],
                 haggler: [10, 10],
                 extraApricornsFromContest: [11, 14],
                 levelBallBoost: [13, 16],
@@ -15638,7 +15638,7 @@ function Safari() {
 
             do {
                 id = sys.rand(1, highestDexNum);
-            } while (isLegendary(id));
+            } while (isRare(id));
 
             for (var e = 0; e < player.party.length; e++) {
                 if (e >= player.helds.length) {
