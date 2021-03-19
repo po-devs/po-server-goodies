@@ -1381,7 +1381,7 @@ function Safari() {
             icon: 387, name: "inver", fullName: "Inver", aliases: ["inver"], acqReq: 25, record: "catchInvert", acqReq2: 15, record2: "catchInkay",
             effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super-effective moves not very effective, and vice versa.",
             noAcq: "Catch {0} more Pokémon with an Inver Ball and {1} more Inkay",
-            expTypes: ["daycareplay", "wincontest", "catch"],
+            expTypes: ["none"],
             skills: {
             }
         }
@@ -1784,7 +1784,6 @@ function Safari() {
     var allItems = currentItems.concat(retiredItems, "permfinder");
     var allCostumes = Object.keys(costumeData);
 
-    var costumeHelp = {};
     var decorations = {};
     var missionsData = {};
     var trialsData = {};
@@ -10709,7 +10708,7 @@ function Safari() {
         }
 
         //Costumes
-        out += this.showCostumes(player);
+        out += this.showCostumes(src);
 
         sys.sendHtmlMessage(src, out, safchan);
     };
@@ -10771,13 +10770,6 @@ function Safari() {
         var player = getAvatar(src);
         var isAndroid = (sys.os(src) === "android");
         sys.sendHtmlMessage(src, this.showBag(player, isAndroid, textOnly, search), safchan);
-    };
-    this.viewCostumes = function(src) {
-        if (!validPlayers("self", src)) {
-            return;
-        }
-        var player = getAvatar(src);
-        safaribot.sendHtmlMessage(src, this.showCostumes(player), safchan);
     };
     this.viewBox = function(src, data, textOnly, shopLink) {
         if (!validPlayers("self", src)) {
@@ -11552,7 +11544,12 @@ function Safari() {
         out += (textOnly ? "" : "</table>");
         return out;
     };
-    this.showCostumes = function (player) {
+    this.showCostumes = function(src) {
+        var player = getAvatar(src);
+        
+        if (!player) {
+            return;
+        }
         var out = [], n, i;
         var costumes = player.costumes.slice(0).sort(function(a, b) { return costumeAlias(a, false, true) < costumeAlias(b, false, true) ? -1 : 1 });
         for (i = 0; i < costumes.length; i++) {
@@ -11577,7 +11574,7 @@ function Safari() {
             if (player.cooldowns.costume > now()) {
                 safaribot.sendMessage(src, "You can change your costume in " + timeLeftString(player.cooldowns.costume) + ".", safchan);
             } else {
-                safaribot.sendMessage(src, "You are able to change your costume right now!", safchan);
+                safaribot.sendMessage(src, "You are able to change your costume right now! " + this.showCostumes(src), safchan);
             }
             return;
         }
@@ -16481,30 +16478,31 @@ function Safari() {
     };
     /* Costume EXP stuff */
     var costumeExpInfo = {
-        "daycareplay": "Daycare",
-        "wincontest": "Win Contest",
+        "none": "None",
+        "daycareplay": "Play with Pokémon in the Daycare",
+        "wincontest": "Win Contests",
         "catch": "Catch Pokémon",
-        "catchwater": "Catch Water Pokémon",
+        "catchwater": "Catch Water-type Pokémon",
         "clonepoke": "Clone Pokémon",
         "catchhighbst": "Catch Pokémon with BST 540 or higher",
         "catchlowbst": "Catch Pokémon with BST 270 or lower",
-        "wintour": "Event Tournament",
-        "wintrivia": "Event Trivia",
-        "winmafia": "Event Mafia",
-        "fighttower": "Fight the Battle Tower",
-        "findrare": "Find Rare Items with Itemfinder",
-        "bait": "Bait",
-        "journal": "Journal",
-        "scientist": "Earn Silver from Scientist",
-        "arenasilver": "Earn Silver from Arena",
-        "soda": "Event Trivia",
-        "stealpoke": "Snag Pokes from NPCs"
+        "wintour": "Win Event Tournaments",
+        "wintrivia": "Win Event Trivia games",
+        "winmafia": "Participate in Event Mafia games",
+        "fighttower": "Participate in the Tower quest",
+        "findrare": "Find rare items with Itemfinder",
+        "bait": "Bait Pokémon",
+        "journal": "Participate in the Journal quest",
+        "scientist": "Earn " + es(finishName("silver")) + " from the Scientist quest",
+        "arenasilver": "Earn " + es(finishName("silver")) + " from the Arena quest",
+        "soda": "Win " + es(finishName("soda")) + " from Event Trivia games",
+        "stealpoke": "Snag Pokémon from NPCs"
     };
     var costumeSkillInfo = {
         botdboost: "Catch rate increased when using the Pokémon-of-the-Day",
-        lowPhotoCD: "Faster at taking Photos",
-        finderBasedOnLead: "Can use the lead Pokémon to influence the Itemfinder",
-        pokefanPack: "Received an egg for completing your training",
+        lowPhotoCD: "Reduced cooldown after taking photos",
+        finderBasedOnLead: "Use your lead Pokémon to influence the Itemfinder",
+        pokefanPack: "Received " + an(finishName("egg")) + " for completing your training",
         ninjaPack1: "Received prizes for leveling up",
         ninjaPack2: "Received prizes for leveling up",
         flowerPack: "Received prizes for leveling up",
@@ -16520,28 +16518,28 @@ function Safari() {
         preschoolerPack8: "Received prizes for leveling up",
         preschoolerPack9: "Received prizes for leveling up",
         preschoolerPack10: "Received prizes for leveling up",
-        fasterFinder: "Itemfinder can be used faster",
-        evolveCheap: "Evolve Pokémon cheaper",
-        mythBallBoost: "Increased ability to successfully use Myth Ball",
-        quickBallBoost: "Increased ability to successfully use Quick Ball",
-        lightningBallBoost: "Increased ability to successfully use Lightning Ball",
-        spyBallBoost: "Increased ability to successfully use Spy Ball",
-        luxuryBallBoost: "Increased ability to successfully use Luxury Ball",
-        mirrorBallBoost: "Increased ability to successfully use Mirror Ball",
-        premierBallBoost: "Increased ability to successfully use Premier Ball",
-        levelBallBoost: "Increased ability to successfully use Level Ball",
-        heavyBallBoost: "Increased ability to successfully use Heavy Ball",
-        switchBallBoost: "Increased ability to successfully use Switch Ball",
-        loveBallBoost: "Increased ability to successfully use Love Ball",
-        cloneBallBoost: "Increased ability to successfully use Clone Ball",
-        cloneBallBoost2: "Precise calculation allows for even more likely chance to clone with a Clone Ball",
-        extraDust: "Acquire more Candy Dust when evolving Pokémon",
+        fasterFinder: "Reduced cooldown after using the Itemfinder",
+        evolveCheap: "Use fewer " + es(finishName("rare")) + " when evolving Pokémon",
+        mythBallBoost: "Higher catch rate when using " + es(finishName("myth")),
+        quickBallBoost: "Higher catch rate when using " + es(finishName("quick")),
+        lightningBallBoost: "Higher catch rate when using " + es(finishName("lightning")),
+        spyBallBoost: "Higher catch rate when using " + es(finishName("spy")),
+        luxuryBallBoost: "Higher catch rate when using " + es(finishName("luxury")),
+        mirrorBallBoost: "Higher catch rate when using " + es(finishName("mirror")),
+        premierBallBoost: "Higher catch rate when using " + es(finishName("premier")),
+        levelBallBoost: "Higher catch rate when using " + es(finishName("level")),
+        heavyBallBoost: "Higher catch rate when using " + es(finishName("heavy")),
+        switchBallBoost: "Higher catch rate when using " + es(finishName("switch")),
+        loveBallBoost: "Higher catch rate when using " + es(finishName("love")),
+        cloneBallBoost: "Higher catch rate when using " + es(finishName("clone")),
+        cloneBallBoost2: "Even higher catch rate when using " + es(finishName("clone")),
+        extraDust: "Acquire more " + finishName("dust") + " when evolving Pokémon",
         pokeblockBoost: "Pokéblocks are more effective",
-        daycarePlay: "Play in daycare is better",
-        useLowBST: "BST disadvantage with low BST mons while catching is reduced",
+        daycarePlay: "Pokémon gain more affection than usual when you play with them in the Daycare",
+        useLowBST: "Your Pokémon with low BST are boosted when catching wild Pokémon",
         catchLowBST: "Increased chance to catch Pokémon with a BST of 480 or lower",
         catchNormal: "Increased chance to catch Normal-type Pokémon",
-        catchRockGround: "Increased chance to catch Rock- or Ground-type Pokémon",
+        catchRockGround: "Increased chance to catch Rock or Ground-type Pokémon",
         catchFighting: "Increased chance to catch Fighting-type Pokémon",
         catchGrass: "Increased chance to catch Grass-type Pokémon",
         catchFire: "Increased chance to catch Fire-type Pokémon",
@@ -16551,75 +16549,114 @@ function Safari() {
         catchDark: "Increased chance to catch Dark-type Pokémon",
         catchFairy: "Increased chance to catch Fairy-type Pokémon",
         catchPoison: "Increased chance to catch Poison-type Pokémon",
-        catchSing: "Increased chance to catch Pokémon that can Sing",
-        catchThief: "Increased chance to catch Pokémon that can know Thief",
-        catchRockClimb: "Increased chance to catch Pokémon that can Rock Climb",
-        catchSplash: "Increased chance to catch Pokémon that can Splash",
-        extraLoveBall: "Bonus from catching a Pokémon with a Love Ball with the same Egg Group as a Daycare Pokémon increased",
-        betterPyrItems: "Better luck finding items in the Pyramid",
-        betterFinder: "Advanced techniques using the Itemfinder to avoid misses",
-        betterGacha: "Rigging the game allows for better gacha results",
-        pyrStaminaBoost: "Preparation for the task ahead grants +10 stamina when starting Pyramid",
-        kiai: "Fierce bonds with your Pokémon grant them an increased chance to survive KO moves in Rotation Battles against NPC",
-        superChef: "Your skills as a Chef are dramatically increased",
-        extendedMushroom: "Mushroom effect lasts longer",
-        berryCatcher:"Wild Pokémon hold berries more often",
-        fasterArena:"Lower cooldown after battling the Arena",
-        bakingDiscount:"Enter the Baking Quest for half the price",
-        battleBoost: "Fight against NPCs better in autobattles",
-        reducedCatchFailCD: "Faster recovery from a bad Pokéball throw",
-        lowUltraCD: "Able to recover from an unsuccessful catch with an Ultra ball faster",
-        megaPacker: "Able to use an extra 10% of the boosted perks",
-        haggler: "Able to score more discounts at the market",
+        catchSing: "Increased chance to catch Pokémon that can learn Sing",
+        catchThief: "Increased chance to catch Pokémon that can learn Thief",
+        catchRockClimb: "Increased chance to catch Pokémon that can learn Rock Climb",
+        catchSplash: "Increased chance to catch Pokémon that can learn Splash",
+        extraLoveBall: "The effect of " + es(finishName("love")) + " on your Daycare Pokémon when catching wild Pokémon in the same Egg Group is increased",
+        betterPyrItems: "Gain a chance of receiving more items when finding a treasure in the Pyramid",
+        betterFinder: "Increased chance of your Itemfinder successfully finding an item",
+        betterGacha: "Increased chance of receiving higher rarity items from Gachapon",
+        pyrStaminaBoost: "Gain 10 bonus stamina when starting a Pyramid quest",
+        kiai: "Increased chance of surviving KO moves in Rotation Battles against NPCs",
+        superChef: "Increased chance of baiting Pokémon with a type disadvantage against your lead",
+        extendedMushroom: "Mushroom effects last longer",
+        berryCatcher:"Wild Pokémon hold Berries more often",
+        fasterArena:"Lower cooldown after battling in the Arena",
+        bakingDiscount:"Lower admission fee when participating in the Baking quest",
+        battleBoost: "Increased move power in autobattles against NPCs",
+        reducedCatchFailCD: "Decreased cooldown after a failed Pokémon capture",
+        lowUltraCD: "Decreased cooldown after a failed Pokémon capture when using " + es(finishName("ultra")),
+        megaPacker: "This costume's boosted perks have a 10% higher effect cap",
+        haggler: "Increased chance of getting a discounted item stock at the market",
         extraBuyBonus: "Obtain extra patronage items from the market",
-        tripleChance: "Odds of triple-cloning a Pokémon is increased",
-        towerLoot: "Earn extra rewards from clearing Tower",
-        extraTourRare: "Earn an extra Rare Candy from Tournaments",
-        extraTourMega: "Earn an extra Mega Stone from winning a Tournament",
-        extraScientistSilver: "Earn extra Silver from working as the Scientist's close personal aide",
-        extraTriviaSoda: "Earn extra Soda Pop from Trivia",
-        extraMafiaShady: "Earn extra Shady Coins from Mafia",
-        extraApricornsFromContest: "Win extra apricorns as a prize from contests"
+        tripleChance: "Increased chance of triple-cloning a Pokémon",
+        towerLoot: "Earn extra rewards from participating in the Tower quest",
+        extraTourRare: "Earn an extra " + finishName("rare") + " from Event Tournaments",
+        extraTourMega: "Earn an extra " + finishName("mega") + " from winning Event Tournaments",
+        extraScientistSilver: "Earn extra " + es(finishName("silver")) + " from the Scientist quest",
+        extraTriviaSoda: "Earn extra " + es(finishName("soda")) + " from Event Trivia games",
+        extraMafiaShady: "Earn extra " + es(finishName("shady")) + " from Event Mafia games",
+        extraApricornsFromContest: "Earn extra apricorns from winning Contests"
     };
-    this.showCostumeSkills = function(src, commandData) {
+    this.showCostumeInfo = function(src, commandData) {
         var player = getAvatar(src);
         
         if (!player) {
             return;
         }
-        var cos = player.costume;
-        var noSkills = ["inver"];
         
-        if (commandData && player.costumeInfo.hasOwnProperty(costumeAlias(commandData))) {
-            cos = costumeAlias(commandData);
+        var costume = commandData;
+
+        if (!commandData) {
+            costume = player.costume;
         }
         
-        if (noSkills.contains(cos)) {
+        costume = costumeAlias(costume.toLowerCase());
+        
+        if (!costume || !costumeData.hasOwnProperty(costume)) {
+            safaribot.sendMessage(src, "That's not a valid costume! The existing costumes are: " + readable(Object.keys(costumeData).map(function(e) { return link("/costumeinfo " + e, costumeData[e].fullName) })), safchan);
+            return;
+        }
+
+        if (!player.costumeInfo[costume]) {
+            safaribot.sendHtmlMessage(src, "<b>You do not have this costume yet!</b>", safchan);
+        }
+        if (Object.keys(costumeData[costume].skills).length === 0) {
             safaribot.sendMessage(src, "This costume has no extra skills and cannot level up!", safchan);
             return;
         }
-        if (!player.costumeInfo[cos]) {
-            safaribot.sendHtmlMessage(src, "You do not have that costume!", safchan);
-            return;
+
+        if (player.costumeInfo[costume]) {
+            var lev = this.getCostumeLevel(player, costume);
+            var nextexp = (lev < 20 ? " (" + (lev * 100 - player.costumeInfo[costume].exp) + " EXP until next level)" : "");
+            if (lev >= 20) {
+                nextexp = " [Max]";
+            }
+            safaribot.sendHtmlMessage(src, "<b>" + costumeAlias(costume, true, true) + "</b> is Level: " + lev + nextexp + ".", safchan);
         }
-        if (isNaN(player.costumeInfo[cos].exp)) {
-            safaribot.sendHtmlMessage(src, "You do not have that costume!", safchan);
-            return;
+        
+        safaribot.sendMessage(src, safari.getCostumeHelp(costume), safchan);
+        
+        var skills = costumeData[costume].skills;
+        for (var skill in skills) {
+            var hasSkill = player.costumeInfo[costume].skills.contains(skill),
+                singleLevelUnlock = skills[skill][0] === skills[skill][1];
+            var verb = hasSkill ? "Unlocked" : "Unlocks";
+
+            safaribot.sendHtmlMessage(src, "- {0} <b><font color='{2}'>[{1}]</font></b>".format(costumeSkillInfo[skill], verb + (singleLevelUnlock ? "at" : "between") + " Level " + (singleLevelUnlock ? skills[skill][0] : readable(skills[skill])), hasSkill ? "green", "red"), safchan);
+            
         }
-        var lev = this.getCostumeLevel(player, cos);
-        var nextexp = (lev < 20 ? " (" + (lev * 100 - player.costumeInfo[cos].exp) + " EXP until next level)" : "");
-        if (lev >= 20) {
-            nextexp = " [Max]";
+
+        return true;
+    };
+    this.getCostumeHelp = function(costume) {
+        costume = costume.toLowerCase();
+        if (!costume in costumeData) {
+            return null;
         }
-        safaribot.sendHtmlMessage(src, "<b>" + costumeAlias(cos, true, true) + "</b> is Level: " + lev + nextexp + ".", safchan);
-        var skills = [];
-        for (var c in player.costumeInfo[cos].skills) {
-            if (costumeSkillInfo[player.costumeInfo[cos].skills[c]]) {
-                skills.push(costumeSkillInfo[player.costumeInfo[cos].skills[c]]);
+        
+        var ret = [costumeData[e].effect + " " + (costumeData[e].effect2 ? " - " + costumeData[e].effect2 : "")];
+        
+        if (costumeData[costume].expTypes) {
+            var expTypes = costumeData[costume].expTypes, expInfo = [];
+            for (var type in expTypes) {
+                var infoString = costumeExpInfo[expTypes[type]];
+                if (expTypes[type] === "catch") {
+                    for (var theme in contestThemes) {
+                        if (contestThemes[theme].flavor === costume) {
+                            infoString += " (double EXP during {0}-themed contests)".format(contestThemes[theme].name);
+                        }
+                    }
+                }
+                
+                expInfo.push(infoString);
             }
         }
-        safaribot.sendHtmlMessage(src, skills.length > 0 ? ("Skills: <i>" + skills.join(", ") + "</i>.") : ("No skills gained on this costume yet."), safchan);
-        return true;
+        
+        ret.push(expInfo.join(", "));
+        
+        return ret;
     };
     this.getCostumeLevel = function(player, costume) {
         var cos = costume || player.costume;
@@ -51656,30 +51693,6 @@ function Safari() {
         var help = [];
         data = data.toLowerCase();
         var catStrings = ["all", "balls", "items", "perks", "costumes", "berries"];
-        for (var e in costumeData) {
-            if (costumeData.hasOwnProperty(e)) {
-                costumeHelp[e] = costumeData[e].effect + " " + (costumeData[e].effect2 ? " - " + costumeData[e].effect2 : "") + "";
-                if (costumeData[e].expTypes) {
-                    costumeHelp[e] += " EXP types: ";
-                    if (costumeData[e].expTypes[0]) {
-                        costumeHelp[e] += costumeExpInfo[costumeData[e].expTypes[0]];
-                    }
-                    if (costumeData[e].expTypes[1]) {
-                        costumeHelp[e] += ", " + costumeExpInfo[costumeData[e].expTypes[1]];
-                    }
-                    if (costumeData[e].expTypes[2]) {
-                        costumeHelp[e] += ", " + costumeExpInfo[costumeData[e].expTypes[2]];
-                    }
-                    if (costumeData[e].expTypes[3]) {
-                        costumeHelp[e] += ", " + costumeExpInfo[costumeData[e].expTypes[3]];
-                    }
-                    if (costumeData[e].expTypes[4]) {
-                        costumeHelp[e] += ", " + costumeExpInfo[costumeData[e].expTypes[4]];
-                    }
-                    costumeHelp[e] += ".";
-                }
-            }
-        }
 
         if (catStrings.indexOf(data) === -1) {
             //Try to decode which item the user is looking for
@@ -51704,9 +51717,7 @@ function Safari() {
             //If it's not an item, it's either a costume or invalid.
             lookup = costumeAlias(data, true);
             if (allCostumes.indexOf(lookup) !== -1) {
-                if (costumeHelp.hasOwnProperty(lookup)) {
-                    help.push(costumeAlias(lookup, false, true) + " Costume: " + costumeHelp[lookup]);
-                }
+                help.push(costumeAlias(lookup, false, true) + " Costume: " + safari.getCostumeHelp(lookup));
             }
 
             //Frame out result
@@ -51763,10 +51774,10 @@ function Safari() {
             }
             if (data === "all" || data === "costumes") {
                 out.push("*** Costume Help ***");
-                dataArray = Object.keys(costumeHelp);
+                dataArray = Object.keys(costumeData);
                 for (var e in dataArray) {
                     e = dataArray[e];
-                    out.push(costumeAlias(e, false, true) + " Costume: " + costumeHelp[e]);
+                    out.push(costumeAlias(e, false, true) + " Costume: " + safari.getCostumeHelp(e));
                 }
                 out.push("");
             }
@@ -51876,7 +51887,7 @@ function Safari() {
             "/medals: To view your current medals.", 
             "/daycare: Displays the Daycare menu where you can deposit, retrieve, or interact with your Pokémon. You can deposit up to 2 Pokémon in the Daycare at once. Check the help button inside the command for more information. Alias(es): /dc.",
             "/changecostume [costume]: To change your costume to a new one. Can also use /dressup [costume].",
-            "/showcostumeskills: To show detailed information about your current costume, such as its current skills and level. Alias(es): /mycostume",
+            "/showcostume [costume]: To show detailed information about the specified costume, such as its current skills and level. Shows your current costume info if no costume is specified.",
             "/inbox: To read the messages you received while offline.",
             "/flashme: Toggle whether or not you get flashed when a contest or event starts.",
             "/base: To view another player's Secret Base.",
@@ -52118,8 +52129,8 @@ function Safari() {
                 safari.getCostumes(src);
                 return true;
             }
-            if (command === "mycostume" || command === "showcostume" || command === "showcostumeskills") {
-                safari.showCostumeSkills(src, commandData);
+            if (command === "showcostume" || command === "showcostumeinfo") {
+                safari.showCostumeInfo(src, commandData);
                 return true;
             }
             if (command === "shop") {
@@ -52301,7 +52312,7 @@ function Safari() {
                 return true;
             }
             if (command === "costumes" || command === "costume") {
-                safari.viewCostumes(src);
+                safari.showCostumes(src);
                 return true;
             }
             if (command === "dressup" || command === "changecostume") {
