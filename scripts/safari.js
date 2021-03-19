@@ -16599,6 +16599,7 @@ function Safari() {
             return;
         }
 
+        sys.sendMessage(src, "", safchan);
         if (!player.costumes.contains(costume)) {
             safaribot.sendHtmlMessage(src, toColor("<b>You do not have this costume yet!</b>", "crimson"), safchan);
         }
@@ -16607,6 +16608,7 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, "<b><u>Effects & EXP Types</u></b>", safchan);
             safaribot.sendMessage(src, safari.getCostumeHelp(costume), safchan);
+            sys.sendMessage(src, "", safchan);
             return;
         }
 
@@ -16617,7 +16619,7 @@ function Safari() {
                 nextexp = " [Max]";
             }
 
-            safaribot.sendHtmlMessage(src, "<u><b>" + costumeAlias(costume, true, true) + "</b> is Level: " + lev + nextexp + ".</u>", safchan);
+            safaribot.sendHtmlMessage(src, "<u><b>" + costumeAlias(costume, true, true) + " is Level: " + lev + nextexp + "</b></u>", safchan);
         }
 
         sys.sendMessage(src, "", safchan);
@@ -16640,6 +16642,8 @@ function Safari() {
             ), safchan);       
         }
 
+        sys.sendMessage(src, "", safchan);
+        
         return true;
     };
     this.getCostumeHelp = function(costume) {
