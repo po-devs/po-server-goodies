@@ -9371,12 +9371,17 @@ function Safari() {
         var wonderGuardBreak = false;
         if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard")) && !ignoresWildAbilities(player)) {
             if (typeBonus >= 2) {
-                safaribot.sendAll("The wild {0}'s Wonder Guard shattered instantly!".format(poke(currentPokemon)), safchan);
+                if (ball === "spy") {
+                    safaribot.sendMessage(sys.id(player.id), "The wild {0}'s Wonder Guard shattered instantly!".format(poke(currentPokemon)), safchan);
+                }
+                else {
+                    safaribot.sendAll("The wild {0}'s Wonder Guard shattered instantly!".format(poke(currentPokemon)), safchan);
+                }
                 wonderGuardBreak = true;
             }
             else {
                 typeBonus = Math.min(typeBonus, immuneMultiplier);
-                safaribot.sendAll("The wild {0}'s Wonder Guard is protecting it!".format(poke(currentPokemon)), safchan);
+                //safaribot.sendAll("The wild {0}'s Wonder Guard is protecting it!".format(poke(currentPokemon)), safchan);
             }
         }
         var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
@@ -10066,7 +10071,7 @@ function Safari() {
                     currentTypeOverride = type1(player.party[0]); // Else pick their only type
                 }
 
-                sendAll("The wild " + pokeName + "'s Color Change changed " + (currentPokemonCount > 1 ? "their" : "its") + " type to " + currentTypeOverride + "!");
+                sendAll("The wild " + pokeName + "'s Color Change changed " + (currentPokemonCount > 1 ? "their" : "its") + " type to " + (ball === "spy" ? "something unknown" : currentTypeOverride) + "!");
             }
             if (canHaveAbility(currentPokemon, abilitynum("Moxie")) && currentExtraBST < wildAbilityBoostLimit && !ignoresWildAbilities(player)) {
                 currentExtraBST += wildAbilityBoost;
@@ -57637,7 +57642,7 @@ function Safari() {
                             if (preparationThrows[i] == "takephoto" && this.hasCostumeSkill(p, "fasterPhotos")) {
                                 throwChances[i] *= 3;
                             }
-                            if (preparationFirst !== p.id && canHaveAbility(p.party[0], abilitynum("Speed Boost"))) {
+                            if (preparationFirst !== p.id && canHaveAbility(p.party[0], abilitynum("Speed Boost")) && preparationThrows[i] !== "takephoto") {
                                 if (isPlaying(p.id)) {
                                     safaribot.sendMessage(sys.id(p.id), "Your {0}'s Speed Boost allowed you to throw slightly faster!".format(poke(p.party[0])), safchan);
                                 }
