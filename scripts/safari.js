@@ -16599,8 +16599,8 @@ function Safari() {
             return;
         }
 
-        if (!player.costumes.contains[costume]) {
-            safaribot.sendHtmlMessage(src, "<b>You do not have this costume yet!</b>", safchan);
+        if (!player.costumes.contains(costume)) {
+            safaribot.sendHtmlMessage(src, toColor("<b>You do not have this costume yet!</b>", "red"), safchan);
         }
         if (Object.keys(costumeData[costume].skills).length === 0) {
             safaribot.sendMessage(src, "This costume has no extra skills and cannot level up!", safchan);
@@ -16613,12 +16613,18 @@ function Safari() {
             if (lev >= 20) {
                 nextexp = " [Max]";
             }
+
             safaribot.sendHtmlMessage(src, "<b>" + costumeAlias(costume, true, true) + "</b> is Level: " + lev + nextexp + ".", safchan);
         }
-        
+
+        sys.sendMessage(src, "", safchan);
+        safaribot.sendHtmlMessage(src, "<b><u>Effects & EXP Types</u></b>", safchan);
         safaribot.sendMessage(src, safari.getCostumeHelp(costume), safchan);
         
         var skills = costumeData[costume].skills;
+        
+        sys.sendMessage(src, "", safchan);
+        safaribot.sendHtmlMessage(src, "<b><u>Skills</u></b>", safchan);
         for (var skill in skills) {
             var hasSkill = player.costumeInfo[costume].skills.contains(skill),
                 singleLevelUnlock = skills[skill][0] === skills[skill][1];
