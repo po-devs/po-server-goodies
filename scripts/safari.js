@@ -14040,8 +14040,8 @@ function Safari() {
             player.rockTargets.shift();
         }
 
-        var success = (preparationPhase > 0 ? 0.15 : itemData.rock.successRate) + this.getFortune(player, "rockaccuracy", 0);
-        if (id === preparationFirst || (player.truesalt >= now() && chance(player.srate))) {
+        var success = itemData.rock.successRate + this.getFortune(player, "rockaccuracy", 0);
+        if (player.truesalt >= now() && chance(player.srate)) {
             success = 0;
         }
 
@@ -44024,7 +44024,7 @@ function Safari() {
                 }
                 player.pokemon.push(mon);
                 daycarebot.sendMessage(src, "You retrieved " + poke(mon) + " from the Daycare!", safchan);
-                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Daycare|||Retrieved " + (mon.shiny ? "Shiny " : "") + poke(mon.id) + "\n");
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Daycare|||Retrieved " + (mon.shiny ? "Shiny " : "") + poke(mon) + "\n");
                 this.daycarePokemon.splice(t, 1);
                 this.saveGame(player);
                 safari.saveDaycare();
