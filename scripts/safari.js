@@ -3151,7 +3151,7 @@ function Safari() {
     }
     function ignoresWildAbilities(player) {
         var abilities = [104, 163, 164, 256]; // Mold Breaker, Turboblaze, Teravolt, Neutralizing Gas
-        var leader = this.getEffectiveLead(player);
+        var leader = safari.getEffectiveLead(player);
         for (var a in abilities) {
             if (canHaveAbility(leader, abilities[a])) {
                 return abilities[a];
