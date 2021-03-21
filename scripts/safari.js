@@ -7976,7 +7976,7 @@ function Safari() {
                 if (ignore) {
                     abilityMessageList[onChannel[e]] = "Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(leader), abilityOff(ignore), poke(currentDisplay));
                 }
-                if (canHaveAbility(leader, abilitynum("Intimidate")) && getBST(currentPokemon) < getBST(leader)) {
+                if (canHaveAbility(leader, abilitynum("Intimidate"))) {
                     abilityMessageList[onChannel[e]] = "Your {0} weakens the wild {1} with Intimidate!".format(poke(leader), poke(currentDisplay));
                 }
             }
@@ -9039,8 +9039,13 @@ function Safari() {
             isShiny = typeof currentPokemon == "string";
             wild = isShiny ? parseInt(currentPokemon, 10) : currentPokemon;
             wildStats = getBST(wild) + currentExtraBST;
-            if (canHaveAbility(leader, abilitynum("Intimidate")) && getBST(wild) < getBST(leader)) {
-                wildStats *= 0.8;
+            if (canHaveAbility(leader, abilitynum("Intimidate"))) {
+                if (getBST(wild) < getBST(leader)) {
+                    wildStats *= 0.7;
+                }
+                else {
+                    wildStats *= 0.9;
+                }
             }
         }
         var shinyChance = isShiny ? 0.30 : 1;
