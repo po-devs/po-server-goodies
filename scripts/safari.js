@@ -35859,7 +35859,7 @@ function Safari() {
         }
         var line2 = "";
         if (player.costume !== "none") {
-            line2 = link("/mycostume", costumeAlias(player.costume, false, true) + " (Lv. " + safari.getCostumeLevel(player) + ")");
+            line2 = link("/showcostume", costumeAlias(player.costume, false, true) + " (Lv. " + safari.getCostumeLevel(player) + ")");
         }
         var currentTime = now();
         if (player.cooldowns.itemfinder <= currentTime && player.balls.itemfinder + player.balls.permfinder > 0) {
