@@ -9882,6 +9882,7 @@ function Safari() {
                     player.altTimeline.lead = 0;
                 }
                 leader = this.getEffectiveLead(player);
+                safaribot.sendMessage(src, "Your lead Pokémon is now {0}!".format(poke(leader)), safchan);
                 if (player.helds[0] == 9 && player.berries.petayaCombo > 0 && oldLead !== leader) {
                     safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
                     player.berries.petayaCombo = 0;
