@@ -10435,7 +10435,7 @@ function Safari() {
         }
 
         var currentTime = now();
-        this.changeWildMood(leader);
+        this.changeWildMood(safari.getEffectiveLead(player));
         pokeblockThrows += 1;
         player.balls.pokeblock -= 1;
 
@@ -10545,7 +10545,7 @@ function Safari() {
             target = currentPokemon;
         }
         var pokeName = poke(target);
-        this.changeWildMood(player.party[0]);
+        this.changeWildMood(safari.getEffectiveLead(player));
         
         var period = new Date().getUTCHours();
         period = ["night", "morning", "afternoon", "evening"][Math.floor(period/6)];
