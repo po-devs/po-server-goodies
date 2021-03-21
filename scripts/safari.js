@@ -50472,7 +50472,11 @@ function Safari() {
                             toAward.push(n);
                             awarded.push(outDesc);
                         }
-                        else if ([2, 3].contains(p.pos) && player.medalRecords[w].topthree && player.medalRecords[w].topthree > 1) {
+                        else if ([1, 2, 3].contains(p.pos) && player.medalRecords[w].topthree && player.medalRecords[w].topthree > 1) {
+                            /*
+                                In the event someone has medalRecords.topthree > 1 && p.pos = 1 (2~3 in previous weeks and managed to take 1st in current week),
+                                award #1 medal + consecutive top three medal. then if they take first again the next week, they will begin receiving the consecutive medal for 1st place
+                            */
                             outDesc = "Top Three " + w + " for " + player.medalRecords[w].topthree + " consecutive weeks";
                             n = {
                                 "desc": (outDesc + " " + date),
