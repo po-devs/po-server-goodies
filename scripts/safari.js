@@ -3151,9 +3151,9 @@ function Safari() {
     }
     function ignoresWildAbilities(player) {
         var abilities = [104, 163, 164, 256]; // Mold Breaker, Turboblaze, Teravolt, Neutralizing Gas
-        
+        var leader = this.getEffectiveLead(player);
         for (var a in abilities) {
-            if (canHaveAbility(player.party[0], abilities[a])) {
+            if (canHaveAbility(leader, abilities[a])) {
                 return abilities[a];
             }
         }
@@ -7959,7 +7959,7 @@ function Safari() {
                 sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + (wildEvent ? "<br/><b>All ball cooldowns were reset!</b>" : "") + "</center><hr>", true, true);
             }
             var onChannel = sys.playersOfChannel(safchan);
-            var ignoreList = {};
+            var abilityMessageList = {};
             for (var e in onChannel) {
                 ballMacro(onChannel[e]);
                 
@@ -7970,10 +7970,14 @@ function Safari() {
                 if (wildEvent) { // if an Event spawns, reset ball cooldown so everyone can attempt a throw
                     p.cooldowns.ball = 0;
                 }
-                
+
+                var leader = this.getEffectiveLead(p);
                 var ignore = ignoresWildAbilities(p);
                 if (ignore) {
-                    ignoreList[onChannel[e]] = "Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(p.party[0]), abilityOff(ignore), poke(currentDisplay));
+                    abilityMessageList[onChannel[e]] = "Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(leader), abilityOff(ignore), poke(currentDisplay));
+                }
+                if (canHaveAbility(leader, abilitynum("Intimidate")) && getBST(currentPokemon) < getBST(leader)) {
+                    abilityMessageList[onChannel[e]] = "Your {0} weakens the wild {1} with Intimidate!".format(poke(leader), poke(currentDisplay));
                 }
             }
 
@@ -7991,8 +7995,8 @@ function Safari() {
                 sendAll("The wild {0} {1} protected by Wonder Guard!".format(poke(currentDisplay), is_are));
             }
             
-            for (var user in ignoreList) {
-                safaribot.sendMessage(user, ignoreList[user], safchan);
+            for (var user in abilityMessageList) {
+                safaribot.sendMessage(user, abilityMessageList[user], safchan);
             }
             preparationPhase = sys.rand(5, 8);
             preparationThrows = {};
@@ -9020,13 +9024,7 @@ function Safari() {
     this.computeCatchRate = function(src, ball) {
         var player = getAvatar(src), wild, isShiny, wildStats, story = false, storyMultiplier = 1;
         
-        var leader = player.party[0];
-        if (currentThemeEffect == "distortion") {
-            leader = player.party[player.party.length-1];
-        }
-        if (currentThemeEffect == "past" && player.altTimeline.lead !== 0) {
-            leader = player.altTimeline.lead;
-        }
+        var leader = this.getEffectiveLead(player);
 
         var ballBonus = itemData[ball].ballBonus;
 
@@ -9041,6 +9039,9 @@ function Safari() {
             isShiny = typeof currentPokemon == "string";
             wild = isShiny ? parseInt(currentPokemon, 10) : currentPokemon;
             wildStats = getBST(wild) + currentExtraBST;
+            if (canHaveAbility(leader, abilitynum("Intimidate")) && getBST(wild) < getBST(leader)) {
+                wildStats *= 0.8;
+            }
         }
         var shinyChance = isShiny ? 0.30 : 1;
         var isLegend = isLegendary(wild);
@@ -9431,6 +9432,7 @@ function Safari() {
         }
         var player = getAvatar(src);
         var reason = "catch Pokémon";
+        var leader = this.getEffectiveLead(player);
         if (player.tutorial.inTutorial) {
             if (player.tutorial.privateWildPokemon) {
                 safari.tutorialCatch(src, data);
@@ -9523,10 +9525,10 @@ function Safari() {
             preparationThrows[name.toLowerCase()] = ball;
             return;
         }
-        var aType = type1(player.party[0]);
-        var crystalEffect = ball !== "master" && player.zcrystalDeadline >= now() && player.zcrystalUser === player.party[0] && chance(zCrystalData[aType].chance) ? zCrystalData[aType] : { effect: "none" };
+        var aType = type1(leader);
+        var crystalEffect = ball !== "master" && player.zcrystalDeadline >= now() && player.zcrystalUser === leader && chance(zCrystalData[aType].chance) ? zCrystalData[aType] : { effect: "none" };
 
-        this.changeWildMood(player.party[0]);
+        this.changeWildMood(leader);
         if (!freeThrow) {
             player.balls[ball] -= 1;
             this.updateShop(player, ball);
@@ -9578,13 +9580,7 @@ function Safari() {
                 }
             }
             var ch = "";
-            var catchingMon = player.party[0];
-            if (currentThemeEffect == "past" && player.altTimeline.lead !== 0) {
-                catchingMon = player.altTimeline.lead;
-            }
-            if (currentThemeEffect == "distortion") {
-                catchingMon = player.party[player.party.length-1];
-            }
+            var catchingMon = leader;
             if (player.cherished.indexOf(pokeInfo.species(getInputPokemon(poke(catchingMon)).num)) !== -1) {
                 if (!player.cherishOff) {
                     ch = "Cherished ";
@@ -9654,8 +9650,8 @@ function Safari() {
             }
 
             var heldChanceBoost = false;
-            if (canHaveAbility(player.party[0], abilitynum("Compound Eyes"))) {
-                safaribot.sendMessage(src, "Your {0}'s Compound Eyes helps you find held items more often!".format(poke(player.party[0])), safchan);
+            if (canHaveAbility(leader, abilitynum("Compound Eyes"))) {
+                safaribot.sendMessage(src, "Your {0}'s Compound Eyes helps you find held items more often!".format(poke(leader)), safchan);
                 heldChanceBoost = true;
             }
             if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"")) {
@@ -9724,9 +9720,9 @@ function Safari() {
                 }
                 if (drop.length > 0 && (gained.length > 0 || discarded.length > 0)) {
                     if (ball === "spy")
-                        safaribot.sendMessage(src, "The power of your {0} made {1} stealthily appear out of thin air!".format(poke(player.party[0]), readable(drop)), safchan);
+                        safaribot.sendMessage(src, "The power of your {0} made {1} stealthily appear out of thin air!".format(poke(leader), readable(drop)), safchan);
                     else
-                        sendAll("The power of {0}'s {1} made {2} appear out of thin air!".format(name, poke(player.party[0]), readable(drop)));
+                        sendAll("The power of {0}'s {1} made {2} appear out of thin air!".format(name, poke(leader), readable(drop)));
                 }
                 if (discarded.length > 0) {
                     if (ball === "spy")
@@ -9879,39 +9875,44 @@ function Safari() {
                 player.records.catchLuxury += 1;
             }
             if (ball == "uturn" && player.party.length > 1) {
-                safaribot.sendAll(name + "'s " + poke(player.party[0]) + " switched out after catching the " + pokeName + "!" , safchan);
-                var party2 = [];
-                for (var i = 1; i < player.party.length; i++) {
-                    party2.push(player.party[i]);
-                }
-                party2.push(player.party[0]);
-                player.party = party2;
+                safaribot.sendAll(name + "'s " + poke(leader) + " switched out after catching the " + pokeName + "!" , safchan);
+                var oldLead = leader;
+                player.party = player.party.slice(1).concat([leader]);
                 if (currentThemeEffect == "past") {
                     player.altTimeline.lead = 0;
+                }
+                leader = this.getEffectiveLead(player);
+                if (player.helds[0] == 9 && player.berries.petayaCombo > 0 && oldLead !== leader) {
+                    safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
+                    player.berries.petayaCombo = 0;
                 }
             }
             if (ball == "love") {
                 for (var t in this.daycarePokemon) {
                     if (this.daycarePokemon[t].ownernum === player.idnum) {
-                        this.daycarePokemon[t].hearts += 1;
+                        var addedHearts = 0;
+                        addedHearts += 1;
                         if (hasCommonEggGroup(this.daycarePokemon[t].id, currentPokemon)) {
-                            this.daycarePokemon[t].hearts += 3;
+                            addedHearts += 3;
                             if (this.daycarePokemon[t].hearts < 50) {
-                                this.daycarePokemon[t].hearts += 2
+                                addedHearts += 2
                                 if (this.hasCostumeSkill(player, "extraLoveBall")) {
-                                    this.daycarePokemon[t].hearts++;
+                                    addedHearts++;
                                 }
                             }
                             if (this.daycarePokemon[t].hearts < 80) {
-                                this.daycarePokemon[t].hearts += 3
+                                addedHearts += 3
                             }
                             if (this.daycarePokemon[t].hearts < 130) {
-                                this.daycarePokemon[t].hearts += 3
+                                addedHearts += 3
                             }
                             if (this.hasCostumeSkill(player, "extraLoveBall")) {
-                                this.daycarePokemon[t].hearts++;
+                                addedHearts++;
                             }
                         }
+                        
+                        safaribot.sendMessage(src, "Your {0} in the Daycare gained {1}!".format(poke(this.daycarePokemon[t].id), plural(addedHearts, "heart")), safchan);
+                        this.daycarePokemon[t].hearts += addedHearts;
                     }
                 }
             }
@@ -9949,7 +9950,7 @@ function Safari() {
             if (isRare(currentPokemon) || ball === "master") {
                 sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
             }
-            var active = player.party[0];
+            var active = leader;
             var activeNum = parseInt(active, 10);
             var activeSpecies = evolutions.hasOwnProperty(activeNum+"") ? activeNum : pokeInfo.species(activeNum);
             if (evolutions.hasOwnProperty(activeSpecies) && evolutions[activeSpecies].evo !== -1) {
@@ -9976,10 +9977,10 @@ function Safari() {
             }
 
             var usingStarter = false;
-            if (player.party[0] === player.starter) {
+            if (leader === player.starter) {
                 usingStarter = true;
             }
-            this.missionProgress(player, "catch", currentPokemon, 1, { starter: usingStarter, ball: ball, active: player.party[0], luxury: luxuryAmount, clone: clonedAmount, color: (player.scaleDeadline >= now() ? player.scaleColor : null) });
+            this.missionProgress(player, "catch", currentPokemon, 1, { starter: usingStarter, ball: ball, active: leader, luxury: luxuryAmount, clone: clonedAmount, color: (player.scaleDeadline >= now() ? player.scaleColor : null) });
             this.missionProgress(player, "catchAny", currentPokemon, 1);
             this.costumeEXP(player, "catch");
             if (currentThemeFlavor) {
@@ -10064,11 +10065,11 @@ function Safari() {
             sendAll(pokeName + " broke out of " + (ball == "spy" ? "an anonymous person" : name) + "'s " + ballName + "!");
             
             if (currentPokemon == 352 && !ignoresWildAbilities(player)) { // Kecleon
-                if (type2(player.party[0]) !== "???") { // If has 2 types
-                    currentTypeOverride = [type1(player.party[0]), type2(player.party[0])].random(); // Pick a random one
+                if (type2(leader) !== "???") { // If has 2 types
+                    currentTypeOverride = [type1(leader), type2(leader)].random(); // Pick a random one
                 }
                 else {
-                    currentTypeOverride = type1(player.party[0]); // Else pick their only type
+                    currentTypeOverride = type1(leader); // Else pick their only type
                 }
 
                 sendAll("The wild " + pokeName + "'s Color Change changed " + (currentPokemonCount > 1 ? "their" : "its") + " type to " + (ball === "spy" ? "something unknown" : currentTypeOverride) + "!");
@@ -10428,7 +10429,7 @@ function Safari() {
         }
 
         var currentTime = now();
-        this.changeWildMood(player.party[0]);
+        this.changeWildMood(leader);
         pokeblockThrows += 1;
         player.balls.pokeblock -= 1;
 
@@ -11074,7 +11075,8 @@ function Safari() {
             
             player.party.splice(index, 1);
             
-            if (isLead && player.party[0] !== before) { // if the Pokemon you removed was your lead, and the new Pokemon taking its place is a different species, reset petaya
+            if (isLead && player.party[0] !== before && player.helds[0] == 9 && player.berries.petayaCombo > 0) { // if the Pokemon you removed was your lead, and the new Pokemon taking its place is a different species, reset petaya
+                safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
                 player.berries.petayaCombo = 0;
             }
             safaribot.sendMessage(src, "You removed " + info.name + " from your party!", safchan);
@@ -11127,7 +11129,10 @@ function Safari() {
             while (player.party.length > player.helds.length) {
                 player.helds.push(-1);
             }
-            player.berries.petayaCombo = 0;
+            if (player.helds[0] == 9 && player.berries.petayaCombo > 0) {
+                safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
+                player.berries.petayaCombo = 0;
+            }
             this.saveGame(player);
         } else if (action === "save") {
             if (cantBecause(src, "modify your party", ["tutorial"])) {
@@ -11219,7 +11224,8 @@ function Safari() {
                 player.helds.push(-1); // fill in the missing -1s to match new party size
             }
             
-            if (player.party[0] != toLoad.concat()[0]) { // if your new active isn't the same
+            if (player.party[0] != toLoad.concat()[0] && player.helds[0] == 9 && player.berries.petayaCombo > 0) { // if your new active isn't the same
+                safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
                 player.berries.petayaCombo = 0; // you should lose your petaya combo
             }
             
@@ -11295,7 +11301,8 @@ function Safari() {
         
         player.party = toLoad.concat();
 
-        if (player.party[0] !== firstInParty) {
+        if (player.party[0] !== firstInParty && player.helds[0] == 9 && player.berries.petayaCombo > 0) {
+            safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
             player.berries.petayaCombo = 0;
         }
         safaribot.sendMessage(src, "Quick loaded party " + readable(player.party.map(poke), "and") + "!", safchan);
@@ -50643,9 +50650,20 @@ function Safari() {
         if (!dailyBoost)
             return false;
         
-        var leader = player.party[0]
+        var leader = this.getEffectiveLead(player);
         var species = pokeInfo.species(leader);
         return dailyBoost.pokemon == species && !isMega(leader) && !noDailyBonusForms.contains(parseInt(leader));
+    };
+    this.getEffectiveLead = function(player) {
+        var leader = player.party[0];
+        if (currentThemeEffect == "distortion") {
+            leader = player.party[player.party.length-1];
+        }
+        if (currentThemeEffect == "past" && player.altTimeline.lead !== 0) {
+            leader = player.altTimeline.lead;
+        }
+        
+        return leader;
     };
     this.changeAlt = function(src, data) {
         if (!validPlayers("self", src)) {
