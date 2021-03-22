@@ -9996,6 +9996,9 @@ function Safari() {
                         this.logLostCommand(sys.name(src), "evolve " + activeName, "evolved into " + poke(evolvedId));
                         safaribot.sendMessage(src, "Your " + activeName + " ate its Petaya Berry and evolved!", safchan);
                     }
+                    else {
+                        safaribot.sendMessage(src, "Your {0}'s Petaya Combo: {1}/{2}".format(poke(leader), player.berries.petayaCombo, candiesRequired), safchan);
+                    }
                 }
             }
 
