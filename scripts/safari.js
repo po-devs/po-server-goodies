@@ -2670,85 +2670,98 @@ function Safari() {
     function chance(value) {
         return Math.random() < value;
     }
-    function cantBecause(src, action, arr, item) {
+    function cantBecause(src, action, arr, item, silent) {
         var player = getAvatar(src);
         if (arr.contains("tutorial")) {
             if (player.tutorial.inTutorial) {
-                safaribot.sendHtmlMessage(src, "You cannot " + action + " at this stage in the tutorial! If you forgot what to do, use " + link("/tutorial") + ".", safchan);
+                if (!silent)
+                    safaribot.sendHtmlMessage(src, "You cannot " + action + " at this stage in the tutorial! If you forgot what to do, use " + link("/tutorial") + ".", safchan);
                 return true;
             }
         }
 
         if (item) {
             if (!(item in itemData)) {
-                safaribot.sendMessage(src,  item + " is not a valid item!", safchan);
+                if (!silent)
+                    safaribot.sendMessage(src,  item + " is not a valid item!", safchan);
                 return true;
             }
             if (arr.contains("item")) {
                 if (player.balls[item] < 1) {
-                    safaribot.sendMessage(src, "You don't have any " + finishName(item) + "!", safchan);
+                    if (!silent)
+                        safaribot.sendMessage(src, "You don't have any " + finishName(item) + "!", safchan);
                     return true;
                 }
             }
         }
         if (arr.contains("contest")) {
             if (contestCount > 0) {
-                safaribot.sendMessage(src, "You can't " + action + " during a contest!", safchan);
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " during a contest!", safchan);
                 return true;
             }
         }
         if (arr.contains("distortion")) {
             if (contestCount > 0 && currentThemeEffect == "distortion") {
-                safaribot.sendMessage(src, "You can't " + action + " during the twisted dimensions!", safchan);
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " during the twisted dimensions!", safchan);
                 return true;
             }
         }
         if (arr.contains("wild")) {
             if (currentPokemon) {
-                safaribot.sendMessage(src, "You can't " + action + " while a Wild Pokemon is out!", safchan);
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " while a Wild Pokemon is out!", safchan);
                 return true;
             }
         }
         if (arr.contains("precontest")) {
             if (contestCooldown <= 181) {
-                safaribot.sendMessage(src, "You can't " + action + " with less than 3 minutes before the next contest starts!", safchan);
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " with less than 3 minutes before the next contest starts!", safchan);
                 return true;
             }
         }
         if (arr.contains("auction")) {
             if (safari.isInAuction(sys.name(src))) {
-                safaribot.sendMessage(src, "You can't " + action + " while participating in an auction!", safchan);
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " while participating in an auction!", safchan);
                 return true;
             }
         }
         if (arr.contains("battle")) {
             if (safari.isBattling(sys.name(src))) {
-                safaribot.sendMessage(src, "You can't " + action + " during a battle!", safchan);
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " during a battle!", safchan);
                 return true;
             }
         }
         if (arr.contains("story")) {
             if (contestCount > 0) {
-                safaribot.sendMessage(src, "You can't " + action + " during Story Mode!", safchan);
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " during Story Mode!", safchan);
                 return true;
             }
         }
         if (arr.contains("event") && currentEvent) {
             if (currentEvent.isInEvent(sys.name(src))) {
-                safaribot.sendMessage(src, "You can't " + action + " during an event!", safchan);
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " during an event!", safchan);
                 return true;
             }
         }
         if (arr.contains("event") && currentGame) {
             if (currentGame.playerInGame(sys.name(src))) {
-                safaribot.sendMessage(src, "You can't " + action + " during an event!", safchan);
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " during an event!", safchan);
                 return true;
             }
         }
         if (arr.contains("pyramid")) {
             for (var p in currentPyramids) {
                 if (currentPyramids[p].isInPyramid(sys.name(src))) {
-                    safaribot.sendMessage(src, "You can't " + action + " while inside the Pyramid!", safchan);
+                    if (!silent)
+                        safaribot.sendMessage(src, "You can't " + action + " while inside the Pyramid!", safchan);
                     return true;
                 }
             }
@@ -2756,7 +2769,8 @@ function Safari() {
         if (arr.contains("baking")) {
             for (var p in currentBakings) {
                 if (currentBakings[p].isInKitchen(sys.name(src))) {
-                    safaribot.sendMessage(src, "You can't " + action + " while inside the Kitchen!", safchan);
+                    if (!silent)
+                        safaribot.sendMessage(src, "You can't " + action + " while inside the Kitchen!", safchan);
                     return true;
                 }
             }
@@ -7997,7 +8011,9 @@ function Safari() {
             }
             
             for (var user in abilityMessageList) {
-                safaribot.sendMessage(user, abilityMessageList[user], safchan);
+                if (!cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
+                    safaribot.sendMessage(user, abilityMessageList[user], safchan);
+                }
             }
             preparationPhase = sys.rand(5, 8);
             preparationThrows = {};
@@ -15620,7 +15636,7 @@ function Safari() {
                 return;
             }
             if (player.ticketCelebrityRun) {
-                safaribot.sendMessage(src, "You already have a valid ticket reward run waiting to be used!", safchan);
+                safaribot.sendMessage(src, "You already have a valid " + finishName("celebrityTicket") + " reward run waiting to be used!", safchan);
                 return;
             }
             var cd = data.split(":"), cd2 = null;
@@ -15642,7 +15658,7 @@ function Safari() {
             }
             player.ticketCelebrityRun = true;
             player.balls.celebrityTicket -= 1;
-            safaribot.sendMessage(src, "You now have 1 ticket reward run! You can now challenge the celebrities of " + cap(player.celebrityRegion) + " for rewards!", safchan);
+            safaribot.sendMessage(src, "You now have 1 " + finishName("celebrityTicket") + " reward run! You can now challenge the celebrities of " + cap(player.celebrityRegion) + " for rewards!", safchan);
             safaribot.sendMessage(src, itemsLeft(player, "celebrityTicket"), safchan);
             this.saveGame(player);
             return;
@@ -33781,7 +33797,7 @@ function Safari() {
             safaribot.sendMessage(src, "Announcer: You must fight all  of the trainers in succession. No backing out once you're in!", safchan);
             safaribot.sendHtmlMessage(src, "Type " + link("/quest celebrity:start") + " to begin your challenge!", safchan);
             if (player.firstCelebrityRun || player.ticketCelebrityRun) {
-                safaribot.sendHtmlMessage(src, "Let me check your registration... Yep! You are eligible to win prizes! You have {0} and {1} remaining.".format(plural(player.firstCelebrityRun ? 1 : 0, "free reward run"), plural(player.ticketCelebrityRun ? 1 : 0, "ticket reward run")), safchan);
+                safaribot.sendHtmlMessage(src, "Let me check your registration... Yep! You are eligible to win prizes! You have {0} and {1} remaining.".format(plural(player.firstCelebrityRun ? 1 : 0, "free reward run"), plural(player.ticketCelebrityRun ? 1 : 0, finishName("celebrityTicket") + " reward run")), safchan);
             }
             sys.sendMessage(src, "", safchan);
             return;
@@ -34265,10 +34281,14 @@ function Safari() {
         };
 
         if (npc.postArgs.canReward) {
-            if (player.firstCelebrityRun)
+            if (player.firstCelebrityRun) {
                 player.firstCelebrityRun = false;
-            else
+                safaribot.sendMessage(src, "You activated your free Celebrity reward run!", safchan);
+            }
+            else {
                 player.ticketCelebrityRun = false;
+                safaribot.sendMessage(src, "You activated your " + finishName("celebrityTicket") + " reward run!", safchan);
+            }
         }
         npc.desc = desc + " Celebrity NPC";
         safaribot.sendHtmlMessage(src, "Announcer: Looking for fame, are you? Please enjoy your first battle against " + npc.name + "!!", safchan);
