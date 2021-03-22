@@ -360,6 +360,7 @@ function Safari() {
         celebBetEarned: 0,
         decorations: {},
         firstCelebrityRun: true,
+        ticketCelebrityRun: false,
         cherishOff: false,
         medals: [],
         medalRecords: {
@@ -15618,8 +15619,8 @@ function Safari() {
                 safaribot.sendMessage(src, "You don't have any Celebrity Tickets to use!", safchan);
                 return;
             }
-            if (player.firstCelebrityRun) {
-                safaribot.sendMessage(src, "You already can challenge the Celebrities for a reward!", safchan);
+            if (player.ticketCelebrityRun) {
+                safaribot.sendMessage(src, "You already have a valid ticket reward run waiting to be used!", safchan);
                 return;
             }
             var cd = data.split(":"), cd2 = null;
@@ -15639,9 +15640,9 @@ function Safari() {
                 safaribot.sendMessage(src, "You must select a valid region to challenge next! (Kanto, Johto, Hoenn, Sinnoh, Unova, Galar, or Random are valid.)", safchan);
                 return;
             }
-            player.firstCelebrityRun = true;
+            player.ticketCelebrityRun = true;
             player.balls.celebrityTicket -= 1;
-            safaribot.sendMessage(src, "You can now challenge the celebrities of " + cap(player.celebrityRegion) + " for a reward!", safchan);
+            safaribot.sendMessage(src, "You now have 1 ticket reward run! You can now challenge the celebrities of " + cap(player.celebrityRegion) + " for rewards!", safchan);
             safaribot.sendMessage(src, itemsLeft(player, "celebrityTicket"), safchan);
             this.saveGame(player);
             return;
@@ -33779,8 +33780,8 @@ function Safari() {
             safaribot.sendMessage(src, "Announcer: Fight famous trainers from across the " + cap(player.celebrityRegion) + " region! Win prizes on your first attempt daily!", safchan);
             safaribot.sendMessage(src, "Announcer: You must fight all  of the trainers in succession. No backing out once you're in!", safchan);
             safaribot.sendHtmlMessage(src, "Type " + link("/quest celebrity:start") + " to begin your challenge!", safchan);
-            if (player.firstCelebrityRun) {
-                safaribot.sendHtmlMessage(src, "Let me check your registration... Yep! You are eligible to win prizes!", safchan);
+            if (player.firstCelebrityRun || player.ticketCelebrityRun) {
+                safaribot.sendHtmlMessage(src, "Let me check your registration... Yep! You are eligible to win prizes! You have {0} and {1} remaining.".format(plural(player.firstCelebrityRun ? 1 : 0, "free reward run"), plural(player.ticketCelebrityRun ? 1 : 0, "ticket reward run")), safchan);
             }
             sys.sendMessage(src, "", safchan);
             return;
@@ -34260,10 +34261,15 @@ function Safari() {
             index: 0,
             difficulty: difficulty,
             celebs: celebs,
-            canReward: player.firstCelebrityRun
+            canReward: player.firstCelebrityRun || player.ticketCelebrityRun
         };
 
-        player.firstCelebrityRun = false;
+        if (npc.postArgs.canReward) {
+            if (player.firstCelebrityRun)
+                player.firstCelebrityRun = false;
+            else
+                player.ticketCelebrityRun = false;
+        }
         npc.desc = desc + " Celebrity NPC";
         safaribot.sendHtmlMessage(src, "Announcer: Looking for fame, are you? Please enjoy your first battle against " + npc.name + "!!", safchan);
         var battle = new Battle2(src, npc, {
