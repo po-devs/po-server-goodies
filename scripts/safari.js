@@ -10995,7 +10995,7 @@ function Safari() {
         var info, id, slots = 10;
         if (!["save", "delete", "load"].contains(action)) {
             if (targetId === "active") {
-                info = getInputPokemon(player.party[0] + "");
+                info = getInputPokemon(player.party[0] + (typeof player.party[0] === "string" ? "*" : ""));
             }
             else {
                 info = getInputPokemon(targetId);
@@ -11004,6 +11004,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
                 return;
             }
+
             id = info.id;
 
             if (player.pokemon.indexOf(id) === -1) {
