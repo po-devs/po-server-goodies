@@ -8768,6 +8768,18 @@ function Safari() {
                 return true;
             }
         }
+        var periods = ["night", "morning", "afternoon", "evening"];
+        
+        for (var p = 0 ; p < periods.length; p++) {
+            if (theme[periods[p]] && theme[periods[p]].contains(pokeId)) {
+                return true;
+            }
+        }
+        for (var day = 1; day <= 7; day++) {
+            if (theme.hasOwnProperty("day"+day) && theme["day"+day].contains(pokeId)) {
+                return true;
+            }
+        }
         if (theme.exclude.contains(pokeId)) {
             return false;
         }
@@ -8786,19 +8798,6 @@ function Safari() {
         for (e in theme.types) {
             //Legendary can only be manually added.
             if (hasType(pokeId, theme.types[e]) && !isRare(pokeId)) {
-                return true;
-            }
-        }
-        
-        var periods = ["night", "morning", "afternoon", "evening"];
-        
-        for (var p = 0 ; p < periods.length; p++) {
-            if (theme[periods[p]] && theme[periods[p]].contains(pokeId)) {
-                return true;
-            }
-        }
-        for (var day = 1; day <= 7; day++) {
-            if (theme.hasOwnProperty("day"+day) && theme["day"+day].contains(pokeId)) {
                 return true;
             }
         }
@@ -9165,7 +9164,7 @@ function Safari() {
         var typeBonus;
         var pType1 = type1(leader), pType2 = type2(leader), wType1 = type1(wild), wType2 = type2(wild);
         
-        if (currentPokemon == 352 && currentTypeOverride) { // Kecleon
+        if (currentTypeOverride) {
             wType1 = currentTypeOverride;
         }
         var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(currentPokemon, abilitynum("Contrary")) && !ignoresWildAbilities(player));
@@ -10098,7 +10097,7 @@ function Safari() {
             }
             sendAll(pokeName + " broke out of " + (ball == "spy" ? "an anonymous person" : name) + "'s " + ballName + "!");
             
-            if (currentPokemon == 352 && !ignoresWildAbilities(player)) { // Kecleon
+            if (canHaveAbility(currentPokemon, abilitynum("Color Change")) && !ignoresWildAbilities(player)) {
                 if (type2(leader) !== "???") { // If has 2 types
                     currentTypeOverride = [type1(leader), type2(leader)].random(); // Pick a random one
                 }
@@ -43256,7 +43255,7 @@ function Safari() {
             case "defiant": m = "Foe's Pokémon Atk +2 when stat is nerfed."; break;
             case "hex": m = "All Pokémon suffer double damage while afflicted with a status condition."; break;
             case "weakSTAB": m = "There is no bonus for STAB moves."; break;
-            case "nostab": m = "Move types do not align with the user's type."; break;
+            case "nostab": m = "Pokémon cannot use any STAB moves."; break;
             case "thickPollen": m = "All non-Grass non-Bug Pokémon suffer reduced SPE from pollen."; break;
             case "galeWings": m = "All Flying-type moves have increased priority."; break;
             case "bodypress": m = "All physical moves use the higher of attack and defense stat to deal damage."; break;
