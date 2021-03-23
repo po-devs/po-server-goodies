@@ -10303,6 +10303,9 @@ function Safari() {
 
         for (var a in atk) {
             var attackType = atk[a];
+            if (!effectiveness.hasOwnProperty(attackType)) {
+                continue;
+            }
             var attacker = effectiveness[attackType];
             for (var d in def) {
                 var defenseType = def[d];
