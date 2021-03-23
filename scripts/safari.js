@@ -7799,7 +7799,7 @@ function Safari() {
                         num = sys.rand(1, highestDexNum);
                         bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
                         if (bst <= statCap) {
-                            var typeBonus = this.checkEffective(atk1, atk2, type1(num), type2(num), false, player.costume === "inver");
+                            var typeBonus = this.checkEffective([atk1, atk2], [type1(num), type2(num)], player.costume === "inver");
                             if ((typeBonus > 1)) {
                                 if (bst < 600 || (!(isLegendary(num))) || goldenBonus) {
                                     found = true;
@@ -9164,15 +9164,15 @@ function Safari() {
         var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) && !ignoresWildAbilities(player) };
         if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
             if (ball === "mono") {
-                typeBonus = this.checkEffective(wType1, wType2, (pType2 === "???" || !player.monoSecondary ? pType1 : pType2), "???", false, !inverse);
+                typeBonus = this.checkEffective([wType1, wType2], (pType2 === "???" || !player.monoSecondary ? [pType1] : [pType2]), !inverse);
             } else {
-                typeBonus = this.checkEffective(wType1, wType2, pType1, pType2, false, !inverse);
+                typeBonus = this.checkEffective([wType1, wType2], [pType1, pType2], !inverse);
             }
         } else {
             if (ball === "mono") {
-                typeBonus = this.checkEffective((pType2 === "???" || !player.monoSecondary ? pType1 : pType2), "???", wType1, wType2, false, inverse, select);
+                typeBonus = this.checkEffective((pType2 === "???" || !player.monoSecondary ? [pType1] : [pType2]), [wType1, wType2], inverse, select);
             } else {
-                typeBonus = this.checkEffective(pType1, pType2, wType1, wType2, false, inverse, select);
+                typeBonus = this.checkEffective([pType1, pType2], [wType1, wType2], inverse, select);
             }
             if (this.hasCostumeSkill(player, "monoBallBoost")) {
                 costumeBonus *= costumeBoost(player);
@@ -10246,44 +10246,44 @@ function Safari() {
         }
         return out;
     };
-    this.checkEffective = function(atk1, atk2, def1, def2, def3, inverted, select, select2) {
+    this.checkEffective = function(atk, def, inverted, select, select2) {
         var result = 1;
         var immuneCount = 0;
         var typeCount = 1;
+        
+        if (!atk[1]) {
+            atk[1] = "???";
+        }
+        if (!def[1]) {
+            def[1] = "???";
+        }
+        if (!def[2]) {
+            def[2] = "???";
+        }
 
         if (select) {
             if (select.classicTypes) {
-                if (["Dark", "Steel", "Fairy"].contains(def1)) {
-                    def1 = "???";
-                }
-                if (["Dark", "Steel", "Fairy"].contains(def2)) {
-                    def2 = "???";
-                }
+                def = def.map(function(e) { return ["Dark", "Steel", "Fairy"].contains(e) ? "???" : e });
             }
             if (select.corrosion) {
-                if (atk1 == "Poison") {
-                    if (def1 == "Steel") {
-                        return (2 * this.checkEffective(atk1, "???", def2, "???", "???", inverted))
-                    }
-                    if (def2 == "Steel") {
-                        return (2 * this.checkEffective(atk1, "???", def1, "???", "???", inverted))
-                    }
+                if (atk[0] == "Poison" && def.contains("Steel")) {
+                    return 2 * this.checkEffective([atk[0]], def.filter(function(e) { return e !== "Steel" }), inverted);
                 }
             }
             if (select.normalcy) {
-                var third = ([def1, def2].contains("Normal") ? "???": "Normal");
-                return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
+                var third = (def.contains("Normal") ? "???": "Normal");
+                return this.checkEffective([atk[0]], def.concat([third]), inverted);
             }
             if (select.draconian) {
-                var third = ([def1, def2].contains("Dragon") ? "???": "Dragon");
-                return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
+                var third = (def.contains("Dragon") ? "???": "Dragon");
+                return this.checkEffective([atk[0]], def.concat([third]), inverted);
             }
             if (select.mechanical) {
-                var third = ([def1, def2].contains("Steel") ? "???": "Steel");
-                return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
+                var third = (def.contains("Steel") ? "???": "Steel");
+                return this.checkEffective([atk[0]], def.concat([third]), inverted);
             }
             if ((select.resistMode) || (select2 && select2.resistMode)) {
-                return (this.checkEffective(def1, def2, atk1, "???", "???", (inverted ? false : true)));
+                return this.checkEffective(def, [atk[0]], inverted);
             }
         }
 
@@ -10302,35 +10302,29 @@ function Safari() {
         };
 
         var attacker = effectiveness[atk1];
-        if (def1 in attacker) {
-            result *= countImmune(inverse(attacker[def1]));
-        }
-        if (def2 in attacker) {
-            result *= countImmune(inverse(attacker[def2]));
-        }
-        if (def3 && def3 in attacker) {
-            result *= countImmune(inverse(attacker[def3]));
-        }
-        if (select && select.levitate && atk1 === "Ground") {
-            result *= countImmune(0);
-        }
 
-        if (atk2 !== "???") {
-            typeCount++;
-            attacker = effectiveness[atk2];
-            if (def1 in attacker) {
-                result *= countImmune(inverse(attacker[def1]));
+        for (var a in atk) {
+            var attackType = atk[a];
+            var attacker = effectiveness[attackType];
+            for (var d in def) {
+                var defenseType = def[d];
+                if (!attacker.hasOwnProperty(defenseType)) {
+                    continue;
+                }
+                if (select && select.scrappy && ["Normal", "Fighting"].contains(attackType) && defenseType === "Ghost" && !inverted) {
+                    continue;
+                }
+                result *= countImmune(inverse(attacker[defenseType]));
             }
-            if (def2 in attacker) {
-                result *= countImmune(inverse(attacker[def2]));
-            }
-            if (def3 && def3 in attacker) {
-                result *= countImmune(inverse(attacker[def3]));
-            }
-            if (select && select.levitate && atk2 === "Ground") {
+            if (select && select.levitate && attackType === "Ground") {
                 result *= countImmune(0);
             }
         }
+        
+        if (atk[1] !== "???") {
+            typeCount++;
+        }
+
         if (immuneCount >= typeCount) {
             return 0;
         }
@@ -10602,7 +10596,7 @@ function Safari() {
     };
     this.changeWildMood = function(attacker) {
         var target = currentPokemon;
-        var typeBonus = this.checkEffective(type1(attacker), type2(attacker), type1(target), type2(target));
+        var typeBonus = this.checkEffective([type1(attacker), type2(attacker)], [type1(target), type2(target)]);
         var range = [0, 0.0625, 0.125, 0.25, 0.5, 1, 2, 4, 8, 16];
         var valueList = [10, 8, 4, 2, 1, 0, -1, -2, -4, -8,];
         var mod = 0;
@@ -20932,7 +20926,7 @@ function Safari() {
                 defStat *= 0.75;
             }
             dmg = move.pow + atkStat - defStat;
-            eff = safari.checkEffective(move.type, "???", target.type1, target.type2, "???");
+            eff = safari.checkEffective([move.type], [target.type1, target.type2]);
             if (move.type == mon.type1 || move.type == mon.type2) {
                 dmg += 50;
             }
@@ -22213,8 +22207,8 @@ function Safari() {
         var p1Type1 = type1(p1), p1Type2 = type2(p1);
         var p2Type1 = type1(p2), p2Type2 = type2(p2);
 
-        var p1Bonus = safari.checkEffective(p1Type1, p1Type2, p2Type1, p2Type2, false, inverted);
-        var p2Bonus = safari.checkEffective(p2Type1, p2Type2, p1Type1, p1Type2, false, inverted);
+        var p1Bonus = safari.checkEffective([p1Type1, p1Type2], [p2Type1, p2Type2], inverted);
+        var p2Bonus = safari.checkEffective([p2Type1, p2Type2], [p1Type1, p1Type2], inverted);
 
         var p1Move = p1Handicap ? sys.rand(p1Handicap[0], p1Handicap[1]) : sys.rand(10, 100);
         var p2Move = p2Handicap ? sys.rand(p2Handicap[0], p2Handicap[1]) : sys.rand(10, 100);
@@ -24095,7 +24089,7 @@ function Safari() {
                         }
                         else if (!user.lastPlayed2) {
                             var dmgPerc = 0.08;
-                            var mult = safari.checkEffective("Rock", "???", type1(user.id), type2(user.id), null, this.select.inverted, this.select, this.select2);
+                            var mult = safari.checkEffective(["Rock"], [type1(user.id), type2(user.id)], this.select.inverted, this.select, this.select2);
                             dmgPerc *= mult;
                             if (dmgPerc > 0) {
                                 user.hp = Math.max(Math.floor(user.hp - (dmgPerc * user.maxhp)), 1);
@@ -24106,7 +24100,7 @@ function Safari() {
                     if (this.side2Field.stealthrock && (isP2 || isP4)) {
                         if (!user.lastPlayed2) {
                             var dmgPerc = 0.08;
-                            var mult = safari.checkEffective("Rock", "???", type1(user.id), type2(user.id), null, this.select.inverted, this.select, this.select2);
+                            var mult = safari.checkEffective(["Rock"], [type1(user.id), type2(user.id)], this.select.inverted, this.select, this.select2);
                             dmgPerc *= mult;
                             if (dmgPerc > 0) {
                                 user.hp = Math.max(Math.floor(user.hp - (dmgPerc * user.maxhp)), 1);
@@ -24120,7 +24114,7 @@ function Safari() {
                         }
                         else if (!user.lastPlayed2) {
                             var dmgPerc = 0.08;
-                            var mult = safari.checkEffective("Electric", "???", type1(user.id), type2(user.id), null, this.select.inverted, this.select, this.select2);
+                            var mult = safari.checkEffective(["Electric"], [type1(user.id), type2(user.id)], this.select.inverted, this.select, this.select2);
                             dmgPerc *= mult;
                             if (dmgPerc > 0) {
                                 user.hp = Math.max(Math.floor(user.hp - (dmgPerc * user.maxhp)), 1);
@@ -24134,7 +24128,7 @@ function Safari() {
                         }
                         else if (!user.lastPlayed2) {
                             var dmgPerc = 0.08;
-                            var mult = safari.checkEffective("Ice", "???", type1(user.id), type2(user.id), null, this.select.inverted, this.select, this.select2);
+                            var mult = safari.checkEffective(["Ice"], [type1(user.id), type2(user.id)], this.select.inverted, this.select, this.select2);
                             dmgPerc *= mult;
                             if (dmgPerc > 0) {
                                 user.hp = Math.max(Math.floor(user.hp - (dmgPerc * user.maxhp)), 1);
@@ -24321,7 +24315,7 @@ function Safari() {
                 var dmg, typeMultiplier;
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
                     dmg = ((150 * 95) / this.getStatValue(poke1, "sdef"));
-                    typeMultiplier = safari.checkEffective("Fairy", "???", type1(poke1.id), type2(poke1.id), null);
+                    typeMultiplier = safari.checkEffective(["Fairy"], [type1(poke1.id), type2(poke1.id)]);
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.lightscreen > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke1.hp) {
                         dmg = poke1.hp;
@@ -24335,7 +24329,7 @@ function Safari() {
 
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
                     dmg = ((150 * 95) / this.getStatValue(poke2, "sdef"));
-                    typeMultiplier = safari.checkEffective("Fairy", "???", type1(poke2.id), type2(poke2.id), null);
+                    typeMultiplier = safari.checkEffective(["Fairy"], [type1(poke2.id), type2(poke2.id)]);
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.lightscreen > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke2.hp) {
                         dmg = poke2.hp;
@@ -24365,7 +24359,7 @@ function Safari() {
                 }
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
                     dmg = ((150 * pow) / this.getStatValue(poke1, "def"));
-                    typeMultiplier = safari.checkEffective(type, "???", type1(poke1.id), type2(poke1.id), null, (this.select.inverted ? true : false), this.select, this.select2);
+                    typeMultiplier = safari.checkEffective([type], [type1(poke1.id), type2(poke1.id)], this.select.inverted, this.select, this.select2);
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke1.hp) {
                         dmg = poke1.hp;
@@ -24384,7 +24378,7 @@ function Safari() {
 
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
                     dmg = ((150 * pow) / this.getStatValue(poke2, "def"));
-                    typeMultiplier = safari.checkEffective(type, "???", type1(poke2.id), type2(poke2.id), null, (this.select.inverted ? true : false), this.select, this.select2);
+                    typeMultiplier = safari.checkEffective([type], [type1(poke2.id), type2(poke2.id)], this.select.inverted, this.select, this.select2);
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke2.hp) {
                         dmg = poke2.hp;
@@ -25553,7 +25547,7 @@ function Safari() {
         var inver = (this.select && this.select.inverted ? true : false);
         
         if (!wide) {
-            var typeMultiplier = move.category !== "other" ? safari.checkEffective(move.type, "???", type1(target.id), type2(target.id), null, inver, this.select, this.select2) : 0;
+            var typeMultiplier = move.category !== "other" ? safari.checkEffective([move.type], [type1(target.id), type2(target.id)], inver, this.select, this.select2) : 0;
             var distortionForceSkill;
             if (move.type == "Ground" && target.item.balloon) {
                 typeMultiplier = 0;
@@ -26148,7 +26142,7 @@ function Safari() {
                     }
                 }
                 if (self.select && self.select.spectralThief) {
-                    var typeMultiplier = safari.checkEffective(move.type, "???", type1(target.id), type2(target.id), null, inver, this.select, this.select2);
+                    var typeMultiplier = safari.checkEffective([move.type], [type1(target.id), type2(target.id)], inver, this.select, this.select2);
                     if (typeMultiplier < 1) {
                         var hold = {};
                         for (var b in user.boosts) {
@@ -26322,7 +26316,7 @@ function Safari() {
                     var distortionForceSkill;
                     var thousandArrowsSkill;
                     
-                    typeMultiplier = safari.checkEffective(move.type, "???", type1(poke2.id), type2(poke2.id), null, inver, this.select, this.select2);
+                    typeMultiplier = safari.checkEffective([move.type], [type1(poke2.id), type2(poke2.id)], inver, this.select, this.select2);
 
                     if (move.type == "Ground" && (poke2.item.balloon || (hasType(poke2.id, "Flying") && typeMultiplier === 0))) {
                         typeMultiplier = 0;
@@ -26357,7 +26351,7 @@ function Safari() {
                         out = dealDamage(poke1, move, poke2, typeMultiplier, 2, out);
                     }
                     
-                    typeMultiplier = safari.checkEffective(move.type, "???", type1(poke4.id), type2(poke4.id), null, inver, this.select, this.select2);
+                    typeMultiplier = safari.checkEffective([move.type], [type1(poke4.id), type2(poke4.id)], inver, this.select, this.select2);
                     if (move.type == "Ground" && (poke4.item.balloon || (hasType(poke4.id, "Flying") && typeMultiplier === 0))) {
                         typeMultiplier = 0;
                         if (!this.fullNPC && this.npcBattle && !poke4.protect) {
@@ -26391,7 +26385,7 @@ function Safari() {
                         out = dealDamage(poke1, move, poke4, typeMultiplier, 2, out);
                     }
                     if (target !== "TEAM") {
-                        typeMultiplier = safari.checkEffective(move.type, "???", type1(poke3.id), type2(poke3.id), null, inver, this.select, this.select2);
+                        typeMultiplier = safari.checkEffective([move.type], [type1(poke3.id), type2(poke3.id)], inver, this.select, this.select2);
                         if (move.type == "Ground" && poke3.item.balloon) {
                             typeMultiplier = 0;
                         }
@@ -26407,7 +26401,7 @@ function Safari() {
                     }
                 }
                 else if (isP3) {
-                    typeMultiplier = safari.checkEffective(move.type, "???", type1(poke2.id), type2(poke2.id), null, inver, this.select, this.select2);
+                    typeMultiplier = safari.checkEffective([move.type], [type1(poke2.id), type2(poke2.id)], inver, this.select, this.select2);
                     if (move.type == "Ground" && poke2.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -26420,7 +26414,7 @@ function Safari() {
                     else if (poke2.hp > 0) {
                         out = dealDamage(poke3, move, poke2, typeMultiplier, 2, out);
                     }
-                    typeMultiplier = safari.checkEffective(move.type, "???", type1(poke4.id), type2(poke4.id), null, inver, this.select, this.select2);
+                    typeMultiplier = safari.checkEffective([move.type], [type1(poke4.id), type2(poke4.id)], inver, this.select, this.select2);
                     if (move.type == "Ground" && poke4.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -26434,7 +26428,7 @@ function Safari() {
                         out = dealDamage(poke3, move, poke4, typeMultiplier, 2, out);
                     }
                     if (target !== "TEAM") {
-                        typeMultiplier = safari.checkEffective(move.type, "???", type1(poke1.id), type2(poke1.id), null, inver, this.select, this.select2);
+                        typeMultiplier = safari.checkEffective([move.type], [type1(poke1.id), type2(poke1.id)], inver, this.select, this.select2);
                         if (move.type == "Ground" && poke1.item.balloon) {
                             typeMultiplier = 0;
                         }
@@ -26450,7 +26444,7 @@ function Safari() {
                     }
                 }
                 else if (isP2) {
-                    typeMultiplier = safari.checkEffective(move.type, "???", type1(poke1.id), type2(poke1.id), null, inver, this.select, this.select2);
+                    typeMultiplier = safari.checkEffective([move.type], [type1(poke1.id), type2(poke1.id)], inver, this.select, this.select2);
                     if (move.type == "Ground" && poke1.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -26463,7 +26457,7 @@ function Safari() {
                     else if (poke1.hp > 0) {
                         out = dealDamage(poke2, move, poke1, typeMultiplier, 1, out);
                     }
-                    typeMultiplier = safari.checkEffective(move.type, "???", type1(poke3.id), type2(poke3.id), null, inver, this.select, this.select2);
+                    typeMultiplier = safari.checkEffective([move.type], [type1(poke3.id), type2(poke3.id)], inver, this.select, this.select2);
                     if (move.type == "Ground" && poke3.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -26477,7 +26471,7 @@ function Safari() {
                         out = dealDamage(poke2, move, poke3, typeMultiplier, 1, out);
                     }
                     if (target !== "TEAM") {
-                        typeMultiplier = safari.checkEffective(move.type, "???", type1(poke4.id), type2(poke4.id), null, inver, this.select, this.select2);
+                        typeMultiplier = safari.checkEffective([move.type], [type1(poke4.id), type2(poke4.id)], inver, this.select, this.select2);
                         if (move.type == "Ground" && poke4.item.balloon) {
                             typeMultiplier = 0;
                         }
@@ -26493,7 +26487,7 @@ function Safari() {
                     }
                 }
                 else if (isP4) {
-                    typeMultiplier = safari.checkEffective(move.type, "???", type1(poke1.id), type2(poke1.id), null, inver, this.select, this.select2);
+                    typeMultiplier = safari.checkEffective([move.type], [type1(poke1.id), type2(poke1.id)], inver, this.select, this.select2);
                     if (move.type == "Ground" && poke1.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -26506,7 +26500,7 @@ function Safari() {
                     else if (poke1.hp > 0) {
                         out = dealDamage(poke4, move, poke1, typeMultiplier, 1, out);
                     }
-                    typeMultiplier = safari.checkEffective(move.type, "???", type1(poke3.id), type2(poke3.id), null, inver, this.select, this.select2);
+                    typeMultiplier = safari.checkEffective([move.type], [type1(poke3.id), type2(poke3.id)], inver, this.select, this.select2);
                     if (move.type == "Ground" && poke3.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -26520,7 +26514,7 @@ function Safari() {
                         out = dealDamage(poke4, move, poke3, typeMultiplier, 1, out);
                     }
                     if (target !== "TEAM") {
-                        typeMultiplier = safari.checkEffective(move.type, "???", type1(poke2.id), type2(poke2.id), null, inver, this.select, this.select2);
+                        typeMultiplier = safari.checkEffective([move.type], [type1(poke2.id), type2(poke2.id)], inver, this.select, this.select2);
                         if (move.type == "Ground" && poke2.item.balloon) {
                             typeMultiplier = 0;
                         }
@@ -26537,7 +26531,7 @@ function Safari() {
                 }
             }
             else {
-                var typeMultiplier = safari.checkEffective(move.type, "???", type1(target.id), type2(target.id), null, inver, this.select, this.select2);
+                var typeMultiplier = safari.checkEffective([move.type], [type1(target.id), type2(target.id)], inver, this.select, this.select2);
                 if (move.type == "Ground" && (target.item.balloon || (hasType(target.id, "Flying") && typeMultiplier === 0))) {
                     typeMultiplier = 0;
                     if (!this.fullNPC && this.npcBattle && target.ownerID !== this.idnum1 && !target.protect) {
@@ -28089,7 +28083,7 @@ function Safari() {
                     val = 0;
                     if (move.power) {
                         var inver = ((this.select && this.select.inverted) ? true : false);
-                        eff = safari.checkEffective(move.type, "???", type1(opp.id), type2(opp.id), null, inver);
+                        eff = safari.checkEffective([move.type], [type1(opp.id), type2(opp.id)], inver);
 
                         dmg = this.damageCalc(user, move, opp, eff, 1, isP1, isP2, isP3, isP4);
                         
@@ -30765,7 +30759,7 @@ function Safari() {
                 for (e = 0; e < oppTeam.length; e++) {
                     p1 = type1(oppTeam[e]);
                     p2 = type2(oppTeam[e]);
-                    if (result.length < count && this.checkEffective(p1, p2, t1, t2) >= this.checkEffective(t1, t2, p1, p2)) {
+                    if (result.length < count && this.checkEffective([p1, p2], [t1, t2]) >= this.checkEffective([t1, t2], [p1, p2])) {
                         result.push(oppTeam[e]);
                     } else {
                         rest.push(oppTeam[e]);
@@ -31732,8 +31726,8 @@ function Safari() {
                 for (var j = 0; j < allTypes.length; j++) {
                     targets[allTypes[j]] = 0;
                     for (var i = 0; i < team.length; i++) {
-                        eff = safari.checkEffective(type1(team[i]), type2(team[i]), allTypes[j], "???");
-                        eff2 = safari.checkEffective(allTypes[j], "???", type1(team[i]), type2(team[i]));
+                        eff = safari.checkEffective([type1(team[i]), type2(team[i])], [allTypes[j]]);
+                        eff2 = safari.checkEffective([allTypes[j]], [type1(team[i]), type2(team[i])]);
                         targets[allTypes[j]] = Math.max(targets[allTypes[j]], eff / eff2);
                     }
                 }
@@ -32276,7 +32270,7 @@ function Safari() {
                             return false;
                         }
                     }
-                    var amt = safari.checkEffective(type1(answer[ind]), type2(answer[ind]), type1(answer[otherind]), type2(answer[otherind]));
+                    var amt = safari.checkEffective([type1(answer[ind]), type2(answer[ind])], [type1(answer[otherind]), type2(answer[otherind])]);
                     if (amt == 1) {
                         return false;
                     }
@@ -36071,8 +36065,8 @@ function Safari() {
             }
             if (counterMon && countersHit < 5 && i < maxLoop) {
                 i++;
-                atkm = Math.max(safari.checkEffective(type1(counterMon), type2(counterMon), type1(p), type2(p)), 0.01);
-                defm = safari.checkEffective(type1(p), type2(p), type1(counterMon), type2(counterMon));
+                atkm = Math.max(safari.checkEffective([type1(counterMon), type2(counterMon)], [type1(p), type2(p)]), 0.01);
+                defm = safari.checkEffective([type1(p), type2(p)], [type1(counterMon), type2(counterMon)]);
                 hitCounter = false;
                 if (((((defm * 100) / atkm) * 0.01) < 4 && (i * 0.5 < maxLoop)) && (chance(0.65))) {
                     continue;
@@ -38702,7 +38696,7 @@ function Safari() {
             }
             var target = randomSample(targetable);
             m = choices[target];
-            var dmg = Math.round(this.opponentPower * safari.checkEffective(type1(opp), type2(opp), type1(m), type2(m)));
+            var dmg = Math.round(this.opponentPower * safari.checkEffective([type1(opp), type2(opp)], [type1(m), type2(m)]));
             stamina[target] = -(dmg);
 
             this.sendAll("<b>{0}</b>'s HP is now at {1}! The {0} attacks <b>{2}'s {3}</b>! {2} loses {4} stamina!".format(poke(display), toColor(this.opponentHP, "blue"), target.toCorrectCase(), poke(m), toColor(dmg, "red")));
@@ -38791,7 +38785,7 @@ function Safari() {
                 pow *= 1.25;
             }
 
-            dmg = Math.round(pow * safari.checkEffective(type1(m), type2(m), this.types[0], this.types[1], this.types[2]));
+            dmg = Math.round(pow * safari.checkEffective([type1(m), type2(m)], [this.types[0], this.types[1], this.types[2]]));
             if (!this.dealt.hasOwnProperty(p)) {
                 this.dealt[p] = 0;
             }
@@ -39625,7 +39619,7 @@ function Safari() {
         for (p in choices) {
             m = choices[p];
 
-            dmg = safari.checkEffective(atk, "???", type1(m), type2(m));
+            dmg = safari.checkEffective([atk], [type1(m), type2(m)]);
             totalDef *= dmg;
 
             if (dmg === 0) {
@@ -53150,8 +53144,8 @@ function Safari() {
                     var val, se = [], nve = [], im = []; // incoming
                     var val2, se2 = [], nve2 = [], im2 = [];  // outgoing
                     for (var e in effectiveness) {
-                        val = safari.checkEffective(e, "???", type_1, type_2, false, false);
-                        val2 = safari.checkEffective(type_1, type_2, e, "???", false, false);
+                        val = safari.checkEffective([e], [type_1, type_2]);
+                        val2 = safari.checkEffective([type_1, type_2], [e]);
 
                         if (val > 1) {
                             se.push(typeIcon(e));
