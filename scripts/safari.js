@@ -10301,8 +10301,6 @@ function Safari() {
             return value;
         };
 
-        var attacker = effectiveness[atk1];
-
         for (var a in atk) {
             var attackType = atk[a];
             var attacker = effectiveness[attackType];
