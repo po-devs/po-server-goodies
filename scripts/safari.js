@@ -52893,7 +52893,7 @@ function Safari() {
                         value = timeString(value / 1000, true);
                     }
                     else if (celebrityLBs.contains(recName) && (weekly || last)) {
-                        value = "{0} ({1} KOs on final opponent at {2})".format(addComma(value), list[e].value.defeated, new Date(list[e].value.time).toUTCString());
+                        value = "{0} trainers defeated ({1} KOs on final opponent at {2})".format(addComma(value), list[e].value.defeated || 0, new Date(list[e].value.time).toUTCString());
                     }
                     out.push("<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(value));
                     if (list[e].name == self) {
@@ -52909,7 +52909,7 @@ function Safari() {
                                 value = timeString(value / 1000, true);
                             }
                             else if (celebrityLBs.contains(recName) && (weekly || last)) {
-                                value = "{0} ({1} KOs on final opponent at {2})".format(addComma(value), list[e].value.defeated, new Date(list[e].value.time).toUTCString());
+                                value = "{0} trainers defeated ({1} KOs on final opponent at {2})".format(addComma(value), list[e].value.defeated || 0, new Date(list[e].value.time).toUTCString());
                             }
                             var entry = "<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(value);
                             if (e < range.lower) {
