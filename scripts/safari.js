@@ -52833,6 +52833,7 @@ function Safari() {
                 var lbKeys = Object.keys(leaderboards);
                 var lbData = leaderboardTypes;
                 var recName = rec, desc;
+                var weekly, last;
                 var lowCaseKeys = lbKeys.map(function(x) { return x.toLowerCase(); });
                 if (lowCaseKeys.indexOf(rec) !== -1) {
                     rec = recName = lbKeys[lowCaseKeys.indexOf(rec)];
@@ -52847,6 +52848,7 @@ function Safari() {
                                 found = true;
                                 lbData = monthlyLeaderboardTypes;
                                 desc = lbData[recName].desc;
+                                weekly = true;
                                 break;
                             }
                         } else if (e.indexOf("Last") >= 0) {
@@ -52856,6 +52858,7 @@ function Safari() {
                                 found = true;
                                 lbData = monthlyLeaderboardTypes;
                                 desc = lbData[recName].lastDesc;
+                                last = true;
                                 break;
                             }
                         } else if (leaderboardTypes[e].alts.indexOf(rec) !== -1) {
@@ -52883,13 +52886,13 @@ function Safari() {
                 var out = ["", "<b>" + (recName == "salt" ? "Safari Lameboards " : "Safari Leaderboards ") + desc + "</b>" + (lastLeaderboardUpdate ? " (last updated: " + lastLeaderboardUpdate + ")" : "")], selfFound = false;
                 var sign = (lbData[recName].isMoney ? "$" : "");
                 var value;
-                var celebrityLBs = ["celebrityScoreWeekly", "celebrityScoreEasyWeekly", "celebrityScoreHardWeekly", "celebrityScoreExpertWeekly", "celebrityScoreSuperExpertWeekly", "celebrityScoreAbyssalWeekly", "celebrityScoreLast", "celebrityScoreEasyLast", "celebrityScoreHardLast", "celebrityScoreExpertLast", "celebrityScoreSuperExpertLast", "celebrityScoreAbyssalLast"];
+                var celebrityLBs = ["celebrityScore", "celebrityScoreEasy", "celebrityScoreHard", "celebrityScoreExpert", "celebrityScoreSuperExpert", "celebrityScoreAbyssal"];
                 for (e = 0; e < list.length; e++) {
                     value = typeof list[e].value === "number" ? list[e].value : list[e].value.value;
                     if (recName === "fastestCaseSolved") {
                         value = timeString(value / 1000, true);
                     }
-                    else if (celebrityLBs.contains(recName)) {
+                    else if (celebrityLBs.contains(recName) && (weekly || last)) {
                         value = "{0} ({1} KOs on final opponent at {2})".format(addComma(value), list[e].value.defeated, new Date(list[e].value.time).toUTCString());
                     }
                     out.push("<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(value));
@@ -52905,7 +52908,7 @@ function Safari() {
                             if (recName === "fastestCaseSolved") {
                                 value = timeString(value / 1000, true);
                             }
-                            else if (celebrityLBs.contains(recName)) {
+                            else if (celebrityLBs.contains(recName) && (weekly || last)) {
                                 value = "{0} ({1} KOs on final opponent at {2})".format(addComma(value), list[e].value.defeated, new Date(list[e].value.time).toUTCString());
                             }
                             var entry = "<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(value);
