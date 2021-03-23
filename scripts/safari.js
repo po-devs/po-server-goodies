@@ -7975,6 +7975,22 @@ function Safari() {
             }
             var onChannel = sys.playersOfChannel(safchan);
             var abilityMessageList = {};
+            var wildAbilityMessageList = [];
+            
+            var is_are = amt > 1 ? "are" : "is"
+            if (canHaveAbility(currentPokemon, abilitynum("Contrary"))) {
+                wildAbilityMessageList.push("The wild {0} {1} inverting type matchups with Contrary!".format(poke(currentDisplay), is_are));
+            }
+            if (canHaveAbility(currentPokemon, abilitynum("Levitate"))) {
+                wildAbilityMessageList.push("The wild {0} {1} airborne due to Levitate!".format(poke(currentDisplay), is_are));
+            }
+            if (canHaveAbility(currentPokemon, abilitynum("Pressure"))) {
+                wildAbilityMessageList.push("The wild {0} {1} exerting {2} Pressure!".format(poke(currentDisplay), is_are, amt > 1 ? "their" : "its"));
+            }
+            if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard"))) {
+                wildAbilityMessageList.push("The wild {0} {1} protected by Wonder Guard!".format(poke(currentDisplay), is_are));
+            }
+
             for (var e in onChannel) {
                 ballMacro(onChannel[e]);
                 
@@ -7994,22 +8010,14 @@ function Safari() {
                 if (canHaveAbility(leader, abilitynum("Intimidate"))) {
                     abilityMessageList[onChannel[e]] = "Your {0} weakens the wild {1} with Intimidate!".format(poke(leader), poke(currentDisplay));
                 }
+                if (canHaveAbility(leader, abilitynum("Scrappy")) && (hasType(leader, "Normal") || hasType(leader, "Fighting")) && hasType(currentDisplay, "Ghost")) {
+                    abilityMessageList[onChannel[e]] = "Your {0} can strike Ghost-types with Scrappy!".format(poke(leader));
+                }
             }
 
-            var is_are = amt > 1 ? "are" : "is"
-            if (canHaveAbility(currentPokemon, abilitynum("Contrary"))) {
-                sendAll("The wild {0} {1} inverting type matchups with Contrary!".format(poke(currentDisplay), is_are));
+            for (var msg in wildAbilityMessageList) {
+                sendAll(wildAbilityMessageList[msg]);
             }
-            if (canHaveAbility(currentPokemon, abilitynum("Levitate"))) {
-                sendAll("The wild {0} {1} airborne due to Levitate!".format(poke(currentDisplay), is_are));
-            }
-            if (canHaveAbility(currentPokemon, abilitynum("Pressure"))) {
-                sendAll("The wild {0} {1} exerting {2} Pressure!".format(poke(currentDisplay), is_are, amt > 1 ? "their" : "its"));
-            }
-            if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard"))) {
-                sendAll("The wild {0} {1} protected by Wonder Guard!".format(poke(currentDisplay), is_are));
-            }
-            
             for (var user in abilityMessageList) {
                 if (!cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
                     safaribot.sendMessage(user, abilityMessageList[user], safchan);
@@ -9161,7 +9169,7 @@ function Safari() {
             wType1 = currentTypeOverride;
         }
         var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(currentPokemon, abilitynum("Contrary")) && !ignoresWildAbilities(player));
-        var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) && !ignoresWildAbilities(player) };
+        var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) && !ignoresWildAbilities(player), scrappy: canHaveAbility(leader, abilitynum("Scrappy")) };
         if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
             if (ball === "mono") {
                 typeBonus = this.checkEffective([wType1, wType2], (pType2 === "???" || !player.monoSecondary ? [pType1] : [pType2]), !inverse);
@@ -10272,18 +10280,18 @@ function Safari() {
             }
             if (select.normalcy) {
                 var third = (def.contains("Normal") ? "???": "Normal");
-                return this.checkEffective([atk[0]], def.concat([third]), inverted);
+                return this.checkEffective(atk, def.concat([third]), inverted);
             }
             if (select.draconian) {
                 var third = (def.contains("Dragon") ? "???": "Dragon");
-                return this.checkEffective([atk[0]], def.concat([third]), inverted);
+                return this.checkEffective(atk, def.concat([third]), inverted);
             }
             if (select.mechanical) {
                 var third = (def.contains("Steel") ? "???": "Steel");
-                return this.checkEffective([atk[0]], def.concat([third]), inverted);
+                return this.checkEffective(atk, def.concat([third]), inverted);
             }
             if ((select.resistMode) || (select2 && select2.resistMode)) {
-                return this.checkEffective(def, [atk[0]], inverted);
+                return this.checkEffective(def, atk, inverted);
             }
         }
 
