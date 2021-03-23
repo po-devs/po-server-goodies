@@ -10291,7 +10291,7 @@ function Safari() {
                 return this.checkEffective(atk, def.concat([third]), inverted);
             }
             if ((select.resistMode) || (select2 && select2.resistMode)) {
-                return this.checkEffective(def, atk, inverted);
+                return this.checkEffective(def, atk, !inverted);
             }
         }
 
