@@ -5999,7 +5999,7 @@ function Safari() {
             "types": ["Electric", "Dragon"],
             "name": "Dracozolt",
             "stats": [90, 100, 90, 80, 70, 75],
-            "abilities": [ "Volt Absorb", "Hustle", "Slush Rush" ],
+            "abilities": [ "Volt Absorb", "Hustle", "Sand Rush" ],
             "tier": "SM OU",
             "height": 1.8,
             "weight": 190,
