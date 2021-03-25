@@ -1866,7 +1866,7 @@ function Safari() {
         fastestCaseSolved: { desc: "by fastest Detective case solved", alts: ["detective fastest", "detectivefastest", "detective speed", "detectivespeed", "detective speedrun", "detectivespeedrun"], alias: "detective fastest" }
     };
     var monthlyLeaderboardTypes = {
-        pokesCaught: { desc: "by successful catches during this week", alts: ["caught weekly"], alias: "caught weekly", lastAlias: "caught last", file: "scriptdata/safari/weeklyPokesCaught.txt", lastDesc: "by successful catches during the last week", reward: false  },
+        pokesCaught: { desc: "by successful catches during this week", alts: ["caught weekly"], alias: "caught weekly", lastAlias: "caught last", file: "scriptdata/safari/weeklyPokesCaught.txt", lastDesc: "by successful catches during the last week", reward: true  },
         contestsWon: { desc: "by contests won during this week", alts: ["contest weekly", "contests weekly"], alias: "contest weekly", lastAlias: "contest last", file: "scriptdata/safari/weeklyContestsWon.txt", lastDesc: "by contests won during the last week", reward: true },
         collectorEarnings: { desc: "by money received from the Collector during this week", alts: ["collector weekly", "collector money weekly", "collectormoney weekly", "collector $ weekly"], alias: "collector weekly",  lastAlias: "collector last",isMoney: true, file: "scriptdata/safari/weeklyCollectorEarnings.txt", lastDesc: "by money received from the Collector during the last week", reward: true },
         arenaPoints: { desc: "by Arena points won this week", alts: ["arena weekly"], alias: "arena weekly",  lastAlias: "arena last", file: "scriptdata/safari/weeklyArenaPoints.txt", lastDesc: "by Arena points won during the last week", reward: true },
@@ -57741,7 +57741,7 @@ function Safari() {
                                     safaribot.sendMessage(sys.id(p.id), "Your {0}'s Speed Boost allowed you to throw slightly faster!".format(poke(p.party[0])), safchan);
                                 }
 
-                                throwChances[i] += Math.ceil(size * 0.75); 
+                                throwChances[i] += size;
                             }
                         }
                     }
