@@ -1760,8 +1760,8 @@ function Safari() {
             love: "A Pokéball with a pink heart design that works better if the lead is in the same egg group as the target. It also increases the well-being of Pokémon in the daycare. " + cdSeconds("love") + " Obtained from Arborist.",
             uturn: "A Pokéball with a dynamic design that enables the lead Pokémon to switch out after a successful catch. " + cdSeconds("uturn") + " Obtained from Arborist.",
             inver: "A mysterious Pokéball that reverses the type advantage " + cdSeconds("inver") + " Obtained from Arborist.",
-            spirit: "A magical Pokéball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events. (Max capacity: 10)",
-            cherish: "A homey Pokéball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Arborist."
+            spirit: "A magical Pokéball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events. Note: This Ball will return to you if it fails to catch a Pokémon. (Max capacity: 10)",
+            cherish: "A homey Pokéball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Arborist. Note: This Ball will return to you if it fails to catch a Pokémon."
         };
         berryHelp = {
             oran:"A berry that can be used as an ingredient in bait. Can also restore 50 HP to the holder during rotation batttles. Give berries with /giveitem [berry].",
