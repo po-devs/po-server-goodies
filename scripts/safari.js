@@ -11460,7 +11460,10 @@ function Safari() {
         if (!isNaN(page) && num != "all") {
             maxPages = Math.floor(list.length / (perBox)) + (list.length % perBox === 0 ? 0 : 1);
 
-            if (page > maxPages) {
+            if (page <= 0) {
+                page = 1;
+            }
+            else if (page > maxPages) {
                 page = maxPages;
             }
             list = list.slice(perBox * (page - 1), perBox * (page - 1) + perBox);
