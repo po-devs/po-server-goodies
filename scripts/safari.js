@@ -9941,7 +9941,7 @@ function Safari() {
                             }
                         }
                         
-                        safaribot.sendMessage(src, "Your {0} in the Daycare gained {1}!".format(poke(this.daycarePokemon[t].id), plural(addedHearts, "heart")), safchan);
+                        safaribot.sendMessage(src, "Your {0} in the Daycare gained {1} affection points!".format(poke(this.daycarePokemon[t].id), addComma(addedHearts)), safchan);
                         this.daycarePokemon[t].hearts += addedHearts;
                     }
                 }
@@ -57425,6 +57425,7 @@ function Safari() {
                 }
             }
         } catch (err) {
+            safaribot.sendAll("Error loading defaultItemData/customItemData: " + err, staffchannel);
         }
         try {
             if (!defaultCostumeData) {
@@ -57440,6 +57441,7 @@ function Safari() {
                 }
             }
         } catch (err) {
+            safaribot.sendAll("Error loading defaultCostumeData/customCostumeData: " + err, staffchannel);
         }
         updateItemHelp();
         updateItemData();
