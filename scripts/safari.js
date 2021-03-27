@@ -57416,11 +57416,11 @@ function Safari() {
                 defaultItemData = JSON.parse(JSON.stringify(itemData));
             }
             var customValues = JSON.parse(permObj.get("customItemData")), e, i, obj;
-            safaribot.sendMessage(sys.id("Ripper Roo"), JSON.stringify(customValues), safchan);
+            //safaribot.sendMessage(sys.id("Ripper Roo"), JSON.stringify(customValues), safchan);
             for (e in customValues) {
                 if (e in itemData) {
                     obj = customValues[e];
-                    safaribot.sendMessage(sys.id("Ripper Roo"), JSON.stringify(obj), safchan);
+                    //safaribot.sendMessage(sys.id("Ripper Roo"), JSON.stringify(obj), safchan);
                     for (i in obj) {
                         itemData[e][i] = obj[i];
                     }
@@ -57446,7 +57446,6 @@ function Safari() {
             safaribot.sendAll("Error loading defaultCostumeData/customCostumeData: " + err, staffchannel);
         }
         updateItemHelp();
-        updateItemData();
 
         spiritSpawn = false;
         wildSpirit = false;
