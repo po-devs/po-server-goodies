@@ -23339,13 +23339,13 @@ function Safari() {
                         
                         if (!isNPC) {
                             self.sendMessage(name, pokeInfo.icon(p.id) + poke(p.id) + " | " + self.getHPColor(p.hp, p.maxhp) + (p.condition !== "none" ? " | " + getConditionCode(p.condition)  : "") + " | " + showBoosts(p, this.select));
+                            for (m = 0; m < p.moves.length; m++) {
+                                moves.push(link("/bat " + codes[t], "[" + cap(codes[t]) + "]") + " " + self.translateMove(p.moves[m]));
+                                codesObj[codes[t]] = p.moves[m];
+                                t++;
+                            }
+                            self.sendMessage(name, "Moves: " + moves.join(" --- "));
                         }
-                        for (m = 0; m < p.moves.length; m++) {
-                            moves.push(link("/bat " + codes[t], "[" + cap(codes[t]) + "]") + " " + self.translateMove(p.moves[m]));
-                            codesObj[codes[t]] = p.moves[m];
-                            t++;
-                        }
-                        self.sendMessage(name, "Moves: " + moves.join(" --- "));
                     }
                 }
             };
