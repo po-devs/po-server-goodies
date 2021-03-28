@@ -1805,6 +1805,7 @@ function Safari() {
     var currentPokemonMoodRate = null;
     var wildAbilityBoost = 5;
     var wildAbilityBoostLimit = wildAbilityBoost * 5;
+    var wildBallThrows = {};
     var maxThrows = 10;
     var pokeblockThrows = 0;
     var currentThrows;
@@ -2841,6 +2842,7 @@ function Safari() {
         currentExtraBST = 0;
         currentDisplay = null;
         wildEvent = false;
+        wildBallThrows = {};
         currentPokemonCount = 1;
         lastPokemonCount = 1;
         isBaited = false;
@@ -7722,9 +7724,15 @@ function Safari() {
                         }
                     }
                     var hitEvent = false;
+                    var includeContestVariations = themeOverride && theme.variations;
                     var include = theme.include;
                     if (theme.hasOwnProperty("day"+currentDay)) {
                         include = include.concat(theme["day"+currentDay]);
+                    }
+                    if (includeContestVariations) { // mushroom can draw from any special variation pool
+                        for (var variation in theme.variations) {
+                            include = include.concat(theme.variations[variation]);
+                        }
                     }
                     for (h in include) {
                         id = include[h];
@@ -7735,7 +7743,7 @@ function Safari() {
                             bst = 599;
                             extrabstChance = ((((125 - extrabst) * (180 - extrabst)) / (240 - extrabst)) * 0.01 * extrabstChanceModifier);
                         }
-                        if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
+                        if ((this.validForTheme(id, cTheme) || includeContestVariations) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
                             list.push(id);
                             if (isLegendary(id) && bst >= 670 && !goldenBonus) {
                                 for (i = 5; i--; ) {
@@ -8047,6 +8055,7 @@ function Safari() {
         currentPokemon = null;
         currentTypeOverride = null;
         currentExtraBST = 0;
+        wildBallThrows = {};
         this.runPendingActive();
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
@@ -9587,6 +9596,13 @@ function Safari() {
         if (crystalEffect.effect === "photo" && player.photos.length < 20) {
             this.takePhoto(src, "*", true, true);
         }
+
+        if (!wildBallThrows.hasOwnProperty(ball)) {
+            wildBallThrows[ball] = 0;
+        }
+        
+        wildBallThrows[ball]++;
+
         if (rng < finalChance || ballBonus == 255) {
             currentPokemonCount--;
             var amt = currentPokemonCount;
@@ -10052,6 +10068,7 @@ function Safari() {
                 currentExtraBST = 0;
                 currentDisplay = null;
                 wildEvent = false;
+                wildBallThrows = {};
                 wildSpirit = false;
                 isBaited = false;
                 if (contestCount <= 0) {
@@ -10207,6 +10224,7 @@ function Safari() {
         currentPokemonCount = lastPokemonCount = 1;
         isBaited = false;
         wildSpirit = false;
+        wildBallThrows = {};
         spiritSpawn = false;
         if (contestCount <= 0) {
             this.runPendingActive();
@@ -54951,7 +54969,7 @@ function Safari() {
                 if (contestCount > 0 || contestCooldown <= 180) {
                     if (contestCount > 0) {
                         if (currentPokemon && isRare(currentPokemon)) {
-                            sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared with the " + themeName(currentTheme) + " contest::\n");
+                            sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared with the " + themeName(currentTheme) + " contest" + (wildEvent ? " (Event)" : "") + (Object.keys(wildBallThrows).length === 0 ? " (No Throws)" : "") + "::\n");
                         }
                         resetVars();
                         currentRules = null;
@@ -58100,7 +58118,7 @@ function Safari() {
                         }
                     }
                     if (currentPokemon && isRare(currentPokemon)) {
-                        sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared with the " + themeName(currentTheme) + " contest::\n");
+                        sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared with the " + themeName(currentTheme) + " contest" + (wildEvent ? " (Event)" : "") + (Object.keys(wildBallThrows).length === 0 ? " (No Throws)" : "") + "::\n");
                     }
 
                     contestInfo.themeId = currentTheme ? currentTheme : "none";
