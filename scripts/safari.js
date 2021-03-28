@@ -49908,7 +49908,7 @@ function Safari() {
                     for (n = 0; n < nextTheme.length; n++) {
                         t = nextTheme[n];
                         if (nextRules && t in nextRules) {
-                            safaribot.sendHtmlMessage(src, "--- Rules for " + link("/themerares " + themeName(t), themeName(t)) + ": " + this.translateRules(nextRules[t], true), safchan);
+                            safaribot.sendHtmlMessage(src, "--- Rules for " + (t === "none" ? themeName(t) : link("/themerares " + themeName(t), themeName(t)))+ ": " + this.translateRules(nextRules[t], true), safchan);
                         }
                     }
                 }
@@ -57848,7 +57848,7 @@ function Safari() {
                 } else {
                     nextRules[t] = safari.pickRules(t);
                 }
-                rulesDesc.push("Rules for " + themeName(t) + " --- " + safari.translateRules(nextRules[t], true));
+                rulesDesc.push("Rules for " + (t === "none" ? themeName(t) : link("/themerares " + t, themeName(t))) + " --- " + safari.translateRules(nextRules[t], true));
             }
             contestVotingCount--;
             contestVotes = null;
