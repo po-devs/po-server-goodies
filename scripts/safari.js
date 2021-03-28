@@ -2111,6 +2111,7 @@ function Safari() {
     /* Events Variables */
     var currentEvent;
     var currentGame;
+    var stopEventJoins = false;
 
     /* Bait Variables */
     var lastBaiters = [];
@@ -16077,7 +16078,7 @@ function Safari() {
                         extra2 = poke(sys.rand(1, highestDexNum));
                     }
                     
-                    ev = new FactionWar(src, reward[0], extra1, extra2, evType == "invertedwar", reward[1]);
+                    ev = new FactionWar(src, reward[0], extra1, extra2, evType == "invertedwar", reward[1], true);
                 break;
                 case "volleyball":
                     var extra1 = info.extra1 ? info.extra1 : poke(sys.rand(1, highestDexNum));
@@ -16101,22 +16102,22 @@ function Safari() {
                     currentGame = ev;
                 break;
                 case "race":
-                    ev = new PokeRace(src, "normal", reward);
+                    ev = new PokeRace(src, "normal", reward, true);
                 break;
                 case "betrace":
-                    ev = new PokeRace(src, "bet", reward);
+                    ev = new PokeRace(src, "bet", reward, true);
                 break;
                 case "bfactory":
                 case "lcbfactory":
-                    ev = new BFactory(src, reward[0], reward[1], reward[2], evType == "lcbfactory");
+                    ev = new BFactory(src, reward[0], reward[1], reward[2], evType == "lcbfactory", true);
                 break;
                 case "quiz":
                 case "hquiz":
-                    ev = new Quiz(src, reward[0], reward[1], reward[2], evType === "hquiz");
+                    ev = new Quiz(src, reward[0], reward[1], reward[2], evType === "hquiz", true);
                 break;
                 case "bingo":
                     var g = info.extra1 ? parseInt(info.extra1, 10) : 1;
-                    ev = new Bingo(src, reward[0], reward[1], reward[2], g);
+                    ev = new Bingo(src, reward[0], reward[1], reward[2], g, true);
                 break;
             }
             
@@ -16197,7 +16198,7 @@ function Safari() {
             if (info.target !== "confirm") {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "When using " + an(finishName("crystal")) + ", you will receive a bonus based on your Active Pokémon's primary type (use /bst to check the Pokémon's first type).", safchan);
-                safaribot.sendMessage(src, "The bonus will work for " + plural(itemData.crystal.duration, "minute") + ", but only while the Pokémon that used the Z-Crystal on is your active Pokémon. The effects occur when throwing a ball any ball except Master Ball.", safchan);
+                safaribot.sendMessage(src, "The bonus will work for " + plural(itemData.crystal.duration, "minute") + ", but only while the Pokémon that used the Z-Crystal on is your active Pokémon. The effects occur when throwing any ball except Master Ball.", safchan);
                 safaribot.sendHtmlMessage(src, "Your active Pokémon is " + toColor(poke(active), "red") + ", and it can activate " + zCrystalData[type].name + ". If you use a Z-Crystal, you will " + toColor(buffDesc +" for " + plural(itemData.crystal.duration, "minute"), "red") + ". To use the Z-Crystal, type " + link("/use Z-Crystal:confirm") + ". ", safchan);
                 safaribot.sendMessage(src, "Your lead Pokémon will also have increased damage output in Rotation Battle quests like Celebrity and League, although this will clear the Z-Crystal's effect.", safchan);
                 sys.sendMessage(src, "", safchan);
@@ -40517,8 +40518,9 @@ function Safari() {
                 return null;
         }
     }
-    function SafariEvent(src) {
+    function SafariEvent(src, form) {
         this.hostName = src ? sys.name(src) : "~Unknown~";
+        this.eventForm = form;
         this.eventName = "Safari Event";
         this.signups = [];
         this.forbiddenPlayers = [];
@@ -40550,6 +40552,12 @@ function Safari() {
             if (this.signups.length < this.minPlayers) {
                 safaribot.sendHtmlAll("The " + this.eventName + " event was cancelled due to the low number of participants!", safchan);
                 this.finished = true;
+                if (this.eventForm) {
+                    if (isPlaying(this.hostName)) {
+                        safaribot.sendMessage(sys.id(this.hostName), "Your " + finishName("form") + " was returned to you.", safchan);
+                    }
+                    giveStuff(getAvatar(sys.id(this.hostName)), "@form");
+                }
                 return;
             }
             this.setupEvent();
@@ -40738,8 +40746,8 @@ function Safari() {
         return signupsLower.contains(name.toLowerCase());
     };
 
-    function FactionWar(src, reward, team1, team2, inverted, reward2) {
-        SafariEvent.call(this, src);
+    function FactionWar(src, reward, team1, team2, inverted, reward2, form) {
+        SafariEvent.call(this, src, form);
         this.eventName = (inverted ? "Inverted " : "") + "Faction War";
         this.team1Name = team1;
         this.team2Name = team2;
@@ -41108,8 +41116,8 @@ function Safari() {
         }
     };
 
-    function BFactory(src, reward1, reward2, reward3, lc) {
-        SafariEvent.call(this, src);
+    function BFactory(src, reward1, reward2, reward3, lc, form) {
+        SafariEvent.call(this, src, form);
         this.eventName = (lc ? "LC " : "") + "Battle Factory";
         this.minPlayers = 4;
         this.lc = lc;
@@ -41605,8 +41613,8 @@ function Safari() {
         return signupsLower.contains(n) && (this.phase === "signup" || (this.survivors.contains(n) || this.fightingForThird.contains(n)));
     };
 
-    function Quiz(src, reward1, reward2, reward3, silent, official) {
-        SafariEvent.call(this, src);
+    function Quiz(src, reward1, reward2, reward3, silent, official, form) {
+        SafariEvent.call(this, src, form);
         this.eventName = (silent ? "Hidden " : "") + "Quiz";
         this.minPlayers = 2;
         this.turnLength = 5;
@@ -42156,8 +42164,8 @@ function Safari() {
         }
     };
 
-    function PokeRace(src, type, data) {
-        SafariEvent.call(this, src);
+    function PokeRace(src, type, data, form) {
+        SafariEvent.call(this, src, form);
         this.type = type;
         this.eventName = "Pokémon " + (type === "bet" ? "Bet " : "") + "Race";
 
@@ -42631,8 +42639,8 @@ function Safari() {
         delete this.bets[name];
     };
     
-    function Bingo(src, reward1, reward2, reward3, goal) {
-        SafariEvent.call(this, src);
+    function Bingo(src, reward1, reward2, reward3, goal, form) {
+        SafariEvent.call(this, src, form);
         this.eventName = "Bingo";
         this.minPlayers = 3;
         this.turnLength = 5;
@@ -52327,7 +52335,7 @@ function Safari() {
                 return true;
             }
             if (command === "signup") {
-                if (currentEvent) {
+                if (currentEvent && !stopEventJoins) {
                     currentEvent.join(src, commandData);
                 } else {
                     safaribot.sendMessage(src, "There's no event going on!", safchan);
