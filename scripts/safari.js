@@ -8761,7 +8761,7 @@ function Safari() {
             return false;
         }
         
-        var variation = theme.variations || {};
+        var variations = theme.variations || {};
         for (var ef in variations) {
             var variation = variations[ef];
             
