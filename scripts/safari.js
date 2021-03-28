@@ -1891,7 +1891,6 @@ function Safari() {
     var contestCooldown = (SESSION.global() && SESSION.global().safariContestCooldown ? SESSION.global().safariContestCooldown : contestCooldownLength);
     var contestantsCount = {};
     var contestantsWild = [];
-    var contestPermaVariations = ["distortion", "portal", "past"];
     var currentTheme;
     var currentThemeAlter;
     var currentThemeEffect;
@@ -2542,7 +2541,7 @@ function Safari() {
         return true;
     }
     function currentThemeName(obj) {
-        if (obj.hasOwnProperty("day" + currentDay + "name")) {
+        if (obj.hasOwnProperty("day" + currentDay + "name") && !obj.useDefaultName) {
             return obj["day" + currentDay + "name"];
         }
         return obj.name;
@@ -8160,8 +8159,8 @@ function Safari() {
         } else {
             currentThemeFlavor = null;
         }
-        if (currentTheme && contestThemes[currentTheme].realityTwister) {
-            currentThemeEffect = ["past", "portal", "distortion"].random();
+        if (currentTheme && contestThemes[currentTheme].themeEffect) {
+            currentThemeEffect = Object.keys(contestThemes[currentTheme].variations).random();
             if (currentThemeEffect == "portal") {
                 var ph = [];
                 for (var i = 0; i < themesListed.length; i++) {
@@ -8702,13 +8701,13 @@ function Safari() {
                 return false;
             }
         }
-        if (currentThemeEffect) {
-            for (var ef in contestPermaVariations) {
-                var variation = contestPermaVariations[ef];
-                
-                if (currentThemeEffect === variation && theme[variation] && theme[variation].contains(pokeId)) {
-                    return true;
-                }
+
+        var variations = theme.variations || {};
+        for (var ef in variations) {
+            var variation = variations[ef];
+
+            if (currentThemeEffect === variation && variation.contains(pokeId)) {
+                return true;
             }
         }
 
@@ -8761,10 +8760,12 @@ function Safari() {
         if (!theme) {
             return false;
         }
-        for (var ef in contestPermaVariations) {
-            var variation = contestPermaVariations[ef];
+        
+        var variation = theme.variations || {};
+        for (var ef in variations) {
+            var variation = variations[ef];
             
-            if (theme[variation] && theme[variation].contains(pokeId)) {
+            if (variation.contains(pokeId)) {
                 return true;
             }
         }
@@ -8821,13 +8822,12 @@ function Safari() {
                             }
                         }
                     }
-                    for (var i = 0; i < contestPermaVariations.length; i++) {
-                        var variation = contestPermaVariations[i];
-                        if (contestThemes[theme].hasOwnProperty(variation)) {
-                            hasPermanentVariation = true;
-                            if (contestThemes[theme][variation].contains(pokeId)) {
-                                themeList.push(contestThemes[theme].name + " [" + cap(variation) + "]");
-                            }
+                    var variations = contestThemes[theme].variations || {};
+                    for (var ef in variations) {
+                        var variation = variations[ef];
+                        hasPermanentVariation = true;
+                        if (variation.contains(pokeId)) {
+                            themeList.push(contestThemes[theme].name + " [" + cap(ef) + "]");
                         }
                     }
                     if (hasPermanentVariation && contestThemes[theme].include.contains(pokeId)) { // theme has variations but they're in the base include i.e. will be in every variation
@@ -8878,11 +8878,11 @@ function Safari() {
                 }  // e.g. {"Festival": ["Jirachi, Furfrou-Kabuki"...], "Moon Festival": ["Lunala"], "Fire Festival": [""]}
             }
         }
-        
-        for (var i = 0; i < contestPermaVariations.length; i++) {
-            var variation = contestPermaVariations[i];
-            var variationIncludes = contestThemes[theme][variation];
-            var key = contestThemes[theme].name + " [" + cap(variation) + "]";
+
+        var variations = contestThemes[theme].variations || {};
+        for (var ef in variations) {
+            var variationIncludes = variations[ef];
+            var key = contestThemes[theme].name + " [" + cap(ef) + "]";
             
             if (!variationIncludes) {
                 continue;
