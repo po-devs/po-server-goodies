@@ -9597,12 +9597,6 @@ function Safari() {
             this.takePhoto(src, "*", true, true);
         }
 
-        if (!wildBallThrows.hasOwnProperty(ball)) {
-            wildBallThrows[ball] = 0;
-        }
-        
-        wildBallThrows[ball]++;
-
         if (rng < finalChance || ballBonus == 255) {
             currentPokemonCount--;
             var amt = currentPokemonCount;
@@ -10084,6 +10078,11 @@ function Safari() {
                 }
             }
         } else {
+            if (!wildBallThrows.hasOwnProperty(ball)) {
+                wildBallThrows[ball] = 0;
+            }
+            
+            wildBallThrows[ball]++;
             cooldown = cooldown * (1 - this.getFortune(player, "soothe", 0));
             if (ball == "ultra" && this.hasCostumeSkill(player, "lowUltraCD")) {
                 cooldown *= 0.5;
