@@ -13955,7 +13955,7 @@ function Safari() {
         }
         if (chance(finalChance)) {
             if (!(deluxe)) {
-                var showTheme = player.mushroomDeadline > now() ? " from " + (ballUsed === "spy" ? "an unknown" : "the " + contestThemes[player.mushroomTheme].name) + " theme" : "";
+                var showTheme = player.mushroomDeadline > now() && ballUsed !== "spy" ? " from the " + contestThemes[player.mushroomTheme].name + " theme" : "";
                 safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon" + showTheme + "!", safchan);
             }
             if (golden) {
