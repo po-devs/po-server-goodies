@@ -16113,7 +16113,7 @@ function Safari() {
                 break;
                 case "quiz":
                 case "hquiz":
-                    ev = new Quiz(src, reward[0], reward[1], reward[2], evType === "hquiz", true);
+                    ev = new Quiz(src, reward[0], reward[1], reward[2], evType === "hquiz", false, true);
                 break;
                 case "bingo":
                     var g = info.extra1 ? parseInt(info.extra1, 10) : 1;
