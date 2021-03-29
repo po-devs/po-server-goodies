@@ -38085,19 +38085,19 @@ function Safari() {
                     player.records.pyramidHelperClears += 1;
                 }
             }
-            if (this.level > 1) {
+            if (this.level > 1 || (this.movingFloor && this.level === 1)) {
                 safari.detectiveClue(player.idnum, "pyramid1");
             }
-            if (this.level > 2) {
+            if (this.level > 2 || (this.movingFloor && this.level === 2)) {
                 safari.detectiveClue(player.idnum, "pyramid2");
             }
-            if (this.level > 3) {
+            if (this.level > 3 || (this.movingFloor && this.level === 3)) {
                 safari.detectiveClue(player.idnum, "pyramid3");
             }
-            if (this.level > 4) {
+            if (this.level > 4 || (this.movingFloor && this.level === 4)) {
                 safari.detectiveClue(player.idnum, "pyramid4");
             }
-            if (this.level > 5) {
+            if (this.level > 5 || (this.movingFloor && this.level === 5)) {
                 safari.detectiveClue(player.idnum, "pyramid5");
             }
             safari.missionProgress(player, "pyramid", this.level + "-" + this.room, 1, { points: this.points });
