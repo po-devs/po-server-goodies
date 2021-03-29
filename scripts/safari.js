@@ -874,7 +874,7 @@ function Safari() {
 
     /* Item Variables */
     var itemCap = 999;
-    var moneyCap = 49999999;
+    var moneyCap = 99999999;
     var editableItemProps = {
         fullName: "string", plural: "string", icon: "number", price: ["number", "array"], aliases: "array",
         ballBonus: "number", bonusRate: "number", maxRate: "number", maxBonus: "number", cooldown: "number", bstBonus: "number", minBstBonus: "number", shinyBonus: "number",
