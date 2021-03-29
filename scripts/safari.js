@@ -23398,6 +23398,9 @@ function Safari() {
                     if (this.npcItems.full && this.npcItems.full > 0) {
                         m.push(toColor("Full Restore: " + this.npcItems.full + " ", "purple"));
                     }
+                    if (this.npcItems.revive && this.npcItems.revive > 0) {
+                        m.push(toColor("Revive: " + this.npcItems.revive + " ", "purple"));
+                    }
                 }
                 if (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0) {
                     if (this.side2Field.reflect > 0) {
@@ -32978,7 +32981,9 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Idol: Looks like your skills are currently <b>" + (player.pokeskillsDisabled ? "disabled" : "enabled") + "</b>, use " + link("/quest idol:toggle:confirm") + " to change it.", safchan);
                 return;
             }
-
+            if (cantBecause(src, "finish this quest", ["battle"])) {
+                return;
+            }
             player.pokeskillsDisabled = !player.pokeskillsDisabled;
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Voilà! Your skills have been <b>" + (player.pokeskillsDisabled ? "disabled" : "enabled") + "</b> for future battles, come back if you'd like to change it again!", safchan);
             safari.saveGame(player);
