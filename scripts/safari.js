@@ -43262,7 +43262,7 @@ function Safari() {
             case "naturalcure": m = "Grass and Water-type moves cure the user's status."; break;
             case "poweruppunch": m = "Foe's Pokémon power up when using Physical Attacks."; break;
             case "chargebeam": m = "Foe's Pokémon power up when using Special Attacks."; break;
-            case "vicious": m = "Landing an attacking move provides raises a random stat two stages and lowers another by one."; break;
+            case "vicious": m = "Landing an attacking move raises a random stat two stages and lowers another by one."; break;
             case "moonblast": m = "Every three to six turns, both Pokémon on the field are struck with a Moonblast."; break;
             case "irontail": m = "Every three to six turns, both Pokémon on the field are struck with an Iron Tail."; break;
             case "waterfall": m = "Every three to six turns, both Pokémon on the field are struck with a Waterfall."; break;
