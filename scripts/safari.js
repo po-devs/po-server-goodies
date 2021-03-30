@@ -5041,7 +5041,7 @@ function Safari() {
             "types": ["Flying", "Water"],
             "name": "Cramorant",
             "stats": [70, 85, 55, 85, 95, 85],
-            "abilities": [ "Gulp Missle" ],
+            "abilities": [ "Gulp Missile" ],
             "tier": "SM PU",
             "height": 0.8,
             "weight": 18,
@@ -5051,7 +5051,7 @@ function Safari() {
             "types": ["Flying", "Water"],
             "name": "Cramorant-Gulping",
             "stats": [70, 85, 55, 85, 95, 85],
-            "abilities": [ "Gulp Missle" ],
+            "abilities": [ "Gulp Missile" ],
             "tier": "SM PU",
             "height": 0.8,
             "weight": 18
@@ -5060,7 +5060,7 @@ function Safari() {
             "types": ["Flying", "Water"],
             "name": "Cramorant-Gorging",
             "stats": [70, 85, 55, 85, 95, 85],
-            "abilities": [ "Gulp Missle" ],
+            "abilities": [ "Gulp Missile" ],
             "tier": "SM PU",
             "height": 0.8,
             "weight": 18
