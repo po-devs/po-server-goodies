@@ -11114,7 +11114,7 @@ function Safari() {
 
             player.party.push(id);
             player.helds.push(-1);
-            safaribot.sendMessage(src, "You added " + info.name + " to your party!", safchan);
+            safaribot.sendMessage(src, "You added " + poke(getInputPokemon(info.name).num, true) + " to your party!", safchan);
             if (player.tutorial.inTutorial && player.party.contains(sys.pokeNum("Pikachu"))) {
                 advanceTutorial(src, 4);
             }
@@ -11146,7 +11146,7 @@ function Safari() {
             }
             if (cantBecause(src, reason, restrictions)) {
                 pendingActiveChanges[player.id] = "remove:" + info.name;
-                safaribot.sendMessage(src, "Your " + info.name + " will be removed from your party at the next opportunity!", safchan);
+                safaribot.sendMessage(src, "Your " + poke(getInputPokemon(info.name).num, true) + " will be removed from your party at the next opportunity!", safchan);
                 return;
             }
 
@@ -11168,7 +11168,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
                 player.berries.petayaCombo = 0;
             }
-            safaribot.sendMessage(src, "You removed " + info.name + " from your party!", safchan);
+            safaribot.sendMessage(src, "You removed " + poke(getInputPokemon(info.name).num, true) + " from your party!", safchan);
             this.saveGame(player);
         } else if (action === "active") {
             var bypassed = false;
@@ -11184,7 +11184,7 @@ function Safari() {
                 }
                 if (!bypassed) {
                     pendingActiveChanges[player.id] = "active:"+info.input;
-                    safaribot.sendMessage(src, "Your active Pokémon will automatically be changed to " + info.name + " in the next opportunity!", safchan);
+                    safaribot.sendMessage(src, "Your active Pokémon will automatically be changed to " + poke(getInputPokemon(info.input).num, true) + " in the next opportunity!", safchan);
                     return;
                 }
             }
@@ -11480,9 +11480,10 @@ function Safari() {
         var showLinks = ownParty && sys.os(id) !== "android";
         for (var e in partyShown) {
             var member = getPokemonInfo(partyShown[e]);
-            var name = pokePlain(member[0], true) + (member[1] ? "*" : "");
+            var name = pokePlain(member[0]) + (member[1] ? "*" : "");
+            var displayName = pokePlain(member[0], true);
             out += "<td><table width='100%'><tr>";
-            out += "<td align='center' style='white-space: pre;'>#" + pokeInfo.readableNum(member[0]) + " " + name + "</td>";
+            out += "<td align='center' style='white-space: pre;'>#" + pokeInfo.readableNum(member[0]) + " " + displayName + "</td>";
             if (player.helds.length > e && player.helds[e] != -1) {
                 var item = heldCodes[player.helds[e]];
                 var see = "";
