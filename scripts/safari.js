@@ -32710,9 +32710,9 @@ function Safari() {
 				function textFromClue(gClue) {
 					if (detUp && bonusClues.length > 0) {
 						if (gClue.interact) {
-							return bonusCluesInteract.random().format(inds[gClue.ind], inds[gClue].otherind);
+							return bonusCluesInteract.random().format(inds[gClue.ind], inds[gClue.otherind]);
 						}
-						return bonusClues.random().format(inds[gClue.ind], inds[gClue].otherind);
+						return bonusClues.random().format(inds[gClue.ind], inds[gClue.otherind]);
 					} else {
 						return gClue.str;
 					}
