@@ -8879,8 +8879,11 @@ function Safari() {
         var ascendingSpecies = function(a, b) {
             return pokeInfo.species(a) - pokeInfo.species(b);
         };
+        var notExcluded = function(e) {
+            return !contestThemes[theme].exclude.contains(e);
+        };
         var ret = {},
-            include = contestThemes[theme].include.slice(0).sort(ascendingSpecies),
+            include = contestThemes[theme].include.slice(0).sort(ascendingSpecies).filter(notExcluded),
             hasPermanentVariation = false;
 
         for (var day = 1; day <= 7; day++) {
@@ -8891,7 +8894,7 @@ function Safari() {
             }
 
             hasPermanentVariation = true;
-            dayIncludes = dayIncludes.slice(0).sort(ascendingSpecies);
+            dayIncludes = dayIncludes.slice(0).sort(ascendingSpecies).filter(notExcluded);
             for (var pokeId in dayIncludes) {
                 if (!ret.hasOwnProperty(contestThemes[theme]["day" + day + "name"])) {
                     ret[contestThemes[theme]["day" + day + "name"]] = [];
@@ -8912,7 +8915,7 @@ function Safari() {
             }
             
             hasPermanentVariation = true;
-            variationIncludes = variationIncludes.slice(0).sort(ascendingSpecies);
+            variationIncludes = variationIncludes.slice(0).sort(ascendingSpecies).filter(notExcluded);
             for (var pokeId in variationIncludes) {
                 if (!ret.hasOwnProperty(key)) {
                     ret[key] = [];
@@ -8941,7 +8944,7 @@ function Safari() {
         }
 
         if (contestThemes[theme].alter) {
-            var alterIncludes = contestThemes[theme].alter.slice(0).sort(ascendingSpecies);
+            var alterIncludes = contestThemes[theme].alter.slice(0).sort(ascendingSpecies).filter(notExcluded);
             for (var pokeId in alterIncludes) {
                 if (!ret.hasOwnProperty(contestThemes[theme].alterName)) {
                     ret[contestThemes[theme].alterName] = [];
@@ -32739,7 +32742,7 @@ function Safari() {
                     safari.detectiveData[uid+""].solved = true;
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Congratulations! The combination was " + readable(guesses.map(function(x) {return poke(parseInt(x, 10))})) + "! Here is your prize!", safchan);
                     var today = getDay(now());
-                    var grandprize = false ? "@entry,3@prize,25@hdew" : "3@prize,25@hdew"; //set to true for future detective related raffles
+                    var grandprize = false ? "@entry,3@prize,25@hdew,5@mail" : "3@prize,25@hdew,5@mail"; //set to true for future detective related raffles
                     var g = giveStuff(player, toStuffObj(grandprize));
                     safaribot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "orangered"), safchan);
                     player.records.casesSolved += 1;
