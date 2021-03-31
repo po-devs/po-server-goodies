@@ -32712,7 +32712,7 @@ function Safari() {
 						if (gClue.interact) {
 							return bonusCluesInteract.random().format(inds[gClue.ind], inds[gClue].otherind);
 						}
-						return bonusClues.random().format(inds[gClue.ind], inds[gClue.otherind]);
+						return bonusClues.random().format(inds[gClue.ind], inds[gClue].otherind);
 					} else {
 						return gClue.str;
 					}
