@@ -3477,7 +3477,7 @@ function Safari() {
 
         return [id, shiny];
     }
-    function poke(num, bypass) {
+    function poke(num, multi) {
         var shiny = false, name;
         if (typeof num === "string") {
             num = parseInt(num, 10);
@@ -3492,16 +3492,16 @@ function Safari() {
         } else {
             name = sys.pokemon(num);
         }
-        if (permObj.get("usingLangPack") == true && !bypass) {
+        if (permObj.get("usingLangPack") == "true" && multi) {
             if (!langPack) {
                 langPack = sys.getFileContent("scriptdata/safari/" + permObj.get("langPackFile")).split("\n");
             }
-            name = poke(num, true).replace(poke(pokeInfo.species(num), true), langPack[pokeInfo.species(num) - 1].trim());
+            name = poke(num).replace(poke(pokeInfo.species(num)), langPack[pokeInfo.species(num) - 1].trim());
         }
 
         return name ? (shiny ? "Shiny " : "") + name : null;
     }
-    function pokePlain(num, bypass) {
+    function pokePlain(num, multi) {
         var name;
         if (typeof num === "string") {
             num = parseInt(num, 10);
@@ -3514,11 +3514,11 @@ function Safari() {
         } else {
             name = sys.pokemon(num);
         }
-        if (permObj.get("usingLangPack") == true && !bypass) {
+        if (permObj.get("usingLangPack") == "true" && multi) {
             if (!langPack) {
                 langPack = sys.getFileContent("scriptdata/safari/" + permObj.get("langPackFile")).split("\n");
             }
-            name = pokePlain(num, true).replace(pokePlain(pokeInfo.species(num), true), langPack[pokeInfo.species(num) - 1].trim());
+            name = pokePlain(num).replace(pokePlain(pokeInfo.species(num)), langPack[pokeInfo.species(num) - 1].trim());
         }
 
         return name ? name : "Missingno";
@@ -7916,7 +7916,7 @@ function Safari() {
             }
             currentDisplay = (disguise ? appearance : num) + (shiny ? "" : 0);
             var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
-            var currentId = poke(currentPokemonDisplay);
+            var currentId = poke(currentPokemonDisplay, true);
             var displayId = currentId.split("");
             displayId.splice(sys.rand(1, displayId.length - 1), 0, permObj.get("widthJoiner") || "");          
 
@@ -8000,16 +8000,16 @@ function Safari() {
             
             var is_are = amt > 1 ? "are" : "is"
             if (canHaveAbility(currentPokemon, abilitynum("Contrary"))) {
-                wildAbilityMessageList.push("The wild {0} {1} inverting type matchups with Contrary!".format(poke(currentDisplay), is_are));
+                wildAbilityMessageList.push("The wild {0} {1} inverting type matchups with Contrary!".format(poke(currentDisplay, true), is_are));
             }
             if (canHaveAbility(currentPokemon, abilitynum("Levitate"))) {
-                wildAbilityMessageList.push("The wild {0} {1} airborne due to Levitate!".format(poke(currentDisplay), is_are));
+                wildAbilityMessageList.push("The wild {0} {1} airborne due to Levitate!".format(poke(currentDisplay, true), is_are));
             }
             if (canHaveAbility(currentPokemon, abilitynum("Pressure"))) {
-                wildAbilityMessageList.push("The wild {0} {1} exerting {2} Pressure!".format(poke(currentDisplay), is_are, amt > 1 ? "their" : "its"));
+                wildAbilityMessageList.push("The wild {0} {1} exerting {2} Pressure!".format(poke(currentDisplay, true), is_are, amt > 1 ? "their" : "its"));
             }
             if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard"))) {
-                wildAbilityMessageList.push("The wild {0} {1} protected by Wonder Guard!".format(poke(currentDisplay), is_are));
+                wildAbilityMessageList.push("The wild {0} {1} protected by Wonder Guard!".format(poke(currentDisplay, true), is_are));
             }
 
             for (var e in onChannel) {
@@ -8026,13 +8026,13 @@ function Safari() {
                 var leader = this.getEffectiveLead(p);
                 var ignore = ignoresWildAbilities(p);
                 if (ignore) {
-                    abilityMessageList[onChannel[e]] = "Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(leader), abilityOff(ignore), poke(currentDisplay));
+                    abilityMessageList[onChannel[e]] = "Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(leader, true), abilityOff(ignore), poke(currentDisplay, true));
                 }
                 if (canHaveAbility(leader, abilitynum("Intimidate"))) {
-                    abilityMessageList[onChannel[e]] = "Your {0} weakens the wild {1} with Intimidate!".format(poke(leader), poke(currentDisplay));
+                    abilityMessageList[onChannel[e]] = "Your {0} weakens the wild {1} with Intimidate!".format(poke(leader, true), poke(currentDisplay, true));
                 }
                 if (canHaveAbility(leader, abilitynum("Scrappy")) && (hasType(leader, "Normal") || hasType(leader, "Fighting")) && hasType(currentDisplay, "Ghost")) {
-                    abilityMessageList[onChannel[e]] = "Your {0} can strike Ghost-types with Scrappy!".format(poke(leader));
+                    abilityMessageList[onChannel[e]] = "Your {0} can strike Ghost-types with Scrappy!".format(poke(leader, true));
                 }
             }
 
@@ -8218,7 +8218,7 @@ function Safari() {
                             isShiny = typeof mon == "string";
                             buffAmt = (1.25 + 0.05 * Math.min(validAlts.length, 10));
                             validAlts = removeDuplicates(validAlts, true).random();
-                            messOut[player.id] = [pokeInfo.icon(mon) + " -> " + pokeInfo.icon(parseInt(validAlts, 10)), "Time traveling to the past created a parallel timeline where your " + poke(mon) + " was actually a " + (isShiny ? "Shiny " : "") + poke(validAlts) + "! You have a " + buffAmt + "x catch rate during this effect!"];
+                            messOut[player.id] = [pokeInfo.icon(mon) + " -> " + pokeInfo.icon(parseInt(validAlts, 10)), "Time traveling to the past created a parallel timeline where your " + poke(mon, true) + " was actually a " + (isShiny ? "Shiny " : "") + poke(validAlts, true) + "! You have a " + buffAmt + "x catch rate during this effect!"];
                             player.altTimeline.lead = validAlts + (isShiny ? "" : 0);
                             player.altTimeline.buff = buffAmt;
                             player.altTimeline.cooldown = n + 60 * 5 * 1000;
@@ -9428,10 +9428,10 @@ function Safari() {
         if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard")) && !ignoresWildAbilities(player)) {
             if (typeBonus >= 2) {
                 if (ball === "spy") {
-                    safaribot.sendMessage(sys.id(player.id), "The wild {0}'s Wonder Guard shattered instantly!".format(poke(currentPokemon)), safchan);
+                    safaribot.sendMessage(sys.id(player.id), "The wild {0}'s Wonder Guard shattered instantly!".format(poke(currentPokemon, true)), safchan);
                 }
                 else {
-                    safaribot.sendAll("The wild {0}'s Wonder Guard shattered instantly!".format(poke(currentPokemon)), safchan);
+                    safaribot.sendAll("The wild {0}'s Wonder Guard shattered instantly!".format(poke(currentPokemon, true)), safchan);
                 }
                 wonderGuardBreak = true;
             }
@@ -9446,7 +9446,7 @@ function Safari() {
                 player.berries.pecha = true;
                 needsPechaCleared.push(player.id.toLowerCase());
                 player.helds[0] = -1;
-                safaribot.sendMessage(sys.id(player.id), "Your " + poke(leader) + " ate its Pecha Berry and weakened the nerf!", safchan);
+                safaribot.sendMessage(sys.id(player.id), "Your " + poke(leader, true) + " ate its Pecha Berry and weakened the nerf!", safchan);
             }
 
             finalChance = Math.min(RULES_NERF_CAP * (player.berries.pecha ? 1.5 : 1), finalChance);
@@ -9602,7 +9602,7 @@ function Safari() {
             }
         }
 
-        var pokeName = poke(currentPokemon);
+        var pokeName = poke(currentPokemon, true);
         var isShiny = typeof currentPokemon == "string";
         var wild = isShiny ? parseInt(currentPokemon, 10) : currentPokemon;
         var isLegend = isLegendary(wild);
@@ -9621,7 +9621,7 @@ function Safari() {
             if (amt < 1) {
                 sendAll("", true, true);
             }
-            var revealName = poke(currentDisplay) != poke(currentPokemon) ? "<b>" + pokeName + "</b> (who was disguised as "+ poke(currentDisplay) + ")" : "<b>" + pokeName + "</b>";
+            var revealName = poke(currentDisplay) != poke(currentPokemon) ? "<b>" + pokeName + "</b> (who was disguised as "+ poke(currentDisplay, true) + ")" : "<b>" + pokeName + "</b>";
             var msg = "";
             if (now() > player.cooldowns.unown) {
                 for (var u = 0; u < player.party.length; u++) {
@@ -9657,19 +9657,19 @@ function Safari() {
                     team = "Unemployed"
                 }
                 var title = player.spiritDuels.rankName;
-                safaribot.sendHtmlAll(team + " " + title + " " + name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their "  + ch + poke(catchingMon), safchan);
+                safaribot.sendHtmlAll(team + " " + title + " " + name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their "  + ch + poke(catchingMon, true), safchan);
                 wildSpirit = false;
             } else if ((ball === "mono") || (player.scaleDeadline >= now())) {
                 var stype = ball === "mono" && type2(catchingMon) !== "???" ? "pure " + (!player.monoSecondary ? type1(catchingMon) : type2(catchingMon)) + " " : "";
                 var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
-                safaribot.sendHtmlAll(name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their " + ch + stype + scolor + poke(catchingMon) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendHtmlAll(name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their " + ch + stype + scolor + poke(catchingMon, true) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             } else {
-                safaribot.sendHtmlAll(name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their " + ch + poke(catchingMon) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendHtmlAll(name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their " + ch + poke(catchingMon, true) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
             
             if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !ignoresWildAbilities(player) && !["cherish", "master"].contains(ball) && player.balls[ball] > 1 && chance(0.3)) {
-                safaribot.sendAll("The wild {0}'s Pressure caused {1} to use up an extra {2}...".format(poke(currentPokemon), ball === "spy" ? "the stealthy person" : name, finishName(ball)), safchan);
+                safaribot.sendAll("The wild {0}'s Pressure caused {1} to use up an extra {2}...".format(poke(currentPokemon, true), ball === "spy" ? "the stealthy person" : name, finishName(ball)), safchan);
                 player.balls[ball] -= 1;
             }
             if (baitCooldown <= 5) {
@@ -9697,7 +9697,7 @@ function Safari() {
                     var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
                     player.pokemon.push(evolved);
                     sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
-                    sendAll("The " + pokeName + " that " + name + " just caught instantly evolved into " + poke(evolved) + "!");
+                    sendAll("The " + pokeName + " that " + name + " just caught instantly evolved into " + poke(evolved, true) + "!");
                 } else {
                     player.pokemon.push(currentPokemon);
                 }
@@ -9706,10 +9706,15 @@ function Safari() {
             }
 
             var heldChanceBoost = false;
-            if (canHaveAbility(leader, abilitynum("Compound Eyes"))) {
-                safaribot.sendMessage(src, "Your {0}'s Compound Eyes helps you find held items more often!".format(poke(leader)), safchan);
-                heldChanceBoost = true;
+            var heldChanceAbilities = [14, 105]; // Compound Eyes, Super Luck
+            for (var i = 0; i < heldChanceAbilities.length; i++) {
+                if (canHaveAbility(leader, heldChanceAbilities[i])) {
+                    safaribot.sendMessage(src, "Your {0}'s {1} helps you find held items more often!".format(poke(leader, true), abilityOff(heldChanceAbilities[i])), safchan);
+                    heldChanceBoost = true;
+                    break;
+                }
             }
+
             if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"")) {
                 var wildItemHeldList = globalWildItems[currentPokemon+""];
                 var drop = [], gained = [], discarded = [], lost = [];
@@ -9776,9 +9781,9 @@ function Safari() {
                 }
                 if (drop.length > 0 && (gained.length > 0 || discarded.length > 0)) {
                     if (ball === "spy")
-                        safaribot.sendMessage(src, "The power of your {0} made {1} stealthily appear out of thin air!".format(poke(leader), readable(drop)), safchan);
+                        safaribot.sendMessage(src, "The power of your {0} made {1} stealthily appear out of thin air!".format(poke(leader, true), readable(drop)), safchan);
                     else
-                        sendAll("The power of {0}'s {1} made {2} appear out of thin air!".format(name, poke(leader), readable(drop)));
+                        sendAll("The power of {0}'s {1} made {2} appear out of thin air!".format(name, poke(leader, true), readable(drop)));
                 }
                 if (discarded.length > 0) {
                     if (ball === "spy")
@@ -9931,14 +9936,14 @@ function Safari() {
                 player.records.catchLuxury += 1;
             }
             if (ball == "uturn" && player.party.length > 1) {
-                safaribot.sendAll(name + "'s " + poke(leader) + " switched out after catching the " + pokeName + "!" , safchan);
+                safaribot.sendAll(name + "'s " + poke(leader, true) + " switched out after catching the " + pokeName + "!" , safchan);
                 var oldLead = leader;
                 player.party = player.party.slice(1).concat([leader]);
                 if (currentThemeEffect == "past") {
                     player.altTimeline.lead = 0;
                 }
                 leader = this.getEffectiveLead(player);
-                safaribot.sendMessage(src, "Your lead Pokémon is now {0}!".format(poke(leader)), safchan);
+                safaribot.sendMessage(src, "Your lead Pokémon is now {0}!".format(poke(leader, true)), safchan);
                 if (player.helds[0] == 9 && player.berries.petayaCombo > 0 && oldLead !== leader) {
                     safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
                     player.berries.petayaCombo = 0;
@@ -10025,13 +10030,13 @@ function Safari() {
                         var evolveTo = getPossibleEvo(active);
                         var evolvedId = activeShiny ? "" + evolveTo : evolveTo;
                         this.missionProgress(player, "evolve", active, 1, {});
-                        var activeName = poke(active);
-                        this.evolvePokemon(src, { num: activeNum, id: active, shiny: activeShiny, name: activeName, input: (activeShiny ? "*" : "") + pokePlain(activeNum), type: "poke" }, evolvedId, "evolved into", false, false);
-                        this.logLostCommand(sys.name(src), "evolve " + activeName, "evolved into " + poke(evolvedId));
+                        var activeName = poke(active, true);
+                        this.evolvePokemon(src, { num: activeNum, id: active, shiny: activeShiny, name: poke(active), input: (activeShiny ? "*" : "") + pokePlain(activeNum), type: "poke" }, evolvedId, "evolved into", false, false);
+                        this.logLostCommand(sys.name(src), "evolve " + activeName, "evolved into " + poke(evolvedId, true));
                         safaribot.sendMessage(src, "Your " + activeName + " ate its Petaya Berry and evolved!", safchan);
                     }
                     else {
-                        safaribot.sendMessage(src, "Your {0}'s Petaya Combo: {1}/{2}".format(poke(leader), player.berries.petayaCombo, candiesRequired), safchan);
+                        safaribot.sendMessage(src, "Your {0}'s Petaya Combo: {1}/{2}".format(poke(leader, true), player.berries.petayaCombo, candiesRequired), safchan);
                     }
                 }
             }
@@ -10114,7 +10119,7 @@ function Safari() {
                     player.balls[ball] += 1;
                 }
             }
-            pokeName = poke(currentDisplay);
+            pokeName = poke(currentDisplay, true);
             if (currentTheme && contestThemes[currentTheme].disguises && contestThemes[currentTheme].notDisguised && (!(contestThemes[currentTheme].notDisguised.contains(currentDisplay)))) {
                 pokeName = "Trick-or-treater";
             }
@@ -10154,6 +10159,16 @@ function Safari() {
 
             currentThrows -= 1;
             throwAttempts += 1;
+
+            if (canHaveAbility(currentPokemon, abilitynum("Run Away"))) {
+                currentThrows -= 1;
+            }
+            if (canHaveAbility(currentPokemon, abilitynum("Wimp Out"))) {
+                currentThrows = 0;
+            }
+            if (canHaveAbility(currentPokemon, abilitynum("Emergency Exit")) && chance(0.5)) {
+                currentThrows = 0;
+            }
             if (currentThrows <= 0 && !wildEvent && !resolvingThrows) {
                 flee = true;
             }
@@ -10195,7 +10210,7 @@ function Safari() {
         this.saveGame(player);
     };
     this.pokemonFlee = function() {
-        var pokeName = poke(currentPokemon);
+        var pokeName = poke(currentPokemon, true);
         var runmsgs = [
             "The wild {0} got spooked and fled!",
             "The wild {0} got hungry and went somewhere else to find food!",
@@ -10227,9 +10242,17 @@ function Safari() {
         ];
         if (isRare(currentPokemon)) {
             sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::fled" + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "::\n");
-            runmsgs = [ "The wild {0} was obliterated by a grumpy old safari coder!" ];
+            runmsgs = ["The wild {0} was obliterated by a grumpy old safari coder!"];
         }
-
+        if (canHaveAbility(currentPokemon, abilitynum("Run Away"))) {
+            runmsgs = ["The wild {0} escaped using Run Away!"];
+        }
+        if (canHaveAbility(currentPokemon, abilitynum("Wimp Out"))) {
+            runmsgs = ["The wild {0} fled instantly due to Wimp Out!"];
+        }
+        if (canHaveAbility(currentPokemon, abilitynum("Emergency Exit"))) {
+            runmsgs = ["The wild {0} made a tactical retreat using Emergency Exit!"];
+        }
         sys.sendAll("", safchan);
         safaribot.sendAll(runmsgs.random().format(pokeName), safchan);
         sys.sendAll("", safchan);
@@ -10498,7 +10521,7 @@ function Safari() {
         safaribot.sendMessage(src, "You threw a Pokéblock! You now have " + plural(player.balls.pokeblock, "Pokéblock") + "!", safchan);
         this.saveGame(player);
 
-        safaribot.sendHtmlAll(toColor(sys.name(src) + " is feeding the " + poke(currentDisplay) + " a Pokéblock!", "#438ed9"), safchan);
+        safaribot.sendHtmlAll(toColor(sys.name(src) + " is feeding the " + poke(currentDisplay, true) + " a Pokéblock!", "#438ed9"), safchan);
         currentThrows = getMaxThrows(currentPokemon, currentPokemonCount, (typeof currentPokemon == "string" ? true : false), throwAttempts);
     };
 
@@ -10600,7 +10623,7 @@ function Safari() {
         if (target === 0 || wildEvent) {
             target = currentPokemon;
         }
-        var pokeName = poke(target);
+        var pokeName = poke(target, true);
         this.changeWildMood(safari.getEffectiveLead(player));
         
         var period = new Date().getUTCHours();
@@ -10916,7 +10939,7 @@ function Safari() {
         }
         
         if (player.helds[slot] == -1) {
-            safaribot.sendMessage(src, "Your " + poke(player.party[slot]) + " at position " + (slot+1) + " is not holding an item!", safchan);
+            safaribot.sendMessage(src, "Your " + poke(player.party[slot], true) + " at position " + (slot+1) + " is not holding an item!", safchan);
             return;
         }
         
@@ -10936,7 +10959,7 @@ function Safari() {
         var getItem = heldCodes[item+""];
         if (taking) {
             player.balls[getItem] += 1;
-            safaribot.sendHtmlMessage(src, "Took back the " + itemAlias(getItem, false, true) + " from " + poke(player.party[slot]) + " at position " + (slot+1) + "!", safchan);
+            safaribot.sendHtmlMessage(src, "Took back the " + itemAlias(getItem, false, true) + " from " + poke(player.party[slot], true) + " at position " + (slot+1) + "!", safchan);
         } else {
             if (player.balls[getItem] <= 0) {
                 safaribot.sendHtmlMessage(src, "You don't have any " + itemAlias(getItem, false, true) + " to give!", safchan);
@@ -10961,7 +10984,7 @@ function Safari() {
             }
             player.helds[slot] = item;
             player.balls[getItem] -= 1;
-            safaribot.sendHtmlMessage(src, "Gave " + poke(player.party[slot]) + " the " + itemAlias(getItem, false, true) + "!", safchan);
+            safaribot.sendHtmlMessage(src, "Gave " + poke(player.party[slot], true) + " the " + itemAlias(getItem, false, true) + "!", safchan);
         }
         safari.saveGame(player);
     };
@@ -10989,7 +11012,7 @@ function Safari() {
                 });
                 
                 if (activeSkills.length > 0) {
-                    safaribot.sendHtmlMessage(src, "<b>{0}'s Active Skills:</b> {1}".format(poke(player.party[i]), readable(activeSkills)), safchan);
+                    safaribot.sendHtmlMessage(src, "<b>{0}'s Active Skills:</b> {1}".format(poke(player.party[i], true), readable(activeSkills)), safchan);
                 }
             }
             if (player.fortune.deadline > n || player.fortune.limit > 0) {
@@ -11003,11 +11026,11 @@ function Safari() {
             }
             if (player.zcrystalDeadline >= n && player.zcrystalUser) {
                 var type = getCrystalEffect(player.zcrystalUser);
-                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("crystal") + "'s Effect:</b> You will " + zCrystalData[type].description.format(zCrystalData[type].chance * 100) + " for the next " + timeLeftString(player.zcrystalDeadline) + " (only if " + poke(player.zcrystalUser) + " is your active Pokémon)!", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("crystal") + "'s Effect:</b> You will " + zCrystalData[type].description.format(zCrystalData[type].chance * 100) + " for the next " + timeLeftString(player.zcrystalDeadline) + " (only if " + poke(player.zcrystalUser, true) + " is your active Pokémon)!", safchan);
             }
             if (player.zcrystalUser && !isNaN(player.zcrystalUser)) {
                 var type = getCrystalEffect(player.zcrystalUser);
-                safaribot.sendHtmlMessage(src, "<b>" + poke(player.zcrystalUser) + "</b> will deal " + (100 * (zCrystalData[type].npcBuff || defaultCrystalBuff)) + "% more damage in the next NPC rotation battle quest you enter.", safchan);
+                safaribot.sendHtmlMessage(src, "<b>" + poke(player.zcrystalUser, true) + "</b> will deal " + (100 * (zCrystalData[type].npcBuff || defaultCrystalBuff)) + "% more damage in the next NPC rotation battle quest you enter.", safchan);
             }
             sys.sendMessage(src, "", safchan);
             return;
@@ -11178,7 +11201,7 @@ function Safari() {
             if (player.party.indexOf(id) === -1) {
                 if (player.party.length >= 6) {
                     var removedId = player.party.splice(5, 1)[0];
-                    safaribot.sendMessage(src, poke(removedId) + " was removed from your party!", safchan);
+                    safaribot.sendMessage(src, poke(removedId, true) + " was removed from your party!", safchan);
                 }
             } else {
                 var removeInd = player.party.indexOf(id)
@@ -11188,7 +11211,7 @@ function Safari() {
             }
 
             player.party.splice(0, 0, id);
-            safaribot.sendMessage(src, "You are now using " + info.name + " as your active Pokémon!", safchan);
+            safaribot.sendMessage(src, "You are now using " + poke(getInputPokemon(info.name).num, true) + " as your active Pokémon!", safchan);
             while (player.party.length > player.helds.length) {
                 player.helds.push(-1);
             }
@@ -11253,13 +11276,13 @@ function Safari() {
             for (var p = toLoad.length - 1; p >= 0; p--) {
                 id = toLoad[p];
                 if (player.pokemon.indexOf(id) === -1) {
-                    safaribot.sendMessage(src, "You no longer have " + an(poke(id)) + "!", safchan);
+                    safaribot.sendMessage(src, "You no longer have " + an(poke(id, true)) + "!", safchan);
                     toLoad.splice(p, 1);
                     continue;
                 }
                 var c = countRepeated(toLoad, id);
                 if (c > countRepeated(player.pokemon, id)) {
-                    safaribot.sendMessage(src, "You no longer have " + c + " " + poke(id) + "!", safchan);
+                    safaribot.sendMessage(src, "You no longer have " + c + " " + poke(id, true) + "!", safchan);
                     toLoad.splice(p, 1);
                 }
             }
@@ -11326,13 +11349,13 @@ function Safari() {
         for (p = toLoad.length - 1; p >= 0; p--) {
             id = toLoad[p];
             if (player.pokemon.indexOf(id) === -1) {
-                safaribot.sendMessage(src, "You don't have " + an(poke(id)) + "!", safchan);
+                safaribot.sendMessage(src, "You don't have " + an(poke(id, true)) + "!", safchan);
                 toLoad.splice(p, 1);
                 continue;
             }
             c = countRepeated(toLoad, id);
             if (c > countRepeated(player.pokemon, id)) {
-                safaribot.sendMessage(src, "You don't have " + c + " " + poke(id) + "!", safchan);
+                safaribot.sendMessage(src, "You don't have " + c + " " + poke(id, true) + "!", safchan);
                 toLoad.splice(p, 1);
             }
         }
@@ -11397,7 +11420,7 @@ function Safari() {
             var partyText = [];
             for (var i = 0; i < partyShown.length; i++) {
                 var pNum = partyShown[i];
-                partyText.push("#" + pokeInfo.readableNum(pNum) + " " + pokePlain(pNum) + (typeof pNum === "string" ? "*" : "") + (player.helds[i] && player.helds[i] > -1 ? " (" + finishName(heldCodes[player.helds[i]]) + ")" : ""));
+                partyText.push("#" + pokeInfo.readableNum(pNum) + " " + pokePlain(pNum, true) + (typeof pNum === "string" ? "*" : "") + (player.helds[i] && player.helds[i] > -1 ? " (" + finishName(heldCodes[player.helds[i]]) + ")" : ""));
             }
             ret.push("<b>" + sys.name(id) + "'s Party: </b>" + partyText.join(", "));
             if (costumed)
@@ -11454,7 +11477,7 @@ function Safari() {
         var showLinks = ownParty && sys.os(id) !== "android";
         for (var e in partyShown) {
             var member = getPokemonInfo(partyShown[e]);
-            var name = pokePlain(member[0]) + (member[1] ? "*" : "");
+            var name = pokePlain(member[0], true) + (member[1] ? "*" : "");
             out += "<td><table width='100%'><tr>";
             out += "<td align='center' style='white-space: pre;'>#" + pokeInfo.readableNum(member[0]) + " " + name + "</td>";
             if (player.helds.length > e && player.helds[e] != -1) {
@@ -13962,11 +13985,11 @@ function Safari() {
         
         if (!deluxe) {
             if (canHaveAbility(player.party[0], abilitynum("Illuminate"))) {
-                safaribot.sendMessage(src, "Your {0} is emitting a beautiful glow due to its Illuminate that helps attract wild Pokémon!".format(poke(player.party[0])), safchan);
+                safaribot.sendMessage(src, "Your {0} is emitting a beautiful glow due to its Illuminate that helps attract wild Pokémon!".format(poke(player.party[0], true)), safchan);
                 finalChance *= 1.3
             }
             else if (canHaveAbility(player.party[0], abilitynum("Stench"))) {
-                safaribot.sendMessage(src, "Your {0} is emitting a repugnant odor due to its Stench that seems very unappealing to wild Pokémon...".format(poke(player.party[0])), safchan);
+                safaribot.sendMessage(src, "Your {0} is emitting a repugnant odor due to its Stench that seems very unappealing to wild Pokémon...".format(poke(player.party[0], true)), safchan);
                 finalChance *= 0.95
             }
         }
@@ -14059,7 +14082,7 @@ function Safari() {
         if (hax) {
             if (currentPokemon) {
                 safaribot.sendMessage(src, "You glared at the Wild Pokémon until they ran away!", safchan);
-                safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentDisplay) + " away!", safchan);
+                safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentDisplay, true) + " away!", safchan);
                 if (isRare(currentPokemon)) {
                     sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::was " + command + "d by " + sys.name(src) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "::\n");
                 }
@@ -14139,7 +14162,7 @@ function Safari() {
                     player.records.rocksMissed += 1;
                     target.records.rocksDodged += 1;
                 } else {
-                    safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! " + targetName + " evaded, but their " + poke(target.party[0]) + " got hit and " + verb + "!", safchan);
+                    safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! " + targetName + " evaded, but their " + poke(safari.getEffectiveLead(target), true) + " got hit and " + verb + "!", safchan);
                     //target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + Math.floor(itemData.rock.targetCD/2) : currentTime + Math.floor(itemData.rock.targetCD/2);
                     player.records.rocksHit += 1;
                     target.records.rocksHitBy += 1;
@@ -14883,7 +14906,7 @@ function Safari() {
         } else {
             sendAll("", false, true, sys.name(src).toLowerCase());
             sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true, false, sys.name(src).toLowerCase());
-            sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(evolution) + "!", false, false, sys.name(src).toLowerCase());
+            sendAll(sys.name(src) + "'s " + poke(getInputPokemon(info.name).num, true) + " " + verb + " " + poke(evolution, true) + "!", false, false, sys.name(src).toLowerCase());
             sendAll("", false, true, sys.name(src).toLowerCase());
         }
         this.saveGame(player);
@@ -15726,7 +15749,7 @@ function Safari() {
                     if (hasCommonEggGroup(id, parseInt(player.party[e], 10))) {
                         shinyChanceFinal *= 0.25;
                         player.helds[e] = -1;
-                        safaribot.sendMessage(src, poke(player.party[e]) + "'s Watmel Berry was consumed!", safchan);
+                        safaribot.sendMessage(src, poke(player.party[e], true) + "'s Watmel Berry was consumed!", safchan);
                     }
                 }
             }
@@ -15741,10 +15764,10 @@ function Safari() {
             var twins = false;
             if (this.getFortune(player, "eggtwins", 0)) {
                 twins = true;
-                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2}{2} Two {1} hatched from the {0}! Nice twins!".format(finishName("egg"), (shiny ? toColor(poke(id), "DarkOrchid") : poke(id)), pokeInfo.icon(id, shiny)), safchan);
+                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2}{2} Two {1} hatched from the {0}! Nice twins!".format(finishName("egg"), (shiny ? toColor(poke(id, true), "DarkOrchid") : poke(id, true)), pokeInfo.icon(id, shiny)), safchan);
                 player.pokemon.push(id);
             } else {
-                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(finishName("egg"), (shiny ? toColor(poke(id), "DarkOrchid") : poke(id)), pokeInfo.icon(id, shiny)), safchan);
+                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(finishName("egg"), (shiny ? toColor(poke(id, true), "DarkOrchid") : poke(id, true)), pokeInfo.icon(id, shiny)), safchan);
             }
 
             player.balls.egg -= 1;
@@ -15757,7 +15780,7 @@ function Safari() {
                 sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::hatched from Egg"+(twins ? " (Twins)" : "")+"::" + sys.name(src) + "\n");
                 player.records.rareHatched +=1;
                 sys.sendAll("", safchan);
-                safaribot.sendHtmlAll("<b>Wow!</b> {0} hatched <b>{1}</b> from {2}!".format(sys.name(src), pokeInfo.icon(id, shiny) + " " + poke(id) + (twins ? " TWINS" : ""), an(finishName("egg"))), safchan);
+                safaribot.sendHtmlAll("<b>Wow!</b> {0} hatched <b>{1}</b> from {2}!".format(sys.name(src), pokeInfo.icon(id, shiny) + " " + poke(id, true) + (twins ? " TWINS" : ""), an(finishName("egg"))), safchan);
                 sys.sendAll("", safchan);
             }
             this.saveGame(player);
@@ -15786,7 +15809,7 @@ function Safari() {
                     if (hasCommonEggGroup(id, parseInt(player.party[e], 10))) {
                         shinyChanceFinal *= 0.25;
                         player.helds[e] = -1;
-                        safaribot.sendMessage(src, poke(player.party[e]) + "'s Watmel Berry was consumed!", safchan);
+                        safaribot.sendMessage(src, poke(player.party[e], true) + "'s Watmel Berry was consumed!", safchan);
                     }
                 }
             }
@@ -15800,9 +15823,9 @@ function Safari() {
             }
             sys.sendMessage(src, "", safchan);
             if (isLegendary(id)) {
-                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} <b>OH MY GOD! {1} HATCHED FROM THE {3}!!</b>".format(finishName("bright"), an(poke(id)).toUpperCase(), pokeInfo.icon(id, shiny), finishName("bright").toUpperCase()), safchan);
+                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} <b>OH MY GOD! {1} HATCHED FROM THE {3}!!</b>".format(finishName("bright"), an(poke(id, true)).toUpperCase(), pokeInfo.icon(id, shiny), finishName("bright").toUpperCase()), safchan);
             } else {
-                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(finishName("bright"), (shiny ? toColor(poke(id), "DarkOrchid") : poke(id)), pokeInfo.icon(id, shiny)), safchan);
+                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(finishName("bright"), (shiny ? toColor(poke(id, true), "DarkOrchid") : poke(id, true)), pokeInfo.icon(id, shiny)), safchan);
             }
             player.pokemon.push(id);
             player.balls.bright -= 1;
@@ -15815,7 +15838,7 @@ function Safari() {
                 sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::hatched from Bright Egg::" + sys.name(src) + "\n");
                 player.records.rareHatched +=1;
                 sys.sendAll("", safchan);
-                safaribot.sendHtmlAll("<b>Wow!</b> {0} hatched <b>{1}</b> from {2}!".format(sys.name(src), pokeInfo.icon(id, shiny) + " " + poke(id), an(finishName("bright"))), safchan);
+                safaribot.sendHtmlAll("<b>Wow!</b> {0} hatched <b>{1}</b> from {2}!".format(sys.name(src), pokeInfo.icon(id, shiny) + " " + poke(id, true), an(finishName("bright"))), safchan);
                 sys.sendAll("", safchan);
             }
             this.saveGame(player);
@@ -16215,7 +16238,7 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "When using " + an(finishName("crystal")) + ", you will receive a bonus based on your Active Pokémon's primary type (use /bst to check the Pokémon's first type).", safchan);
                 safaribot.sendMessage(src, "The bonus will work for " + plural(itemData.crystal.duration, "minute") + ", but only while the Pokémon that used the Z-Crystal on is your active Pokémon. The effects occur when throwing any ball except Master Ball.", safchan);
-                safaribot.sendHtmlMessage(src, "Your active Pokémon is " + toColor(poke(active), "red") + ", and it can activate " + zCrystalData[type].name + ". If you use a Z-Crystal, you will " + toColor(buffDesc +" for " + plural(itemData.crystal.duration, "minute"), "red") + ". To use the Z-Crystal, type " + link("/use Z-Crystal:confirm") + ". ", safchan);
+                safaribot.sendHtmlMessage(src, "Your active Pokémon is " + toColor(poke(active, true), "red") + ", and it can activate " + zCrystalData[type].name + ". If you use a Z-Crystal, you will " + toColor(buffDesc +" for " + plural(itemData.crystal.duration, "minute"), "red") + ". To use the Z-Crystal, type " + link("/use Z-Crystal:confirm") + ". ", safchan);
                 safaribot.sendMessage(src, "Your lead Pokémon will also have increased damage output in Rotation Battle quests like Celebrity and League, although this will clear the Z-Crystal's effect.", safchan);
                 sys.sendMessage(src, "", safchan);
                 return;
@@ -16229,8 +16252,8 @@ function Safari() {
             
             this.saveGame(player);
             sys.sendAll("", safchan);
-            safaribot.sendAll(sys.name(src) + " used " + an(cName) + "! Their " + poke(active) + " surrounded itself with its Z-Power!", safchan);
-            safaribot.sendMessage(src, "You used " + an(finishName("crystal")) + " on your " + poke(active) + "! You will " + buffDesc + " for " + plural(itemData.crystal.duration, "minute") + " (only if " + poke(active) + " is your active Pokémon)!", safchan);
+            safaribot.sendAll(sys.name(src) + " used " + an(cName) + "! Their " + poke(active, true) + " surrounded itself with its Z-Power!", safchan);
+            safaribot.sendMessage(src, "You used " + an(finishName("crystal")) + " on your " + poke(active, true) + "! You will " + buffDesc + " for " + plural(itemData.crystal.duration, "minute") + " (only if " + poke(active, true) + " is your active Pokémon)!", safchan);
             sys.sendAll("", safchan);
             return;
         }
@@ -16469,12 +16492,12 @@ function Safari() {
         }
         else {
             t = player.monoSecondary ? (type2(active) !== "???" ? type2(active) : t) : t;
-            var toSend = "Your {0} is configured to use your Pokémon's {1} type{2}! Currently using <b>{3}</b>'s {4}, you can swap settings by using {5}!".format(finishName("mono"), toColor((player.monoSecondary ? "secondary" : "main"), "blue"), (player.monoSecondary ? " (only if the Pokémon has two types)" : ""), poke(active), typeIcon(t), (player.monoSecondary ? link("/mono 1") : link("/mono 2")));
+            var toSend = "Your {0} is configured to use your Pokémon's {1} type{2}! Currently using <b>{3}</b>'s {4}, you can swap settings by using {5}!".format(finishName("mono"), toColor((player.monoSecondary ? "secondary" : "main"), "blue"), (player.monoSecondary ? " (only if the Pokémon has two types)" : ""), poke(active, true), typeIcon(t), (player.monoSecondary ? link("/mono 1") : link("/mono 2")));
             safaribot.sendHtmlMessage(src, toSend, safchan);
             return;
         }
         
-        safaribot.sendHtmlMessage(src, "Your " + finishName("mono") + " will now use your Pokémon's " + toColor((player.monoSecondary ? "secondary" : "main"), "blue") + " type" + (player.monoSecondary ? " (only if the Pokémon has two types)" : "") + "! Currently using <b>" + poke(active) + "</b>'s " + typeIcon(t) + "!", safchan);
+        safaribot.sendHtmlMessage(src, "Your " + finishName("mono") + " will now use your Pokémon's " + toColor((player.monoSecondary ? "secondary" : "main"), "blue") + " type" + (player.monoSecondary ? " (only if the Pokémon has two types)" : "") + "! Currently using <b>" + poke(active, true) + "</b>'s " + typeIcon(t) + "!", safchan);
         this.saveGame(player);
     };
     this.randomFortune = function() {
@@ -31165,7 +31188,7 @@ function Safari() {
             if (!(hit)) {
                 player.helds[i] = -1;
                 pinapActive.push(player.party[i]);
-                safaribot.sendHtmlMessage(src, "Your " + poke(player.party[i]) + " consumed its Pinap Berry!", safchan);
+                safaribot.sendHtmlMessage(src, "Your " + poke(player.party[i], true) + " consumed its Pinap Berry!", safchan);
             }
         }
         var npc = {
@@ -57584,7 +57607,7 @@ function Safari() {
             this.showNextContest(src);
             sys.sendMessage(src, "*** ******************************************** ***", safchan);
             if (currentPokemon && (!(currentTheme && contestThemes[currentTheme].disguises))) {
-                sys.sendHtmlMessage(src, "There's a wild " + poke(currentDisplay) + "! Type " + link("/catch") + " to catch it!", safchan);
+                sys.sendHtmlMessage(src, "There's a wild " + poke(currentDisplay, true) + "! Type " + link("/catch") + " to catch it!", safchan);
             }
             sys.sendHtmlMessage(src, link("/dashboard", "«Dashboard»"), safchan);
             
@@ -57782,19 +57805,33 @@ function Safari() {
                         if (p && p.truesalt >= n && chance(p.srate)) {
                             throwChances[i] = 0.1;
                         } else {
-                            aType = type1(p.party[0]);
-                            crystalEffect = !["master", "takephoto"].contains(preparationThrows[i]) && p.zcrystalDeadline >= now() && p.zcrystalUser === p.party[0] && chance(zCrystalData[aType].chance) ? zCrystalData[aType] : { effect: "none" };
+                            var lead = safari.getEffectiveLead(p);
+                            aType = type1(lead);
+                            crystalEffect = !["master", "takephoto"].contains(preparationThrows[i]) && p.zcrystalDeadline >= now() && p.zcrystalUser === lead && chance(zCrystalData[aType].chance) ? zCrystalData[aType] : { effect: "none" };
                             
                             throwChances[i] = size * (["quick", "lightning", "spy"].contains(preparationThrows[i]) ? itemData[preparationThrows[i]].bonusRate : 1) * (crystalEffect.effect === "priority" ? sys.rand(crystalEffect.rate[0], crystalEffect.rate[1]) : 1);
                             if (preparationThrows[i] == "takephoto" && this.hasCostumeSkill(p, "fasterPhotos")) {
                                 throwChances[i] *= 3;
                             }
-                            if (preparationFirst !== p.id && canHaveAbility(p.party[0], abilitynum("Speed Boost")) && preparationThrows[i] !== "takephoto") {
-                                if (isPlaying(p.id)) {
-                                    safaribot.sendMessage(sys.id(p.id), "Your {0}'s Speed Boost allowed you to throw slightly faster!".format(poke(p.party[0])), safchan);
-                                }
+                            if (preparationFirst !== p.id) {
+                                if (preparationThrows[i] !== "takephoto") {
+                                    if (canHaveAbility(lead, abilitynum("Speed Boost"))) {
+                                        if (isPlaying(p.id)) {
+                                            safaribot.sendMessage(sys.id(p.id), "Your {0}'s Speed Boost gives you a better chance of throwing before others!".format(poke(lead, true)), safchan);
+                                        }
 
-                                throwChances[i] += size;
+                                        throwChances[i] += size;
+                                    }
+                                }
+                                else {
+                                    if (canHaveAbility(lead, abilitynum("Prankster"))) {
+                                        if (isPlaying(p.id)) {
+                                            safaribot.sendMessage(sys.id(p.id), "Your {0}'s Prankster gives you a better chance of snapping photos before others!".format(poke(lead, true)), safchan);
+                                        }
+
+                                        throwChances[i] *= 3;
+                                    }
+                                }
                             }
                         }
                     }
@@ -57972,8 +58009,8 @@ function Safari() {
                                         maxCaught = contestCatchers[e].length;
                                     }
                                     winners.push(e);
-                                    pokeWinners.push(poke(player.party[0]));
-                                    fullWinners.push(e.toCorrectCase() + " (using " + poke(player.party[0]) + ")");
+                                    pokeWinners.push(poke(safari.getEffectiveLead(player), true));
+                                    fullWinners.push(e.toCorrectCase() + " (using " + poke(safari.getEffectiveLead(player), true) + ")");
                                 }
                             }
                             safari.missionProgress(player, "contest", "caught", 1, { caught: contestCatchers[e].length });
@@ -58006,12 +58043,8 @@ function Safari() {
                                         maxBST = bst;
                                     }
                                     tieBreaker.push(name);
-                                    if ((currentThemeEffect == "past") && (player.altTimeline.lead !== 0)) {
-                                        pokeWinners.push(poke(player.altTimeline.lead));
-                                    } else {
-                                        pokeWinners.push(poke(player.party[0]));
-                                    }
-                                    fullWinners.push(name.toCorrectCase() + " (using " + poke(player.party[0]) + ")");
+                                    pokeWinners.push(poke(safari.getEffectiveLead(player), true));
+                                    fullWinners.push(name.toCorrectCase() + " (using " + poke(safari.getEffectiveLead(player), true) + ")");
                                 }
                             }
                         }
