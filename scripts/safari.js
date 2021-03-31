@@ -53121,13 +53121,6 @@ function Safari() {
 						time = new Date(now() - Math.round((Math.random() + 0.2) * 18 * 60 * 60) * 1000).toUTCString();
 					}
 				}
-                if (currentThemeEffect == "past" && (chance(0.95))) {
-                    if (chance(0.45)) {
-                        time = new Date(now() - 400 * 365 * 24 * 60 * 60 * 1000).toUTCString();
-                    } else {
-                        time = new Date(now() - Math.round((Math.random() + 0.2) * 18 * 60 * 60) * 1000).toUTCString();
-                    }
-                }
                 safaribot.sendMessage(src, "Current Time: " + time + " (" + period + ")", safchan);
                 safari.showNextContest(src);
                 safaribot.sendHtmlMessage(src, "Pokémon-of-the-Day: " + link("/active " + pokePlain(dailyBoost.pokemon), pokePlain(dailyBoost.pokemon)) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active, and wild " + pokePlain(dailyBoost.pokemon) + " have double the chance to be Shiny).", safchan);
