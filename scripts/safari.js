@@ -8894,7 +8894,7 @@ function Safari() {
             }
 
             hasPermanentVariation = true;
-            dayIncludes = dayIncludes.slice(0).sort(ascendingSpecies).filter(notExcluded);
+            dayIncludes = dayIncludes.slice(0).sort(ascendingSpecies);
             for (var pokeId in dayIncludes) {
                 if (!ret.hasOwnProperty(contestThemes[theme]["day" + day + "name"])) {
                     ret[contestThemes[theme]["day" + day + "name"]] = [];
@@ -8915,7 +8915,7 @@ function Safari() {
             }
             
             hasPermanentVariation = true;
-            variationIncludes = variationIncludes.slice(0).sort(ascendingSpecies).filter(notExcluded);
+            variationIncludes = variationIncludes.slice(0).sort(ascendingSpecies);
             for (var pokeId in variationIncludes) {
                 if (!ret.hasOwnProperty(key)) {
                     ret[key] = [];
@@ -8944,7 +8944,7 @@ function Safari() {
         }
 
         if (contestThemes[theme].alter) {
-            var alterIncludes = contestThemes[theme].alter.slice(0).sort(ascendingSpecies).filter(notExcluded);
+            var alterIncludes = contestThemes[theme].alter.slice(0).sort(ascendingSpecies);
             for (var pokeId in alterIncludes) {
                 if (!ret.hasOwnProperty(contestThemes[theme].alterName)) {
                     ret[contestThemes[theme].alterName] = [];
