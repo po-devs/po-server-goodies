@@ -18358,7 +18358,6 @@ function Safari() {
         ls.splice(index - 1, 1);
         ls.unshift(m);
         safaribot.sendHtmlMessage(src, "You featured your medal: " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + "! It will now appear on your trainer screen!", safchan);
-        this.viewMedals(src);
         this.saveGame(player);
         return true;
     };
