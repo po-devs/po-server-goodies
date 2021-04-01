@@ -10164,13 +10164,13 @@ function Safari() {
             currentThrows -= 1;
             throwAttempts += 1;
 
-            if (canHaveAbility(currentPokemon, abilitynum("Run Away"))) {
+            if (canHaveAbility(currentPokemon, abilitynum("Run Away")) && !ignoresWildAbilities(player)) {
                 currentThrows -= 1;
             }
-            if (canHaveAbility(currentPokemon, abilitynum("Wimp Out"))) {
+            if (canHaveAbility(currentPokemon, abilitynum("Wimp Out")) && !ignoresWildAbilities(player)) {
                 currentThrows = 0;
             }
-            if (canHaveAbility(currentPokemon, abilitynum("Emergency Exit")) && chance(0.5)) {
+            if (canHaveAbility(currentPokemon, abilitynum("Emergency Exit")) && !ignoresWildAbilities(player) && chance(0.5)) {
                 currentThrows = 0;
             }
             if (currentThrows <= 0 && !wildEvent && !resolvingThrows) {
