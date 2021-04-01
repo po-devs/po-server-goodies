@@ -7181,8 +7181,9 @@ function Safari() {
                 sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±Throw:</b></font> «" + link("/" + ccatch + " " + itemData.master.name, cap(itemData.master.name)) + "»", safchan);
             }
         }
+        var dashboard = player.story.inStory ? "" : "«" + link("/dashboard", "Dashboard") + "» ";
         if (hasBalls) {
-            safaribot.sendHtmlMessage(src, "Throw: " + ret +  "[" + link("/" + ccatch + " cancel", "Cancel") + "] " + (player.balls.lens > 0 ? ph : "") + (player.balls.pokeblock > 0 ? pkblk : ""), safchan);
+            safaribot.sendHtmlMessage(src, "Throw: " + ret +  "[" + link("/" + ccatch + " cancel", "Cancel") + "] " + (player.balls.lens > 0 ? ph : "") + (player.balls.pokeblock > 0 ? pkblk : "") + dashboard, safchan);
         } else if (player.balls.lens > 0) {
             safaribot.sendHtmlMessage(src, "Throw: " + ph +  "[" + link("/" + ccatch + " cancel", "Cancel") + "] ", safchan);
         }
