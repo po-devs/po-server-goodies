@@ -11481,7 +11481,7 @@ function Safari() {
         for (var e in partyShown) {
             var member = getPokemonInfo(partyShown[e]);
             var name = pokePlain(member[0]) + (member[1] ? "*" : "");
-            var displayName = pokePlain(member[0], true);
+            var displayName = pokePlain(member[0], true) + (member[1] ? "*" : "");
             out += "<td><table width='100%'><tr>";
             out += "<td align='center' style='white-space: pre;'>#" + pokeInfo.readableNum(member[0]) + " " + displayName + "</td>";
             if (player.helds.length > e && player.helds[e] != -1) {
@@ -44098,7 +44098,7 @@ function Safari() {
         while (loop > 0) {
             loop--;
             row = ["j", "k", "l"].random();
-            column = (1 + Math.floor(3 * Math.random()));
+            column = (1 + Math.floor(12 * Math.random()));
             place = row + column;
             if (this.pokemonAtDayCarePos("grotto", place) === false && this.validDayCareLocation(parseInt(pokemon.num, 10), place, "grotto")) {
                 p = {
