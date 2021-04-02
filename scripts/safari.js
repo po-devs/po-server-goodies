@@ -23418,15 +23418,6 @@ function Safari() {
             if (this.tagBattle) {
                 this.sendToViewers(this.name4 + "'s Team: " + opponentInfo(this.team4), null, (this.npcBattle ? null : [this.name4.toLowerCase()]));
             }
-            if (!this.npcBattle) {
-                this.sendMessage(this.name2, "Your team (use /bat [Letter] to choose a move): ");
-                if (this.tagBattle) {
-                    if (!this.oneOnTwo) {
-                        this.sendMessage(this.name3, "Your team (use /bat [Letter] to choose a move): ");
-                    }
-                    this.sendMessage(this.name4, "Your team (use /bat [Letter] to choose a move): ");
-                }
-            }
             this.sendToViewers(this.name1 + "'s Team: " + opponentInfo(this.team1), null, [this.name1.toLowerCase()]);
             if (this.tagBattle && (!this.oneOnTwo)) {
                 this.sendToViewers(this.name3 + "'s Team: " + opponentInfo(this.team3), null, [this.name3.toLowerCase()]);
@@ -23491,12 +23482,15 @@ function Safari() {
 
             
             if (!(this.recharge1)) {
-                this.sendMessage(this.name1, "Your team (use /bat [Letter] to choose a move): ");
+                this.sendMessage(this.name1, "Your team " + (this.tagBattle ? "(use /bat [Letter]:[1 or 2] to choose a move and target)" : "(use /bat [Letter] to choose a move)") + ":");
                 prepareTeamForTurn(this.name1, this.idnum1, this.team1, this.p1MoveCodes, this.abilityOptions["1"]);
             } else {
                 this.player1Input = "---";
             }
             if (!(this.recharge2)) {
+                if (!this.npcBattle) {
+                    this.sendMessage(this.name2, "Your team " + (this.tagBattle ? "(use /bat [Letter]:[1 or 2] to choose a move and target)" : "(use /bat [Letter] to choose a move)") + ":");
+                }
                 prepareTeamForTurn(this.name2, this.idnum2, this.team2, this.p2MoveCodes, this.abilityOptions["2"], this.npcBattle);
             } else {
                 this.player2Input = "---";
@@ -23510,6 +23504,7 @@ function Safari() {
                         }
                     }
                     if (!(this.recharge3)) {
+                        this.sendMessage(this.name3, "Your team (use /bat [Letter]:[1 or 2] to choose a move and target):");
                         prepareTeamForTurn(this.name3, this.idnum3, this.team3, this.p3MoveCodes, this.abilityOptions["3"], this.npcBattle);
                     } else {
                         this.player3Input = "---";
@@ -23522,6 +23517,9 @@ function Safari() {
                     }
                 }
                 if (!(this.recharge4)) {
+                    if (!this.oneOnTwo) {
+                        this.sendMessage(this.name4, "Your team (use /bat [Letter]:[1 or 2] to choose a move and target):");
+                    }
                     prepareTeamForTurn(this.name4, this.idnum4, this.team4, this.p4MoveCodes, this.abilityOptions["4"], this.npcBattle);
                 } else {
                     this.player4Input = "---";
@@ -24998,14 +24996,15 @@ function Safari() {
             if (cData.length > 1) {
                 data = cData[0];
                 aim = parseInt(cData[1], 10);
+                if (!(aim === 1 || aim === 2)) {
+                    this.sendMessage(name, "Invalid target! Input a target with " + link("/bat " + data + ":1") + " or " + link("/bat " + data + ":2") + ".");
+                    return;
+                }
             }
-            else if (cData.length === 1) {
+            else {
                 data = cData[0];
                 aim = (chance(0.5) ? 1 : 2);
-            }
-            if (!(aim === 1 || aim === 2)) {
-                this.sendMessage(name, "Input a target with " + link("/bat " + data + ":1") + " or " + link("/bat " + data + ":2") + ".");
-                return;
+                this.sendMessage(name, "No target specified, target " + aim + " was randomly selected. Note: You can input a target with " + link("/bat " + data + ":1") + " or " + link("/bat " + data + ":2") + ".");
             }
         }
         if (!codeList.hasOwnProperty(data)) {
@@ -25051,7 +25050,6 @@ function Safari() {
             this.monChosen[which+""] = 3;
         }
         var move = codeList[data];
-        this.sendMessage(name, toColor("You picked " + poke(move.owner) + "'s move " + data.toUpperCase() + ": " + this.translateMove(move), "crimson"));
         if (this.tagBattle) {
             var tar = 1;
             if ((move.target == "ALL") || (move.target == "TEAM")) {
@@ -25097,6 +25095,7 @@ function Safari() {
                 this.target4 = tar;
             }
         }
+        this.sendMessage(name, toColor("You picked " + poke(move.owner) + "'s move " + data.toUpperCase() + ": " + this.translateMove(move), "crimson"));
         if (this.tagBattle && this.oneOnTwo) {
             if (this.player1Input !== null && (this.player3Input !== null || this.player3Fainted) && (this.npcBattle || this.player2Input !== null) && (this.npcBattle || this.player4Input !== null) && this.subturn < 5) {
                 this.sendToViewers(toColor("Turn is ending early since all players picked their moves!", "crimson"));
@@ -27457,13 +27456,19 @@ function Safari() {
                 move.power = Math.min(data.movepowers[move.type], move.power);
                 move.power = Math.round(move.power * moveBoost / 5) * 5;
                 move.category = chance(0.5) ? "physical" : "special";
-                if ((this.select && (this.select.categorySplit || this.select.specBan || this.select.physBan)) || (this.select2 && (this.select2.categorySplit || this.select2.specBan || this.select2.physBan))) {
+                if ((this.select && this.select.categorySplit) || (this.select2 && this.select2.categorySplit)) {
                     switch (move.type) {
                         case "Normal": case "Fighting": case "Flying": case "Rock": case "Ground": case "Bug": case "Poison": case "Ghost": case "Steel":
                             move.category = "physical"; break;
                         default:
                             move.category = "special"; break;
                     }
+                }
+                if (this.specBan && move.category === "special") {
+                    move.category = "physical";
+                }
+                if (this.physBan && move.category === "physical") {
+                    move.category = "special";
                 }
                 factor = (60 - move.power) / 100;
                 if (factor > -0.1 && factor < 0.1 && chance(0.5)) {
@@ -28605,7 +28610,7 @@ function Safari() {
                 out[type2(pokeInfo.species(num))] = 0;
             }
         }
-        if (this.select && this.select.physBan) {
+        if (this.select && this.select.physBan && this.select.categorySplit) {
             out.Normal = 0;
             out.Fighting = 0;
             out.Flying = 0;
@@ -28615,7 +28620,7 @@ function Safari() {
             out.Steel = 0;
             out.Ghost = 0;
             out.Poison = 0;
-        } else if (this.select && this.select.specBan) {
+        } else if (this.select && this.select.specBan && this.select.categorySplit) {
             out.Grass = 0;
             out.Water = 0;
             out.Fire = 0;
