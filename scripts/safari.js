@@ -11115,7 +11115,7 @@ function Safari() {
 
             player.party.push(id);
             player.helds.push(-1);
-            safaribot.sendMessage(src, "You added " + poke(getInputPokemon(info.name).num, true) + " to your party!", safchan);
+            safaribot.sendMessage(src, "You added " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " to your party!", safchan);
             if (player.tutorial.inTutorial && player.party.contains(sys.pokeNum("Pikachu"))) {
                 advanceTutorial(src, 4);
             }
@@ -11147,7 +11147,7 @@ function Safari() {
             }
             if (cantBecause(src, reason, restrictions)) {
                 pendingActiveChanges[player.id] = "remove:" + info.name;
-                safaribot.sendMessage(src, "Your " + poke(getInputPokemon(info.name).num, true) + " will be removed from your party at the next opportunity!", safchan);
+                safaribot.sendMessage(src, "Your " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " will be removed from your party at the next opportunity!", safchan);
                 return;
             }
 
@@ -11169,7 +11169,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
                 player.berries.petayaCombo = 0;
             }
-            safaribot.sendMessage(src, "You removed " + poke(getInputPokemon(info.name).num, true) + " from your party!", safchan);
+            safaribot.sendMessage(src, "You removed " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " from your party!", safchan);
             this.saveGame(player);
         } else if (action === "active") {
             var bypassed = false;
@@ -11185,7 +11185,7 @@ function Safari() {
                 }
                 if (!bypassed) {
                     pendingActiveChanges[player.id] = "active:"+info.input;
-                    safaribot.sendMessage(src, "Your active Pokémon will automatically be changed to " + poke(getInputPokemon(info.input).num, true) + " in the next opportunity!", safchan);
+                    safaribot.sendMessage(src, "Your active Pokémon will automatically be changed to " + poke(getInputPokemon(info.input).num + (info.shiny ? "" : 0), true) + " in the next opportunity!", safchan);
                     return;
                 }
             }
@@ -11215,7 +11215,7 @@ function Safari() {
             }
 
             player.party.splice(0, 0, id);
-            safaribot.sendMessage(src, "You are now using " + poke(getInputPokemon(info.name).num, true) + " as your active Pokémon!", safchan);
+            safaribot.sendMessage(src, "You are now using " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " as your active Pokémon!", safchan);
             while (player.party.length > player.helds.length) {
                 player.helds.push(-1);
             }
@@ -14911,7 +14911,7 @@ function Safari() {
         } else {
             sendAll("", false, true, sys.name(src).toLowerCase());
             sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true, false, sys.name(src).toLowerCase());
-            sendAll(sys.name(src) + "'s " + poke(getInputPokemon(info.name).num, true) + " " + verb + " " + poke(evolution, true) + "!", false, false, sys.name(src).toLowerCase());
+            sendAll(sys.name(src) + "'s " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " " + verb + " " + poke(evolution, true) + "!", false, false, sys.name(src).toLowerCase());
             sendAll("", false, true, sys.name(src).toLowerCase());
         }
         this.saveGame(player);
