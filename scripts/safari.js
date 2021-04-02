@@ -24995,16 +24995,11 @@ function Safari() {
             var cData = data.split(":");
             if (cData.length > 1) {
                 data = cData[0];
-                aim = parseInt(cData[1], 10);
-                if (!(aim === 1 || aim === 2)) {
-                    this.sendMessage(name, "Invalid target! Input a target with " + link("/bat " + data + ":1") + " or " + link("/bat " + data + ":2") + ".");
-                    return;
-                }
+                aim = parseInt(cData[1], 10);          
             }
-            else {
-                data = cData[0];
-                aim = (chance(0.5) ? 1 : 2);
-                this.sendMessage(name, "No target specified, target " + aim + " was randomly selected. Note: You can input a target with " + link("/bat " + data + ":1") + " or " + link("/bat " + data + ":2") + ".");
+            if (!(aim === 1 || aim === 2)) {
+                this.sendMessage(name, "Invalid target! Input a target with " + link("/bat " + data + ":1") + " or " + link("/bat " + data + ":2") + ".");
+                return;
             }
         }
         if (!codeList.hasOwnProperty(data)) {
