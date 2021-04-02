@@ -27464,10 +27464,10 @@ function Safari() {
                             move.category = "special"; break;
                     }
                 }
-                if (this.specBan && move.category === "special") {
+                if ((this.select.specBan || (this.select2 && this.select2.specBan)) && move.category === "special") {
                     move.category = "physical";
                 }
-                if (this.physBan && move.category === "physical") {
+                if ((this.select.physBan || (this.select2 && this.select2.physBan))  && move.category === "physical") {
                     move.category = "special";
                 }
                 factor = (60 - move.power) / 100;
