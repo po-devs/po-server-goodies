@@ -25001,7 +25001,7 @@ function Safari() {
         }
         
         if (this.tagBattle) {
-            if (![1, 2].contains(aim) && move.target !== "ALL" && move.target !== "TEAM") {
+            if (![1, 2].contains(aim) && codeList[data].target !== "ALL" && codeList[data].target !== "TEAM") {
                 this.sendMessage(name, "Invalid target! Input a target with " + link("/bat " + data + ":1") + " or " + link("/bat " + data + ":2") + ".");
                 return;
             }
