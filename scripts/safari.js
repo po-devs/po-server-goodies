@@ -23425,15 +23425,28 @@ function Safari() {
             
             if (this.select || this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0 || this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) {
                 var m = [];
-                if (this.select && this.npcItems) {
-                    if (this.npcItems.hyper && this.npcItems.hyper > 0) {
-                        m.push(toColor("Hyper Potion: " + this.npcItems.hyper + " ", "purple"));
+                if (this.select) {
+                    if (this.npcItems) {
+                        if (this.npcItems.hyper && this.npcItems.hyper > 0) {
+                            m.push(toColor(this.name2 + "'s Hyper Potions: " + this.npcItems.hyper + " ", "purple"));
+                        }
+                        if (this.npcItems.full && this.npcItems.full > 0) {
+                            m.push(toColor(this.name2 + "'s Full Restores: " + this.npcItems.full + " ", "purple"));
+                        }
+                        if (this.npcItems.revive && this.npcItems.revive > 0) {
+                            m.push(toColor(this.name2 + "'s Revives: " + this.npcItems.revive + " ", "purple"));
+                        }
                     }
-                    if (this.npcItems.full && this.npcItems.full > 0) {
-                        m.push(toColor("Full Restore: " + this.npcItems.full + " ", "purple"));
-                    }
-                    if (this.npcItems.revive && this.npcItems.revive > 0) {
-                        m.push(toColor("Revive: " + this.npcItems.revive + " ", "purple"));
+                    if (this.npcItems2) {
+                        if (this.npcItems2.hyper && this.npcItems2.hyper > 0) {
+                            m.push(toColor(this.name4 + "'s Hyper Potions: " + this.npcItems2.hyper + " ", "purple"));
+                        }
+                        if (this.npcItems2.full && this.npcItems2.full > 0) {
+                            m.push(toColor(this.name4 + "'s Full Restores: " + this.npcItems2.full + " ", "purple"));
+                        }
+                        if (this.npcItems2.revive && this.npcItems2.revive > 0) {
+                            m.push(toColor(this.name4 + "'s Revives: " + this.npcItems2.revive + " ", "purple"));
+                        }
                     }
                 }
                 if (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0) {
@@ -24976,16 +24989,16 @@ function Safari() {
                 obj = this.dynamaxes["2"];
             }
             if (obj.mon !== 0) {
-                this.sendMessage(name, "You cannot dynamax more than one Pokémon!");
+                this.sendMessage(name, "You cannot Dynamax more than one Pokémon!");
                 return;
             }
             if (obj.timer !== -1) {
-                this.sendMessage(name, "You cannot dynamax yet!");
+                this.sendMessage(name, "You cannot Dynamax yet!");
                 return;
             }
             obj.using = true;
             obj.timer = 3;
-            this.sendMessage(name, "You are activating your dynamax this turn!");
+            this.sendMessage(name, "You are activating your Dynamax this turn!");
         }
 
 
@@ -43371,13 +43384,13 @@ function Safari() {
             case "spectralThief": m = "'Not Very Effective' attacks transfer stat boosts."; break;
             case "leechseed": m = "Pokémon that learn Leech Seed recover HP."; break;
             case "drainpunch": m = "Pokémon that learn Drain Punch deal more damage when using drain attacks."; break;
-            case "revive": m = "Foe has a Revive at their disposal."; break;
-            case "fullrestore": m = "Foe has a Full Restore at their disposal."; break;
-            case "fullrestore2": m = "Foe has 2 Full Restores at their disposal."; break;
-            case "fullrestore3": m = "Foe has 3 Full Restores at their disposal."; break;
-            case "hyperpotion": m = "Foe has a Hyper Potion at their disposal."; break;
-            case "hyperpotion2": m = "Foe has 2 Hyper Potions at their disposal."; break;
-            case "hyperpotion3": m = "Foe has 3 Hyper Potions at their disposal."; break;
+            case "revive": m = "Each foe has a Revive at their disposal."; break;
+            case "fullrestore": m = "Each foe has a Full Restore at their disposal."; break;
+            case "fullrestore2": m = "Each foe has 2 Full Restores at their disposal."; break;
+            case "fullrestore3": m = "Each foe has 3 Full Restores at their disposal."; break;
+            case "hyperpotion": m = "Each foe has a Hyper Potion at their disposal."; break;
+            case "hyperpotion2": m = "Each foe has 2 Hyper Potions at their disposal."; break;
+            case "hyperpotion3": m = "Each foe has 3 Hyper Potions at their disposal."; break;
             case "boostType1": m = ""; break;
             case "boostType2": m = ""; break;
             default: m = ("Missing help text: " + condition + ". Please contact a Safari Admin");
