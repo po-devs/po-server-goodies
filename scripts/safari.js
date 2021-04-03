@@ -23573,7 +23573,6 @@ function Safari() {
             }
         }
         else if (this.subturn % 8 === 6) {
-            
             var checkWin = function() {
                 if (self.tagBattle) {
                     self.player1Fainted = true;
@@ -37806,7 +37805,7 @@ function Safari() {
         }
         if (this.ticks % 7 !== 0) {
             if (this.ticks % 3 === 0) {
-                if (!(this.movingRoom || this.turn < 1) || this.movingFloor) {
+                if (!(this.movingRoom || this.turn < 0) || this.movingFloor) {
                     return;
                 }
             } else {
@@ -37881,7 +37880,7 @@ function Safari() {
             }
             this.currentRoom.turnToAdvance = this.turn + roomDuration;
             this.recentRooms.unshift(type);
-            this.recentRooms = this.recentRooms.slice(0,Math.min( 3,this.recentRooms.length ));
+            this.recentRooms = this.recentRooms.slice(0, Math.min(3, this.recentRooms.length));
         }
         else {
             if (this.turn < this.currentRoom.turnToAdvance) {
