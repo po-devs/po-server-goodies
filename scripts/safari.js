@@ -24992,20 +24992,20 @@ function Safari() {
         var aim = 0;
         if (this.tagBattle) {
             var cData = data.split(":");
-            if (cData.length > 1) {
-                data = cData[0];
-                aim = parseInt(cData[1], 10);          
-            }
-            if (!(aim === 1 || aim === 2)) {
-                this.sendMessage(name, "Invalid target! Input a target with " + link("/bat " + data + ":1") + " or " + link("/bat " + data + ":2") + ".");
-                return;
-            }
+            data = cData[0];
+            aim = parseInt(cData[1], 10);          
         }
         if (!codeList.hasOwnProperty(data)) {
             this.sendMessage(name, "This is not a valid move!");
             return;
         }
         
+        if (this.tagBattle) {
+            if (![1, 2].contains(aim) && move.target !== "ALL" && move.target !== "TEAM") {
+                this.sendMessage(name, "Invalid target! Input a target with " + link("/bat " + data + ":1") + " or " + link("/bat " + data + ":2") + ".");
+                return;
+            }
+        }
         if (isP1) {
             this.player1Input = data;
             if (this.tagBattle && this.oneOnTwo) {
