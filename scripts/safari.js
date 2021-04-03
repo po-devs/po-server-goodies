@@ -12881,7 +12881,7 @@ function Safari() {
             }
             hitAny = false;
             data = p.notificationData;
-            if (data.towerWaiting && (!(safari.isBattling(p.id)))) {
+            if (data.towerWaiting) {
                 if (p.quests.tower.cooldown < currentTime) {
                     data.towerWaiting = false;
                     out = "You are able to fight the " + link("/quest tower", "Battle Tower") + " again!";
@@ -12896,7 +12896,7 @@ function Safari() {
                     hitAny = true;
                 }
             }
-            if (data.arenaWaiting && (!(safari.isBattling(p.id)))) {
+            if (data.arenaWaiting) {
                 if (p.quests.arena.cooldown < currentTime) {
                     data.arenaWaiting = false;
                     out = "Trainer " + link("/quest arena:" + data.lastArenaTrainer, capitalizeFirst(data.lastArenaTrainer)) + " is ready for a rematch in the " + link("/quest arena", "Arena") + "!";
@@ -12911,7 +12911,7 @@ function Safari() {
                     hitAny = true;
                 }
             }
-            if (data.leagueWaiting && (!(safari.isBattling(p.id)))) {
+            if (data.leagueWaiting) {
                 if (p.quests.league.cooldown < currentTime) {
                     data.leagueWaiting = false;
                     out = "You are able to fight the " + link("/quest league", "Pokémon League") + " again!";
