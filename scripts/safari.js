@@ -50464,13 +50464,15 @@ function Safari() {
         }
         permObj.add("pyrBonusMons", JSON.stringify(pyrBonusMons));
     };
-    this.checkNewWeek = function(forced) {
+    this.checkNewWeek = function(forced, lbOnly) {
         var currentTime = now();
         var today = getDay(currentTime) - 3;
         var week = Math.floor(today/7);
         currentDay = ((today - 1) % 7) + 1;
         if (week != permObj.get("currentWeek") || forced) {
-            this.renewLeague();
+            if (!lbOnly) {
+                this.renewLeague();
+            }
             permObj.add("currentWeek", week);
             
             var old = {}, e, lbInfo;
