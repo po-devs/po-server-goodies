@@ -29526,15 +29526,14 @@ function Safari() {
             return;
         }
 
-        var autoCancel;
+        var autoCancel, isSameUser;
         var targetName = info[0].toLowerCase();
         if (userName in tradeRequests) {
             if (tradeRequests[userName].target.toLowerCase() === targetName) {
-                safaribot.sendHtmlMessage(src, "You already have a pending trade with this person! To cancel it, type " + link("/trade cancel") + ".", safchan);
-                return;
-            } else {
-                autoCancel = true;
+                isSameUser = true;
             }
+
+            autoCancel = true;
         }
 
         if (!validPlayers("target", src, info[0].toLowerCase())) {
@@ -29646,7 +29645,12 @@ function Safari() {
         sys.sendMessage(targetId, "" , safchan);
 
         if (autoCancel) {
-            safaribot.sendHtmlMessage(src, "You cancelled your trade with " + tradeRequests[userName].target.toCorrectCase() + " to start a new trade with " + targetName.toCorrectCase() + ".", safchan);
+            if (isSameUser) {
+                safaribot.sendHtmlMessage(src, "You cancelled your previous request with " + tradeRequests[userName].target.toCorrectCase() + " to send a new trade request.", safchan);
+            }
+            else {
+                safaribot.sendHtmlMessage(src, "You cancelled your trade with " + tradeRequests[userName].target.toCorrectCase() + " to start a new trade with " + targetName.toCorrectCase() + ".", safchan);
+            }
             delete tradeRequests[userName];
         }
 
