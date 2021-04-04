@@ -50468,11 +50468,8 @@ function Safari() {
         var currentTime = now();
         var today = getDay(currentTime) - 3;
         var week = Math.floor(today/7);
-        if (forced) {
-            week = permObj.get("currentWeek") - 1;
-        }
         currentDay = ((today - 1) % 7) + 1;
-        if (week != permObj.get("currentWeek")) {
+        if (week != permObj.get("currentWeek") || forced) {
             this.renewLeague();
             permObj.add("currentWeek", week);
             
