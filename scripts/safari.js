@@ -25014,9 +25014,27 @@ function Safari() {
         }
         
         if (this.tagBattle) {
-            if (![1, 2].contains(aim) && codeList[data].target !== "ALL" && codeList[data].target !== "TEAM") {
-                this.sendMessage(name, "Invalid target! Input a target with " + link("/bat " + data + ":1") + " or " + link("/bat " + data + ":2") + ".");
-                return;
+            var onlyOneTarget = false;
+            if (
+                   codeList[data].target === "ALL"
+                || codeList[data].target === "TEAM"
+                || (isP1 && (this.player2Fainted || this.player4Fainted))
+                || (isP2 && this.oneOnTwo)
+                || (isP2 && (this.player1Fainted || this.player3Fainted))
+                || (isP3 && (this.player2Fainted || this.player4Fainted))
+                || (isP4 && this.oneOnTwo)
+                || (isP4 && (this.player1Fainted || this.player3Fainted))
+            ) {
+                onlyOneTarget = true;
+            }
+            if (![1, 2].contains(aim)) {
+                if (onlyOneTarget) {
+                    aim = 1;
+                }
+                else {
+                    this.sendMessage(name, "Invalid target! Input a target with " + link("/bat " + data + ":1") + " or " + link("/bat " + data + ":2") + ".");
+                    return;
+                }
             }
         }
         if (isP1) {
@@ -41804,7 +41822,7 @@ function Safari() {
         if (this.phase === "question") { //Prepare next question
             var list = [];
             this.validAnswers = [];
-            for (var e = 1; e < 808; e++) {
+            for (var e = 1; e < highestDexNum; e++) {
                 list.push(e);
             }
 
