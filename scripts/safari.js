@@ -34039,7 +34039,7 @@ function Safari() {
                         ["mega", 3],
                         ["ldew", 2],
                         ["ldew", 5],
-                        ["ash", 9]
+                        ["ash", 5]
                     ][args.index]; break;
                     case 3: reward = [
                         ["pearl", 10],
@@ -34054,7 +34054,7 @@ function Safari() {
                         ["bright", 2],
                         ["ldew", 4],
                         ["ldew", 12],
-                        ["ash", 27]
+                        ["ash", 10]
                     ][args.index]; break;
                     case 4: reward = [
                         ["nugget", 1],
@@ -34484,7 +34484,7 @@ function Safari() {
                 currentTrainer.sprite += trainer.sprite3;
             }
             var ind = (trainer.elite ? eliteindex : index);
-            currentTrainer.powerBoost = ((trainer.power - 1.08) + ((difficulty - 3)/18) + ((difficulty > 1 ? 0.002 : 0)) + ((difficulty < 1 ? 0.0002 : 0)) + (ind/56) + (trainer.elite ? 0.037 : 0)) + (difficulty < 0 ? -0.27 : 0);
+            currentTrainer.powerBoost = ((trainer.power - 1.08) + ((difficulty - 3)/18) + ((difficulty > 1 ? 0.005 : 0)) + ((difficulty < 1 ? 0.0002 : 0)) + (ind/56) + (trainer.elite ? 0.037 : 0)) + (difficulty < 0 ? -0.27 : 0);
             chal = Math.round(1 + (ind/4) + (difficulty * 1) + (difficulty === 4 ? -3 : 0));
             if (ind >= 5) {
                 chal++;
@@ -50729,14 +50729,16 @@ function Safari() {
         
         player.records.medalsWon += 1;
         if (player.medals.length >= medalCap) {
-            player.medals.length = player.medals.length.slice(0, medalCap);
+            //player.medals = player.medals.slice(0, medalCap);
             if (isPlaying(player.id))
                 safaribot.sendMessage(sys.id(player.id), "You were unable to receive the medal " + medal.desc + " as your medal collection was full!", safchan);
             else
                 safari.inboxMessage(player, "You were unable to receive the medal " + medal.desc + " as your medal collection was full!", isPlaying(player.id));
             return false;
         }
-        player.medals.push(medal);
+        else {
+            player.medals.push(medal);
+        }
         this.saveGame(player);
         return true;
     };
