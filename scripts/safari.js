@@ -1166,8 +1166,10 @@ function Safari() {
             expTypes: ["daycareplay", "bait", "wincontest", "catch"],
             skills: {
                 preschoolerPack1: [2, 2],
+                typeMatchupHelper: [3, 3],
                 preschoolerPack2: [4, 4],
                 fasterFinder: [5, 5],
+                ballHint: [6, 6],
                 preschoolerPack3: [7, 7],
                 preschoolerPack4: [9, 9],
                 preschoolerPack5: [11, 11],
@@ -1761,7 +1763,7 @@ function Safari() {
             photo: "A Pokéball riddled with memory chips capable of identifying Pokémon stored in the camera and catching them with higher likelihood. " + cdSeconds("photo") + " Obtained from Arborist.",
             mirror: "A Pokéball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. Doubly effective in Similarity Mode. " + cdSeconds("mirror") + " Obtained from Arborist.",
             love: "A Pokéball with a pink heart design that works better if the lead is in the same egg group as the target. It also increases the well-being of Pokémon in the daycare. " + cdSeconds("love") + " Obtained from Arborist.",
-            uturn: "A Pokéball with a dynamic design that enables the lead Pokémon to switch out after a successful catch. " + cdSeconds("uturn") + " Obtained from Arborist.",
+            uturn: "A Pokéball with a dynamic design that enables the lead Pokémon to switch out after a successful catch. Catch rate is increased if the lead Pokémon is capable of learning U-Turn, Volt Switch, or Flip Turn. " + cdSeconds("uturn") + " Obtained from Arborist.",
             inver: "A mysterious Pokéball that reverses the type advantage " + cdSeconds("inver") + " Obtained from Arborist.",
             spirit: "A magical Pokéball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events. This Ball will return to you if it fails to catch a Pokémon. (Max capacity: 10)",
             cherish: "A homey Pokéball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Arborist. This Ball will return to you if it fails to catch a Pokémon."
@@ -8000,6 +8002,7 @@ function Safari() {
             }
             var onChannel = sys.playersOfChannel(safchan);
             var abilityMessageList = {};
+            var miscMessageList = {};
             var wildAbilityMessageList = [];
             
             var is_are = amt > 1 ? "are" : "is"
@@ -8019,24 +8022,74 @@ function Safari() {
             for (var e in onChannel) {
                 ballMacro(onChannel[e]);
                 
-                var p = getAvatar(onChannel[e]);
-                if (!p) {
+                var player = getAvatar(onChannel[e]);
+                if (!player) {
                     continue;
                 }
                 if (wildEvent) { // if an Event spawns, reset ball cooldown so everyone can attempt a throw
-                    p.cooldowns.ball = 0;
+                    player.cooldowns.ball = 0;
                 }
 
-                var leader = this.getEffectiveLead(p);
-                var ignore = ignoresWildAbilities(p);
+                if (!abilityMessageList.hasOwnProperty(onChannel[e])) {
+                    abilityMessageList[onChannel[e]] = [];
+                }
+                if (!miscMessageList.hasOwnProperty(onChannel[e])) {
+                    miscMessageList[onChannel[e]] = [];
+                }
+                var leader = this.getEffectiveLead(player);
+                var ignore = ignoresWildAbilities(player);
+                if (this.hasCostumeSkill(player, "typeMatchupHelper")) {
+                    var typeEffectiveness = 0;
+                    var wild = currentDisplay;
+                    var pType1 = type1(leader), pType2 = type2(leader), wType1 = type1(wild), wType2 = type2(wild);
+                    if (currentTypeOverride) {
+                        wType1 = currentTypeOverride;
+                    }
+                    var inverse = (player.costume === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(currentPokemon, abilitynum("Contrary")) && !ignore);
+                    // use currentPokemon instead of currentDisplay for ability related stuff, since they broadcast an ability message anyway
+                    var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) && !ignore, scrappy: canHaveAbility(leader, abilitynum("Scrappy")) };
+                    if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
+                        typeEffectiveness = this.checkEffective([wType1, wType2], [pType1, pType2], !inverse);
+                    }
+                    else {
+                        typeEffectiveness = this.checkEffective([pType1, pType2], [wType1, wType2], inverse, select);
+                    }
+                    if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard")) && !ignore && typeEffectiveness < 2) {
+                        typeEffectiveness = Math.min(typeEffectiveness, immuneMultiplier);
+                    }
+
+                    miscMessageList[onChannel[e]].push("Your {0}'s type effectiveness against the wild {1} is <b>{2}x</b>!".format(poke(leader, true), poke(currentDisplay, true), typeEffectiveness));
+                }
+                if (this.hasCostumeSkill(player, "ballHint")) {
+                    var bestBalls = [];
+                    var bestRate = 0;
+                    for (var i = 0; i < allBalls.length; i++) {
+                        var ball = allBalls[i];
+                        if (isBallAvailable(player, ball) && !["master", "spirit", "uturn"].contains(ball)) {
+                            var ballRate = safari.computeCatchRate(onChannel[e], ball, currentDisplay, true);
+                            if (ballRate >= bestRate) {
+                                if (ballRate > bestRate) {
+                                    bestRate = ballRate;
+                                    bestBalls = [];
+                                }
+                                
+                                bestBalls.push(ball);
+                            }
+                        }
+                    }
+                    if (bestBalls.length > 0) {
+                        bestBalls = readable(bestBalls.map( function(e) { return "«" + link("/" + ccatch + " " + e, finishName(e).split(" ")[0]) + "»" }));
+                        miscMessageList[onChannel[e]].push("The best Balls for you to use against the wild {0} are: {1}".format(poke(currentDisplay, true), bestBalls));
+                    }
+                }
                 if (ignore) {
-                    abilityMessageList[onChannel[e]] = "Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(leader, true), abilityOff(ignore), poke(currentDisplay, true));
+                    abilityMessageList[onChannel[e]].push("Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(leader, true), abilityOff(ignore), poke(currentDisplay, true)));
                 }
                 if (canHaveAbility(leader, abilitynum("Intimidate"))) {
-                    abilityMessageList[onChannel[e]] = "Your {0} weakens the wild {1} with Intimidate!".format(poke(leader, true), poke(currentDisplay, true));
+                    abilityMessageList[onChannel[e]].push("Your {0} weakens the wild {1} with Intimidate!".format(poke(leader, true), poke(currentDisplay, true)));
                 }
                 if (canHaveAbility(leader, abilitynum("Scrappy")) && (hasType(leader, "Normal") || hasType(leader, "Fighting")) && hasType(currentDisplay, "Ghost")) {
-                    abilityMessageList[onChannel[e]] = "Your {0} can strike Ghost-types with Scrappy!".format(poke(leader, true));
+                    abilityMessageList[onChannel[e]].push("Your {0} can strike Ghost-types with Scrappy!".format(poke(leader, true)));
                 }
             }
 
@@ -8044,8 +8097,23 @@ function Safari() {
                 sendAll(wildAbilityMessageList[msg]);
             }
             for (var user in abilityMessageList) {
+                if (abilityMessageList[user].length === 0) {
+                    continue;
+                }
                 if (!cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
-                    safaribot.sendMessage(user, abilityMessageList[user], safchan);
+                    for (var message in abilityMessageList[user]) {
+                        safaribot.sendMessage(user, abilityMessageList[user][message], safchan);
+                    }
+                }
+            }
+            for (var user in miscMessageList) {
+                if (miscMessageList[user].length === 0) {
+                    continue;
+                }
+                if (!cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
+                    for (var message in miscMessageList[user]) {
+                        safaribot.sendHtmlMessage(user, miscMessageList[user][message], safchan);
+                    }
                 }
             }
             preparationPhase = sys.rand(5, 8);
@@ -9075,12 +9143,14 @@ function Safari() {
         }
         return [val, anyNerf];
     };
-    this.computeCatchRate = function(src, ball) {
+    this.computeCatchRate = function(src, ball, target, theory) {
         var player = getAvatar(src), wild, isShiny, wildStats, story = false, storyMultiplier = 1;
         
         var leader = this.getEffectiveLead(player);
 
         var ballBonus = itemData[ball].ballBonus;
+
+        var usingPokemon = target ? target : currentPokemon
 
         if (player.story.inStory && player.story.state == "Catching") {
             isShiny = false;
@@ -9090,8 +9160,8 @@ function Safari() {
             story = true;
         }
         else {
-            isShiny = typeof currentPokemon == "string";
-            wild = isShiny ? parseInt(currentPokemon, 10) : currentPokemon;
+            isShiny = typeof usingPokemon == "string";
+            wild = isShiny ? parseInt(usingPokemon, 10) : usingPokemon;
             wildStats = getBST(wild) + currentExtraBST;
             if (canHaveAbility(leader, abilitynum("Intimidate"))) {
                 if (getBST(wild) < getBST(leader)) {
@@ -9114,46 +9184,46 @@ function Safari() {
         var costumeBoost = function(player, half) {
             return (1.01 + Math.max((((half ? 0.5 : 1) * safari.getCostumeLevel(player) - 5)/100), 0));
         }
-        if (hasType(currentPokemon, "Normal") && this.hasCostumeSkill(player, "catchNormal")) {
+        if (hasType(usingPokemon, "Normal") && this.hasCostumeSkill(player, "catchNormal")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Fighting") && this.hasCostumeSkill(player, "catchFighting")) {
+        if (hasType(usingPokemon, "Fighting") && this.hasCostumeSkill(player, "catchFighting")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Electric") && this.hasCostumeSkill(player, "catchElectric")) {
+        if (hasType(usingPokemon, "Electric") && this.hasCostumeSkill(player, "catchElectric")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Poison") && this.hasCostumeSkill(player, "catchPoison")) {
+        if (hasType(usingPokemon, "Poison") && this.hasCostumeSkill(player, "catchPoison")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Dark") && this.hasCostumeSkill(player, "catchDark")) {
+        if (hasType(usingPokemon, "Dark") && this.hasCostumeSkill(player, "catchDark")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Grass") && this.hasCostumeSkill(player, "catchGrass")) {
+        if (hasType(usingPokemon, "Grass") && this.hasCostumeSkill(player, "catchGrass")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Fire") && this.hasCostumeSkill(player, "catchFire")) {
+        if (hasType(usingPokemon, "Fire") && this.hasCostumeSkill(player, "catchFire")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Water") && this.hasCostumeSkill(player, "catchWater")) {
+        if (hasType(usingPokemon, "Water") && this.hasCostumeSkill(player, "catchWater")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Ice") && this.hasCostumeSkill(player, "catchIce")) {
+        if (hasType(usingPokemon, "Ice") && this.hasCostumeSkill(player, "catchIce")) {
             costumeBonus = costumeBoost(player);
         } 
-        if ((hasType(currentPokemon, "Rock") || hasType(currentPokemon, "Ground")) && this.hasCostumeSkill(player, "catchRockGround")) {
+        if ((hasType(usingPokemon, "Rock") || hasType(usingPokemon, "Ground")) && this.hasCostumeSkill(player, "catchRockGround")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (this.hasCostumeSkill(player, "catchThief") && canLearnMove(currentPokemon, 168)) {
+        if (this.hasCostumeSkill(player, "catchThief") && canLearnMove(usingPokemon, 168)) {
             costumeBonus *= costumeBoost(player);
         }
-        if (this.hasCostumeSkill(player, "catchSing") && canLearnMove(currentPokemon, 47)) {
+        if (this.hasCostumeSkill(player, "catchSing") && canLearnMove(usingPokemon, 47)) {
             costumeBonus *= costumeBoost(player);
         }
-        if (this.hasCostumeSkill(player, "catchSplash") && canLearnMove(currentPokemon, 150)) {
+        if (this.hasCostumeSkill(player, "catchSplash") && canLearnMove(usingPokemon, 150)) {
             costumeBonus *= costumeBoost(player);
         }
-        if (this.hasCostumeSkill(player, "catchRockClimb") && canLearnMove(currentPokemon, 431)) {
+        if (this.hasCostumeSkill(player, "catchRockClimb") && canLearnMove(usingPokemon, 431)) {
             costumeBonus *= costumeBoost(player);
         }
         if (wildStats <= 480 && this.hasCostumeSkill(player, "catchLowBST")) {
@@ -9197,8 +9267,8 @@ function Safari() {
         if (currentTypeOverride) {
             wType1 = currentTypeOverride;
         }
-        var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(currentPokemon, abilitynum("Contrary")) && !ignoresWildAbilities(player));
-        var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) && !ignoresWildAbilities(player), scrappy: canHaveAbility(leader, abilitynum("Scrappy")) };
+        var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(usingPokemon, abilitynum("Contrary")) && !ignoresWildAbilities(player));
+        var select = { levitate: canHaveAbility(usingPokemon, abilitynum("Levitate")) && !ignoresWildAbilities(player), scrappy: canHaveAbility(leader, abilitynum("Scrappy")) };
         if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
             if (ball === "mono") {
                 typeBonus = this.checkEffective([wType1, wType2], (pType2 === "???" || !player.monoSecondary ? [pType1] : [pType2]), !inverse);
@@ -9308,7 +9378,7 @@ function Safari() {
             }
         }
         if (ball === "uturn") {
-            if (canLearnMove(leader, 369) || canLearnMove(leader, 521)) {
+            if (canLearnMove(leader, 369) || canLearnMove(leader, 521) || canLearnMove(leader, 754)) { // U-Turn, Volt Switch, and Flip Turn
                 ballBonus = itemData[ball].bonusRate;
             }
             else {
@@ -9429,23 +9499,23 @@ function Safari() {
         var timelinemod = (currentThemeEffect == "past" && player.altTimeline.lead !== 0 && player.altTimeline.cooldown > n ? (player.altTimeline.buff && player.altTimeline.buff > 1 ? player.altTimeline.buff : 1.3) : 1);
 
         var wonderGuardBreak = false;
-        if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard")) && !ignoresWildAbilities(player)) {
+        if (canHaveAbility(usingPokemon, abilitynum("Wonder Guard")) && !ignoresWildAbilities(player)) {
             if (typeBonus >= 2) {
-                if (ball === "spy") {
-                    safaribot.sendMessage(sys.id(player.id), "The wild {0}'s Wonder Guard shattered instantly!".format(poke(currentPokemon, true)), safchan);
+                if (ball === "spy" && !theory) {
+                    safaribot.sendMessage(sys.id(player.id), "The wild {0}'s Wonder Guard shattered instantly!".format(poke(usingPokemon, true)), safchan);
                 }
-                else {
-                    safaribot.sendAll("The wild {0}'s Wonder Guard shattered instantly!".format(poke(currentPokemon, true)), safchan);
+                else if (!theory) {
+                    safaribot.sendAll("The wild {0}'s Wonder Guard shattered instantly!".format(poke(usingPokemon, true)), safchan);
                 }
                 wonderGuardBreak = true;
             }
             else {
                 typeBonus = Math.min(typeBonus, immuneMultiplier);
-                //safaribot.sendAll("The wild {0}'s Wonder Guard is protecting it!".format(poke(currentPokemon)), safchan);
+                //safaribot.sendAll("The wild {0}'s Wonder Guard is protecting it!".format(poke(usingPokemon)), safchan);
             }
         }
         var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
-        if (rulesMod[1] == true) {
+        if (rulesMod[1] == true && !theory) {
             if (player.helds.length > 0 && player.helds[0] == 2 && !needsPechaCleared.contains(player.id.toLowerCase())) {
                 player.berries.pecha = true;
                 needsPechaCleared.push(player.id.toLowerCase());
@@ -9475,7 +9545,7 @@ function Safari() {
             }
             if (currentTheme && contestThemes && contestThemes[currentTheme]) {
                 var theme = contestThemes[currentTheme] ? contestThemes[currentTheme] : {};
-                if (theme.eventFinal && theme.eventFinal == currentPokemon) {
+                if (theme.eventFinal && theme.eventFinal == usingPokemon) {
                     if (!(this.allFlagsMet(player, theme.eventFlags))) {
                         finalChance = 0;
                     }
@@ -16624,6 +16694,8 @@ function Safari() {
         preschoolerPack8: "Received prizes for leveling up",
         preschoolerPack9: "Received prizes for leveling up",
         preschoolerPack10: "Received prizes for leveling up",
+        typeMatchupHelper: "Displays type effectiveness of your lead Pokémon against wild Pokémon",
+        ballHint: "Displays the most effective Ball for you to use against the current wild Pokémon",
         fasterFinder: "Reduced cooldown after using the Itemfinder",
         evolveCheap: "Use fewer " + es(finishName("rare")) + " when evolving Pokémon",
         mythBallBoost: "Higher catch rate when using " + es(finishName("myth")),
