@@ -16712,6 +16712,7 @@ function Safari() {
         monoBallBoost: "Higher catch rate when using " + es(finishName("mono")),
         cloneBallBoost: "Higher catch rate when using " + es(finishName("clone")),
         cloneBallBoost2: "Even higher catch rate when using " + es(finishName("clone")),
+        fasterPhotos: "Increased priority when taking photos",
         extraDust: "Acquire more " + finishName("dust") + " when evolving Pokémon",
         pokeblockBoost: "Pokéblocks are more effective",
         daycarePlay: "Pokémon gain more affection than usual when you play with them in the Daycare",
