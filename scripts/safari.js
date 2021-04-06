@@ -53426,10 +53426,10 @@ function Safari() {
                     
                     if (evo !== -1) {
                         var conditionals = [];
+                        candiesRequired = safari.candyCostConversion(player, candiesRequired);
                         if (!info.shiny) {
                             conditionals.push(addComma(Math.floor(candiesRequired * 1.25)) + " if shiny");
                         }
-                        candiesRequired = safari.candyCostConversion(player, candiesRequired);
                         if (player && player.costumes.contains("breeder") && (!(player.costume == "breeder"))) {
                             conditionals.push(addComma(Math.floor(Math.max(breederRequired, 1))) + " if using " + costumeAlias("breeder", true, true));
                         }
