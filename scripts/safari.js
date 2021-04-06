@@ -53427,7 +53427,7 @@ function Safari() {
                     if (evo !== -1) {
                         var conditionals = [];
                         if (!info.shiny) {
-                            conditionals.push(addComma(Math.floor(candiesRequired * 1.25)) + " if shiny");
+                            conditionals.push(addComma(Math.floor(safari.candyCostConversion(player, Math.floor(candiesRequired * 1.25)))) + " if shiny");
                         }
                         candiesRequired = safari.candyCostConversion(player, candiesRequired);
                         if (player && player.costumes.contains("breeder") && (!(player.costume == "breeder"))) {
