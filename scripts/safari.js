@@ -23365,12 +23365,14 @@ function Safari() {
                     }
                 }
                 
-                var flowerGiftSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "flowerGift");
-                if (flowerGiftSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
-                    for (var i = 0; i < this.team1.length; i++) {
-                        this.team1[i].boosts["atk"] += flowerGiftSkill.rate;
-                        this.team1[i].boosts["sdef"] += flowerGiftSkill.rate;
-                        this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3} had their ATK and SDEF increased by {4}!".format(poke(flowerGiftSkill.id), flowerGiftSkill.name, this.name1, poke(this.team1[i].id), plural(flowerGiftSkill.rate, "stage")), "#55E"));
+                if (!((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                    var flowerGiftSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "flowerGift");
+                    if (flowerGiftSkill) {
+                        for (var i = 0; i < this.team1.length; i++) {
+                            this.team1[i].boosts["atk"] += flowerGiftSkill.rate;
+                            this.team1[i].boosts["sdef"] += flowerGiftSkill.rate;
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3} had their ATK and SDEF increased by {4}!".format(poke(flowerGiftSkill.id), flowerGiftSkill.name, this.name1, poke(this.team1[i].id), plural(flowerGiftSkill.rate, "stage")), "#55E"));
+                        }
                     }
                 }
             }
@@ -24621,7 +24623,7 @@ function Safari() {
                     this.sendToViewers("All stat bonuses were shifted!");
                 }
 
-                if (!this.fullNPC && this.npcBattle) {
+                if (!this.fullNPC && this.npcBattle && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
                     for (var i = 0 ; i < self.team1.length; i++) { // looping through b/c if there are multiple pokemon with this skill, each of them will activate it individually
                         var pokeObj = self.team1[i];
                         var statList = Object.keys(pokeObj.stats);
@@ -24632,28 +24634,10 @@ function Safari() {
                         
                         if (pokeObj.boosts[highestStatName] < 6) {
                             var beastBoostSkill = safari.pokeSkillActivated(self.name1, pokeObj, "beastBoost");
-                            if (beastBoostSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                            if (beastBoostSkill) {
                                 pokeObj.boosts[highestStatName] += beastBoostSkill.rate;
                                 pokeObj.boosts[highestStatName] = Math.min(6, pokeObj.boosts[highestStatName]);
                                 this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3} increased by {4}!".format(poke(beastBoostSkill.id), beastBoostSkill.name, poke(pokeObj.id), highestStatName.toUpperCase(), plural(beastBoostSkill.rate, "stage")), "#55E"));
-                            }
-                        }
-                        if (pokeObj.boosts["atk"] < 6) {
-                            var intrepidSwordSkill = safari.pokeSkillActivated(self.name1, pokeObj, "intrepidSword");
-                            if (intrepidSwordSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
-                                pokeObj.boosts["atk"] += intrepidSwordSkill.rate;
-                                pokeObj.boosts["atk"] = Math.min(6, pokeObj.boosts["atk"]);
-                                this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s ATK increased by {3}!".format(poke(intrepidSwordSkill.id), intrepidSwordSkill.name, poke(pokeObj.id), plural(intrepidSwordSkill.rate, "stage")), "#55E"));
-                            }
-                        }
-                        if (pokeObj.boosts["def"] < 6 || pokeObj.boosts["sdef"] < 6) {
-                            var dauntlessShieldSkill = safari.pokeSkillActivated(self.name1, pokeObj, "dauntlessShield");
-                            if (dauntlessShieldSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
-                                pokeObj.boosts["def"] += dauntlessShieldSkill.rate;
-                                pokeObj.boosts["sdef"] += dauntlessShieldSkill.rate;
-                                pokeObj.boosts["def"] = Math.min(6, pokeObj.boosts["def"]);
-                                pokeObj.boosts["sdef"] = Math.min(6, pokeObj.boosts["sdef"]);
-                                this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s DEF and SDEF increased by {3}!".format(poke(dauntlessShieldSkill.id), dauntlessShieldSkill.name, poke(pokeObj.id), plural(dauntlessShieldSkill.rate, "stage")), "#55E"));
                             }
                         }
                     }
@@ -24717,6 +24701,31 @@ function Safari() {
                         mon.boosts["sdef"] = Math.max(mon.boosts["sdef"], -6);
                     }
                     this.sendToViewers("The foe's Pokémon smashed their shells!");
+                }
+            }
+            if (!this.fullNPC && this.npcBattle && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                for (var i = 0 ; i < self.team1.length; i++) { // looping through b/c if there are multiple pokemon with this skill, each of them will activate it individually
+                    var pokeObj = self.team1[i];
+                    if (pokeObj.damagingUsed > 0 && pokeObj.damagingUsed % 4 === 0 && pokeObj.boosts["atk"] < 6) {
+                        var intrepidSwordSkill = safari.pokeSkillActivated(self.name1, pokeObj, "intrepidSword");
+                        if (intrepidSwordSkill) {
+                            pokeObj.boosts["atk"] += intrepidSwordSkill.rate;
+                            pokeObj.boosts["atk"] = Math.min(6, pokeObj.boosts["atk"]);
+                            pokeObj.damagingUsed = 0;
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s ATK increased by {3}!".format(poke(intrepidSwordSkill.id), intrepidSwordSkill.name, poke(pokeObj.id), plural(intrepidSwordSkill.rate, "stage")), "#55E"));
+                        }
+                    }
+                    if (pokeObj.nonDamagingUsed > 0 && pokeObj.nonDamagingUsed % 4 === 0 && (pokeObj.boosts["def"] < 6 || pokeObj.boosts["sdef"] < 6)) {
+                        var dauntlessShieldSkill = safari.pokeSkillActivated(self.name1, pokeObj, "dauntlessShield");
+                        if (dauntlessShieldSkill) {
+                            pokeObj.boosts["def"] += dauntlessShieldSkill.rate;
+                            pokeObj.boosts["sdef"] += dauntlessShieldSkill.rate;
+                            pokeObj.boosts["def"] = Math.min(6, pokeObj.boosts["def"]);
+                            pokeObj.boosts["sdef"] = Math.min(6, pokeObj.boosts["sdef"]);
+                            pokeObj.nonDamagingUsed = 0;
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s DEF and SDEF increased by {3}!".format(poke(dauntlessShieldSkill.id), dauntlessShieldSkill.name, poke(pokeObj.id), plural(dauntlessShieldSkill.rate, "stage")), "#55E"));
+                        }
+                    }
                 }
             }
             if (this.select && this.select.speedboost) {
@@ -26204,13 +26213,13 @@ function Safari() {
                             }
                         }
                         
-                        if (!self.fullNPC && self.npcBattle && targetSide === 1) {
+                        if (!self.fullNPC && self.npcBattle && targetSide === 1 && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
                             for (var i = 0 ; i < self.team1.length; i++) { // looping through b/c if there are multiple pokemon with this skill, each of them will activate it individually
                                 if (self.team1[i].boosts["satk"] === 6)
                                     continue;
                                 
                                 var soulHeartSkill = safari.pokeSkillActivated(self.name1, self.team1[i], "soulHeart");
-                                if (soulHeartSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                                if (soulHeartSkill) {
                                     self.team1[i].boosts["satk"] += soulHeartSkill.rate;
                                     self.team1[i].boosts["satk"] = Math.min(6, self.team1[i].boosts["satk"])
                                     out.push("<b>[{0}'s {1}]</b> {2}'s SATK increased by {3}!".format(poke(soulHeartSkill.id), soulHeartSkill.name, poke(self.team1[i].id), plural(soulHeartSkill.rate, "stage")));
@@ -26224,7 +26233,7 @@ function Safari() {
                         out.push(tname + "'s balloon popped!");
                         target.item.balloon = false;
                     }
-                    if (!self.fullNPC && self.npcBattle && targetSide === 1 && !friendlyFire) {
+                    if (!self.fullNPC && self.npcBattle && targetSide === 1 && !friendlyFire && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
                         if (typeMultiplier < 1) {
                             var stats = ["atk", "def", "spe", "satk", "sdef"];
                             var validStats = [];
@@ -26236,7 +26245,7 @@ function Safari() {
                             }
                             if (validStats.length > 0) {
                                 var statSpiteSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicGhost");
-                                if (statSpiteSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                                if (statSpiteSkill) {
                                     var randStat = validStats.shuffle().shift();
                                     user.boosts[randStat] -= statSpiteSkill.rate2;
                                     user.boosts[randStat] = Math.max(-6, user.boosts[randStat]);
@@ -26821,9 +26830,9 @@ function Safari() {
                                     };
                                     out.push(tname + " " + conditionVerb[move.status] + "!");
                                 }
-                                if (!this.fullNPC && this.npcBattle && targetSide === 1 && !(target.boosts["atk"] === 6 && target.boosts["satk"] === 6)) { // if both stats are maxed, dont use skill
+                                if (!this.fullNPC && this.npcBattle && targetSide === 1 && !(target.boosts["atk"] === 6 && target.boosts["satk"] === 6) && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) { // if both stats are maxed, dont use skill
                                     var berserkGeneSkill = safari.pokeSkillActivated(this.name1, target, "berserkGene");
-                                    if (berserkGeneSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                                    if (berserkGeneSkill) {
                                         target.boosts["atk"] += berserkGeneSkill.rate;
                                         target.boosts["satk"] += berserkGeneSkill.rate;
                                         target.boosts["atk"] = Math.min(6, target.boosts["atk"]);
@@ -26963,12 +26972,12 @@ function Safari() {
             else {
                 var defianted = false;
 
-                if (!this.fullNPC && this.npcBattle && targetSide === 1) {
+                if (!this.fullNPC && this.npcBattle && targetSide === 1 && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
                     var nerfDefenceSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicDark");
                 }
                 for (e = 0; e < move.nerf.length; e++) {
                     obj = move.nerf[e];
-                    if (nerfDefenceSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                    if (nerfDefenceSkill) {
                         obj.nerfChance -= (nerfDefenceSkill.rate2 / 100);
                         out.push("<b>[{0}'s {1}]</b> The stat decrease chance of {2}'s move was reduced by {3}%!".format(poke(nerfDefenceSkill.id), nerfDefenceSkill.name, poke(user.id), nerfDefenceSkill.rate2));
                     }
@@ -27054,9 +27063,9 @@ function Safari() {
         if (!this.fullNPC && this.npcBattle && targetSide !== 1) {
             var stats = ["atk", "def", "spe", "satk", "sdef"];
             
-            if (user.boosts["atk"] < 6 || user.boosts["def"] < 6 || user.boosts["satk"] < 6 || user.boosts["sdef"] < 6 || user.boosts["spe"] < 6) {
+            if (user.boosts["atk"] < 6 || user.boosts["def"] < 6 || user.boosts["satk"] < 6 || user.boosts["sdef"] < 6 || user.boosts["spe"] < 6 && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
                 var rotoLotoSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "rotoLoto");
-                if (rotoLotoSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                if (rotoLotoSkill) {
                     var targetStat;
                     do {
                         targetStat = stats.random();
@@ -27106,9 +27115,9 @@ function Safari() {
                     }
                 }
                 
-                if (validStats.length >= 2) {
+                if (validStats.length >= 2 && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
                     var multiBoostSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicDragon");
-                    if (multiBoostSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                    if (multiBoostSkill) {
                         var randStat = validStats.shuffle().shift();
                         var randStat2 = validStats.shift();
                         
@@ -27161,6 +27170,12 @@ function Safari() {
             if (this.select.retaliate && move.category == "special") {
                 target.retaliate = true;
             }
+        }
+        if (damaging) {
+            user.damagingUsed++;
+        }
+        else {
+            user.nonDamagingUsed++;
         }
         return out;
     };
@@ -27238,7 +27253,9 @@ function Safari() {
                 berry: held,
                 crystal: 0,
                 index: t,
-                moves: []
+                moves: [],
+                damagingUsed: 0,
+                nonDamagingUsed: 0
             };
             if (info.types.Normal) {
                 info.types.Normal = Math.round(info.types.Normal/4);
