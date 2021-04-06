@@ -872,7 +872,8 @@ function Safari() {
             */
         ],
         excludeFromEconomy: false,
-        alwaysShowMasterBall: true
+        alwaysShowMasterBall: true,
+        alwaysShowCherishBall: true
     };
 
     /* Item Variables */
@@ -7165,12 +7166,17 @@ function Safari() {
         var ret = "", hasBalls = false, isAndroid = sys.os(src) === "android";
         for (var i = 0; i < allBalls.length; i++) {
             var e = allBalls[i];
-            if (isBallAvailable(player, e) && e === "master" && (currentPokemon && !isRare(currentDisplay) && !player.alwaysShowMasterBall)) { // use currentDisplay instead of currentPokemon, otherwise ballMacro can be used to see through disguises/illusions
-                ret += "<font color='grey'>«" + itemData[e].fullName.split(" ")[0] + "»</font> ";
-            }
-            else if (isBallAvailable(player, e) && (e !== "master" || !isAndroid)) {
-                ret += "«" + link("/" + ccatch + " " + itemData[e].name, itemData[e].fullName.split(" ")[0]) + "» ";
-                hasBalls = true;
+            if (isBallAvailable(player, e)) {
+                if (e === "master" && (currentPokemon && !isRare(currentDisplay) && !player.alwaysShowMasterBall)) { // use currentDisplay instead of currentPokemon, otherwise ballMacro can be used to see through disguises/illusions
+                    ret += "<font color='grey'>«" + itemData[e].fullName.split(" ")[0] + "»</font> ";
+                }
+                else if (e === "cherish" && !player.alwaysShowCherishBall) {
+                    ret += "<font color='grey'>«" + itemData[e].fullName.split(" ")[0] + "»</font> ";
+                }
+                else if (e !== "master" || !isAndroid) {
+                    ret += "«" + link("/" + ccatch + " " + itemData[e].name, itemData[e].fullName.split(" ")[0]) + "» ";
+                    hasBalls = true;
+                }
             }
         }
         var ph = player.story.inStory ? "" : "«" + link("/photo", "Take Photo") + "» ";
@@ -16538,6 +16544,28 @@ function Safari() {
         else {
             player.alwaysShowMasterBall = true;
             safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>enabled on regular Pokémon</b>!".format(finishName("master")), safchan);
+        }
+
+        safari.saveGame(player);
+    };
+    this.setEnableCherishBall = function(src, data) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        
+        if (!["on", "off"].contains(data)) {
+            safaribot.sendHtmlMessage(src, "Your {0} throw links are currently being <b>{1} on regular Pokémon</b>. Use {2} to change it!".format(finishName("cherish"), (player.alwaysShowCherishBall ? "enabled" : "disabled"), link("/cherishlink " + (player.alwaysShowCherishBall ? "off" : "on"))), safchan);
+            return;
+        }
+        
+        if (data === "off") {
+            player.alwaysShowCherishBall = false;
+            safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>disabled on regular Pokémon</b>! Remember that you can still use /throw or /catch to manually throw a {0}!".format(finishName("cherish")), safchan);
+        }
+        else {
+            player.alwaysShowCherishBall = true;
+            safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>enabled on regular Pokémon</b>!".format(finishName("cherish")), safchan);
         }
 
         safari.saveGame(player);
@@ -52232,6 +52260,7 @@ function Safari() {
             "/mono [1/2]: To set if you want your Mono Balls to always use your active Pokémon's primary or secondary type. Omit the command data to check your current Mono Ball configuration.",
             "/themerares: Show rare Pokémon that appear in a specified theme.",
             "/mblink [on|off]: Set whether you want Master Ball throw links to appear on regular Pokémon. Omit the command data to check your current configuration.",
+            "/cherishlink [on|off]: Set whether you want Cherish Ball throw links to appear on wild Pokémon. Omit the command data to check your current configuration.",
             "/cherishmsg [on|off]: Set whether you want your Cherished Pokémon to display the Cherished message when catching Pokémon.",
             //seasonal change
             "*** Fun Commands ***",
@@ -52421,6 +52450,10 @@ function Safari() {
             }
             if (["mblink", "masterballlink", "mbmacro", "masterballmacro"].contains(command)) {
                 safari.setEnableMasterBall(src, commandData);
+                return true;
+            }
+            if (["cherishlink", "cherishballlink", "cherishmacro", "cherishballmacro"].contains(command)) {
+                safari.setEnableCherishBall(src, commandData);
                 return true;
             }
             if (command === "sell") {
