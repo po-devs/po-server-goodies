@@ -23067,20 +23067,34 @@ function Safari() {
             this.sendMessage(id, "");
         }
         if (this.select) {
+            var sorted = [];
             for (var j in this.select) {
                 m = safari.getFieldConditionDescription(j, this.select);
                 if (m !== "") {
-                    this.sendMessage(id, toColor("- " + m, "#DC143C"));
+                    sorted.push(m);
                 }
+            }
+            if (sorted.length > 0) {
+                var self = this;
+                sorted.sort().forEach(function(e) {
+                    self.sendMessage(id, toColor("- " + e, "#DC143C"));
+                });
             }
             this.sendMessage(id, "");
         }
         if (this.select2) {
+            var sorted = [];
             for (var j in this.select2) {
                 m = safari.getFieldConditionDescription(j, this.select2);
                 if (m !== "") {
-                    this.sendMessage(id, toColor("- " + m, "#7d34eb"));
+                    sorted.push(m);
                 }
+            }
+            if (sorted.length > 0) {
+                var self = this;
+                sorted.sort().forEach(function(e) {
+                    self.sendMessage(id, toColor("- " + e, "#7d34eb")); 
+                });
             }
             this.sendMessage(id, "");
         }
