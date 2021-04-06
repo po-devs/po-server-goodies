@@ -55895,16 +55895,18 @@ function Safari() {
                     i = player.cherished.indexOf(data.num);
                     if (i === -1) {
                         safaribot.sendMessage( src,player.id + " doesn't have that Cherished Pokémon!",safchan );
-                        return;
+                        return true;
                     }
-                    player.cherished.slice(i, 1);
+                    player.cherished.splice(i, 1);
+                    safari.saveGame(player);
                     safaribot.sendMessage( src,"You took away a " + data.name + " from " + player.id + "'s Cherished List.",safchan );
                 }
                 else {
                     player.cherished.push(data.num);
+                    safari.saveGame(player);
                     safaribot.sendMessage( src,"You added " + data.name + " to " + player.id + "'s Cherished List.",safchan );
-                    return;
                 };
+                return true;
             }
             if (command === "vbdebug") {
                 vbdebug = vbdebug ? false : true;
