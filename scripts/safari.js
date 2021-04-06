@@ -52215,6 +52215,7 @@ function Safari() {
             "/mono [1/2]: To set if you want your Mono Balls to always use your active Pokémon's primary or secondary type. Omit the command data to check your current Mono Ball configuration.",
             "/themerares: Show rare Pokémon that appear in a specified theme.",
             "/mblink [on|off]: Set whether you want Master Ball throw links to appear on regular Pokémon. Omit the command data to check your current configuration.",
+            "/cherishmsg [on|off]: Set whether you want your Cherished Pokémon to display the Cherished message when catching Pokémon.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -53426,7 +53427,7 @@ function Safari() {
                     if (evo !== -1) {
                         var conditionals = [];
                         if (!info.shiny) {
-                            conditionals.push(addComma(Math.floor(safari.candyCostConversion(player, candiesRequired *  1.25))) + " if shiny");
+                            conditionals.push(addComma(Math.floor(candiesRequired * 1.25)) + " if shiny");
                         }
                         candiesRequired = safari.candyCostConversion(player, candiesRequired);
                         if (player && player.costumes.contains("breeder") && (!(player.costume == "breeder"))) {
