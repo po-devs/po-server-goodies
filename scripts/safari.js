@@ -11865,7 +11865,7 @@ function Safari() {
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
 
-        var input = getInput(pokeNum);
+        var input = getInput(poke(pokeNum));
         var total = countRepeated(player.party, pokeNum) + countRepeated(player.pokemon, pokeNum);
         if (input.input in player.shop && player.shop[input.input].limit > total) {
             player.shop[input.input].limit = total;
@@ -11883,7 +11883,7 @@ function Safari() {
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
 
-        var input = getInput(pokeNum);
+        var input = getInput(poke(pokeNum));
         var total = countRepeated(player.party, pokeNum) + countRepeated(player.pokemon, pokeNum);
         if (input.input in player.shop && player.shop[input.input].limit > total) {
             player.shop[input.input].limit = total;
