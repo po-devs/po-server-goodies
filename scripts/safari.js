@@ -9748,7 +9748,7 @@ function Safari() {
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
             
-            if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !ignoresWildAbilities(player) && !["cherish", "master"].contains(ball) && player.balls[ball] > 1 && chance(0.3)) {
+            if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !ignoresWildAbilities(player) && !["cherish", "master", "spirit"].contains(ball) && player.balls[ball] > 1 && chance(0.3)) {
                 safaribot.sendAll("The wild {0}'s Pressure caused {1} to use up an extra {2}...".format(poke(currentPokemon, true), ball === "spy" ? "the stealthy person" : name, finishName(ball)), safchan);
                 player.balls[ball] -= 1;
             }
@@ -9846,7 +9846,7 @@ function Safari() {
             }
             if (safari.validDailyBoost(player)) {
                 var drop = [], gained = [], discarded = [];
-                var bonusDrops = [ {"item":"30@dust", "perc":0.1}, {"item":"3@gacha","perc":0.07}, {"item":"@silver","perc":0.04}, {"item":"@pack","perc":0.01} ];
+                var bonusDrops = [ {"item":"70@dust", "perc":0.1}, {"item":"6@gacha","perc":0.07}, {"item":"3@silver","perc":0.04}, {"item":"@pack","perc":0.01} ];
                 
                 for (var i = 0; i < bonusDrops.length; i++) { // sample data - {"1": [ {"item":"bait","perc":0.5}, {"item":"golden","perc":0.1} ]};
                     var itemObj = bonusDrops[i];
