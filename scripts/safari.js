@@ -11864,6 +11864,12 @@ function Safari() {
                 player.party.splice(player.party.lastIndexOf(pokeNum), 1);
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
+
+        var input = getInput(pokeNum);
+        var total = countRepeated(player.party, pokeNum) + countRepeated(player.pokemon, pokeNum);
+        if (input.input in player.shop && player.shop[input.input].limit > total) {
+            player.shop[input.input].limit = total;
+        }
     };
     this.removePokemon2 = function(player, pokeNum) {
         if (player.pokemon.contains(pokeNum)) {
@@ -11875,6 +11881,12 @@ function Safari() {
                     safari.takeItem(player, player.party.lastIndexOf(pokeNum) + 1, true);
                 player.party.splice(player.party.lastIndexOf(pokeNum), 1);
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
+        }
+
+        var input = getInput(pokeNum);
+        var total = countRepeated(player.party, pokeNum) + countRepeated(player.pokemon, pokeNum);
+        if (input.input in player.shop && player.shop[input.input].limit > total) {
+            player.shop[input.input].limit = total;
         }
     };
     this.findPokemon = function(src, commandData, textOnly, shopLink, showDupes) {
@@ -36966,6 +36978,7 @@ function Safari() {
             return false;
         }
         player.balls[get] -= 1;
+        safari.updateShop(player, get);
         this.tableNext.push(get);
         safari.saveGame(player);
         this.msgAll(playerName.toCorrectCase() + " is adding " + an(itemAlias(get, false, true)) + " to the table!");
