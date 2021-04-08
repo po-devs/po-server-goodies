@@ -19521,7 +19521,7 @@ function Safari() {
                 rankName: "Grunt",
                 team: safari.events.spiritDuelsTeams[i].name,
                 exp: 0,
-                box: player.spiritDuels.box.length > 0 ? player.spiritDuels.box : [19],
+                box: player.spiritDuels.box.length > 0 ? player.spiritDuels.box.slice(0) : [19],
                 skills: [],
                 skillChoices: {}
             };
@@ -20384,7 +20384,7 @@ function Safari() {
                 safaribot.sendMessage( src,player.id + " doesn't have that Spirit Pokémon!",safchan );
                 return;
             }
-            player.spiritDuels.box = player.spiritDuels.box.slice(i, 1);
+            player.spiritDuels.box.splice(i, 1);
             safaribot.sendMessage( src,"You took away a " + data.name + " from " + player.id + "'s Spirit Team.",safchan );
         }
         else {
