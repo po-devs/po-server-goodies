@@ -20370,12 +20370,23 @@ function Safari() {
         //num = data.getMonNumber(data) || data if data is a number
         var cmd = commandData.split(":");
         var player = getAvatarOff(cmd[0]);
-        var data = getInputPokemon(cmd[1]);
-        if (cmd.length > 1) {
-            var num = parseInt(cmd[2], 10);
+        var num = 1;
+        if (!player) {
+            safaribot.sendMessage(src, "Player not found!", safchan);
+            return;
         }
-        else {
-            num = 1;
+        else if (cmd.length < 2) {
+            safaribot.sendMessage(src, "Invalid Pokemon input.", safchan);
+            return;
+        }
+        var data = getInputPokemon(cmd[1]);
+
+        if (data.input === "Missingno") {
+            safaribot.sendMessage(src, "Invalid Pokemon input.", safchan);
+            return;
+        }
+        if (cmd.length > 2) {
+            num = parseInt(cmd[2], 10) || 1;
         }
         var i;
         if (num === -1) {
@@ -55885,12 +55896,23 @@ function Safari() {
             if (command === "bestowcherish") {
                 var cmd = commandData.split(":");
                 var player = getAvatarOff(cmd[0]);
-                var data = getInputPokemon(cmd[1]);
-                if (cmd.length > 1) {
-                    var num = parseInt(cmd[2], 10);
+                var num = 1;
+                if (!player) {
+                    safaribot.sendMessage(src, "Player not found!", safchan);
+                    return true;
                 }
-                else {
-                    num = 1;
+                else if (cmd.length < 2) {
+                    safaribot.sendMessage(src, "Invalid Pokemon input.", safchan);
+                    return true;
+                }
+                var data = getInputPokemon(cmd[1]);
+
+                if (data.input === "Missingno") {
+                    safaribot.sendMessage(src, "Invalid Pokemon input.", safchan);
+                    return true;
+                }
+                if (cmd.length > 2) {
+                    num = parseInt(cmd[2], 10) || 1;
                 }
                 var i;
                 if (num === -1) {
