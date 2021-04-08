@@ -19496,21 +19496,10 @@ function Safari() {
         //Takes everyone from signups and puts them in teams
         safari.events.spiritDuelsSignups = removeDuplicates(safari.events.spiritDuelsSignups).shuffle();
         var sgnf = [];
-        var i = 0, player, oldBox, name;
+        var i = 0, player, name;
         for (var p in safari.events.spiritDuelsSignups) {
             name = idnumList.get(safari.events.spiritDuelsSignups[p]);
             player = getAvatarOff(name);
-            if (player.spiritDuels) {
-                if (player.spiritDuels.box.length > 0) {
-                    oldBox = player.spiritDuels.box;
-                }
-                else {
-                    oldBox = [19];
-                }
-            }
-            else {
-                oldBox = [19];
-            }
             if (player.spiritDuels.rank < 0) {
                 safari.notification(player, "You could not be assigned to a team because you are still a Zoomer!", "Spirit Duels");
                 continue;
@@ -19532,7 +19521,7 @@ function Safari() {
                 rankName: "Grunt",
                 team: safari.events.spiritDuelsTeams[i].name,
                 exp: 0,
-                box: oldBox,
+                box: player.spiritDuels.box.length > 0 ? player.spiritDuels.box : [19],
                 skills: [],
                 skillChoices: {}
             };
