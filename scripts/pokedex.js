@@ -5,8 +5,8 @@ pokedex.hasDreamWorldAbility = function (pokemon, ability) {
     return sys.pokeAbility(pokemon, 2) === ability && sys.pokeAbility(pokemon, 0) !== sys.pokeAbility(pokemon, 2) && sys.pokeAbility(pokemon, 1) !== sys.pokeAbility(pokemon, 2);
 };
 
-pokedex.getAllMoves = function (pokeId) {
-    if (allMovesList === undefined) {
+pokedex.getAllMoves = function (pokeId, rebuild) {
+    if (allMovesList === undefined || rebuild) {
         allMovesList = {};
         var data = sys.getFileContent(pokeDir + '7G/all_moves.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -19,8 +19,8 @@ pokedex.getAllMoves = function (pokeId) {
     return allMovesList[pokedex.getDBIndex(pokeId)];
 };
 
-pokedex.getAllGenMoves = function (pokeId) {
-    if (!allGenMovesList) {
+pokedex.getAllGenMoves = function (pokeId, rebuild) {
+    if (!allGenMovesList || rebuild) {
         allGenMovesList = {};
         var data = sys.getFileContent(Config.dataDir + 'all_gen_moves.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -74,8 +74,8 @@ pokedex.getDBIndex = function (pokeId) {
     return id + ":" + forme;
 };
 
-pokedex.getWeight = function (pokeId) {
-    if (weightList === undefined) {
+pokedex.getWeight = function (pokeId, rebuild) {
+    if (weightList === undefined || rebuild) {
         weightList = {};
         var data = sys.getFileContent(pokeDir + 'weight.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -94,8 +94,8 @@ pokedex.getWeight = function (pokeId) {
     return weightList[base + "0"];
 };
 
-pokedex.getHeight = function (pokeId) {
-    if (heightList === undefined) {
+pokedex.getHeight = function (pokeId, rebuild) {
+    if (heightList === undefined || rebuild) {
         heightList = {};
         var data = sys.getFileContent(pokeDir + 'height.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -125,8 +125,8 @@ pokedex.weightPower = function (weight) {
     return power;
 };
 
-pokedex.getMoveBP = function (moveId) {
-    if (powerList === undefined) {
+pokedex.getMoveBP = function (moveId, rebuild) {
+    if (powerList === undefined || rebuild) {
         powerList = {};
         var data = sys.getFileContent(moveDir + 'power.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -142,8 +142,8 @@ pokedex.getMoveBP = function (moveId) {
     return powerList[moveId];
 };
 
-pokedex.getZBP = function (moveId) {
-    if (zPowerList === undefined) {
+pokedex.getZBP = function (moveId, rebuild) {
+    if (zPowerList === undefined || rebuild) {
         zPowerList = {};
         var data = sys.getFileContent(moveDir + "zpower.txt").split("\n");
         for (var i = 0; i < data.length; i++) {
@@ -157,8 +157,8 @@ pokedex.getZBP = function (moveId) {
     return zPowerList[moveId] || false;
 };
 
-pokedex.getMoveCategory = function (moveId) {
-    if (categoryList === undefined) {
+pokedex.getMoveCategory = function (moveId, rebuild) {
+    if (categoryList === undefined || rebuild) {
         categoryList = {};
         var data = sys.getFileContent(moveDir + 'damage_class.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -177,8 +177,8 @@ pokedex.getMoveCategory = function (moveId) {
     return "Other";
 };
 
-pokedex.getMoveAccuracy = function (moveId) {
-    if (accList === undefined) {
+pokedex.getMoveAccuracy = function (moveId, rebuild) {
+    if (accList === undefined || rebuild) {
         accList = {};
         var data = sys.getFileContent(moveDir + 'accuracy.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -194,8 +194,8 @@ pokedex.getMoveAccuracy = function (moveId) {
     return accList[moveId];
 };
 
-pokedex.getMovePP = function (moveId) {
-    if (ppList === undefined) {
+pokedex.getMovePP = function (moveId, rebuild) {
+    if (ppList === undefined || rebuild) {
         ppList = {};
         var data = sys.getFileContent(moveDir + 'pp.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -208,8 +208,8 @@ pokedex.getMovePP = function (moveId) {
     return ppList[moveId];
 };
 
-pokedex.getMoveEffect = function (moveId) {
-    if (moveEffList === undefined) {
+pokedex.getMoveEffect = function (moveId, rebuild) {
+    if (moveEffList === undefined || rebuild) {
         moveEffList = {};
         var data = sys.getFileContent(moveDir + 'effect.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -225,8 +225,8 @@ pokedex.getMoveEffect = function (moveId) {
     return moveEffList[moveId].replace(/[\[\]{}]/g, "");
 };
 
-pokedex.getZEffect = function (moveId) {
-    if (zEffList === undefined) {
+pokedex.getZEffect = function (moveId, rebuild) {
+    if (zEffList === undefined || rebuild) {
         zEffList = {};
         var data = sys.getFileContent(moveDir + "zeffect.txt").split("\n");
         for (var i = 0; i < data.length; i++) {
@@ -240,8 +240,8 @@ pokedex.getZEffect = function (moveId) {
     return zEffList[moveId] || false;
 };
 
-pokedex.getMoveContact = function (moveId) {
-    if (moveFlagList === undefined) {
+pokedex.getMoveContact = function (moveId, rebuild) {
+    if (moveFlagList === undefined || rebuild) {
         moveFlagList = {};
         var data = sys.getFileContent(moveDir + 'flags.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -254,8 +254,8 @@ pokedex.getMoveContact = function (moveId) {
     return moveFlagList[moveId] % 2 === 1;
 };
 
-pokedex.getAbility = function (abilityId) {
-    if (abilityList === undefined) {
+pokedex.getAbility = function (abilityId, rebuild) {
+    if (abilityList === undefined || rebuild) {
         abilityList = {};
         var data = sys.getFileContent(abilityDir + 'ability_battledesc.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -268,8 +268,8 @@ pokedex.getAbility = function (abilityId) {
     return abilityList[abilityId];
 };
 
-pokedex.getItem = function (itemId) {
-    if (itemList === undefined) {
+pokedex.getItem = function (itemId, rebuild) {
+    if (itemList === undefined || rebuild) {
         itemList = {};
         var data = sys.getFileContent(itemDir + 'items_description.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -282,8 +282,8 @@ pokedex.getItem = function (itemId) {
     return itemList[itemId];
 };
 
-pokedex.getBerry = function (berryId) {
-    if (berryList === undefined) {
+pokedex.getBerry = function (berryId, rebuild) {
+    if (berryList === undefined || rebuild) {
         berryList = {};
         var data = sys.getFileContent(itemDir + 'berries_description.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -296,8 +296,8 @@ pokedex.getBerry = function (berryId) {
     return berryList[berryId];
 };
 
-pokedex.getFlingPower = function (itemId) {
-    if (flingPowerList === undefined) {
+pokedex.getFlingPower = function (itemId, rebuild) {
+    if (flingPowerList === undefined || rebuild) {
         flingPowerList = {};
         var data = sys.getFileContent(itemDir + 'items_pow.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -310,8 +310,8 @@ pokedex.getFlingPower = function (itemId) {
     return flingPowerList[itemId];
 };
 
-pokedex.getBerryPower = function (berryId) {
-    if (berryPowerList === undefined) {
+pokedex.getBerryPower = function (berryId, rebuild) {
+    if (berryPowerList === undefined || rebuild) {
         berryPowerList = {};
         var data = sys.getFileContent(itemDir + 'berry_pow.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
@@ -324,8 +324,8 @@ pokedex.getBerryPower = function (berryId) {
     return +berryPowerList[berryId] + 20;
 };
 
-pokedex.getBerryType = function (berryId) {
-    if (berryTypeList === undefined) {
+pokedex.getBerryType = function (berryId, rebuild) {
+    if (berryTypeList === undefined || rebuild) {
         berryTypeList = {};
         var data = sys.getFileContent(itemDir + 'berry_type.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
