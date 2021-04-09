@@ -19506,7 +19506,8 @@ function Safari() {
             }
             sgnf.push({
                 "name": name,
-                "exp": parseInt(player.spiritDuels.exp, 10)
+                "exp": parseInt(player.spiritDuels.exp, 10),
+                "box": player.spiritDuels.box.length > 0 ? player.spiritDuels.box.slice(0) : [19]
             })
         }
         sgnf = sgnf.shuffle();
@@ -19521,7 +19522,7 @@ function Safari() {
                 rankName: "Grunt",
                 team: safari.events.spiritDuelsTeams[i].name,
                 exp: 0,
-                box: player.spiritDuels.box.length > 0 ? player.spiritDuels.box.slice(0) : [19],
+                box: sgnf[p].box.slice(0),
                 skills: [],
                 skillChoices: {}
             };
@@ -20236,6 +20237,7 @@ function Safari() {
         player.spiritDuels.team = "Unemployed";
         player.spiritDuels.exp = -2000;
         player.spiritDuels.skills = [];
+        player.spiritDuels.box = [];
         player.spiritDuels.skillChoices = {};
         player.balls.spirit = Math.max(player.balls.spirit, 5);
         safari.sanitize(player);
