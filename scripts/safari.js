@@ -20035,6 +20035,8 @@ function Safari() {
         if (nextLevel >= safari.events.spiritDuelsRanks.length) {
             return;
         }
+
+        safaribot.sendMessage(sys.id(player.id), "You gained {0} Spirit Duels EXP! (EXP to next rank: {1})".format(addComma(exp), addComma(Math.max(0, expNeeded-player.spiritDuels.exp))), safchan);
         if (player.spiritDuels.exp >= expNeeded) {
             player.spiritDuels.rank++;
             player.spiritDuels.rankName = safari.events.spiritDuelsRanks[nextLevel];
