@@ -32279,7 +32279,7 @@ function Safari() {
                 "evolvedChangeType": 12,
                 "canMega": 5,
                 "prime": 2,
-                "fewerabilities": 1,
+                "fewerAbilities": 1,
                 "stat": 12,
                 "moves": 48
             };
