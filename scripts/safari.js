@@ -1757,7 +1757,7 @@ function Safari() {
             quick: "A somewhat different Pokéball that tends to get better priority during throws. " + cdSeconds("quick") + " Obtained from Arborist and Pyramid.",
             level: "A slickly designed Pokéball that raises the stat levels of the lead Pokémon. " + cdSeconds("level") + " Obtained from Arborist and Pyramid.",
             clone: "A mysterious Pokéball with a very low catch rate that can duplicate a pokémon's D.N.A. " + cdSeconds("clone") + " Obtained from Arborist and Pyramid.",
-            spy: "A stealthy Pokéball that cannot be tracked. A successful snag with this ball allows for quick follow-up action, but it has low priority. " + cdSeconds("spy") + " Found with Itemfinder and obtained from Arborist and Pyramid.",
+            spy: "A stealthy Pokéball that cannot be tracked. A successful snag with this ball allows for quick follow-up action, but it has low priority. " + cdSeconds("spy") + ". Obtained from Arborist and Pyramid.",
             mono: "A monochromatic Pokéball that enables your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Arborist.",
             lightning: "A Pokéball with a lightning bolt design that comes out in a flash. " + cdSeconds("lightning") + " Obtained from Arborist.",
             heavy: "An industrial Pokéball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("heavy") + " Obtained from Arborist.",
@@ -52088,7 +52088,7 @@ function Safari() {
                     help.push("Note: This item is a Perk and the effects are passive.");
                 } else if (ballHelp.hasOwnProperty(lookup)) {
                     help.push(finishName(lookup) + ": " + ballHelp[lookup]);
-                    help.push("Note: Cooldown value doubles following a successful catch.");
+                    help.push("Note: Cooldown value doubles following a successful catch with the exception of " + es(finishName("spy")));
                 } else if (berryHelp.hasOwnProperty(lookup)) {
                     help.push(finishName(lookup) + ": " + berryHelp[lookup]);
                 }
