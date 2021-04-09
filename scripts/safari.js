@@ -20239,7 +20239,7 @@ function Safari() {
         player.spiritDuels.skills = [];
         player.spiritDuels.box = [];
         player.spiritDuels.skillChoices = {};
-        player.balls.spirit = Math.max(player.balls.spirit, 5);
+        player.balls.spirit = 5;
         safari.sanitize(player);
         safari.saveGame(player);
         safaribot.sendMessage(src, "You signed up for Spirit Duels! You will join the next round as soon as it starts!", safchan);
