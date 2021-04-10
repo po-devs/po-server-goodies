@@ -9786,7 +9786,7 @@ function Safari() {
             }
 
             var heldChanceBoost = false;
-            var heldChanceAbilities = [14, 105, 119]; // Compound Eyes, Super Luck, Frisk
+            var heldChanceAbilities = [14, 105, 119, 124, 187]; // Compound Eyes, Super Luck, Frisk, Pickpocket, Magician
             for (var i = 0; i < heldChanceAbilities.length; i++) {
                 if (canHaveAbility(leader, heldChanceAbilities[i])) {
                     safaribot.sendMessage(src, "Your {0}'s {1} helps you find held items more often!".format(poke(leader, true), abilityOff(heldChanceAbilities[i])), safchan);
