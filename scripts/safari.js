@@ -20129,12 +20129,12 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "You have achieved max rank!", safchan);
                 }
                 else {
-                    safaribot.sendHtmlMessage(src, "Next Rank: {0} ({1}/{2} EXP)".format(safari.events.spiritDuelsRanks[player.spiritDuels.rank + 1].rank, addComma(player.spiritDuels.exp), addComma(safari.getSpiritExpRequired(player))), safchan);
+                    safaribot.sendHtmlMessage(src, "Next Rank: {0} ({1}/{2} EXP).".format(safari.events.spiritDuelsRanks[player.spiritDuels.rank + 1].rank, addComma(player.spiritDuels.exp), addComma(safari.getSpiritExpRequired(player))), safchan);
                 }
                 for (var i = 0; i < safari.events.spiritDuelsTeams.length; i++) {
                     var team = safari.events.spiritDuelsTeams[i];
                     if (team.name.toLowerCase() === player.spiritDuels.team.toLowerCase()) {
-                        safaribot.sendHtmlMessage(src, "Team Record: {0} Duels won out of {1} Duels fought".format(team.won, team.fought), safchan);
+                        safaribot.sendHtmlMessage(src, "Team Record: {0} Duels won out of {1} Duels fought (Win Rate: {2}%).".format(team.won, team.fought, (team.rate * 100).toFixed(2)), safchan);
                     }
                 }
         }
