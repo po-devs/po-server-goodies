@@ -19799,7 +19799,7 @@ function Safari() {
             for (var a in team1) {
                 team1[a].rate = (team1[a].won / team1[a].fought);
                 if (team1[a].alive) {
-                    team1fighters += team1[a].owner.id.toCorrectCase() + "'s " + poke(team1[a].mon) + " " + pokeInfo.icon(team1[a].mon) + toColor(" (" + this.toRate(team1[a].rate) + "%)  ", this.getSpiritDuelColor(team1[a].rate) );
+                    team1fighters += pokeInfo.icon(team1[a].mon) + " " + toColor(team1[a].owner.casedName + "'s " + poke(team1[a].mon), team1[a].owner.nameColor) + " " + toColor(" (" + this.toRate(team1[a].rate) + "%)  ", this.getSpiritDuelColor(team1[a].rate) );
                 }
                 if (team1[a].rate < 0.5) {
                     team1[a].alive = false;
@@ -19814,7 +19814,7 @@ function Safari() {
             for (var a in team2) {
                 team2[a].rate = (team2[a].won / team2[a].fought);
                 if (team2[a].alive) {
-                    team2fighters += team2[a].owner.id.toCorrectCase() + "'s " + poke(team2[a].mon) + " " + pokeInfo.icon(team2[a].mon) + toColor(" (" + this.toRate(team2[a].rate) + "%)  ", this.getSpiritDuelColor(team2[a].rate) );
+                    team2fighters += pokeInfo.icon(team2[a].mon) + " " + toColor(team2[a].owner.casedName + "'s " + poke(team2[a].mon), team2[a].owner.nameColor) + " " + toColor(" (" + this.toRate(team2[a].rate) + "%)  ", this.getSpiritDuelColor(team2[a].rate) );
                 }
                 if (team2[a].rate < 0.5) {
                     team2[a].alive = false;
@@ -20124,6 +20124,7 @@ function Safari() {
             case "skill": case "skills": this.ownSpiritSkills(src,player); break;
             case "teams": case "allteams": this.showEachSpiritDuelTeam(src, player); break;
             default: 
+                sys.sendMessage(src, "", safchan);
                 var m = "You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "!";
                 m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
                 safaribot.sendHtmlMessage(src, m, safchan);
@@ -20139,6 +20140,7 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "Team Record: {0} Duels won out of {1} Duels fought (Win Rate: {2}%).".format(team.won, team.fought, (team.rate * 100).toFixed(2)), safchan);
                     }
                 }
+                sys.sendMessage(src, "", safchan);
         }
     };
     this.markActivity = function( src,player ) {
