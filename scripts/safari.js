@@ -20390,7 +20390,7 @@ function Safari() {
         safari.events.spiritDuelsTeams.slice(0).sort(function(a, b) {
             return b.rate - a.rate;
         }).forEach(function(e) {
-            safaribot.sendHtmlMessage(src, "<b>{0}.</b> {1} with {2}% win rate ({3}/{4} Duels won)".format(getOrdinal(standings.indexOf(e.rate) + 1), e.name, (rate * 100).toFixed(2), e.won, e.fought), safchan);
+            safaribot.sendHtmlMessage(src, "<b>{0}.</b> {1} with {2}% win rate ({3}/{4} Duels won)".format(getOrdinal(standings.indexOf(e.rate) + 1), e.name, (e.rate * 100).toFixed(2), e.won, e.fought), safchan);
         });
         sys.sendMessage(src, "", safchan);
         return;
