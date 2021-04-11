@@ -19724,8 +19724,8 @@ function Safari() {
         if (army2.length < 2) {
             army2 = army2init;
         }
-        var enlistPerPlayer1 = (army1.length >= 6 ? 3 : (army1.length >= 5 ? 4 : (army1.length >= 4 ? 5 : 6)));
-        var enlistPerPlayer2 = (army2.length >= 6 ? 3 : (army2.length >= 5 ? 4 : (army2.length >= 4 ? 5 : 6)));
+        var enlistPerPlayer1 = safari.spiritEnlistsPerPlayer(army1.length);
+        var enlistPerPlayer2 = safari.spiritEnlistsPerPlayer(army2.length);
 
         var p, j, n = now(), hold = 0;
         for (var a in army1) {
@@ -20160,6 +20160,12 @@ function Safari() {
         }
         return;
     };
+    this.spiritEnlistsPerPlayer = function(memberAmt) {
+        return memberAmt >= 6 ? 3 : (memberAmt >= 5 ? 4 : (memberAmt >= 4 ? 5 : 6));
+    };
+    this.getSpiritTeamMembers = function(player) {
+        return safari.events.spiritDuelsTeams.filter(function(e) { return e.players.contains(player.idnum) }).pop().players;
+    };
     this.spiritDuelsCommand = function( src,command,commandData ) {
         var player = getAvatar(src);
         if (!safari.events.spiritDuelsEnabled) {
@@ -20199,8 +20205,9 @@ function Safari() {
                 if (safari.events.spiritDuelsBattling && safari.events.spiritDuelsTeams.length > 1) {
                     safaribot.sendHtmlMessage(src, "Next Spirit Duel: <b>" + safari.events.spiritDuelsTeams[0].name + "</b> vs <b>" + safari.events.spiritDuelsTeams[1].name + "</b>!", safchan);
                 }
-                var bonusRanks = safari.events.bonusSpiritEnlistRanks
-                safaribot.sendHtmlMessage(src, "Up to the first 6 Pokémon in your Spirit Box will be enlisted in each Spirit Duel (although fewer may be enlisted depending on how many players are on your team).", safchan);
+                var bonusRanks = safari.events.bonusSpiritEnlistRanks;
+                var teamMemberAmount = safari.getSpiritTeamMembers(player).length || 0;
+                safaribot.sendHtmlMessage(src, "You currently have {0} players in your team, so each member can enlist the first {1} Pokémon in their Spirit Box per Duel.".format(teamMemberAmount, safari.spiritEnlistsPerPlayer(teamMemberAmount)), safchan);
                 safaribot.sendHtmlMessage(src, "You can use {0} to place your desired Spirit Duels participants at the front of your Spirit Box, or {1} to place them at the back. If you are running low on Spirit Box space, you can use {2} to permanently remove unwanted Spirit Pokémon (you will not lose EXP or regain any Spirit Balls).".format(link("/spiritduels active:", false, true), link("/spiritduels bench:", false, true), link("/spiritduels release:", false, true)), safchan);
                 safaribot.sendHtmlMessage(src, "Reaching the {0} ranks will allow you to enlist 1 extra Spirit Pokémon per each of those ranks, so reaching {1} will allow you to enlist {2} extra Spirit Pokémon, for example."
                     .format(
@@ -20412,15 +20419,17 @@ function Safari() {
             safaribot.sendMessage( src,"You are not on a team!",safchan );
             return;
         }
-        var enlistPerPlayer1 = (army1.length >= 6 ? 3 : (army1.length >= 5 ? 4 : (army1.length >= 4 ? 5 : 6)));
+        var enlistPerPlayer1 = safari.spiritEnlistsPerPlayer(army1.length);
         var hold = 0;
         for (var a in army1) {
             p = getAvatarOff(idnumList.get(army1[a]));
             j = 0;
             hold = parseInt(enlistPerPlayer1, 10);
-            hold += (p.spiritDuels.rank >= 3 ? 1 : 0);
-            hold += (p.spiritDuels.rank >= 7 ? 1 : 0);
-            hold += (p.spiritDuels.rank >= 9 ? 1 : 0);
+            for (var i = 0; i < safari.events.bonusSpiritEnlistRanks.length; i++) {
+                if (p.spiritDuels.rank >= safari.events.bonusSpiritEnlistRanks[i]) {
+                    hold++;
+                }
+            }
             for (var i = 0; i < hold; i++) {
                 out.push(pokeInfo.icon(p.spiritDuels.box[j]) + " <b>" + toColor(p.casedName + "'s " + poke(p.spiritDuels.box[j]), p.nameColor) + "</b>");
                 j++;
@@ -20453,7 +20462,7 @@ function Safari() {
         }
 
         var label = "Spirits (" + player.spiritDuels.box.length + "/" + (limit) + ")";
-        var enlist = 6, bonusRanks = safari.events.bonusSpiritEnlistRanks;
+        var enlist = safari.spiritEnlistsPerPlayer(safari.getSpiritTeamMembers(player).length), bonusRanks = safari.events.bonusSpiritEnlistRanks;
         for (var i = 0; i < bonusRanks.length; i++) {
             if (player.spiritDuels.rank >= bonusRanks[i]) {
                 enlist++;
