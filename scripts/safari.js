@@ -20196,6 +20196,9 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "Team Record: {0} Duels won out of {1} Duels fought (Win Rate: <b>{2}%</b>).".format(team.won, team.fought, (team.rate * 100).toFixed(2)), safchan);
                     }
                 }
+                if (safari.events.spiritDuelsBattling && safari.events.spiritDuelsTeams.length > 1) {
+                    safaribot.sendHtmlMessage(src, "Next Spirit Duel: <b>" + safari.events.spiritDuelsTeams[0].name + "</b> vs <b>" + safari.events.spiritDuelsTeams[1].name + "</b>!", safchan);
+                }
                 var bonusRanks = safari.events.bonusSpiritEnlistRanks
                 safaribot.sendHtmlMessage(src, "Up to the first 6 Pokémon in your Spirit Box will be enlisted in each Spirit Duel (although fewer may be enlisted depending on how many players are on your team).", safchan);
                 safaribot.sendHtmlMessage(src, "You can use {0} to place your desired Spirit Duels participants at the front of your Spirit Box, or {1} to place them at the back. If you are running low on Spirit Box space, you can use {2} to permanently remove unwanted Spirit Pokémon (you will not lose EXP or regain any Spirit Balls).".format(link("/spiritduels active:", false, true), link("/spiritduels bench:", false, true), link("/spiritduels release:", false, true)), safchan);
