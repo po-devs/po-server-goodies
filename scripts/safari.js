@@ -7930,7 +7930,8 @@ function Safari() {
             var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
             var currentId = poke(currentPokemonDisplay, true);
             var displayId = currentId.split("");
-            displayId.splice(sys.rand(1, displayId.length - 1), 0, permObj.get("widthJoiner") || "");          
+            displayId.splice(sys.rand(1, displayId.length - 1), 0, permObj.get("widthJoiner") || "");
+            displayId = displayId.join("");
 
             if (currentDisplay === currentPokemon) {
                 disguise = false;
@@ -7945,13 +7946,13 @@ function Safari() {
             var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
             var term = amount >= 4 ? "horde of " : ["", "pair of ", "group of "][amount-1];
             if (spiritMon) {
-                term = "Spirit Realm "
+                displayId = "Spirit Realm " + displayId;
             }
             var appmsg;
             if (isPortaled) {
-                appmsg = "A wild {2}{0} came through the portal! <i>(BST: {1})</i>".format(displayId.join(""), bst, term);
+                appmsg = "A wild {2}{0} came through the portal! <i>(BST: {1})</i>".format(displayId, bst, term);
             } else {
-                appmsg = wildPokemonMessage.format(displayId.join(""), bst, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
+                appmsg = wildPokemonMessage.format(displayId, bst, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
             }
             var sprite = (cageMode ? cage : pokeInfo.sprite(currentPokemonDisplay));
 
@@ -9738,7 +9739,6 @@ function Safari() {
                 }
                 var title = player.spiritDuels.rankName;
                 safaribot.sendHtmlAll(team + " " + title + " " + name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their "  + ch + poke(catchingMon, true) + "!", safchan);
-                wildSpirit = false;
             } else if ((ball === "mono") || (player.scaleDeadline >= now())) {
                 var stype = ball === "mono" && type2(catchingMon) !== "???" ? "pure " + (!player.monoSecondary ? type1(catchingMon) : type2(catchingMon)) + " " : "";
                 var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
@@ -9955,7 +9955,7 @@ function Safari() {
                 player.records.catchLove += 1;
             }
 
-            var clonedAmount = 0;
+            var clonedAmount = 0, cloneDiscarded = 0;
             if (ball === "clone" || crystalEffect.effect === "clone") {
                 if (ball === "clone") {
                     player.records.catchClone += 1;
@@ -9988,17 +9988,17 @@ function Safari() {
                     safaribot.sendAll("What is this?! The " + pokeName + " was further cloned by some mysterious power! In the end, " + name + " received " + plural(clonedAmount+1, pokeName) + "!", safchan);
                 }
                 if (clonedAmount > 0) {
-                    var boxLimit = getPerkBonus(player, "box"), discarded = 0;
+                    var boxLimit = getPerkBonus(player, "box"), cloneDiscarded = 0;
                     for (var i = 0; i < clonedAmount; i++) {
                         if (player.pokemon.length >= boxLimit) {
-                            discarded++;
+                            cloneDiscarded++;
                         } else {
                             player.pokemon.push(currentPokemon);
                         }
                     }
                     player.records.pokesCloned += clonedAmount;
-                    if (discarded > 0) {
-                        safaribot.sendMessage(src, "Oh heck! You didn't have enough space in your boxes for the cloned Pokémon, so you had to let " + plural(discarded, currentPokemon + (typeof currentPokemon === "string" ? "*" : "")) + " go!", safchan);
+                    if (cloneDiscarded > 0) {
+                        safaribot.sendMessage(src, "Oh heck! You didn't have enough space in your boxes for the cloned Pokémon, so you had to let " + plural(cloneDiscarded, currentPokemon + (typeof currentPokemon === "string" ? "*" : "")) + " go!", safchan);
                     }
                 }
             }
@@ -10090,7 +10090,7 @@ function Safari() {
                 }
             }
             if (isRare(currentPokemon) || ball === "master") {
-                sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
+                sys.appendToFile(mythLog, now() + "|||" + (clonedAmount - cloneDiscarded > 0 ? (clonedAmount - cloneDiscarded + 1) + "x " : "") + (wildSpirit ? "Spirit Realm " : "") + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
             }
             var active = leader;
             var activeNum = parseInt(active, 10);
