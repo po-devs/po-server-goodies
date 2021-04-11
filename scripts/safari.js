@@ -19653,7 +19653,9 @@ function Safari() {
         var p1 = safari.events.spiritDuelsTeams[0].name + ": ", p2 = safari.events.spiritDuelsTeams[1].name + ": ";
         var army1init = safari.events.spiritDuelsTeams[0].players;
         var army2init = safari.events.spiritDuelsTeams[1].players;
-        safari.events.spiritDuelsViewers = army1init.concat(army2init).map(function(e) { return idnumList.get(e) });
+        safari.events.spiritDuelsViewers = army1init.concat(army2init)
+            .map(function(e) { return idnumList.get(e) })
+            .filter(function(e) { return isPlaying(e) && !cantBecause(sys.id(e), false, ["auction", "battle", "event", "pyramid", "baking"], false, true) });
         var army1 = [];
         var army2 = [];
         for (var a in army1init) {
