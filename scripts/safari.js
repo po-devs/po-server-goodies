@@ -20210,8 +20210,8 @@ function Safari() {
                 }
                 var bonusRanks = safari.events.bonusSpiritEnlistRanks;
                 var teamMemberAmount = safari.getSpiritTeamMembers(player).length || 0;
-                safaribot.sendHtmlMessage(src, "You currently have {0} in your team, so <b>each member can enlist the first {1} Pokémon in their Spirit Box</b> per Duel.".format(plural(teamMemberAmount, "player"), safari.spiritEnlistsPerPlayer(teamMemberAmount)), safchan);
                 safaribot.sendHtmlMessage(src, "You can use {0} to place your desired Spirit Duels participants at the front of your Spirit Box, or {1} to place them at the back. If you are running low on Spirit Box space, you can use {2} to permanently remove unwanted Spirit Pokémon (you will not lose EXP or regain any Spirit Balls).".format(link("/spiritduels active:", false, true), link("/spiritduels bench:", false, true), link("/spiritduels release:", false, true)), safchan);
+                safaribot.sendHtmlMessage(src, "You currently have {0} in your team, so <b>each member can enlist the first {1} Pokémon in their Spirit Box</b> per Duel.".format(plural(teamMemberAmount, "player"), safari.spiritEnlistsPerPlayer(teamMemberAmount)), safchan);
                 safaribot.sendHtmlMessage(src, "Reaching the {0} ranks will allow you to enlist 1 extra Spirit Pokémon per each of those ranks, so reaching {1} will allow you to enlist {2} extra Spirit Pokémon, for example."
                     .format(
                         readable(bonusRanks.map(function(e) {
