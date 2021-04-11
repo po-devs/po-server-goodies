@@ -32618,13 +32618,7 @@ function Safari() {
                             return false;
                         }
                     }
-                    var l = [], m = [0, 1, 2], amt;
-                    for (i = 0; i < m.length; i++) {
-                        if (getPokeAbility(answer[ind], m[i])) {
-                            amt++;
-                        }
-                    }
-                    if (amt == 3) {
+                    if (getPokeAbility(answer[ind], 1) > 0 && getPokeAbility(answer[ind], 2) > 0) {
                         return false;
                     }
                     strength = 16;
