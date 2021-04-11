@@ -20131,6 +20131,12 @@ function Safari() {
                 else {
                     safaribot.sendHtmlMessage(src, "Next Rank: {0} ({1}/{2} EXP)".format(safari.events.spiritDuelsRanks[player.spiritDuels.rank + 1].rank, addComma(player.spiritDuels.exp), addComma(safari.getSpiritExpRequired(player))), safchan);
                 }
+                for (var i = 0; i < safari.events.spiritDuelsTeams.length; i++) {
+                    var team = safari.events.spiritDuelsTeams[i];
+                    if (team.name.toLowerCase() === player.spiritDuels.team.toLowerCase()) {
+                        safaribot.sendHtmlMessage(src, "Team Record: {0} Duels won out of {1} Duels fought".format(team.won, team.fought), safchan);
+                    }
+                }
         }
     };
     this.markActivity = function( src,player ) {
@@ -20380,6 +20386,10 @@ function Safari() {
             a = data[i].trim();
             a = getInputPokemon(a);
             x = player.spiritDuels.box.indexOf(a.num);
+            if (a.input === "Missingno") {
+                safaribot.sendMessage(src, "Invalid input: " + data[i] + "!", safchan);
+                continue;
+            }
             if (x === -1) {
                 safaribot.sendMessage(src, "You don't have any Spirit " + poke(a.name) + "!", safchan);
                 continue;
