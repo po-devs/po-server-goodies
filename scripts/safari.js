@@ -20371,17 +20371,17 @@ function Safari() {
     this.activeSpiritMon = function( src,player,data ) {
         //Adds the spirit mons to the front of their spirit box if they have it
         if (!data) {
-            safaribot.sendMessage( src,"The command is /spiritduels active:pokemon!",safchan );
+            safaribot.sendMessage( src,"The command is /spiritduels active:pokemon1,pokemon2,...",safchan );
             return;
         }
-        data = data.split(",");
+        data = data.split(",").reverse();
         var a, x;
         for (var i=0; i < data.length; i++) {
-            a = data[i];
+            a = data[i].trim();
             a = getInputPokemon(a);
             x = player.spiritDuels.box.indexOf(a.num);
             if (x === -1) {
-                safaribot.sendMessage(src, "You don't have any Spirit Pokémon " + poke(a.name) + "!", safchan);
+                safaribot.sendMessage(src, "You don't have any Spirit " + poke(a.name) + "!", safchan);
                 continue;
             }
             player.spiritDuels.box.splice(x, 1);
