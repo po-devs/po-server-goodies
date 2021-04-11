@@ -19653,6 +19653,7 @@ function Safari() {
         var p1 = safari.events.spiritDuelsTeams[0].name + ": ", p2 = safari.events.spiritDuelsTeams[1].name + ": ";
         var army1init = safari.events.spiritDuelsTeams[0].players;
         var army2init = safari.events.spiritDuelsTeams[1].players;
+        safari.events.spiritDuelsViewers = army1init.concat(army2init).map(function(e) { return idnumList.get(e) });
         var army1 = [];
         var army2 = [];
         for (var a in army1init) {
@@ -20001,6 +20002,48 @@ function Safari() {
         }
         return out;
     };
+    this.getSpiritExpRequired = function(player) {
+        if (!player.spiritDuels.rankName) {
+            return;
+        }
+
+        safari.events.spiritDuelsRanks = [
+            {rank: "Grunt", exp: 0},
+            {rank: "Ensign", exp: 2000},
+            {rank: "Officer Trainee", exp: 6000},
+            {rank: "Secretary Officer", exp: 10000},
+            {rank: "Squadron Leader", exp: 15000},
+            {rank: "Field Lieutenant", exp: 22000},
+            {rank: "Commander", exp: 30000},
+            {rank: "Vice Admiral", exp: 35000},
+            {rank: "Admin", exp: 40000},
+            {rank: "Supreme Master", exp: 50000}
+        ];
+
+        return safari.events.spiritDuelsRanks[player.spiritDuels.rank + 1].exp || 0;
+    };
+    this.spiritDuelsLevelUp = function(player) {
+        var nextLevel = player.spiritDuels.rank + 1 || -1;
+
+        if (nextLevel >= safari.events.spiritDuelsRanks.length) {
+            return;
+        }
+        
+        var expNeeded = safari.getSpiritExpRequired(player);
+
+        if (player.spiritDuels.exp >= expNeeded) {
+            player.spiritDuels.rank++;
+            player.spiritDuels.rankName = safari.events.spiritDuelsRanks[player.spiritDuels.rank].rank;
+            safaribot.sendMessage(sys.id(player.id), "You leveled up and became a " + player.spiritDuels.rankName + "!", safchan);
+            if (player.spiritDuels.rank > 0) {
+                canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
+                player.spiritDuels.skillChoices = canLearn;
+                safari.showSpiritSkill(sys.id(player.id),player);
+            }
+        }
+
+        safari.saveGame(player);
+    };
     this.catchSpiritMon = function( player,mon ) {
         //Adds the mon to player's spirit box
         //Also increases their EXP
@@ -20016,40 +20059,14 @@ function Safari() {
             exp *= 4;
         }
         player.spiritDuels.exp += exp;
-        var expNeeded;
-        switch (player.spiritDuels.rankName) {
-            case "Zoomer": expNeeded = 0; break;
-            case "Grunt": expNeeded = 2000; break;
-            case "Ensign": expNeeded = 6000; break;
-            case "Officer Trainee": expNeeded = 10000; break;
-            case "Secretary Officer": expNeeded = 15000; break;
-            case "Squadron Leader": expNeeded = 22000; break;
-            case "Field Lieutenant": expNeeded = 30000; break;
-            case "Commander": expNeeded = 35000; break;
-            case "Vice Admiral": expNeeded = 40000; break;
-            case "Admin": expNeeded = 50000; break;
-        }
-        safari.events.spiritDuelsRanks = [
-            "Grunt", "Ensign", "Officer Trainee", "Secretary Officer", "Squadron Leader", "Field Lieutenant", "Commander", "Vice Admiral", "Admin", "Supreme Master"
-        ];
-        var nextLevel = player.spiritDuels.rank + 1;
-        if (nextLevel >= safari.events.spiritDuelsRanks.length) {
-            return;
-        }
 
-        safaribot.sendMessage(sys.id(player.id), "You gained {0} Spirit Duels EXP! (EXP to next rank: {1})".format(addComma(exp), addComma(Math.max(0, expNeeded-player.spiritDuels.exp))), safchan);
-        if (player.spiritDuels.exp >= expNeeded) {
-            player.spiritDuels.rank++;
-            player.spiritDuels.rankName = safari.events.spiritDuelsRanks[nextLevel];
-            safaribot.sendMessage(sys.id(player.id), "You leveled up and became a " + player.spiritDuels.rankName + "!", safchan);
-            if (player.spiritDuels.rank > 0) {
-                canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
-                player.spiritDuels.skillChoices = canLearn;
-                this.showSpiritSkill(sys.id(player.id),player);
-            }
-        }
+        var expNeeded = safari.getSpiritExpRequired(player);
+
+        safaribot.sendMessage(sys.id(player.id), "You gained {0} Spirit Duels EXP! (Next Rank: {1}/{2})".format(addComma(exp), addComma(player.spiritDuels.exp), addComma(expNeeded)), safchan);
+
+        safari.spiritDuelsLevelUp(player);
+
         this.saveGame(player);
-        return;
     };
     this.showSpiritSkill = function( src,player ) {
         //Shows them their spirit monns
@@ -20108,6 +20125,12 @@ function Safari() {
                 var m = "You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "!";
                 m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
                 safaribot.sendHtmlMessage(src, m, safchan);
+                if (player.spiritDuels.rank >= safari.events.spiritDuelsRanks.length) {
+                    safaribot.sendHtmlMessage(src, "You have achieved max rank!", safchan);
+                }
+                else {
+                    safaribot.sendHtmlMessage(src, "Next Rank: {0} ({1}/{2} EXP)".format(safari.events.spiritDuelsRanks[player.spiritDuels.rank + 1].rank, addComma(player.spiritDuels.exp), addComma(safari.getSpiritExpRequired(player))), safchan);
+                }
         }
     };
     this.markActivity = function( src,player ) {
@@ -20257,9 +20280,10 @@ function Safari() {
             for (var b = 0; b < safari.events.spiritDuelsTeams[a].players.length; b++) {
                 num = safari.events.spiritDuelsTeams[a].players[b];
                 name = idnumList.get(num);
-                teamNames.push(name);
+                var avatar = getAvatarOff(name);
+                teamNames.push(toColor(avatar.casedName, avatar.nameColor));
             }
-            safaribot.sendMessage(src, "Your team (" + name + "): " + readable(teamNames) + ".", safchan);
+            safaribot.sendHtmlMessage(src, "Your team (" + safari.events.spiritDuelsTeams[a].name + "): " + readable(teamNames) + ".", safchan);
             break;
         }
         for (var a in safari.events.spiritDuelsTeams) {
@@ -20270,9 +20294,9 @@ function Safari() {
             for (var b = 0; b < safari.events.spiritDuelsTeams[a].players.length; b++) {
                 num = safari.events.spiritDuelsTeams[a].players[b];
                 name = idnumList.get(num);
-                teamNames.push(name);
+                teamNames.push(toColor(avatar.casedName, avatar.nameColor));
             }
-            safaribot.sendMessage(src, name + ": " + readable(teamNames) + ".", safchan);
+            safaribot.sendHtmlMessage(src, safari.events.spiritDuelsTeams[a].name + ": " + readable(teamNames) + ".", safchan);
             break;
         }
         return;
