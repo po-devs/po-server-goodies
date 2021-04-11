@@ -20089,7 +20089,7 @@ function Safari() {
         if (player.spiritDuels.exp >= expNeeded) {
             player.spiritDuels.rank++;
             player.spiritDuels.rankName = safari.events.spiritDuelsRanks[player.spiritDuels.rank].rank;
-            safaribot.sendMessage(sys.id(player.id), "You leveled up and became a " + player.spiritDuels.rankName + "!", safchan);
+            safaribot.sendMessage(sys.id(player.id), "You leveled up and became " + an(player.spiritDuels.rankName) + "!", safchan);
             if (player.spiritDuels.rank > 0) {
                 canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
                 player.spiritDuels.skillChoices = canLearn;
@@ -20180,7 +20180,7 @@ function Safari() {
             case "teams": case "allteams": this.showEachSpiritDuelTeam(src, player); break;
             default: 
                 sys.sendMessage(src, "", safchan);
-                var m = "You are a <b>" + player.spiritDuels.team + " " + player.spiritDuels.rankName + "</b>!";
+                var m = "You are <b>" + an(player.spiritDuels.team) + " " + player.spiritDuels.rankName + "</b>!";
                 m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels bench:", "Bench", true) + ", " + link("/spiritduels release:", "Release", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
                 safaribot.sendHtmlMessage(src, m, safchan);
                 if (safari.spiritDuelsMaxLevel(player)) {
@@ -20197,7 +20197,7 @@ function Safari() {
                 }
                 var bonusRanks = safari.events.bonusSpiritEnlistRanks
                 safaribot.sendHtmlMessage(src, "Up to the first 6 Pokémon in your Spirit Box will be enlisted in each Spirit Duel (although fewer may be enlisted depending on how many players are on your team).", safchan);
-                safaribot.sendHtmlMessage(src, "You can use {0} to place your desired Spirit Duels participants at the front of your Spirit Box, or {1} to place them at the back. If you are running low on Spirit Box space, you can use {2} to permanently remove unwanted Spirit Pokémon.".format(link("/spiritduels active:", false, true), link("/spiritduels bench:", false, true), link("/spiritduels release:", false, true)), safchan);
+                safaribot.sendHtmlMessage(src, "You can use {0} to place your desired Spirit Duels participants at the front of your Spirit Box, or {1} to place them at the back. If you are running low on Spirit Box space, you can use {2} to permanently remove unwanted Spirit Pokémon (you will not lose EXP or regain any Spirit Balls).".format(link("/spiritduels active:", false, true), link("/spiritduels bench:", false, true), link("/spiritduels release:", false, true)), safchan);
                 safaribot.sendHtmlMessage(src, "Reaching the {0} ranks will allow you to enlist 1 extra Spirit Pokémon per each of those ranks, so reaching {1} will allow you to enlist {2} extra Spirit Pokémon, for example."
                     .format(
                         readable(bonusRanks.map(function(e) {
@@ -20294,12 +20294,14 @@ function Safari() {
         if (data > log.length) {
             data = log.length;
         }
+        sys.sendMessage(src, "", safchan);
         for (var i = 0; i < log.length; i++) {
             safaribot.sendMessage(src, log[i], safchan);
             if (i > data) {
                 break;
             }
         }
+        sys.sendMessage(src, "", safchan);
         return;
     }
     this.joinSpiritDuels = function( src,player ) {
