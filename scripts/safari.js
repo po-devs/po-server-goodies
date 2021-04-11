@@ -9643,6 +9643,10 @@ function Safari() {
             safaribot.sendMessage(src, "The use of " + ballName + " is forbidden during this contest!", safchan);
             return;
         }
+        if (isBallAvailable(player, "spirit") && player.spiritDuels.box.length >= safari.events.spiritBoxLimit) {
+            safaribot.sendMessage(src, "Your Spirit Box is full!", safchan);
+            return;
+        }
 
         if (contestCount > 0 && contestantsWild.indexOf(name.toLowerCase()) === -1) {
             contestantsWild.push(name.toLowerCase());
@@ -10067,7 +10071,11 @@ function Safari() {
                 }
                 safaribot.sendAll(name + " found " + plural(gained, "silver") + " on the ground after catching " + pokeName + "!" , safchan);
             }
+
             this.fullBoxWarning(src);
+            if (ball === "spirit" && safari.events.spiritBoxLimit - player.spiritDuels.box.length <= 5) {
+                safaribot.sendMessage(src, "Your Spirit Box is almost full! You can only add " + (safari.events.spiritBoxLimit - player.spiritDuels.box.length) + " more Pokémon to your Spirit Box!", safchan);
+            }
 
             var penalty = 2 * (1 - getPerkBonus(player, "soothe") - this.getFortune(player, "soothe", 0));
             if (ball === "spy") {
@@ -11674,6 +11682,39 @@ function Safari() {
             } else {
                 normal.push(p);
             }
+        }
+        out += "<b>" + title + "</b><br/>";
+        out += normal.join(", ");
+        out += "<br/>";
+        return out;
+    };
+    this.listSpiritPokemon = function(list, title, small, enlist) {
+        var out = "", normal = [], count = 0, count2 = 0, rowSize = small ? 6 : 12, e;
+        for (e in list) {
+            normal.push(pokeInfo.icon(list[e], true));
+        }
+        out = ["<table border=1><tr><th>" + title + "</th></td></tr><tr><td><table cellpadding=5>"];
+        for (e in normal) {
+            if (count == 0) {
+                out.push("<tr>");
+            }
+            count++;
+            count2++;
+            out.push("<td align=center style='vertical-align: middle;" + (count2 <= enlist ? " background-color: #0099ff;" : "") + "'>" + normal[e] + "</td>");
+            if (count == rowSize) {
+                out.push("</tr>");
+                count = 0;
+            }
+        }
+        out.push("</table></td></tr></table>");
+        return out.join("");
+    };
+    this.listSpiritPokemonText = function(list, title, enlist) {
+        var out = "", normal = [], e, p, count = 0;
+        for (e in list) {
+            count++;
+            p = poke(list[e]);
+            normal.push(count <= enlist ? "<b>" + p + "</b>" : p);
         }
         out += "<b>" + title + "</b><br/>";
         out += normal.join(", ");
@@ -19295,6 +19336,7 @@ function Safari() {
         //Just loads the data
         var m;
         safari.events.spiritDuelsTeams = [];
+        safari.events.spiritDuelsSignups = [];
         for (var k in data.teams) {
             m = data.teams[k];
             safari.events.spiritDuelsTeams.push({
@@ -19309,6 +19351,8 @@ function Safari() {
             });
         }
         safari.events.spiritDuelsLog = [];
+        safari.events.spiritBoxLimit = 140;
+        safari.events.bonusSpiritEnlistRanks = [3, 7, 9];
         safari.events.spiritDuelsRanks = [
             {rank: "Grunt", exp: 0},
             {rank: "Ensign", exp: 2000},
@@ -19688,9 +19732,11 @@ function Safari() {
             p = getAvatarOff(idnumList.get(army1[a]));
             j = 0;
             hold = parseInt(enlistPerPlayer1, 10);
-            hold += (p.spiritDuels.rank >= 3 ? 1 : 0);
-            hold += (p.spiritDuels.rank >= 7 ? 1 : 0);
-            hold += (p.spiritDuels.rank >= 9 ? 1 : 0);
+            for (var i = 0; i < safari.events.bonusSpiritEnlistRanks.length; i++) {
+                if (p.spiritDuels.rank >= safari.events.bonusSpiritEnlistRanks[i]) {
+                    hold++;
+                }
+            }
             for (var i = 0; i < hold; i++) {
                 team1.push({
                     mon: p.spiritDuels.box[j],
@@ -19713,9 +19759,11 @@ function Safari() {
             p = getAvatarOff(idnumList.get(army2[a]));
             j = 0;
             hold = parseInt(enlistPerPlayer2, 10);
-            hold += (p.spiritDuels.rank >= 3 ? 1 : 0);
-            hold += (p.spiritDuels.rank >= 7 ? 1 : 0);
-            hold += (p.spiritDuels.rank >= 9 ? 1 : 0);
+            for (var i = 0; i < safari.events.bonusSpiritEnlistRanks.length; i++) {
+                if (p.spiritDuels.rank >= safari.events.bonusSpiritEnlistRanks[i]) {
+                    hold++;
+                }
+            }
             for (var i = 0; i < hold; i++) {
                 team2.push({
                     mon: p.spiritDuels.box[j],
@@ -20008,6 +20056,9 @@ function Safari() {
         if (!player.spiritDuels.rankName) {
             return;
         }
+        if (safari.spiritDuelsMaxLevel(player)) {
+            return 0;
+        }
 
         safari.events.spiritDuelsRanks = [
             {rank: "Grunt", exp: 0},
@@ -20024,12 +20075,14 @@ function Safari() {
 
         return safari.events.spiritDuelsRanks[player.spiritDuels.rank + 1].exp || 0;
     };
+    this.spiritDuelsMaxLevel = function(player) {
+        return player.spiritDuels.rank >= safari.events.spiritDuelsRanks.length - 1;
+    };
     this.spiritDuelsLevelUp = function(player) {
-        var nextLevel = player.spiritDuels.rank + 1 || -1;
-
-        if (nextLevel >= safari.events.spiritDuelsRanks.length) {
+        if (safari.spiritDuelsMaxLevel(player)) {
             return;
         }
+        var nextLevel = player.spiritDuels.rank + 1 || -1;
         
         var expNeeded = safari.getSpiritExpRequired(player);
 
@@ -20064,10 +20117,10 @@ function Safari() {
 
         var expNeeded = safari.getSpiritExpRequired(player);
 
-        safaribot.sendMessage(sys.id(player.id), "You gained {0} Spirit Duels EXP! (Next Rank: {1}/{2})".format(addComma(exp), addComma(player.spiritDuels.exp), addComma(expNeeded)), safchan);
-
-        safari.spiritDuelsLevelUp(player);
-
+        if (!safari.spiritDuelsMaxLevel(player)) {
+            safaribot.sendMessage(sys.id(player.id), "You gained {0} Spirit Duels EXP! (Next Rank: {1}/{2})".format(addComma(exp), addComma(player.spiritDuels.exp), addComma(expNeeded)), safchan);
+            safari.spiritDuelsLevelUp(player);
+        }
         this.saveGame(player);
     };
     this.showSpiritSkill = function( src,player ) {
@@ -20117,6 +20170,8 @@ function Safari() {
             case "box": this.showSpiritBox(src,player,false,false); break;
             case "boxt": this.showSpiritBox(src,player,false,true); break;
             case "active": this.activeSpiritMon(src,player,commandData); break;
+            case "release": this.releaseSpiritMon(src,player,commandData); break;
+            case "bench": this.benchSpiritMon(src,player,commandData); break;
             case "join": this.joinSpiritDuels(src,player); break;
             case "watch": this.watchSpiritDuels(src, player ? player : sys.name(src)); break;
             case "history": this.showSpiritDuelsLog(src,player,commandData); break;
@@ -20125,21 +20180,33 @@ function Safari() {
             case "teams": case "allteams": this.showEachSpiritDuelTeam(src, player); break;
             default: 
                 sys.sendMessage(src, "", safchan);
-                var m = "You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "!";
-                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
+                var m = "You are a <b>" + player.spiritDuels.team + " " + player.spiritDuels.rankName + "</b>!";
+                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels bench:", "Bench", true) + ", " + link("/spiritduels release:", "Release", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
                 safaribot.sendHtmlMessage(src, m, safchan);
-                if (player.spiritDuels.rank >= safari.events.spiritDuelsRanks.length) {
-                    safaribot.sendHtmlMessage(src, "You have achieved max rank!", safchan);
+                if (safari.spiritDuelsMaxLevel(player)) {
+                    safaribot.sendHtmlMessage(src, "You have achieved the highest rank!", safchan);
                 }
                 else {
-                    safaribot.sendHtmlMessage(src, "Next Rank: {0} ({1}/{2} EXP).".format(safari.events.spiritDuelsRanks[player.spiritDuels.rank + 1].rank, addComma(player.spiritDuels.exp), addComma(safari.getSpiritExpRequired(player))), safchan);
+                    safaribot.sendHtmlMessage(src, "Next Rank: <b>{0}</b> ({1}/{2} EXP).".format(safari.events.spiritDuelsRanks[player.spiritDuels.rank + 1].rank, addComma(player.spiritDuels.exp), addComma(safari.getSpiritExpRequired(player))), safchan);
                 }
                 for (var i = 0; i < safari.events.spiritDuelsTeams.length; i++) {
                     var team = safari.events.spiritDuelsTeams[i];
                     if (team.name.toLowerCase() === player.spiritDuels.team.toLowerCase()) {
-                        safaribot.sendHtmlMessage(src, "Team Record: {0} Duels won out of {1} Duels fought (Win Rate: {2}%).".format(team.won, team.fought, (team.rate * 100).toFixed(2)), safchan);
+                        safaribot.sendHtmlMessage(src, "Team Record: {0} Duels won out of {1} Duels fought (Win Rate: <b>{2}%</b>).".format(team.won, team.fought, (team.rate * 100).toFixed(2)), safchan);
                     }
                 }
+                var bonusRanks = safari.events.bonusSpiritEnlistRanks
+                safaribot.sendHtmlMessage(src, "Up to the first 6 Pokémon in your Spirit Box will be enlisted in each Spirit Duel (although fewer may be enlisted depending on how many players are on your team).", safchan);
+                safaribot.sendHtmlMessage(src, "You can use {0} to place your desired Spirit Duels participants at the front of your Spirit Box, or {1} to place them at the back. If you are running low on Spirit Box space, you can use {2} to permanently remove unwanted Spirit Pokémon.".format(link("/spiritduels active:", false, true), link("/spiritduels bench:", false, true), link("/spiritduels release:", false, true)), safchan);
+                safaribot.sendHtmlMessage(src, "Reaching the {0} ranks will allow you to enlist 1 extra Spirit Pokémon per each of those ranks, so reaching {1} will allow you to enlist {2} extra Spirit Pokémon, for example."
+                    .format(
+                        readable(bonusRanks.map(function(e) {
+                            return safari.events.spiritDuelsRanks[e].rank
+                        })),
+                        safari.events.spiritDuelsRanks[bonusRanks[bonusRanks.length - 1]].rank,
+                        bonusRanks.length
+                    ),
+                safchan);
                 sys.sendMessage(src, "", safchan);
         }
     };
@@ -20354,34 +20421,40 @@ function Safari() {
         //Shows them their spirit monns
         var out = "";
         var maxPages,
-            list = player.spiritDuels.box;
-
+            list = player.spiritDuels.box.slice(0);
+        var limit = safari.events.spiritBoxLimit || 140;
         var page = 1;
         if (!isNaN(page)) {
-            maxPages = Math.floor(list.length / (140)) + (list.length % 140 === 0 ? 0 : 1);
+            maxPages = Math.floor(list.length / (limit)) + (list.length % limit === 0 ? 0 : 1);
 
             if (page > maxPages) {
                 page = maxPages;
             }
-            list = list.slice(140 * (page - 1), 140 * (page - 1) + 140);
+            list = list.slice(limit * (page - 1), limit * (page - 1) + limit);
         }
 
-        var label = "Spirits (" + player.spiritDuels.box.length + "/" + (140) + ")";
+        var label = "Spirits (" + player.spiritDuels.box.length + "/" + (limit) + ")";
+        var enlist = 6, bonusRanks = safari.events.bonusSpiritEnlistRanks;
+        for (var i = 0; i < bonusRanks.length; i++) {
+            if (player.spiritDuels.rank >= bonusRanks[i]) {
+                enlist++;
+            }
+        }
         if (textOnly) {
-            out += this.listPokemonText(list, label);
+            out += this.listSpiritPokemonText(list, label, enlist);
         } else {
-            out += this.listPokemon(list, label, player.smallBox);
+            out += this.listSpiritPokemon(list, label, player.smallBox, enlist);
             if (isAndroid) {
                 out += "<br />";
             }
         }
 
-       safaribot.sendHtmlMessage( src,out,safchan );
+        sys.sendHtmlMessage(src, out, safchan);
     };
     this.activeSpiritMon = function( src,player,data ) {
         //Adds the spirit mons to the front of their spirit box if they have it
         if (!data) {
-            safaribot.sendMessage( src,"The command is /spiritduels active:pokemon1,pokemon2,...",safchan );
+            safaribot.sendMessage( src,"The command is /spiritduels active:pokemon1,pokemon2,... This command moves the specified Spirit Pokémon to the front of your Spirit Box where they will be able to take part in Spirit Duels.",safchan );
             return;
         }
         data = data.split(",").reverse();
@@ -20391,16 +20464,67 @@ function Safari() {
             a = getInputPokemon(a);
             x = player.spiritDuels.box.indexOf(a.num);
             if (a.input === "Missingno") {
-                safaribot.sendMessage(src, "Invalid input: " + data[i] + "!", safchan);
+                safaribot.sendMessage(src, "Invalid Pokémon: " + data[i] + "!", safchan);
                 continue;
             }
             if (x === -1) {
-                safaribot.sendMessage(src, "You don't have any Spirit " + poke(a.name) + "!", safchan);
+                safaribot.sendMessage(src, "You don't have any Spirit " + a.name + "!", safchan);
                 continue;
             }
             player.spiritDuels.box.splice(x, 1);
             player.spiritDuels.box.unshift(a.num);
             safaribot.sendMessage(src, "You added " + a.name + " to the lead of your Spirit Team!", safchan);
+        }
+        this.saveGame(player);
+    };
+    this.releaseSpiritMon = function( src,player,data ) {
+        //Completely removes the spirit mons from their spirit box
+        if (!data) {
+            safaribot.sendMessage( src,"The command is /spiritduels release:pokemon1,pokemon2,... This command will PERMANENTLY delete the specified Spirit Pokémon from your Spirit Box.",safchan );
+            return;
+        }
+        data = data.split(",").reverse();
+        var a, x;
+        for (var i=0; i < data.length; i++) {
+            a = data[i].trim();
+            a = getInputPokemon(a);
+            x = player.spiritDuels.box.indexOf(a.num);
+            if (a.input === "Missingno") {
+                safaribot.sendMessage(src, "Invalid Pokémon: " + data[i] + "!", safchan);
+                continue;
+            }
+            if (x === -1) {
+                safaribot.sendMessage(src, "You don't have any Spirit " + a.name + "!", safchan);
+                continue;
+            }
+            player.spiritDuels.box.splice(x, 1);
+            safaribot.sendMessage(src, "You removed " + a.name + " from your Spirit Box!", safchan);
+        }
+        this.saveGame(player);
+    };
+    this.benchSpiritMon = function( src,player,data ) {
+        //Moves the spirit mons to the back of their spirit box
+        if (!data) {
+            safaribot.sendMessage( src,"The command is /spiritduels bench:pokemon1,pokemon2,... This command will move the specified Spirit Pokémon to the back of your Spirit Box.",safchan );
+            return;
+        }
+        data = data.split(",").reverse();
+        var a, x;
+        for (var i=0; i < data.length; i++) {
+            a = data[i].trim();
+            a = getInputPokemon(a);
+            x = player.spiritDuels.box.indexOf(a.num);
+            if (a.input === "Missingno") {
+                safaribot.sendMessage(src, "Invalid Pokémon: " + data[i] + "!", safchan);
+                continue;
+            }
+            if (x === -1) {
+                safaribot.sendMessage(src, "You don't have any Spirit " + a.name + "!", safchan);
+                continue;
+            }
+            player.spiritDuels.box.splice(x, 1);
+            player.spiritDuels.box.push(a.num);
+            safaribot.sendMessage(src, "You moved " + a.name + " to the back of your Spirit Box!", safchan);
         }
         this.saveGame(player);
     };
