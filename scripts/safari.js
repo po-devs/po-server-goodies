@@ -52476,7 +52476,7 @@ function Safari() {
                 safari.throwBall(src, commandData, null, null, command);
                 return true;
             }
-            if (command === "spiritduel" || command === "spiritduels") {
+            if (["spiritduel", "spiritduels", "sduel", "sduels"].contains(command)) {
                 var info = commandData.split(":");
                 safari.spiritDuelsCommand(src, info[0], info[1]);
                 return true;
