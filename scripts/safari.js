@@ -20164,6 +20164,9 @@ function Safari() {
         return memberAmt >= 6 ? 3 : (memberAmt >= 5 ? 4 : (memberAmt >= 4 ? 5 : 6));
     };
     this.getSpiritTeamMembers = function(player) {
+        if (player.spiritDuels.team === "None") {
+            return [];
+        }
         return safari.events.spiritDuelsTeams.filter(function(e) { return e.players.contains(player.idnum) }).pop().players;
     };
     this.spiritDuelsCommand = function( src,command,commandData ) {
