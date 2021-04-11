@@ -52256,7 +52256,7 @@ function Safari() {
                     help.push("Note: This item is a Perk and the effects are passive.");
                 } else if (ballHelp.hasOwnProperty(lookup)) {
                     help.push(finishName(lookup) + ": " + ballHelp[lookup]);
-                    help.push("Note: Cooldown value doubles following a successful catch with the exception of " + es(finishName("spy")));
+                    help.push("Note: Cooldown value doubles following a successful catch with the exception of " + es(finishName("spy")) + ".");
                 } else if (berryHelp.hasOwnProperty(lookup)) {
                     help.push(finishName(lookup) + ": " + berryHelp[lookup]);
                 }
