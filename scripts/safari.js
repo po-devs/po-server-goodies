@@ -20276,10 +20276,12 @@ function Safari() {
             safaribot.sendMessage(src, "You have no Spirit Skills!", safchan);
             return;
         }
+        sys.sendMessage(src, "", safchan);
         safaribot.sendMessage(src, "You have the following Spirit Skills:", safchan);
         for (var s in player.spiritDuels.skills) {
-            safaribot.sendMessage(src, player.spiritDuels.skills[s].desc + " (+" + player.spiritDuels.skills[s].val + (player.spiritDuels.skills[s].scaling ? " scaling up to 2x." : "") + ")", safchan);
+            safaribot.sendMessage(src, "- " + player.spiritDuels.skills[s].desc + " (+" + player.spiritDuels.skills[s].val + (player.spiritDuels.skills[s].scaling ? " scaling up to 2x." : "") + ")", safchan);
         }
+        sys.sendMessage(src, "", safchan);
         return;
     }
     this.showSpiritDuelsLog = function( src,player,data ) {
