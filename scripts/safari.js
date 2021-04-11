@@ -20384,7 +20384,7 @@ function Safari() {
                 standings.push(safari.events.spiritDuelsTeams[a].rate);
             }
         }
-        standings = standings.sort(function(a, b) { return b - a });
+        standings.sort(function(a, b) { return b - a });
 
         sys.sendMessage(src, "", safchan);
         safari.events.spiritDuelsTeams.slice(0).sort(function(a, b) {
