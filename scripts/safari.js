@@ -19680,7 +19680,7 @@ function Safari() {
     this.prepareNextSpiritDuel = function() {
         //Creates a matchup between two teams
         //Should use a formula that makes teams with similar records fight
-        if (chance(0)) {
+        if (true) { // formerly disabled for unknown reason, keeping this here in case we need to turn it off again
             safari.events.spiritDuelsTeams.sort( function(a, b) {
                 return a.fought - b.fought;
             });
