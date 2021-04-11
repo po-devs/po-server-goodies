@@ -20362,8 +20362,7 @@ function Safari() {
                 var avatar = getAvatarOff(name);
                 teamNames.push("<b>" + toColor(avatar.casedName, avatar.nameColor) + "</b>");
             }
-            safaribot.sendHtmlMessage(src, (ownTeam ? "Your team (" + safari.events.spiritDuelsTeams[a].name + "): " : safari.events.spiritDuelsTeams[a].name + "): ") + readable(teamNames) + ".", safchan);
-            break;
+            safaribot.sendHtmlMessage(src, (ownTeam ? "Your team (" + safari.events.spiritDuelsTeams[a].name + "): " : "(" + safari.events.spiritDuelsTeams[a].name + "): ") + readable(teamNames) + ".", safchan);
         }
         return;
     };
