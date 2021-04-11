@@ -20297,7 +20297,7 @@ function Safari() {
                 var avatar = getAvatarOff(name);
                 teamNames.push("<b>" + toColor(avatar.casedName, avatar.nameColor) + "</b>");
             }
-            safaribot.sendHtmlMessage(src, safari.events.spiritDuelsTeams[a].name + ": " + readable(teamNames) + ".", safchan);
+            safaribot.sendHtmlMessage(src, "Next opponent (" + safari.events.spiritDuelsTeams[a].name + "): " + readable(teamNames) + ".", safchan);
             break;
         }
         return;
