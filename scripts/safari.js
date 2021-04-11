@@ -20178,10 +20178,11 @@ function Safari() {
             case "party": this.showSpiritDuelsTeam(src,player); break;
             case "skill": case "skills": this.ownSpiritSkills(src,player); break;
             case "teams": case "allteams": this.showEachSpiritDuelTeam(src, player); break;
+            case "standings": case "lb": this.showSpiritDuelStandings(src); break;
             default: 
                 sys.sendMessage(src, "", safchan);
                 var m = "You are <b>" + an(player.spiritDuels.team) + " " + player.spiritDuels.rankName + "</b>!";
-                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels bench:", "Bench", true) + ", " + link("/spiritduels release:", "Release", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
+                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels bench:", "Bench", true) + ", " + link("/spiritduels release:", "Release", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels standings", "Standings") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
                 safaribot.sendHtmlMessage(src, m, safchan);
                 if (safari.spiritDuelsMaxLevel(player)) {
                     safaribot.sendHtmlMessage(src, "You have achieved the highest rank!", safchan);
@@ -20369,9 +20370,29 @@ function Safari() {
             }
         }
         
+        sys.sendMessage(src, "", safchan);
         out.forEach(function(e) {
             safaribot.sendHtmlMessage(src, e, safchan);
         });
+        sys.sendMessage(src, "", safchan);
+        return;
+    };
+    this.showSpiritDuelStandings = function(src) {
+        var standings = [];
+        for (var a in safari.events.spiritDuelsTeams) {
+            if (!standings.contains(safari.events.spiritDuelsTeams[a].rate)) {
+                standings.push(safari.events.spiritDuelsTeams[a].rate);
+            }
+        }
+        standings = standings.sort(function(a, b) { return b - a });
+
+        sys.sendMessage(src, "", safchan);
+        safari.events.spiritDuelsTeams.slice(0).sort(function(a, b) {
+            return b.rate - a.rate;
+        }).forEach(function(e) {
+            safaribot.sendHtmlMessage(src, "<b>{0}.</b> {1} with {2}% win rate ({3}/{4} Duels won)".format(getOrdinal(standings.indexOf(e.rate) + 1), e.name, (rate * 100).toFixed(2), e.won, e.fought), safchan);
+        });
+        sys.sendMessage(src, "", safchan);
         return;
     };
     this.showSpiritDuelsTeam = function(src, player) {
