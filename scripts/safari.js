@@ -20281,7 +20281,7 @@ function Safari() {
                 num = safari.events.spiritDuelsTeams[a].players[b];
                 name = idnumList.get(num);
                 var avatar = getAvatarOff(name);
-                teamNames.push(toColor(avatar.casedName, avatar.nameColor));
+                teamNames.push("<b>" + toColor(avatar.casedName, avatar.nameColor) + "</b>");
             }
             safaribot.sendHtmlMessage(src, "Your team (" + safari.events.spiritDuelsTeams[a].name + "): " + readable(teamNames) + ".", safchan);
             break;
@@ -20294,7 +20294,8 @@ function Safari() {
             for (var b = 0; b < safari.events.spiritDuelsTeams[a].players.length; b++) {
                 num = safari.events.spiritDuelsTeams[a].players[b];
                 name = idnumList.get(num);
-                teamNames.push(toColor(avatar.casedName, avatar.nameColor));
+                var avatar = getAvatarOff(name);
+                teamNames.push("<b>" + toColor(avatar.casedName, avatar.nameColor) + "</b>");
             }
             safaribot.sendHtmlMessage(src, safari.events.spiritDuelsTeams[a].name + ": " + readable(teamNames) + ".", safchan);
             break;
@@ -20302,7 +20303,7 @@ function Safari() {
         return;
     };
     this.showSpiritDuelsTeam = function(src, player) {
-        var army1 = null, passed = false, out = "", name = "";
+        var army1 = null, passed = false, out = [], name = "";
         for (var a in safari.events.spiritDuelsTeams) {
             if (safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team) {
                 army1 = safari.events.spiritDuelsTeams[a].players
@@ -20325,7 +20326,7 @@ function Safari() {
             hold += (p.spiritDuels.rank >= 7 ? 1 : 0);
             hold += (p.spiritDuels.rank >= 9 ? 1 : 0);
             for (var i = 0; i < hold; i++) {
-                out += ("" + poke(p.spiritDuels.box[j]) + " (" + p.id + ") ");
+                out.push(pokeInfo.icon(p.spiritDuels.box[j]) + " <b>" + toColor(p.casedName + "'s " + poke(p.spiritDuels.box[j]), p.nameColor) + "</b>");
                 j++;
                 if (j >= p.spiritDuels.box.length) {
                     if (enlistPerPlayer1 < 5) {
@@ -20335,8 +20336,8 @@ function Safari() {
                 }
             }
         }
-        safaribot.sendMessage( src,"Your team (" + name + ")'s Spirit Duel Party: ",safchan );
-        safaribot.sendMessage( src,out,safchan );
+        safaribot.sendHtmlMessage( src,"Your team (" + name + ")'s Spirit Duel Party: ",safchan );
+        safaribot.sendHtmlMessage( src,readable(out),safchan );
         return;
     };
     this.showSpiritBox = function( src,player,isAndroid,textOnly ) {
