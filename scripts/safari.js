@@ -20355,30 +20355,14 @@ function Safari() {
     this.showEachSpiritDuelTeam = function(src, player) {
         var out = "", name, num, teamNames = [];
         for (var a in safari.events.spiritDuelsTeams) {
-            if (!(safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team)) {
-                continue;
-            }
+            var ownTeam = safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team;
             for (var b = 0; b < safari.events.spiritDuelsTeams[a].players.length; b++) {
                 num = safari.events.spiritDuelsTeams[a].players[b];
                 name = idnumList.get(num);
                 var avatar = getAvatarOff(name);
                 teamNames.push("<b>" + toColor(avatar.casedName, avatar.nameColor) + "</b>");
             }
-            safaribot.sendHtmlMessage(src, "Your team (" + safari.events.spiritDuelsTeams[a].name + "): " + readable(teamNames) + ".", safchan);
-            break;
-        }
-        for (var a in safari.events.spiritDuelsTeams) {
-            if (safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team) {
-                continue;
-            }
-            teamNames = [];
-            for (var b = 0; b < safari.events.spiritDuelsTeams[a].players.length; b++) {
-                num = safari.events.spiritDuelsTeams[a].players[b];
-                name = idnumList.get(num);
-                var avatar = getAvatarOff(name);
-                teamNames.push("<b>" + toColor(avatar.casedName, avatar.nameColor) + "</b>");
-            }
-            safaribot.sendHtmlMessage(src, "Next opponent (" + safari.events.spiritDuelsTeams[a].name + "): " + readable(teamNames) + ".", safchan);
+            safaribot.sendHtmlMessage(src, (ownTeam ? "Your team (" + safari.events.spiritDuelsTeams[a].name + "): " : safari.events.spiritDuelsTeams[a].name + "): ") + readable(teamNames) + ".", safchan);
             break;
         }
         return;
