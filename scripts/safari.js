@@ -20353,17 +20353,25 @@ function Safari() {
         return true;
     };
     this.showEachSpiritDuelTeam = function(src, player) {
-        var out = "", name, num, teamNames = [];
+        var out = [];
         for (var a in safari.events.spiritDuelsTeams) {
             var ownTeam = safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team;
-            for (var b = 0; b < safari.events.spiritDuelsTeams[a].players.length; b++) {
-                num = safari.events.spiritDuelsTeams[a].players[b];
-                name = idnumList.get(num);
-                var avatar = getAvatarOff(name);
-                teamNames.push("<b>" + toColor(avatar.casedName, avatar.nameColor) + "</b>");
+            var teamNames = safari.events.spiritDuelsTeams[a].players.slice(0).map(function(e) {
+                var avatar = getAvatarOff(idnumList.get(e));
+                return "<b>" + toColor(avatar.casedName, avatar.nameColor) + "</b>";
+            });
+            var tmp = (ownTeam ? "Your team (" + safari.events.spiritDuelsTeams[a].name + "): " : "(" + safari.events.spiritDuelsTeams[a].name + "): ") + readable(teamNames) + ".";
+            if (ownTeam) {
+                out.unshift(tmp);
             }
-            safaribot.sendHtmlMessage(src, (ownTeam ? "Your team (" + safari.events.spiritDuelsTeams[a].name + "): " : "(" + safari.events.spiritDuelsTeams[a].name + "): ") + readable(teamNames) + ".", safchan);
+            else {
+                out.push(tmp);
+            }
         }
+        
+        out.forEach(function(e) {
+            safaribot.sendHtmlMessage(src, e, safchan);
+        });
         return;
     };
     this.showSpiritDuelsTeam = function(src, player) {
