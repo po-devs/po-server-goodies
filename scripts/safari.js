@@ -19799,13 +19799,11 @@ function Safari() {
         var range1 = [10, 120], range2 = [10, 120];
         var res;
         if (step === 0) {
-            sendAll("A Spirit Duel between " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " has commenced! [" + link("/spiritduel watch", "Watch") + "]", true);
-        }
-        else if (step === 2) {
-            sendAll("The Spirit Duel between " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " is about to begin! [" + link("/spiritduel watch", "Watch") + "]", true);
+            sendAll("A Spirit Duel between " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " is about to begin! [" + link("/spiritduel watch", "Watch") + "]", true);
         }
         else if (step === 4) {
-            this.spiritDuelsMessage("Preparations complete! Duel about to begin!")
+            sendAll("The Spirit Duel between " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " has commenced! [" + link("/spiritduel watch", "Watch") + "]", true);
+            this.spiritDuelsMessage("Preparations complete!");
         }
         else if (step >= 5) {
             this.spiritDuelsMessage( "Turn " + (step - 4) + ": " );
