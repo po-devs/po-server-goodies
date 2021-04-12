@@ -90,6 +90,12 @@ function Safari() {
     var officialVolleyballWins2 = 0;
 
     var globalWildItems = {};
+    var customWildItems = {
+        "@moneyset": ["$" + (Math.max(10, sys.rand(1, 11) * sys.rand(1, 11)))],
+        "@moneyset2": ["$" + (sys.rand(10, 21) * sys.rand(10, 26))],
+        "@apricornset": ["@blkapricorn", "@whtapricorn", "@pnkapricorn", "@ylwapricorn", "@bluapricorn", "@redapricorn", "@grnapricorn"],
+        "@dewset": ["@dew", "@hdew"]
+    };
     var skillData = {};
     var skillUnlocks = {};
 
@@ -9802,18 +9808,13 @@ function Safari() {
             if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"")) {
                 var wildItemHeldList = globalWildItems[currentPokemon+""];
                 var drop = [], gained = [], discarded = [], lost = [];
-                var customItems = {
-                    "@moneyset": ["$" + (Math.max(10, sys.rand(1, 11) * sys.rand(1, 11)))],
-                    "@moneyset2": ["$" + (sys.rand(10, 21) * sys.rand(10, 26))],
-                    "@apricornset": ["@blkapricorn", "@whtapricorn", "@pnkapricorn", "@ylwapricorn", "@bluapricorn", "@redapricorn", "@grnapricorn"],
-                    "@dewset": ["@dew", "@hdew"]
-                };
+
                 for (var i = 0; i < wildItemHeldList.length; i++) { // sample data - {"1": [ {"item":"bait","perc":0.5}, {"item":"golden","perc":0.1} ]};
                     var itemObj = wildItemHeldList[i];
                     var item = itemObj.item, perc = itemObj.perc;
                     
-                    if (item in customItems) {
-                        item = customItems[item].random();
+                    if (item in customWildItems) {
+                        item = customWildItems[item].random();
                     }
                     
                     if (heldChanceBoost) {
@@ -53712,7 +53713,7 @@ function Safari() {
                 }
                 
                 if (SESSION.channels(safchan).isChannelOwner(src)) {
-                    var editBST = [];
+                    var editBST = [], itemDrops = [];
                     for (var theme in contestThemes) {
                         if (contestThemes[theme].editBST && info.num in contestThemes[theme].editBST) {
                             editBST.push(contestThemes[theme].name + " (" + contestThemes[theme].editBST[info.num] + ")");
@@ -53721,6 +53722,21 @@ function Safari() {
                     
                     if (editBST.length > 0) {
                         safaribot.sendMessage(src, info.name + " has a custom BST value in the following themes: " + readable(editBST), safchan);
+                    }
+                    if (info.num in globalWildItems) {
+                        for (var item in globalWildItems[info.num]) {
+                            var asset = translateAsset(globalWildItems[info.num][item].item);
+                            if (asset.type !== "item") {
+                                if (globalWildItems[info.num][item].item in customWildItems) {
+                                   itemDrops.push("{0} [Custom Item] ({1}%)".format(globalWildItems[info.num][item].item, globalWildItems[info.num][item].perc * 100));
+                                }
+                                continue;
+                            }
+                            itemDrops.push("{0} ({1}%)".format(plural(asset.amount, asset.name), globalWildItems[info.num][item].perc * 100));
+                        }
+                        if (itemDrops.length > 0) {
+                            safaribot.sendMessage(src, info.name + " drops the following items: " + readable(itemDrops), safchan);
+                        }
                     }
                 }
                 if (opt.contains("trivia")) {
