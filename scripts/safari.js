@@ -19337,6 +19337,7 @@ function Safari() {
         var m;
         safari.events.spiritDuelsTeams = [];
         safari.events.spiritDuelsSignups = [];
+        safari.events.spiritDuelsRefugees = [];
         for (var k in data.teams) {
             m = data.teams[k];
             safari.events.spiritDuelsTeams.push({
@@ -19469,6 +19470,7 @@ function Safari() {
     };
     this.resetDuelsTeams = function() {
         safari.events.spiritDuelsSignups = [];
+        safari.events.spiritDuelsRefugees = [];
     };
     this.toRate = function( rate ) {
         return (Math.floor(rate * 10000)/100);
@@ -19553,7 +19555,7 @@ function Safari() {
                 "name": name,
                 "exp": parseInt(player.spiritDuels.exp, 10),
                 "box": player.spiritDuels.box.length > 0 ? player.spiritDuels.box.slice(0) : [19]
-            })
+            });
         }
         sgnf = sgnf.shuffle();
         sgnf = sgnf.sort(function(a, b) {
@@ -19571,6 +19573,9 @@ function Safari() {
                 skills: [],
                 skillChoices: {}
             };
+            if (!safari.events.spiritDuelsRefugees.contains(player.idnum)) {
+                player.balls.spirit = 5;
+            }
             safaribot.sendAll(player.id.toCorrectCase() + " joined " + safari.events.spiritDuelsTeams[i].name + "!", safchan);
             safari.notification(player, "You've been assigned to team " + safari.events.spiritDuelsTeams[i].name + "!", "Spirit Duels");
             i++;
@@ -19579,6 +19584,7 @@ function Safari() {
             }
         }
         safari.events.spiritDuelsSignups = [];
+        safari.events.spiritDuelsRefugees = [];
         safari.events.spiritDuelsBattling = true;
     };
     this.spiritDuelsPrizes = function( teams ) {
@@ -19662,7 +19668,8 @@ function Safari() {
             var t = idnumList.get(safari.events.spiritDuelsTeams[0].players[p]);
             player = getAvatarOff(t);
             safari.events.spiritDuelsSignups.push(player.idnum);
-            safari.events.spiritDuelsSignupsRanked[player.idnum+""] = player.spiritDuels.exp;
+            safari.events.spiritDuelsRefugees.push(player.idnum); // used solely to check if player needs a spirit ball reset. if they're in this array, do not reset spirit balls since only signups from r1 should be reset
+            //safari.events.spiritDuelsSignupsRanked[player.idnum+""] = player.spiritDuels.exp;
         }
         safari.events.spiritDuelsTeams[0].alive = false;
         safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.slice(1);
