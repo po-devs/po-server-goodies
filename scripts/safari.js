@@ -58189,7 +58189,7 @@ function Safari() {
                     safari.saveGame(p);
                 }
             }
-            if (p.mushroomDeadline < now() && contestCooldown === 0) {
+            if (p.mushroomDeadline > now() && p.mushroomDeadline > 0 && contestCooldown === 1) {
                 var mushExtension = contestDuration * 1000;
                 p.mushroomDeadline += mushExtension;
                 safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect was extended by {1} due to the contest!</b>".format(finishName("mushroom"), plural(contestDuration / 60, "minute")), safchan);
