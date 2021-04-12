@@ -1079,7 +1079,7 @@ function Safari() {
             mail: {name: "mail", fullName: "Mail", type: "items", icon: 214, price: 1000, aliases: ["mail"], tradable: true },
             crystal: {name: "crystal", fullName: "Z-Crystal", type: "consumable", icon: 3000, price: 10000, duration: 40, aliases: ["crystal", "z-crystal", "zcrystal", "z crystal"], tradable: false },
             scale: {name: "scale", fullName: "Prism Scale", type: "consumable", icon: 232, price: 3000, duration: 10, aliases: ["scale", "prism", "prism scale", "prismscale"], tradable: false },
-            mushroom: {name: "mushroom", fullName: "Big Mushroom", type: "consumable", icon: 47, price: 3000, duration: 10, aliases: ["mushroom", "big mushroom", "bigmushroom", "tiny mushroom", "tinymushroom"], tradable: true },
+            mushroom: {name: "mushroom", fullName: "Big Mushroom", type: "consumable", icon: 47, price: 3000, duration: 10, aliases: ["mushroom", "big mushroom", "bigmushroom", "tiny mushroom", "tinymushroom", "shroom"], tradable: true },
             brush: {name: "brush", fullName: "Photo Brush", type: "consumable", icon: 175, price: 3000, aliases: ["brush", "photo brush", "photobrush"], tradable: false },
             pokeblock: {name: "pokeblock", fullName: "Pokéblock", type: "consumable", icon: 53, price: 3000, aliases: ["block", "poke brush", "pokeblock", "noms"], tradable: false},
 
@@ -19693,7 +19693,7 @@ function Safari() {
         //Creates a matchup between two teams
         //Should use a formula that makes teams with similar records fight
         if (true) { // formerly disabled for unknown reason, keeping this here in case we need to turn it off again
-            safari.events.spiritDuelsTeams.sort( function(a, b) {
+            safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.shuffle().sort( function(a, b) {
                 return a.fought - b.fought;
             });
         }
@@ -58183,22 +58183,26 @@ function Safari() {
             if (!p) {
                 continue;
             }
+            var needsUpdate = false;
             if (p.fortune) {
                 if (p.fortune.deadline < now() && p.fortune.deadline > 0) {
                     safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect expired!</b>".format(finishName("cookie")), safchan);
                     p.fortune.deadline = 0;
-                    safari.saveGame(p);
+                    needsUpdate = true;
                 }
             }
             if (p.mushroomDeadline > 0) {
                 if (contestCount === 0) {
                     p.mushroomDeadline--;
-                    safari.saveGame(p);
+                    needsUpdate = true;
                 }
                 if (contestCooldown === 1) {
                     safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect was paused due to the contest!</b>".format(finishName("mushroom")), safchan);
                 }
                 
+            }
+            if (needsUpdate) {
+                safari.saveGame(p);
             }
         }
         if (currentEvent && contestCooldown % currentEvent.turnLength === 0) {
