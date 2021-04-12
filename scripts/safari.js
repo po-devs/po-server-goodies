@@ -7672,8 +7672,9 @@ function Safari() {
             shiny = shinyRand < 1,
             statCap,
             amount = amt || 1,
-            ignoreForms = false;
-            canLegend = true;
+            ignoreForms = false,
+            canLegend = true,
+            crystalEffect;
 
         if (amount > 1) {
             shiny = false;
@@ -10712,7 +10713,7 @@ function Safari() {
         
         var period = new Date().getUTCHours();
         period = ["night", "morning", "afternoon", "evening"][Math.floor(period/6)];
-        var where = player.mushroomDeadline > now() ? player.mushroomTheme : (contestCount > 0 && currentTheme ? currentTheme : "default");
+        var where = player.mushroomDeadline > 0 ? player.mushroomTheme : (contestCount > 0 && currentTheme ? currentTheme : "default");
         var photo = {
             id: target,
             amt: currentPokemonCount,
@@ -11105,8 +11106,8 @@ function Safari() {
             if (player.scaleDeadline >= n) {
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("scale") + "'s Color:</b> " + cap(player.scaleColor) + " for the next " + timeLeftString(player.scaleDeadline) + "!", safchan);
             }
-            if (player.mushroomDeadline >= n) {
-                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("mushroom") + "'s Theme:</b> " + themeName(player.mushroomTheme) + " for the next " + timeLeftString(player.mushroomDeadline) + "!", safchan);
+            if (player.mushroomDeadline > 0) {
+                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("mushroom") + "'s Theme:</b> " + themeName(player.mushroomTheme) + " for the next " + utilities.getTimeString(player.mushroomDeadline) + "!", safchan);
             }
             if (player.zcrystalDeadline >= n && player.zcrystalUser) {
                 var type = getCrystalEffect(player.zcrystalUser);
@@ -14125,7 +14126,7 @@ function Safari() {
         }
         if (chance(finalChance)) {
             if (!(deluxe)) {
-                var showTheme = player.mushroomDeadline > now() && ballUsed !== "spy" ? " from the " + contestThemes[player.mushroomTheme].name + " theme" : "";
+                var showTheme = player.mushroomDeadline > 0 && ballUsed !== "spy" ? " from the " + contestThemes[player.mushroomTheme].name + " theme" : "";
                 safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon" + showTheme + "!", safchan);
             }
             if (golden) {
@@ -14148,7 +14149,7 @@ function Safari() {
             if (iterations) {
                 var out = "Spawned: ";
                 for (x = 0; x < 300; x++) {
-                    var where = player.mushroomDeadline > now() ? player.mushroomTheme : null;
+                    var where = player.mushroomDeadline > 0 ? player.mushroomTheme : null;
                     out += safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where, true);
                 }
                 safaribot.sendMessage(src, out, safchan);
@@ -14179,7 +14180,7 @@ function Safari() {
                         }
                         safari.createWild(mon, null, 1, null, null, player, null, false, null);
                     } else {
-                        var where = player.mushroomDeadline > now() ? player.mushroomTheme : null;
+                        var where = player.mushroomDeadline > 0 ? player.mushroomTheme : null;
                         safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where);
                     }
                 }
@@ -16402,14 +16403,14 @@ function Safari() {
             }
             player.balls.mushroom -= 1;
             player.mushroomTheme = possibleResults.random();
-            var dur = itemData.mushroom.duration * 60 * 1000;
+            var dur = itemData.mushroom.duration * 60;
             if (this.hasCostumeSkill(player, "extendedMushroom")) {
                 dur *= 1.25;
             }
-            player.mushroomDeadline = now() + dur;
+            player.mushroomDeadline = dur;
             player.records.mushroomsEaten += 1;
             this.saveGame(player);
-            safaribot.sendMessage(src, "You ate a suspicious " + finishName("mushroom") + "! As you get dizzier and dizzier, you start thinking that you are in " + an(themeName(player.mushroomTheme)) + " environment for " + timeLeftString(player.mushroomDeadline) + "!", safchan);
+            safaribot.sendMessage(src, "You ate a suspicious " + finishName("mushroom") + "! As you get dizzier and dizzier, you start thinking that you are in " + an(themeName(player.mushroomTheme)) + " environment for " + utilities.getTimeString(player.mushroomDeadline) + "!", safchan);
             return;
         }
         if (item === "brush") {
@@ -58189,11 +58190,15 @@ function Safari() {
                     safari.saveGame(p);
                 }
             }
-            if (p.mushroomDeadline > now() && p.mushroomDeadline > 0 && contestCooldown === 1) {
-                var mushExtension = contestDuration * 1000;
-                p.mushroomDeadline += mushExtension;
-                safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect was extended by {1} due to the contest!</b>".format(finishName("mushroom"), plural(contestDuration / 60, "minute")), safchan);
-                safari.saveGame(p);
+            if (p.mushroomDeadline > 0) {
+                if (contestCount === 0) {
+                    p.mushroomDeadline--;
+                    safari.saveGame(p);
+                }
+                if (contestCooldown === 1) {
+                    safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect was paused due to the contest!</b>".format(finishName("mushroom")), safchan);
+                }
+                
             }
         }
         if (currentEvent && contestCooldown % currentEvent.turnLength === 0) {
