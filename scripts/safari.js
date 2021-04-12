@@ -90,12 +90,7 @@ function Safari() {
     var officialVolleyballWins2 = 0;
 
     var globalWildItems = {};
-    var customWildItems = {
-        "@moneyset": ["$" + (Math.max(10, sys.rand(1, 11) * sys.rand(1, 11)))],
-        "@moneyset2": ["$" + (sys.rand(10, 21) * sys.rand(10, 26))],
-        "@apricornset": ["@blkapricorn", "@whtapricorn", "@pnkapricorn", "@ylwapricorn", "@bluapricorn", "@redapricorn", "@grnapricorn"],
-        "@dewset": ["@dew", "@hdew"]
-    };
+    var customWildItems = {};
     var skillData = {};
     var skillUnlocks = {};
 
@@ -9812,9 +9807,9 @@ function Safari() {
                 for (var i = 0; i < wildItemHeldList.length; i++) { // sample data - {"1": [ {"item":"bait","perc":0.5}, {"item":"golden","perc":0.1} ]};
                     var itemObj = wildItemHeldList[i];
                     var item = itemObj.item, perc = itemObj.perc;
-                    
-                    if (item in customWildItems) {
-                        item = customWildItems[item].random();
+                    var custom = safari.getCustomWildItems();
+                    if (item in custom) {
+                        item = custom[item].random();
                     }
                     
                     if (heldChanceBoost) {
@@ -14685,6 +14680,14 @@ function Safari() {
         this.saveGame(player);
         gachaJackpot += 1;
         SESSION.global().safariGachaJackpot = gachaJackpot;
+    };
+    this.getCustomWildItems = function() {
+        return customWildItems = {
+            "@moneyset": ["$" + (Math.max(10, sys.rand(1, 11) * sys.rand(1, 11)))],
+            "@moneyset2": ["$" + (sys.rand(10, 21) * sys.rand(10, 26))],
+            "@apricornset": ["@blkapricorn", "@whtapricorn", "@pnkapricorn", "@ylwapricorn", "@bluapricorn", "@redapricorn", "@grnapricorn"],
+            "@dewset": ["@dew", "@hdew"]
+        };
     };
     this.candyCostConversion = function(player, val) {
         //ivysaur is 650, bulbasaur 200, dragonair 699
@@ -53727,7 +53730,7 @@ function Safari() {
                         for (var item in globalWildItems[info.num]) {
                             var asset = translateAsset(globalWildItems[info.num][item].item);
                             if (asset.type !== "item") {
-                                if (globalWildItems[info.num][item].item in customWildItems) {
+                                if (globalWildItems[info.num][item].item in safari.getCustomWildItems()) {
                                    itemDrops.push("{0} [Custom Item] ({1}%)".format(globalWildItems[info.num][item].item, globalWildItems[info.num][item].perc * 100));
                                 }
                                 continue;
