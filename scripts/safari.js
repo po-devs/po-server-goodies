@@ -22256,10 +22256,10 @@ function Safari() {
         } else {
             if (autoCancel) {
                 if (isSameUser) {
-                    safaribot.sendHtmlMessage(src, "You cancelled your previous challenge against " + challengeRequests[name].opponent + " to send a new challenge request.", safchan);
+                    safaribot.sendHtmlMessage(src, "You cancelled your previous challenge against " + challengeRequests[name].opponent.toCorrectCase() + " to send a new challenge request.", safchan);
                 }
                 else {
-                    safaribot.sendHtmlMessage(src, "You cancelled your challenge against " + challengeRequests[name].opponent + " to challenge " + tName.toCorrectCase() + " instead.", safchan);
+                    safaribot.sendHtmlMessage(src, "You cancelled your challenge against " + challengeRequests[name].opponent.toCorrectCase() + " to challenge " + tName.toCorrectCase() + " instead.", safchan);
                 }
                 delete challengeRequests[name];
             }
