@@ -22194,7 +22194,7 @@ function Safari() {
             return;
         }
 
-        var autoCancel;
+        var autoCancel, isSameUser;
         var targetId = sys.id(data);
         if (!targetId) {
             safaribot.sendMessage(src, "No such person!", safchan);
@@ -22203,11 +22203,9 @@ function Safari() {
         var tName = sys.name(targetId).toLowerCase();
         if (name in challengeRequests) {
             if (challengeRequests[name].opponent === tName) {
-                safaribot.sendHtmlMessage(src, "You already have a pending challenge with this person! To cancel it, type " + link("/challenge cancel") + ".", safchan);
-                return;
-            } else {
-                autoCancel = true;
+                isSameUser = true;
             }
+            autoCancel = true;
         }
 
         if (tName === name) {
@@ -22257,7 +22255,12 @@ function Safari() {
             delete challengeRequests[tName];
         } else {
             if (autoCancel) {
-                safaribot.sendHtmlMessage(src, "You cancelled your challenge against " + challengeRequests[name].opponent + " to challenge " + tName.toCorrectCase() + " instead.", safchan);
+                if (isSameUser) {
+                    safaribot.sendHtmlMessage(src, "You cancelled your previous challenge against " + challengeRequests[name].opponent + " to send a new challenge request.", safchan);
+                }
+                else {
+                    safaribot.sendHtmlMessage(src, "You cancelled your challenge against " + challengeRequests[name].opponent + " to challenge " + tName.toCorrectCase() + " instead.", safchan);
+                }
                 delete challengeRequests[name];
             }
 
@@ -58176,11 +58179,21 @@ function Safari() {
         var onChannel = sys.playersOfChannel(safchan);
         for (var e in onChannel) { // potentially server-intensive, but should be okay. shift to after contest w/ mega reversion & lb update if not.
             var p = getAvatar(onChannel[e]);
-            if (p && p.fortune) {
+            if (!p) {
+                continue;
+            }
+            if (p.fortune) {
                 if (p.fortune.deadline < now() && p.fortune.deadline > 0) {
-                    safaribot.sendHtmlMessage(onChannel[e], "<b>Your Fortune Cookie effect expired!</b>", safchan);
+                    safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect expired!</b>".format(finishName("cookie")), safchan);
                     p.fortune.deadline = 0;
+                    safari.saveGame(p);
                 }
+            }
+            if (p.mushroomDeadline < now() && contestCooldown === 0) {
+                var mushExtension = contestDuration * 1000;
+                p.mushroomDeadline += mushExtension;
+                safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect was extended by {1} due to the contest!</b>".format(finishName("mushroom"), plural(contestDuration / 60, "minute")), safchan);
+                safari.saveGame(p);
             }
         }
         if (currentEvent && contestCooldown % currentEvent.turnLength === 0) {
