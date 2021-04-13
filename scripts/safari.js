@@ -19689,16 +19689,18 @@ function Safari() {
         }
         this.assignDuelsTeams();
     };
-    this.prepareNextSpiritDuel = function() {
+    this.prepareNextSpiritDuel = function(tiebreak) {
         //Creates a matchup between two teams
         //Should use a formula that makes teams with similar records fight
-        if (true) { // formerly disabled for unknown reason, keeping this here in case we need to turn it off again
+        if (tiebreak) {
             safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.shuffle().sort( function(a, b) {
-                return a.fought - b.fought;
+                return a.rate - b.rate;
             });
         }
         else {
-            safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.shuffle();
+            safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.shuffle().sort( function(a, b) {
+                return a.fought - b.fought;
+            });
         }
         sendAll("Next Spirit Duel: " + safari.events.spiritDuelsTeams[0].name + " vs " + safari.events.spiritDuelsTeams[1].name + "!", true);
     };
@@ -38412,7 +38414,7 @@ function Safari() {
             var finishBonus = Math.round(this.points * 0.10);
             this.points += finishBonus;
             this.sendToViewers("You received a bonus " + plural(finishBonus, "Point") + " for clearing all floors!");
-            safaribot.sendAll(readable(this.fullNames, "and") + " reached the " + getOrdinal(this.room) + " room of the " + getOrdinal(this.level) + " floor with a total of " + plural(toFixed(this.points, 2), "Point") + "!", safchan);
+            safaribot.sendAll(readable(this.fullNames, "and") + " cleared the Pyramid with a total of " + plural(toFixed(this.points, 2), "Point") + "!", safchan);
         } else {
             this.sendToViewers(readable(this.fullNames, "and") + " reached the " + getOrdinal(this.room) + " room of the " + getOrdinal(this.level) + " floor with a total of " + plural(toFixed(this.points, 2), "Point") + "!");
         }
@@ -51788,6 +51790,9 @@ function Safari() {
                 if (player.balls[clean] > cap) {
                     player.balls[clean] = cap;
                 }
+                if (!safari.events.spiritDuelsEnabled && player.balls.spirit > 0) {
+                    player.balls.spirit = 0;
+                }
             }
             var redoBase = false;
             for (i in player.decorations) {
@@ -56101,6 +56106,13 @@ function Safari() {
                 return true;
             }
             if (command === "forceduel") {
+                safari.events.spiritDuelsBattling = true;
+                safari.events.currentSpiritDuel = true;
+                safari.startSpiritDuel();
+                return true;
+            }
+            if (command === "tiebreakduel") {
+                safari.prepareNextSpiritDuel(true);
                 safari.events.spiritDuelsBattling = true;
                 safari.events.currentSpiritDuel = true;
                 safari.startSpiritDuel();
