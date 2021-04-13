@@ -18553,7 +18553,7 @@ function Safari() {
         
         //band-aid fix since im not sure what causes this yet, but it just happened and i can't replicate it
         player.medals = player.medals.filter(function(e) { return e !== null });
-        this.viewMedals(src);
+        //this.viewMedals(src);
         this.saveGame(player);
         return true;
     };
