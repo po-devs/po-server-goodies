@@ -20136,7 +20136,9 @@ function Safari() {
 
         if (!safari.spiritDuelsMaxLevel(player)) {
             safaribot.sendMessage(sys.id(player.id), "You gained {0} Spirit Duels EXP! (Next Rank: {1}/{2})".format(addComma(exp), addComma(player.spiritDuels.exp), addComma(expNeeded)), safchan);
-            safari.spiritDuelsLevelUp(player);
+            while (player.spiritDuels.exp >= safari.getSpiritExpRequired(player) && !safari.spiritDuelsMaxLevel(player)) {
+                safari.spiritDuelsLevelUp(player);
+            }
         }
         this.saveGame(player);
     };
