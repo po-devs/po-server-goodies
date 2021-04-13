@@ -9801,7 +9801,7 @@ function Safari() {
                 }
             }
 
-            if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"")) {
+            if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"") && !wildSpirit) {
                 var wildItemHeldList = globalWildItems[currentPokemon+""];
                 var drop = [], gained = [], discarded = [], lost = [];
 
@@ -20130,6 +20130,7 @@ function Safari() {
             exp *= 4;
         }
         player.spiritDuels.exp += exp;
+        player.spiritDuels.exp = Math.round(player.spiritDuels.exp);
 
         var expNeeded = safari.getSpiritExpRequired(player);
 
