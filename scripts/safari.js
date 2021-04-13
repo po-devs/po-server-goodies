@@ -20150,7 +20150,7 @@ function Safari() {
         safaribot.sendMessage(src, msg, safchan);
         for (var s in player.spiritDuels.skillChoices) {
             skill = player.spiritDuels.skillChoices[s];
-            safaribot.sendHtmlMessage(src, "[" + link("/spiritskill " + letters[i], letters[i].toUpperCase(), true) + "] " + skill.desc + " (+" + skill.val + ")", safchan);
+            safaribot.sendHtmlMessage(src, link("/spiritskill " + letters[i], "[" + letters[i].toUpperCase() + "]", true) + " " + skill.desc + " (+" + skill.val + ")", safchan);
             i++;
         }
     };
@@ -23120,7 +23120,7 @@ function Safari() {
             for (var e = 0; e < team.length; e++) {
                 p = team[e];
                 if (p.hp > 0) {
-                    out.push(pokeInfo.icon(p.id) + "[" + link("/bat " + codes[e], codes[e]) + "] " + poke(p.id) + (p.hp !== p.maxhp ? " (" + self.getHPColor(p.hp, p.maxhp) + ")" : ""));
+                    out.push(pokeInfo.icon(p.id) + link("/bat " + codes[e], "[" + codes[e] + "]") + " " + poke(p.id) + (p.hp !== p.maxhp ? " (" + self.getHPColor(p.hp, p.maxhp) + ")" : ""));
                 }
             }
             self.sendMessage(name, "Your team: " + out.join(" "));
