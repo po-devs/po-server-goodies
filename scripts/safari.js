@@ -20150,7 +20150,7 @@ function Safari() {
         safaribot.sendMessage(src, msg, safchan);
         for (var s in player.spiritDuels.skillChoices) {
             skill = player.spiritDuels.skillChoices[s];
-            safaribot.sendMessage(src, "[" + link("/spiritskill" + letters[i], letters[i].toUpperCase, true) + "] " + skill.desc + " (+" + skill.val + ")", safchan);
+            safaribot.sendHtmlMessage(src, "[" + link("/spiritskill " + letters[i], letters[i].toUpperCase(), true) + "] " + skill.desc + " (+" + skill.val + ")", safchan);
             i++;
         }
     };
@@ -20207,7 +20207,7 @@ function Safari() {
             default: 
                 sys.sendMessage(src, "", safchan);
                 var m = "You are <b>" + an(player.spiritDuels.team) + " " + player.spiritDuels.rankName + "</b>!";
-                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels bench:", "Bench", true) + ", " + link("/spiritduels release:", "Release", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels standings", "Standings") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
+                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels bench:", "Bench", true) + ", " + link("/spiritduels release:", "Release", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels standings", "Standings") + ", " + link("/spiritduels skill", "Skills" + (Object.keys(player.spiritDuels.skillChoices).length > 0 ? " [!]" : "")) + ", " + link("/spiritduels history", "History") + "].");
                 safaribot.sendHtmlMessage(src, m, safchan);
                 if (safari.spiritDuelsMaxLevel(player)) {
                     safaribot.sendHtmlMessage(src, "You have achieved the highest rank!", safchan);
@@ -20305,6 +20305,7 @@ function Safari() {
         if (Object.keys(player.spiritDuels.skills).length === 0 && Object.keys(player.spiritDuels.skillChoices).length === 0) {
             safaribot.sendMessage(src, "You have no Spirit Skills!", safchan);
             return;
+        }
         sys.sendMessage(src, "", safchan);
         if (Object.keys(player.spiritDuels.skills).length > 0) {
             safaribot.sendMessage(src, "You have the following Spirit Skills:", safchan);
