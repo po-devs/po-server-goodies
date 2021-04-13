@@ -19553,7 +19553,9 @@ function Safari() {
             name = idnumList.get(safari.events.spiritDuelsSignups[p]);
             player = getAvatarOff(name);
             if (player.spiritDuels.rank < 0) {
-                safari.notification(player, "You could not be assigned to a team because you are still a Zoomer!", "Spirit Duels");
+                safari.notification(player, "You could not be assigned to a team because you are still a Zoomer! If you want to join a team, sign up again and try to advance past Zoomer rank.", "Spirit Duels");
+                player.balls.spirit = 0;
+                safari.saveGame(player);
                 continue;
             }
             sgnf.push({
@@ -19583,6 +19585,7 @@ function Safari() {
             }
             safaribot.sendAll(player.id.toCorrectCase() + " joined " + safari.events.spiritDuelsTeams[i].name + "!", safchan);
             safari.notification(player, "You've been assigned to team " + safari.events.spiritDuelsTeams[i].name + "!", "Spirit Duels");
+            safari.saveGame(player);
             i++;
             if (i >= safari.events.spiritDuelsTeams.length) {
                 i = 0;
@@ -19686,6 +19689,7 @@ function Safari() {
             team = safari.events.spiritDuelsTeams[t];
             team.won = 0;
             team.fought = 0;
+            team.rate = 0;
         }
         this.assignDuelsTeams();
     };
@@ -20138,7 +20142,7 @@ function Safari() {
     this.showSpiritSkill = function( src,player ) {
         //Shows them their spirit monns
         var skill, msg = "", letters = ["a", "b", "c"], i = 0;
-        msg = "Choose one of these skills with /spiritskill [letter]!";
+        msg = "You can learn one of these skills with /spiritskill [letter]!";
         if (Object.keys(player.spiritDuels.skillChoices).length === 0) {
             safaribot.sendMessage(src, "You have no skills to learn!", safchan);
             return;
@@ -20146,7 +20150,7 @@ function Safari() {
         safaribot.sendMessage(src, msg, safchan);
         for (var s in player.spiritDuels.skillChoices) {
             skill = player.spiritDuels.skillChoices[s];
-            safaribot.sendMessage(src, "[" + letters[i] + "] " + skill.desc + " (+" + skill.val + ")", safchan);
+            safaribot.sendMessage(src, "[" + link("/spiritskill" + letters[i], letters[i].toUpperCase, true) + "] " + skill.desc + " (+" + skill.val + ")", safchan);
             i++;
         }
     };
@@ -20199,7 +20203,7 @@ function Safari() {
             case "party": this.showSpiritDuelsTeam(src,player); break;
             case "skill": case "skills": this.ownSpiritSkills(src,player); break;
             case "teams": case "allteams": this.showEachSpiritDuelTeam(src, player); break;
-            case "standings": case "lb": this.showSpiritDuelStandings(src); break;
+            case "standings": case "lb": case "leaderboard": this.showSpiritDuelStandings(src); break;
             default: 
                 sys.sendMessage(src, "", safchan);
                 var m = "You are <b>" + an(player.spiritDuels.team) + " " + player.spiritDuels.rankName + "</b>!";
@@ -20298,16 +20302,21 @@ function Safari() {
         return;
     };
     this.ownSpiritSkills = function( src,player ) {
-        if (Object.keys(player.spiritDuels.skills).length === 0) {
+        if (Object.keys(player.spiritDuels.skills).length === 0 && Object.keys(player.spiritDuels.skillChoices).length === 0) {
             safaribot.sendMessage(src, "You have no Spirit Skills!", safchan);
             return;
-        }
         sys.sendMessage(src, "", safchan);
-        safaribot.sendMessage(src, "You have the following Spirit Skills:", safchan);
-        for (var s in player.spiritDuels.skills) {
-            safaribot.sendMessage(src, "- " + player.spiritDuels.skills[s].desc + " (+" + player.spiritDuels.skills[s].val + (player.spiritDuels.skills[s].scaling ? " scaling up to 2x." : "") + ")", safchan);
+        if (Object.keys(player.spiritDuels.skills).length > 0) {
+            safaribot.sendMessage(src, "You have the following Spirit Skills:", safchan);
+            for (var s in player.spiritDuels.skills) {
+                safaribot.sendMessage(src, "- " + player.spiritDuels.skills[s].desc + " (+" + player.spiritDuels.skills[s].val + (player.spiritDuels.skills[s].scaling ? " scaling up to 2x." : "") + ")", safchan);
+            }
+            sys.sendMessage(src, "", safchan);
         }
-        sys.sendMessage(src, "", safchan);
+        if (Object.keys(player.spiritDuels.skillChoices).length > 0) {
+            safari.showSpiritSkill(src, player);
+            sys.sendMessage(src, "", safchan);
+        }
         return;
     }
     this.showSpiritDuelsLog = function( src,player,data ) {
