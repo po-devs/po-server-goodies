@@ -20518,7 +20518,7 @@ function Safari() {
         for (var i=0; i < data.length; i++) {
             a = data[i].trim();
             a = getInputPokemon(a);
-            x = player.spiritDuels.box.indexOf(a.num);
+            x = player.spiritDuels.box.reverse().indexOf(a.num); // reversing so it takes first index of that pokemon from the back. this makes it easier to load multiples of the same pokemon
             if (a.input === "Missingno") {
                 safaribot.sendMessage(src, "Invalid Pokémon: " + data[i] + "!", safchan);
                 continue;
@@ -20528,7 +20528,8 @@ function Safari() {
                 continue;
             }
             player.spiritDuels.box.splice(x, 1);
-            player.spiritDuels.box.unshift(a.num);
+            player.spiritDuels.box.push(a.num);
+            player.spiritDuels.box.reverse();
             safaribot.sendMessage(src, "You added " + a.name + " to the lead of your Spirit Team!", safchan);
         }
         this.saveGame(player);
