@@ -10094,7 +10094,7 @@ function Safari() {
                     }
                 }
             }
-            if (isRare(currentPokemon) || ball === "master") {
+            if (isRare(currentPokemon) || ball === "master" || ball === "cherish") {
                 sys.appendToFile(mythLog, now() + "|||" + (clonedAmount - cloneDiscarded > 0 ? (clonedAmount - cloneDiscarded + 1) + "x " : "") + (wildSpirit ? "Spirit Realm " : "") + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
             }
             var active = leader;
@@ -19654,7 +19654,6 @@ function Safari() {
             sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "!", true);
             j++;
         }
-        sendAll("");
     }
     this.progressDuels = function( src ) {
         //Counts everyone's scores
@@ -19670,7 +19669,7 @@ function Safari() {
         });
 
         this.spiritDuelsPrizes(safari.events.spiritDuelsTeams);
-
+        sys.sendAll("", safchan);
         safaribot.sendHtmlAll("<b>" + safari.events.spiritDuelsTeams[0].name + " has been eliminated!</b>", safchan);
         
         for (var p in safari.events.spiritDuelsTeams[0].players) {
