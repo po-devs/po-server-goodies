@@ -19647,6 +19647,7 @@ function Safari() {
                 }
                 finalrew = (finalrew + ("," + rareamt + "@rare"));
                 g = giveStuff(player, toStuffObj(finalrew));
+                sys.appendToFile(giftLog, now() + "|||Spirit Duels|||" + player.id + "|||nextduels|||received|||" + g + "\n");
                 safari.notification(player, "Your Spirit Duels team " + teams[t].name + " scored " + r + "% and got #" + (i + 1) + "! (You " + g + ").", "Spirit Duels", true);
                 safari.saveGame(player);
             }
