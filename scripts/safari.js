@@ -20129,7 +20129,7 @@ function Safari() {
         if (isLegendary(id)) {
             exp *= 4;
         }
-        player.spiritDuels.exp += exp;
+        player.spiritDuels.exp += Math.round(exp);
         player.spiritDuels.exp = Math.round(player.spiritDuels.exp);
 
         var expNeeded = safari.getSpiritExpRequired(player);
