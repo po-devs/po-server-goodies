@@ -1893,6 +1893,7 @@ function Safari() {
     var contestCount = 0;
     var contestExtension = 0;
     var contestExtensionLimit = 600; // event extension limit, 10 minutes
+    var contestMidPoint = false; //whether the contest is half over (checked after wild caught);
     var contestCatchers = {};
     var contestBroadcast = true; //Determines whether Tohjo gets notified
     var contestCooldownLength = 1800; //1 contest every 30 minutes
@@ -2864,6 +2865,8 @@ function Safari() {
                     safaribot.sendHtmlAll("The timeline was reverted!", safchan);
                 } else if (currentThemeEffect == "distortion") {
                     safaribot.sendHtmlAll("The twisted dimensions returned to normal!", safchan);
+                } else if (["rain","hail","sand","sun"].contains(currentThemeEffect)) {
+                    safaribot.sendHtmlAll("The effects of the weather wore off!", safchan);
                 }                
             }
             currentThemeEffect = false;
@@ -3244,6 +3247,17 @@ function Safari() {
             data[p] = data[p].trim();
         }
         return data;
+    }
+    function weatherMessage() {
+    	if (currentThemeEffect == "rain") {
+			safaribot.sendHtmlAll(pokeInfo.icon(131423) + " Looks like it's raining!", safchan);
+		} else if (currentThemeEffect == "sun") {
+			safaribot.sendHtmlAll(pokeInfo.icon(262495) + " Looks like it's sunny!", safchan);
+		} else if (currentThemeEffect == "hail") {
+			safaribot.sendHtmlAll(pokeInfo.icon(65887) + " Looks like it's snowing!", safchan);
+		} else if (currentThemeEffect == "sand") {
+			safaribot.sendHtmlAll(pokeInfo.icon(449) + " Looks like it's a sandstorm!", safchan);
+		}
     }
 
     /* Formatting Functions */
@@ -8154,6 +8168,7 @@ function Safari() {
         this.runPendingActive();
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
+        contestMidPoint = false;
         spiritSpawn = true;
         wildSpirit = false;
         var themesListed = [].concat(nextTheme);
@@ -8263,7 +8278,7 @@ function Safari() {
         } else {
             currentThemeFlavor = null;
         }
-        if (currentTheme && contestThemes[currentTheme].themeEffect) {
+        if (currentTheme && contestThemes[currentTheme].themeEffect && contestThemes[currentTheme].hasOwnProperty("variations") && Object.keys(contestThemes[currentTheme].variations).length > 0) {
             currentThemeEffect = Object.keys(contestThemes[currentTheme].variations).random();
             if (currentThemeEffect == "portal") {
                 var ph = [];
@@ -8308,6 +8323,8 @@ function Safari() {
                 }
             } else if (currentThemeEffect == "distortion") {
                 safaribot.sendHtmlAll(pokeInfo.icon(66023) + " Giratina appeared and twisted the dimensions!", safchan);
+            } else if (["rain","sand","sun","hail"].contains(currentThemeEffect)) {
+            	weatherMessage();
             }
         }
         
@@ -9523,6 +9540,24 @@ function Safari() {
                 //safaribot.sendAll("The wild {0}'s Wonder Guard is protecting it!".format(poke(usingPokemon)), safchan);
             }
         }
+        if (currentThemeEffect) {
+        	var abilBoosted = [], boosted = 1;
+        	if (currentThemeEffect == "rain") {
+        		abilBoosted = [abilityNum("Swift Swim"), abilityNum("Hydration"), abilityNum("Rain Dish"), abilityNum("Dry Skin")];
+        	} else if (currentThemeEffect == "sun") {
+        		abilBoosted = [abilityNum("Chlorophyll"), abilityNum("Solar Power"), abilityNum("Flower Gift"), abilityNum("Leaf Guard")];
+        	} else if (currentThemeEffect == "sand") {
+        		abilBoosted = [abilityNum("Sand Rush"), abilityNum("Sand Veil"), abilityNum("Sand Force")];
+        	} else if (currentThemeEffect == "hail") {
+        		abilBoosted = [abilityNum("Slush Rush"), abilityNum("Snow Cloak"), abilityNum("Ice Body"), abilityNum("Ice Face")];
+        	}
+        	for (var i = 0; i < abilBoosted.length; i++) {
+        		if (canHaveAbility(leader, abilBoosted[i])) {
+        			boosted = 1.3;
+        			break;
+        		}
+        	}
+        }
         var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true && !theory) {
             if (player.helds.length > 0 && player.helds[0] == 2 && !needsPechaCleared.contains(player.id.toLowerCase())) {
@@ -10178,6 +10213,14 @@ function Safari() {
                 isBaited = false;
                 if (contestCount <= 0) {
                     this.runPendingActive();
+                } else if (contestCount <= 150 && (!(contestMidPoint))) {
+                	contestMidPoint = true;
+                	if (currentThemeEffect && ["rain","sun","sand","hail"].contains(currentThemeEffect)) {
+                		var opt = ["rain","sun","sand","hail"];
+                		opt.splice(opt.indexOf(currentThemeEffect), 1);
+                		currentThemeEffect = opt.random();
+                		weatherMessage();
+                	}
                 }
                 checkUpdate();
             } else {
@@ -10273,6 +10316,15 @@ function Safari() {
 
         if (flee) {
             this.pokemonFlee();
+            if (contestCount <= 150 && (!(contestMidPoint))) {
+				contestMidPoint = true;
+				if (currentThemeEffect && ["rain","sun","sand","hail"].contains(currentThemeEffect)) {
+					var opt = ["rain","sun","sand","hail"];
+					opt.splice(opt.indexOf(currentThemeEffect), 1);
+					currentThemeEffect = opt.random();
+					weatherMessage();
+				}
+			}
         } else {
             this.changeWildAction("catch");
             if (!freeThrow && crystalEffect.effect === "double" && ball !== "spirit" && ball !== "cherish") {
@@ -58635,6 +58687,7 @@ function Safari() {
                 contestCount--;
                 contestExtension = 0;
                 if (contestCount === 0) {
+                	contestMidPoint = false;
                     var winners = [], pokeWinners = [], maxCaught = 0, maxBST = 0, player, contestInfo = { finished: now() }, fullWinners = [];
                     for (var e in contestCatchers) {
                         if (contestCatchers.hasOwnProperty(e)) {
