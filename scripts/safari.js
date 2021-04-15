@@ -54566,18 +54566,28 @@ function Safari() {
                 return true;
             }
             if (command === "monstonums") {
-            	var l = commandData.split(","), out = [];
+            	var l = commandData.split(","), out = [], item;
             	for (var i = 0; i < l.length; i++) {
-            		out.push(getInputPokemon(l[i]).num);
+            		item = getInputPokemon(l[i]).num;
+            		if (!(item)) {
+            			continue;
+            		}
+            		out.push(item);
             	}
 				safaribot.sendMessage(src, "Inputed Pokémon: " + l.join(","), safchan);
 				safaribot.sendMessage(src, "Corresponding Dex Numbers: " + out.join(","), safchan);
                 return true;
             }
             if (command === "numstomons") {
-            	var l = commandData.split(","), out = [];
+            	var l = commandData.split(","), out = [], item;
             	for (var i = 0; i < l.length; i++) {
-            		out.push(poke(l[i]));
+            		item = l[i];
+            		if (item.indexOf("-") > -1) {
+            			var spl = item.split("-");
+            			item = parseInt(spl[0], 10) + (65536 * parseInt(spl[1], 10));
+            		}
+            		item = poke(parseInt(item, 10));
+            		out.push(item);
             	}
 				safaribot.sendMessage(src, "Inputed Dex Numbers: " + l.join(","), safchan);
 				safaribot.sendMessage(src, "Corresponding Pokémon: " + out.join(","), safchan);
