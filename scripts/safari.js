@@ -20140,7 +20140,9 @@ function Safari() {
         else if (spiritRealm) {
             exp *= 2;
         }
-        player.spiritDuels.exp += Math.round(exp);
+
+        exp = Math.round(exp);
+        player.spiritDuels.exp += exp;
         player.spiritDuels.exp = Math.round(player.spiritDuels.exp);
 
         var expNeeded = safari.getSpiritExpRequired(player);
