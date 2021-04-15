@@ -9637,6 +9637,10 @@ function Safari() {
             safaribot.sendMessage(src, "This is an Event Pokémon, you cannot use " + es(finishName("master")) + "!", safchan);
             return;
         }
+        if (ball === "spirit" && safari.spiritDuelsCanSignup(src, player)) {
+            safaribot.sendHtmlMessage(src, "You can't throw " + es(finishName("spirit")) + " without signing up for " + link("/spiritduels", "Spirit Duels") + " first!", safchan);
+            return;
+        }
         if (wildSpirit && ball !== "spirit") {
             safaribot.sendMessage(src, "This is a Spirit Pokémon, you can only use " + es(finishName("spirit")) + "!", safchan);
             return;
@@ -19647,7 +19651,7 @@ function Safari() {
                 }
                 finalrew = (finalrew + ("," + rareamt + "@rare"));
                 g = giveStuff(player, toStuffObj(finalrew));
-                sys.appendToFile(giftLog, now() + "|||Spirit Duels|||" + player.id + " from " + teams[t].name + "|||nextduels|||received|||" + g + "\n");
+                sys.appendToFile(giftLog, now() + "|||Spirit Duels|||" + player.casedName + " from " + teams[t].name + "|||nextduels|||received|||" + g + "\n");
                 safari.notification(player, "Your Spirit Duels team " + teams[t].name + " scored " + r + "% and got #" + (i + 1) + "! (You " + g + ").", "Spirit Duels", true);
                 safari.saveGame(player);
             }
@@ -19802,9 +19806,10 @@ function Safari() {
         }
         team1 = team1.shuffle();
         team2 = team2.shuffle();
-        /*var smaller = Math.min(team1.length, team2.length);
-        safari.events.sd1 = team1.slice(0, smaller).shuffle();
-        safari.events.sd2 = team2.slice(0, smaller).shuffle();*/
+
+        //var smaller = Math.min(team1.length, team2.length);
+        safari.events.sd1 = team1.slice(0).shuffle();
+        safari.events.sd2 = team2.slice(0).shuffle();
         safari.events.sdStep = -1;
     };
     this.spiritDuelTurn = function() {
@@ -20345,8 +20350,7 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
         return;
     }
-    this.joinSpiritDuels = function( src,player ) {
-        //Joins duels to be assigned a team next time
+    this.spiritDuelsCanSignup = function(src, player) {
         var id = player.id.toLowerCase();
         if (!safari.events.spiritDuelsEnabled) {
             return false;
@@ -20371,6 +20375,13 @@ function Safari() {
         if (safari.events.spiritDuelsTeams.length <= 4) {
             safaribot.sendMessage(src,"You cannot sign up for this season of Spirit Duels anymore!", safchan);
             return false;
+        }
+        return true;
+    };
+    this.joinSpiritDuels = function( src,player ) {
+        //Joins duels to be assigned a team next time
+        if (!safari.spiritDuelsCanSignup(src, player)) {
+            return;
         }
         safari.events.spiritDuelsSignups.push(player.idnum);
         if (!player.spiritDuels) {
