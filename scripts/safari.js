@@ -19761,7 +19761,7 @@ function Safari() {
         	army2Avatars.push(getAvatarOff(idnumList.get(army1[a])));
         }
         
-        var preCount1 = 0, preCount2 = 0, hold;
+        var preCount1 = 0, preCount2 = 0, hold, p, j;
         for (var a in army1Avatars) {
             p = army1Avatars[a];
             hold = parseInt(enlistPerPlayer1, 10);
@@ -19795,7 +19795,7 @@ function Safari() {
         var playerAmt1 = army1Avatars.length;
         var playerAmt2 = army2Avatars.length;
 
-        var p, j, n = now();
+        var n = now();
         hold = 0;
         for (var a in army1Avatars) {
             p = army1Avatars[a];
@@ -20539,7 +20539,7 @@ function Safari() {
             return;
         }
         var enlistPerPlayer1 = safari.spiritEnlistsPerPlayer(army1.length);
-        var hold = 0;
+        var hold = 0, p, j;
         for (var a in army1) {
             p = getAvatarOff(idnumList.get(army1[a]));
             j = 0;
