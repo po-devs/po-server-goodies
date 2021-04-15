@@ -19758,7 +19758,7 @@ function Safari() {
         	army1Avatars.push(getAvatarOff(idnumList.get(army1[a])));
         }
         for (var a in army2) {
-        	army2Avatars.push(getAvatarOff(idnumList.get(army1[a])));
+        	army2Avatars.push(getAvatarOff(idnumList.get(army2[a])));
         }
         
         var preCount1 = 0, preCount2 = 0, hold, p, j;
