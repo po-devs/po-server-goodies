@@ -90,15 +90,16 @@ function Safari() {
     var officialVolleyballWins2 = 0;
 
     var globalWildItems = {};
+    var customWildItems = {};
     var skillData = {};
     var skillUnlocks = {};
 
     var currentDay = 1;
 
     var ghostSprite = "data:image/png;base64,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";
-	
-	var bonusClues = [];
-	var bonusCluesInteract = [];
+    
+    var bonusClues = [];
+    var bonusCluesInteract = [];
 
     var highestDexNum = 899; // should be 1 more than the actual dex num
     var cageMode = false;
@@ -872,7 +873,8 @@ function Safari() {
             */
         ],
         excludeFromEconomy: false,
-        alwaysShowMasterBall: true
+        alwaysShowMasterBall: true,
+        alwaysShowCherishBall: true
     };
 
     /* Item Variables */
@@ -1077,7 +1079,7 @@ function Safari() {
             mail: {name: "mail", fullName: "Mail", type: "items", icon: 214, price: 1000, aliases: ["mail"], tradable: true },
             crystal: {name: "crystal", fullName: "Z-Crystal", type: "consumable", icon: 3000, price: 10000, duration: 40, aliases: ["crystal", "z-crystal", "zcrystal", "z crystal"], tradable: false },
             scale: {name: "scale", fullName: "Prism Scale", type: "consumable", icon: 232, price: 3000, duration: 10, aliases: ["scale", "prism", "prism scale", "prismscale"], tradable: false },
-            mushroom: {name: "mushroom", fullName: "Big Mushroom", type: "consumable", icon: 47, price: 3000, duration: 10, aliases: ["mushroom", "big mushroom", "bigmushroom", "tiny mushroom", "tinymushroom"], tradable: true },
+            mushroom: {name: "mushroom", fullName: "Big Mushroom", type: "consumable", icon: 47, price: 3000, duration: 10, aliases: ["mushroom", "big mushroom", "bigmushroom", "tiny mushroom", "tinymushroom", "shroom"], tradable: true },
             brush: {name: "brush", fullName: "Photo Brush", type: "consumable", icon: 175, price: 3000, aliases: ["brush", "photo brush", "photobrush"], tradable: false },
             pokeblock: {name: "pokeblock", fullName: "Pokéblock", type: "consumable", icon: 53, price: 3000, aliases: ["block", "poke brush", "pokeblock", "noms"], tradable: false},
 
@@ -1166,8 +1168,10 @@ function Safari() {
             expTypes: ["daycareplay", "bait", "wincontest", "catch"],
             skills: {
                 preschoolerPack1: [2, 2],
+                typeMatchupHelper: [3, 3],
                 preschoolerPack2: [4, 4],
                 fasterFinder: [5, 5],
+                ballHint: [6, 6],
                 preschoolerPack3: [7, 7],
                 preschoolerPack4: [9, 9],
                 preschoolerPack5: [11, 11],
@@ -1754,14 +1758,14 @@ function Safari() {
             quick: "A somewhat different Pokéball that tends to get better priority during throws. " + cdSeconds("quick") + " Obtained from Arborist and Pyramid.",
             level: "A slickly designed Pokéball that raises the stat levels of the lead Pokémon. " + cdSeconds("level") + " Obtained from Arborist and Pyramid.",
             clone: "A mysterious Pokéball with a very low catch rate that can duplicate a pokémon's D.N.A. " + cdSeconds("clone") + " Obtained from Arborist and Pyramid.",
-            spy: "A stealthy Pokéball that cannot be tracked. A successful snag with this ball allows for quick follow-up action, but it has low priority. " + cdSeconds("spy") + " Found with Itemfinder and obtained from Arborist and Pyramid.",
+            spy: "A stealthy Pokéball that cannot be tracked. A successful snag with this ball allows for quick follow-up action, but it has low priority. " + cdSeconds("spy") + ". Obtained from Arborist and Pyramid.",
             mono: "A monochromatic Pokéball that enables your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Arborist.",
             lightning: "A Pokéball with a lightning bolt design that comes out in a flash. " + cdSeconds("lightning") + " Obtained from Arborist.",
             heavy: "An industrial Pokéball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("heavy") + " Obtained from Arborist.",
             photo: "A Pokéball riddled with memory chips capable of identifying Pokémon stored in the camera and catching them with higher likelihood. " + cdSeconds("photo") + " Obtained from Arborist.",
             mirror: "A Pokéball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. Doubly effective in Similarity Mode. " + cdSeconds("mirror") + " Obtained from Arborist.",
             love: "A Pokéball with a pink heart design that works better if the lead is in the same egg group as the target. It also increases the well-being of Pokémon in the daycare. " + cdSeconds("love") + " Obtained from Arborist.",
-            uturn: "A Pokéball with a dynamic design that enables the lead Pokémon to switch out after a successful catch. " + cdSeconds("uturn") + " Obtained from Arborist.",
+            uturn: "A Pokéball with a dynamic design that enables the lead Pokémon to switch out after a successful catch. Catch rate is increased if the lead Pokémon is capable of learning U-Turn, Volt Switch, or Flip Turn. " + cdSeconds("uturn") + " Obtained from Arborist.",
             inver: "A mysterious Pokéball that reverses the type advantage " + cdSeconds("inver") + " Obtained from Arborist.",
             spirit: "A magical Pokéball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events. This Ball will return to you if it fails to catch a Pokémon. (Max capacity: 10)",
             cherish: "A homey Pokéball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Arborist. This Ball will return to you if it fails to catch a Pokémon."
@@ -2272,7 +2276,7 @@ function Safari() {
         "1": { "evo": 2, "candies": 207 }, "2": { "evo": 3, "candies": 656 }, "65561": { "evo": -1, "candies": 0 }, "131097": { "evo": -1, "candies": 0 }, "196633": { "evo": -1, "candies": 0 }, "262169": { "evo": -1, "candies": 0 }, "327705": { "evo": -1, "candies": 0 }, "393241": { "evo": -1, "candies": 0 }, "458777": { "evo": -1, "candies": 0 }, "524313": { "evo": -1, "candies": 0 }, "589849": { "evo": -1, "candies": 0 }, "655385": { "evo": -1, "candies": 0 }, "720921": { "evo": -1, "candies": 0 }, "786457": { "evo": -1, "candies": 0 }, "851993": { "evo": -1, "candies": 0 }, "4": { "evo": 5, "candies": 207 }, "5": { "evo": 6, "candies": 668 }, "7": { "evo": 8, "candies": 207 }, "8": { "evo": 9, "candies": 663 }, "10": { "evo": 11, "candies": 105 }, "11": { "evo": 12, "candies": 332 }, "13": { "evo": 14, "candies": 105 }, "14": { "evo": 15, "candies": 332 }, "16": { "evo": 17, "candies": 178 }, "17": { "evo": 18, "candies": 402 }, "19": { "evo": 20, "candies": 347 }, "65555": { "evo": 65556, "candies": 347 }, "21": { "evo": 22, "candies": 371 }, "23": { "evo": 24, "candies": 368 }, "25": { "evo": 26, "candies": 407 }, "27": { "evo": 28, "candies": 378 }, "65563": { "evo": 65564, "candies": 378 }, "29": { "evo": 30, "candies": 186 }, "30": { "evo": 31, "candies": 424 }, "32": { "evo": 33, "candies": 186 }, "33": { "evo": 34, "candies": 424 }, "35": { "evo": 36, "candies": 406 }, "37": { "evo": 38, "candies": 424 }, "65573": { "evo": 65574, "candies": 424 }, "39": { "evo": 40, "candies": 365 }, "41": { "evo": 42, "candies": 232 }, "42": { "evo": 169, "candies": 449 }, "43": { "evo": 44, "candies": 201 }, "44": { "evo": [45, 182], "candies": 412 }, "46": { "evo": 47, "candies": 340 }, "48": { "evo": 49, "candies": 378 }, "50": { "evo": 51, "candies": 340 }, "65586": { "evo": 65587, "candies": 340 }, "52": { "evo": 53, "candies": 370 }, "65588": { "evo": 65589, "candies": 370 }, "54": { "evo": 55, "candies": 420 }, "56": { "evo": 57, "candies": 382 }, "58": { "evo": 59, "candies": 466 }, "60": { "evo": 61, "candies": 196 }, "61": { "evo": [62, 186], "candies": 424 }, "63": { "evo": 64, "candies": 204 }, "64": { "evo": 65, "candies": 575 }, "66": { "evo": 67, "candies": 207 }, "67": { "evo": 68, "candies": 424 }, "69": { "evo": 70, "candies": 199 }, "70": { "evo": 71, "candies": 412 }, "72": { "evo": 73, "candies": 433 }, "74": { "evo": 75, "candies": 199 }, "65610": { "evo": 65611, "candies": 199 }, "75": { "evo": 76, "candies": 416 }, "65611": { "evo": 65612, "candies": 416 }, "77": { "evo": 78, "candies": 420 }, "79": { "evo": [80, 199], "candies": 412 }, "81": { "evo": 82, "candies": 237 }, "82": { "evo": 462, "candies": 449 }, "84": { "evo": 85, "candies": 386 }, "86": { "evo": 87, "candies": 399 }, "88": { "evo": 89, "candies": 420 }, "65624": { "evo": 65625, "candies": 420 }, "90": { "evo": 91, "candies": 441 }, "92": { "evo": 93, "candies": 207 }, "93": { "evo": 94, "candies": 575 }, "95": { "evo": 208, "candies": 428 }, "96": { "evo": 97, "candies": 406 }, "98": { "evo": 99, "candies": 399 }, "100": { "evo": 101, "candies": 403 }, "102": { "evo": 103, "candies": 437 }, "104": { "evo": 105, "candies": 357 }, "108": { "evo": 463, "candies": 433 }, "109": { "evo": 110, "candies": 412 }, "111": { "evo": 112, "candies": 247 }, "112": { "evo": 464, "candies": 449 }, "113": { "evo": 242, "candies": 621 }, "114": { "evo": 465, "candies": 449 }, "116": { "evo": 117, "candies": 224 }, "117": { "evo": 230, "candies": 454 }, "118": { "evo": 119, "candies": 378 }, "120": { "evo": 121, "candies": 437 }, "123": { "evo": 212, "candies": 420 }, "125": { "evo": 466, "candies": 454 }, "126": { "evo": 467, "candies": 454 }, "129": { "evo": 130, "candies": 454 }, "133": { "evo": [470, 471, 135, 134, 136, 196, 197, 700], "candies": 656 }, "137": { "evo": 233, "candies": 263 }, "138": { "evo": 139, "candies": 416 }, "140": { "evo": 141, "candies": 416 }, "147": { "evo": 148, "candies": 214 }, "148": { "evo": 149, "candies": 699 }, "152": { "evo": 153, "candies": 207 }, "153": { "evo": 154, "candies": 656 }, "155": { "evo": 156, "candies": 207 }, "156": { "evo": 157, "candies": 668 }, "158": { "evo": 159, "candies": 207 }, "159": { "evo": 160, "candies": 663 }, "161": { "evo": 162, "candies": 349 }, "163": { "evo": 164, "candies": 371 }, "165": { "evo": 166, "candies": 328 }, "167": { "evo": 168, "candies": 328 }, "170": { "evo": 171, "candies": 386 }, "172": { "evo": 25, "candies": 163 }, "65708": { "evo": -1, "candies": 0 }, "173": { "evo": 35, "candies": 165 }, "174": { "evo": 39, "candies": 138 }, "175": { "evo": 176, "candies": 207 }, "176": { "evo": 468, "candies": 627 }, "177": { "evo": 178, "candies": 395 }, "179": { "evo": 180, "candies": 186 }, "180": { "evo": 181, "candies": 428 }, "183": { "evo": 184, "candies": 353 }, "187": { "evo": 188, "candies": 173 }, "188": { "evo": 189, "candies": 386 }, "190": { "evo": 424, "candies": 405 }, "191": { "evo": 192, "candies": 357 }, "193": { "evo": 469, "candies": 433 }, "194": { "evo": 195, "candies": 361 }, "198": { "evo": 430, "candies": 424 }, "200": { "evo": 429, "candies": 416 }, "204": { "evo": 205, "candies": 391 }, "207": { "evo": 472, "candies": 428 }, "209": { "evo": 210, "candies": 378 }, "215": { "evo": 461, "candies": 428 }, "216": { "evo": 217, "candies": 420 }, "218": { "evo": 219, "candies": 344 }, "220": { "evo": 221, "candies": 230 }, "221": { "evo": 473, "candies": 445 }, "223": { "evo": 224, "candies": 403 }, "228": { "evo": 229, "candies": 420 }, "231": { "evo": 232, "candies": 420 }, "233": { "evo": 474, "candies": 449 }, "236": { "evo": [107, 106, 237], "candies": 382 }, "238": { "evo": 124, "candies": 382 }, "239": { "evo": 125, "candies": 250 }, "240": { "evo": 126, "candies": 252 }, "246": { "evo": 247, "candies": 209 }, "247": { "evo": 248, "candies": 699 }, "252": { "evo": 253, "candies": 207 }, "253": { "evo": 254, "candies": 663 }, "255": { "evo": 256, "candies": 207 }, "256": { "evo": 257, "candies": 663 }, "258": { "evo": 259, "candies": 207 }, "259": { "evo": 260, "candies": 669 }, "261": { "evo": 262, "candies": 353 }, "263": { "evo": 264, "candies": 353 }, "265": { "evo": [266, 268], "candies": 105 }, "266": { "evo": 267, "candies": 332 }, "268": { "evo": 269, "candies": 323 }, "270": { "evo": 271, "candies": 173 }, "271": { "evo": 272, "candies": 552 }, "273": { "evo": 274, "candies": 173 }, "274": { "evo": 275, "candies": 403 }, "276": { "evo": 277, "candies": 361 }, "278": { "evo": 279, "candies": 361 }, "280": { "evo": 281, "candies": 142 }, "281": { "evo": [282, 475], "candies": 435 }, "283": { "evo": 284, "candies": 348 }, "285": { "evo": 286, "candies": 386 }, "287": { "evo": 288, "candies": 224 }, "288": { "evo": 289, "candies": 781 }, "290": { "evo": [291, 292], "candies": 291 }, "293": { "evo": 294, "candies": 184 }, "294": { "evo": 295, "candies": 412 }, "296": { "evo": 297, "candies": 398 }, "298": { "evo": 183, "candies": 128 }, "299": { "evo": 476, "candies": 441 }, "300": { "evo": 301, "candies": 319 }, "304": { "evo": 305, "candies": 219 }, "305": { "evo": 306, "candies": 610 }, "307": { "evo": 308, "candies": 344 }, "309": { "evo": 310, "candies": 399 }, "315": { "evo": 407, "candies": 433 }, "316": { "evo": 317, "candies": 392 }, "318": { "evo": 319, "candies": 386 }, "320": { "evo": 321, "candies": 420 }, "322": { "evo": 323, "candies": 575 }, "325": { "evo": 326, "candies": 395 }, "328": { "evo": 329, "candies": 173 }, "329": { "evo": 330, "candies": 598 }, "331": { "evo": 332, "candies": 399 }, "333": { "evo": 334, "candies": 412 }, "339": { "evo": 340, "candies": 393 }, "341": { "evo": 342, "candies": 393 }, "343": { "evo": 344, "candies": 420 }, "345": { "evo": 346, "candies": 416 }, "347": { "evo": 348, "candies": 416 }, "349": { "evo": [350], "candies": 454 }, "353": { "evo": 354, "candies": 382 }, "355": { "evo": 356, "candies": 232 }, "356": { "evo": 477, "candies": 441 }, "360": { "evo": 202, "candies": 340 }, "361": { "evo": [362, 478], "candies": 403 }, "363": { "evo": 364, "candies": 209 }, "364": { "evo": 365, "candies": 445 }, "366": { "evo": [367, 368], "candies": 407 }, "371": { "evo": 372, "candies": 214 }, "372": { "evo": 373, "candies": 699 }, "374": { "evo": 375, "candies": 214 }, "375": { "evo": 376, "candies": 699 }, "387": { "evo": 388, "candies": 207 }, "388": { "evo": 389, "candies": 656 }, "390": { "evo": 391, "candies": 207 }, "391": { "evo": 392, "candies": 668 }, "393": { "evo": 394, "candies": 207 }, "394": { "evo": 395, "candies": 663 }, "396": { "evo": 397, "candies": 173 }, "397": { "evo": 398, "candies": 407 }, "399": { "evo": 400, "candies": 344 }, "401": { "evo": 402, "candies": 323 }, "403": { "evo": 404, "candies": 185 }, "404": { "evo": 405, "candies": 439 }, "406": { "evo": 315, "candies": 204 }, "408": { "evo": 409, "candies": 416 }, "410": { "evo": 411, "candies": 416 }, "412": { "evo": [413, 414], "candies": 356 }, "415": { "evo": 416, "candies": 398 }, "418": { "evo": 419, "candies": 416 }, "420": { "evo": 421, "candies": 378 }, "422": { "evo": 423, "candies": 399 }, "425": { "evo": 426, "candies": 418 }, "427": { "evo": 428, "candies": 403 }, "431": { "evo": 432, "candies": 380 }, "433": { "evo": 358, "candies": 357 }, "434": { "evo": 435, "candies": 402 }, "436": { "evo": 437, "candies": 420 }, "438": { "evo": 185, "candies": 344 }, "439": { "evo": 122, "candies": 386 }, "440": { "evo": 113, "candies": 230 }, "443": { "evo": 444, "candies": 209 }, "444": { "evo": 445, "candies": 699 }, "446": { "evo": 143, "candies": 454 }, "447": { "evo": 448, "candies": 604 }, "449": { "evo": 450, "candies": 441 }, "451": { "evo": 452, "candies": 420 }, "453": { "evo": 454, "candies": 412 }, "456": { "evo": 457, "candies": 386 }, "458": { "evo": 226, "candies": 391 }, "459": { "evo": 460, "candies": 415 }, "495": { "evo": 496, "candies": 211 }, "496": { "evo": 497, "candies": 660 }, "498": { "evo": 499, "candies": 213 }, "499": { "evo": 500, "candies": 660 }, "501": { "evo": 502, "candies": 211 }, "502": { "evo": 503, "candies": 660 }, "504": { "evo": 505, "candies": 353 }, "506": { "evo": 507, "candies": 189 }, "507": { "evo": 508, "candies": 420 }, "509": { "evo": 510, "candies": 375 }, "511": { "evo": 512, "candies": 418 }, "513": { "evo": 514, "candies": 418 }, "515": { "evo": 516, "candies": 418 }, "517": { "evo": 518, "candies": 409 }, "519": { "evo": 520, "candies": 183 }, "520": { "evo": 521, "candies": 410 }, "522": { "evo": 523, "candies": 417 }, "524": { "evo": 525, "candies": 199 }, "525": { "evo": 526, "candies": 433 }, "527": { "evo": 528, "candies": 357 }, "529": { "evo": 530, "candies": 427 }, "532": { "evo": 533, "candies": 207 }, "533": { "evo": 534, "candies": 424 }, "535": { "evo": 536, "candies": 196 }, "536": { "evo": 537, "candies": 428 }, "540": { "evo": 541, "candies": 194 }, "541": { "evo": 542, "candies": 420 }, "543": { "evo": 544, "candies": 184 }, "544": { "evo": 545, "candies": 407 }, "546": { "evo": 547, "candies": 403 }, "548": { "evo": 549, "candies": 403 }, "551": { "evo": 552, "candies": 179 }, "552": { "evo": 553, "candies": 597 }, "554": { "evo": 555, "candies": 403 }, "557": { "evo": 558, "candies": 399 }, "559": { "evo": 560, "candies": 410 }, "562": { "evo": 563, "candies": 406 }, "564": { "evo": 565, "candies": 416 }, "566": { "evo": 567, "candies": 652 }, "568": { "evo": 569, "candies": 398 }, "570": { "evo": 571, "candies": 428 }, "572": { "evo": 573, "candies": 395 }, "574": { "evo": 575, "candies": 199 }, "575": { "evo": 576, "candies": 412 }, "577": { "evo": 578, "candies": 189 }, "578": { "evo": 579, "candies": 412 }, "580": { "evo": 581, "candies": 397 }, "582": { "evo": 583, "candies": 201 }, "583": { "evo": 584, "candies": 449 }, "585": { "evo": 586, "candies": 399 }, "588": { "evo": 589, "candies": 416 }, "590": { "evo": 591, "candies": 390 }, "592": { "evo": 593, "candies": 403 }, "595": { "evo": 596, "candies": 396 }, "597": { "evo": 598, "candies": 411 }, "599": { "evo": 600, "candies": 224 }, "600": { "evo": 601, "candies": 437 }, "602": { "evo": 603, "candies": 207 }, "603": { "evo": 604, "candies": 433 }, "605": { "evo": 606, "candies": 407 }, "607": { "evo": 608, "candies": 189 }, "608": { "evo": 609, "candies": 598 }, "610": { "evo": 611, "candies": 209 }, "611": { "evo": 612, "candies": 621 }, "613": { "evo": 614, "candies": 407 }, "616": { "evo": 617, "candies": 416 }, "619": { "evo": 620, "candies": 428 }, "622": { "evo": 623, "candies": 555 }, "624": { "evo": 625, "candies": 412 }, "627": { "evo": 628, "candies": 428 }, "629": { "evo": 630, "candies": 428 }, "633": { "evo": 634, "candies": 214 }, "634": { "evo": 635, "candies": 699 }, "636": { "evo": 637, "candies": 462 }, "650": { "evo": 651, "candies": 207 }, "651": { "evo": 652, "candies": 663 }, "653": { "evo": 654, "candies": 209 }, "654": { "evo": 655, "candies": 668 }, "656": { "evo": 657, "candies": 207 }, "657": { "evo": 658, "candies": 663 }, "659": { "evo": 660, "candies": 355 }, "661": { "evo": 662, "candies": 195 }, "662": { "evo": 663, "candies": 624 }, "664": { "evo": 665, "candies": 109 }, "665": { "evo": [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778], "candies": 345 }, "667": { "evo": 668, "candies": 426 }, "669": { "evo": 670, "candies": 189 }, "670": { "evo": 671, "candies": 464 }, "328350": { "evo": -1, "candies": 0 }, "672": { "evo": 673, "candies": 446 }, "674": { "evo": 675, "candies": 416 }, "677": { "evo": [678, 66214], "candies": 391 }, "679": { "evo": 680, "candies": 228 }, "680": { "evo": 681, "candies": 598 }, "682": { "evo": 683, "candies": 388 }, "684": { "evo": 685, "candies": 403 }, "686": { "evo": 687, "candies": 405 }, "688": { "evo": 689, "candies": 420 }, "690": { "evo": 691, "candies": 415 }, "692": { "evo": 693, "candies": 420 }, "694": { "evo": 695, "candies": 404 }, "696": { "evo": 697, "candies": 438 }, "698": { "evo": 699, "candies": 651 }, "704": { "evo": 705, "candies": 231 }, "705": { "evo": 706, "candies": 699 }, "708": { "evo": 709, "candies": 398 }, "710": { "evo": 711, "candies": 415 }, "712": { "evo": 713, "candies": 432 }, "714": { "evo": 715, "candies": 449 }, "722": { "evo": 723, "candies": 214 }, "723": { "evo": 724, "candies": 663 }, "725": { "evo": 726, "candies": 214 }, "726": { "evo": 727, "candies": 663 }, "728": { "evo": 729, "candies": 214 }, "729": { "evo": 730, "candies": 663 }, "731": { "evo": 732, "candies": 181 }, "732": { "evo": 733, "candies": 407 }, "734": { "evo": 735, "candies": 351 }, "736": { "evo": 737, "candies": 204 }, "737": { "evo": 738, "candies": 420 }, "739": { "evo": 740, "candies": 402 }, "742": { "evo": 743, "candies": 390 }, "744": { "evo": [745, 66281], "candies": 409 }, "747": { "evo": 748, "candies": 416 }, "749": { "evo": 750, "candies": 420 }, "751": { "evo": 752, "candies": 381 }, "753": { "evo": 754, "candies": 403 }, "755": { "evo": 756, "candies": 340 }, "757": { "evo": 758, "candies": 403 }, "759": { "evo": 760, "candies": 420 }, "761": { "evo": 762, "candies": 148 }, "762": { "evo": 763, "candies": 428 }, "767": { "evo": 768, "candies": 445 }, "769": { "evo": 770, "candies": 403 }, "772": { "evo": 773, "candies": 599 }, "782": { "evo": 783, "candies": 214 }, "783": { "evo": 784, "candies": 699 }, "789": { "evo": 790, "candies": 39999 }, "790": { "evo": [791, 792], "candies": 9999999 }, "803": { "evo": 804, "candies": 9999999 }, "808": { "evo": 809, "candies": 9999999 }, "810": { "evo": 811, "candies": 205 }, "811": { "evo": 812, "candies": 640 }, "813": { "evo": 814, "candies": 205 }, "814": { "evo": 815, "candies": 640 }, "816": { "evo": 817, "candies": 205 }, "817": { "evo": 818, "candies": 640 }, "819": { "evo": 820, "candies": 310 }, "821": { "evo": 822, "candies": 200 }, "822": { "evo": 823, "candies": 676 }, "824": { "evo": 825, "candies": 130 }, "825": { "evo": 826, "candies": 390 }, "827": { "evo": 828, "candies": 323 }, "829": { "evo": 830, "candies": 420 }, "831": { "evo": 832, "candies": 350 }, "833": { "evo": 834, "candies": 406 }, "835": { "evo": 836, "candies": 432 }, "837": { "evo": 838, "candies": 270 }, "838": { "evo": 839, "candies": 684 }, "840": { "evo": [841, 842], "candies": 510 }, "843": { "evo": 844, "candies": 600 }, "846": { "evo": 847, "candies": 433 }, "848": { "evo": [849, 66385], "candies": 480 }, "850": { "evo": 851, "candies": 498 }, "852": { "evo": 853, "candies": 444 }, "854": { "evo": 855, "candies": 496 }, "856": { "evo": 857, "candies": 290 }, "857": { "evo": 858, "candies": 710 }, "859": { "evo": 860, "candies": 290 }, "860": { "evo": 861, "candies": 710 }, "65799": { "evo": 65800, "candies": 353 }, "65800": { "evo": 862, "candies": 508 }, "131124": { "evo": 863, "candies": 451 }, "65758": { "evo": 864, "candies": 680 }, "65619": { "evo": 865, "candies": 617 }, "65658": { "evo": 866, "candies": 629 }, "66098": { "evo": 867, "candies": 470 }, "868": { "evo": [869, 66405, 131941, 197477, 263013, 328549, 394085, 459621, 525157, 590693, 656229, 721765, 787301, 852837, 918373, 983909, 1049445, 1114981, 1180517, 1246053, 1311589, 1377125, 1442661, 1508197, 1573733, 1639269, 1704805, 1770341, 1835877, 1901413, 1966949, 2032485, 2098021, 2163557, 2229093, 2294629, 2360165, 2425701, 2491237, 2556773, 2622309, 2687845, 2753381, 2818917, 2884453, 2949989, 3015525, 3081061, 3146597, 3212133, 3277669, 3343205, 3408741, 3474277, 3539813, 3605349, 3670885, 3736421, 3801957, 3867493, 3933029, 3998565, 4064101], "candies": 410 }, "872": { "evo": 873, "candies": 346 }, "878": { "evo": 879, "candies": 470 }, "885": { "evo": 886, "candies": 370 }, "886": { "evo": 887, "candies": 799 }, "65613": { "evo": 65614, "candies": 540 }, "66090": { "evo": 131627, "candies": 530 }, "65615": { "evo": [131152, 65735], "candies": 412 }, "891": { "evo": [892, 66428], "candies": 999999 }
     };
     var devolutions = {
-        "2": 1, "3": 2, "5": 4, "6": 5, "8": 7, "9": 8, "11": 10, "12": 11, "14": 13, "15": 14, "17": 16, "18": 17, "20": 19, "22": 21, "24": 23, "65562": 25, "26": 25, "28": 27, "30": 29, "31": 30, "33": 32, "34": 33, "36": 35, "38": 37, "40": 39, "42": 41, "169": 42, "44": 43, "45": 44, "182": 44, "47": 46, "49": 48, "51": 50, "53": 52, "55": 54, "57": 56, "59": 58, "61": 60, "62": 61, "186": 61, "64": 63, "65": 64, "67": 66, "68": 67, "70": 69, "71": 70, "73": 72, "75": 74, "76": 75, "78": 77, "80": 79, "199": 79, "82": 81, "462": 82, "85": 84, "87": 86, "89": 88, "91": 90, "93": 92, "94": 93, "208": 95, "97": 96, "99": 98, "101": 100, "103": 102, "105": 104, "463": 108, "110": 109, "112": 111, "464": 112, "242": 113, "465": 114, "117": 116, "230": 117, "119": 118, "121": 120, "212": 123, "466": 125, "467": 126, "130": 129, "470": 133, "471": 133, "135": 133, "134": 133, "136": 133, "196": 133, "197": 133, "700": 133, "233": 137, "139": 138, "141": 140, "148": 147, "149": 148, "153": 152, "154": 153, "156": 155, "157": 156, "159": 158, "160": 159, "162": 161, "164": 163, "166": 165, "168": 167, "171": 170, "25": 172, "65561": -1, "131097": -1, "196633": -1, "262169": -1, "327705": -1, "393241": -1, "458777": -1, "524313": -1, "589849": -1, "655385": -1, "720921": -1, "786457": -1, "851993": -1, "35": 173, "39": 174, "176": 175, "468": 176, "178": 177, "180": 179, "181": 180, "184": 183, "188": 187, "189": 188, "424": 190, "192": 191, "469": 193, "195": 194, "430": 198, "429": 200, "205": 204, "472": 207, "210": 209, "461": 215, "217": 216, "219": 218, "221": 220, "473": 221, "224": 223, "229": 228, "232": 231, "474": 233, "107": 236, "106": 236, "237": 236, "124": 238, "125": 239, "126": 240, "247": 246, "248": 247, "253": 252, "254": 253, "256": 255, "257": 256, "259": 258, "260": 259, "262": 261, "264": 263, "266": 265, "268": 265, "267": 266, "269": 268, "271": 270, "272": 271, "274": 273, "275": 274, "277": 276, "279": 278, "281": 280, "282": 281, "475": 281, "284": 283, "286": 285, "288": 287, "289": 288, "291": 290, "292": 290, "294": 293, "295": 294, "297": 296, "183": 298, "476": 299, "301": 300, "305": 304, "306": 305, "308": 307, "310": 309, "407": 315, "317": 316, "319": 318, "321": 320, "323": 322, "326": 325, "329": 328, "330": 329, "332": 331, "334": 333, "340": 339, "342": 341, "344": 343, "346": 345, "348": 347, "350": 349, "354": 353, "356": 355, "477": 356, "202": 360, "362": 361, "478": 361, "364": 363, "365": 364, "367": 366, "368": 366, "372": 371, "373": 372, "375": 374, "376": 375, "388": 387, "389": 388, "391": 390, "392": 391, "394": 393, "395": 394, "397": 396, "398": 397, "400": 399, "402": 401, "404": 403, "405": 404, "315": 406, "409": 408, "411": 410, "413": 412, "414": 412, "416": 415, "419": 418, "421": 420, "423": 422, "426": 425, "428": 427, "432": 431, "358": 433, "435": 434, "437": 436, "185": 438, "122": 439, "113": 440, "444": 443, "445": 444, "143": 446, "448": 447, "450": 449, "452": 451, "454": 453, "457": 456, "226": 458, "460": 459, "496": 495, "497": 496, "499": 498, "500": 499, "502": 501, "503": 502, "505": 504, "507": 506, "508": 507, "510": 509, "512": 511, "514": 513, "516": 515, "518": 517, "520": 519, "521": 520, "523": 522, "525": 524, "526": 525, "528": 527, "530": 529, "533": 532, "534": 533, "536": 535, "537": 536, "541": 540, "542": 541, "544": 543, "545": 544, "547": 546, "549": 548, "552": 551, "553": 552, "555": 554, "66091": 554, "558": 557, "560": 559, "563": 562, "565": 564, "567": 566, "569": 568, "571": 570, "573": 572, "575": 574, "576": 575, "578": 577, "579": 578, "581": 580, "583": 582, "584": 583, "586": 585, "589": 588, "591": 590, "593": 592, "596": 595, "598": 597, "600": 599, "601": 600, "603": 602, "604": 603, "606": 605, "608": 607, "609": 608, "611": 610, "612": 611, "614": 613, "617": 616, "620": 619, "623": 622, "625": 624, "628": 627, "630": 629, "634": 633, "635": 634, "637": 636, "651": 650, "652": 651, "654": 653, "655": 654, "657": 656, "658": 657, "660": 659, "662": 661, "663": 662, "665": 664, "666": 665, "668": 667, "670": 669, "328350": -1, "671": 670, "673": 672, "675": 674, "678": 677, "680": 679, "681": 680, "683": 682, "685": 684, "687": 686, "689": 688, "691": 690, "693": 692, "695": 694, "697": 696, "699": 698, "705": 704, "706": 705, "709": 708, "711": 710, "713": 712, "715": 714, "723": 722, "724": 723, "726": 725, "727": 726, "729": 728, "730": 729, "732": 731, "733": 732, "735": 734, "737": 736, "738": 737, "740": 739, "743": 742, "745": 744, "131817": -1, "66281": 744, "748": 747, "750": 749, "752": 751, "754": 753, "756": 755, "758": 757, "760": 759, "762": 761, "763": 762, "768": 767, "770": 769, "773": 772, "783": 782, "784": 783, "790": 789, "791": 790, "792": 790, "804": 803, "811": 810, "812": 811, "814": 813, "815": 814, "817": 816, "818": 817, "820": 819, "822": 821, "823": 822, "825": 824, "826": 825, "828": 827, "830": 829, "832": 831, "834": 833, "836": 835, "838": 837, "839": 838, "841": 840, "842": 840, "844": 843, "847": 846, "849": 848, "66385": 848, "851": 850, "853": 852, "855": 854, "857": 856, "858": 857, "860": 859, "861": 860, "862": 65800, "65800": 65799, "863": 131124, "864": 65758, "865": 65619, "866": 65658, "867": 66098, "869": 868, "873": 872, "879": 878, "886": 885, "887": 886, "65614": 65613, "197163": 66090, "131627": 66090, "131152": 65615, "892": 891, "66428": 891, "65735": 65615, "555": 554, "66091": 554, "131627": 66090, "197163": 66090, "131152": 65615
+        "2": 1, "3": 2, "5": 4, "6": 5, "8": 7, "9": 8, "11": 10, "12": 11, "14": 13, "15": 14, "17": 16, "18": 17, "20": 19, "22": 21, "24": 23, "65562": 25, "26": 25, "28": 27, "30": 29, "31": 30, "33": 32, "34": 33, "36": 35, "38": 37, "40": 39, "42": 41, "169": 42, "44": 43, "45": 44, "182": 44, "47": 46, "49": 48, "51": 50, "53": 52, "55": 54, "57": 56, "59": 58, "61": 60, "62": 61, "186": 61, "64": 63, "65": 64, "67": 66, "68": 67, "70": 69, "71": 70, "73": 72, "75": 74, "76": 75, "78": 77, "80": 79, "199": 79, "82": 81, "462": 82, "85": 84, "87": 86, "89": 88, "91": 90, "93": 92, "94": 93, "208": 95, "97": 96, "99": 98, "101": 100, "103": 102, "105": 104, "463": 108, "110": 109, "112": 111, "464": 112, "242": 113, "465": 114, "117": 116, "230": 117, "119": 118, "121": 120, "212": 123, "466": 125, "467": 126, "130": 129, "470": 133, "471": 133, "135": 133, "134": 133, "136": 133, "196": 133, "197": 133, "700": 133, "233": 137, "139": 138, "141": 140, "148": 147, "149": 148, "153": 152, "154": 153, "156": 155, "157": 156, "159": 158, "160": 159, "162": 161, "164": 163, "166": 165, "168": 167, "171": 170, "25": 172, "65561": -1, "131097": -1, "196633": -1, "262169": -1, "327705": -1, "393241": -1, "458777": -1, "524313": -1, "589849": -1, "655385": -1, "720921": -1, "786457": -1, "851993": -1, "35": 173, "39": 174, "176": 175, "468": 176, "178": 177, "180": 179, "181": 180, "184": 183, "188": 187, "189": 188, "424": 190, "192": 191, "469": 193, "195": 194, "430": 198, "429": 200, "205": 204, "472": 207, "210": 209, "461": 215, "217": 216, "219": 218, "221": 220, "473": 221, "224": 223, "229": 228, "232": 231, "474": 233, "107": 236, "106": 236, "237": 236, "124": 238, "125": 239, "126": 240, "247": 246, "248": 247, "253": 252, "254": 253, "256": 255, "257": 256, "259": 258, "260": 259, "262": 261, "264": 263, "266": 265, "268": 265, "267": 266, "269": 268, "271": 270, "272": 271, "274": 273, "275": 274, "277": 276, "279": 278, "281": 280, "282": 281, "475": 281, "284": 283, "286": 285, "288": 287, "289": 288, "291": 290, "292": 290, "294": 293, "295": 294, "297": 296, "183": 298, "476": 299, "301": 300, "305": 304, "306": 305, "308": 307, "310": 309, "407": 315, "317": 316, "319": 318, "321": 320, "323": 322, "326": 325, "329": 328, "330": 329, "332": 331, "334": 333, "340": 339, "342": 341, "344": 343, "346": 345, "348": 347, "350": 349, "354": 353, "356": 355, "477": 356, "202": 360, "362": 361, "478": 361, "364": 363, "365": 364, "367": 366, "368": 366, "372": 371, "373": 372, "375": 374, "376": 375, "388": 387, "389": 388, "391": 390, "392": 391, "394": 393, "395": 394, "397": 396, "398": 397, "400": 399, "402": 401, "404": 403, "405": 404, "315": 406, "409": 408, "411": 410, "413": 412, "414": 412, "416": 415, "419": 418, "421": 420, "423": 422, "426": 425, "428": 427, "432": 431, "358": 433, "435": 434, "437": 436, "185": 438, "122": 439, "113": 440, "444": 443, "445": 444, "143": 446, "448": 447, "450": 449, "452": 451, "454": 453, "457": 456, "226": 458, "460": 459, "496": 495, "497": 496, "499": 498, "500": 499, "502": 501, "503": 502, "505": 504, "507": 506, "508": 507, "510": 509, "512": 511, "514": 513, "516": 515, "518": 517, "520": 519, "521": 520, "523": 522, "525": 524, "526": 525, "528": 527, "530": 529, "533": 532, "534": 533, "536": 535, "537": 536, "541": 540, "542": 541, "544": 543, "545": 544, "547": 546, "549": 548, "552": 551, "553": 552, "555": 554, "66091": 554, "558": 557, "560": 559, "563": 562, "565": 564, "567": 566, "569": 568, "571": 570, "573": 572, "575": 574, "576": 575, "578": 577, "579": 578, "581": 580, "583": 582, "584": 583, "586": 585, "589": 588, "591": 590, "593": 592, "596": 595, "598": 597, "600": 599, "601": 600, "603": 602, "604": 603, "606": 605, "608": 607, "609": 608, "611": 610, "612": 611, "614": 613, "617": 616, "620": 619, "623": 622, "625": 624, "628": 627, "630": 629, "634": 633, "635": 634, "637": 636, "651": 650, "652": 651, "654": 653, "655": 654, "657": 656, "658": 657, "660": 659, "662": 661, "663": 662, "665": 664, "666": 665, "668": 667, "670": 669, "328350": -1, "671": 670, "673": 672, "675": 674, "678": 677, "680": 679, "681": 680, "683": 682, "685": 684, "687": 686, "689": 688, "691": 690, "693": 692, "695": 694, "697": 696, "699": 698, "705": 704, "706": 705, "709": 708, "711": 710, "713": 712, "715": 714, "723": 722, "724": 723, "726": 725, "727": 726, "729": 728, "730": 729, "732": 731, "733": 732, "735": 734, "737": 736, "738": 737, "740": 739, "743": 742, "745": 744, "131817": -1, "66281": 744, "748": 747, "750": 749, "752": 751, "754": 753, "756": 755, "758": 757, "760": 759, "762": 761, "763": 762, "768": 767, "770": 769, "773": 772, "783": 782, "784": 783, "790": 789, "791": 790, "792": 790, "804": 803, "811": 810, "812": 811, "814": 813, "815": 814, "817": 816, "818": 817, "820": 819, "822": 821, "823": 822, "825": 824, "826": 825, "828": 827, "830": 829, "832": 831, "834": 833, "836": 835, "838": 837, "839": 838, "841": 840, "842": 840, "844": 843, "847": 846, "849": 848, "66385": 848, "851": 850, "853": 852, "855": 854, "857": 856, "858": 857, "860": 859, "861": 860, "862": 65800, "65800": 65799, "863": 131124, "864": 65758, "865": 65619, "866": 65658, "867": 66098, "869": 868, "873": 872, "879": 878, "886": 885, "887": 886, "65614": 65613, "197163": 66090, "131627": 66090, "131152": 65615, "892": 891, "66428": 891, "65735": 65615, "555": 554, "66091": 554, "131627": 66090, "197163": 66090, "131152": 65615, "65611": 65610
     };
     var megaEvolutions = {
         "3":[65539],"6":[65542, 131078],"9":[65545],"15":[65551],"18":[65554],"65":[65601],"80":[65616],"94":[65630],"115":[65651],"127":[65663],"130":[65666],"142":[65678],"150":[65686, 131222],"181":[65717],"208":[65744],"212":[65748],"214":[65750],"229":[65765],"248":[65784],"254":[65790],"257":[65793],"260":[65796],"282":[65818],"302":[65838],"303":[65839],"306":[65842],"308":[65844],"310":[65846],"319":[65855],"323":[65859],"334":[65870],"354":[65890],"359":[65895],"362":[65898],"373":[65909],"376":[65912],"380":[65916],"381":[65917],"382":[65918],"383":[65919],"384":[65920],"428":[65964],"445":[65981],"448":[65984],"460":[65996],"475":[66011],"531":[66067],"719":[66255]
@@ -3891,7 +3895,6 @@ function Safari() {
         "607": { "learned": [ 543, 73, 109, 110, 151, 211, 452, 453, 454, 535, 536, 537, 568, 569, 617 ] },
         "608": { "learned": [ 744, 745, 66281 ] },
         "609": { "learned": [ 65639, 113, 242, 142, 143, 492, 494, 648 ] },
-        "615": { "learned": [ 666 ] },
         "624": { "learned": [ 241, 31, 34, 51, 65587, 62, 68, 77, 78, 95, 208, 99, 111, 112, 464, 127, 128, 151, 195, 214, 221, 473, 248, 260, 306, 383, 449, 450, 486, 529, 530, 533, 534, 553, 626, 660, 697, 713, 718, 760, 787, 794, 799, 231, 232 ] },
         "625": { "learned": [ 252, 253, 254, 420, 421, 459, 460 ] },
         "626": { "learned": [ 131872, 197408 ] },
@@ -4343,12 +4346,13 @@ function Safari() {
         }
         */
     };
-    var moveBlacklist = {
+    var moveBlacklist = { // move: [pokemon list]
         307: [255, 256, 390, 391, 498, 499, 653, 654, 725, 726],
         308: [258, 289, 393, 394, 501, 502, 656, 657, 728, 729],
         338: [252, 253, 387, 388, 495, 496, 650, 651, 722, 723],
         431: [3, 9, 31, 34, 55, 56, 57, 59, 62, 66, 67, 68, 104, 105, 106, 107, 113, 115, 125, 126, 127, 139, 141, 143, 150, 151, 154, 157, 160, 181, 210, 217, 242, 243, 244, 245, 248, 254, 257, 260, 272, 288, 289, 295, 296, 297, 306, 335, 377, 378, 379, 383, 387, 388, 389, 390, 391, 392, 395, 408, 409, 446, 448, 452, 453, 454, 460, 466, 467, 473, 485, 486, 487, 491, 493],
         457: [299, 476],
+        512: [59],
         571: [401]
     };
     function movenum(name) {
@@ -7163,12 +7167,17 @@ function Safari() {
         var ret = "", hasBalls = false, isAndroid = sys.os(src) === "android";
         for (var i = 0; i < allBalls.length; i++) {
             var e = allBalls[i];
-            if (isBallAvailable(player, e) && e === "master" && (currentPokemon && !isRare(currentDisplay) && !player.alwaysShowMasterBall)) { // use currentDisplay instead of currentPokemon, otherwise ballMacro can be used to see through disguises/illusions
-                ret += "<font color='grey'>«" + itemData[e].fullName.split(" ")[0] + "»</font> ";
-            }
-            else if (isBallAvailable(player, e) && (e !== "master" || !isAndroid)) {
-                ret += "«" + link("/" + ccatch + " " + itemData[e].name, itemData[e].fullName.split(" ")[0]) + "» ";
-                hasBalls = true;
+            if (isBallAvailable(player, e)) {
+                if (e === "master" && (currentPokemon && !isRare(currentDisplay) && !player.alwaysShowMasterBall)) { // use currentDisplay instead of currentPokemon, otherwise ballMacro can be used to see through disguises/illusions
+                    ret += "<font color='grey'>«" + itemData[e].fullName.split(" ")[0] + "»</font> ";
+                }
+                else if (e === "cherish" && !player.alwaysShowCherishBall) {
+                    ret += "<font color='grey'>«" + itemData[e].fullName.split(" ")[0] + "»</font> ";
+                }
+                else if (e !== "master" || !isAndroid) {
+                    ret += "«" + link("/" + ccatch + " " + itemData[e].name, itemData[e].fullName.split(" ")[0]) + "» ";
+                    hasBalls = true;
+                }
             }
         }
         var ph = player.story.inStory ? "" : "«" + link("/photo", "Take Photo") + "» ";
@@ -7181,8 +7190,9 @@ function Safari() {
                 sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±Throw:</b></font> «" + link("/" + ccatch + " " + itemData.master.name, cap(itemData.master.name)) + "»", safchan);
             }
         }
+        var dashboard = player.story.inStory ? "" : "«" + link("/dashboard", "Dashboard") + "» ";
         if (hasBalls) {
-            safaribot.sendHtmlMessage(src, "Throw: " + ret +  "[" + link("/" + ccatch + " cancel", "Cancel") + "] " + (player.balls.lens > 0 ? ph : "") + (player.balls.pokeblock > 0 ? pkblk : ""), safchan);
+            safaribot.sendHtmlMessage(src, "Throw: " + ret +  "[" + link("/" + ccatch + " cancel", "Cancel") + "] " + (player.balls.lens > 0 ? ph : "") + (player.balls.pokeblock > 0 ? pkblk : "") + dashboard, safchan);
         } else if (player.balls.lens > 0) {
             safaribot.sendHtmlMessage(src, "Throw: " + ph +  "[" + link("/" + ccatch + " cancel", "Cancel") + "] ", safchan);
         }
@@ -7662,8 +7672,9 @@ function Safari() {
             shiny = shinyRand < 1,
             statCap,
             amount = amt || 1,
-            ignoreForms = false;
-            canLegend = true;
+            ignoreForms = false,
+            canLegend = true,
+            crystalEffect;
 
         if (amount > 1) {
             shiny = false;
@@ -7921,7 +7932,8 @@ function Safari() {
             var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
             var currentId = poke(currentPokemonDisplay, true);
             var displayId = currentId.split("");
-            displayId.splice(sys.rand(1, displayId.length - 1), 0, permObj.get("widthJoiner") || "");          
+            displayId.splice(sys.rand(1, displayId.length - 1), 0, permObj.get("widthJoiner") || "");
+            displayId = displayId.join("");
 
             if (currentDisplay === currentPokemon) {
                 disguise = false;
@@ -7936,13 +7948,13 @@ function Safari() {
             var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
             var term = amount >= 4 ? "horde of " : ["", "pair of ", "group of "][amount-1];
             if (spiritMon) {
-                term = "Spirit Realm "
+                displayId = "Spirit Realm " + displayId;
             }
             var appmsg;
             if (isPortaled) {
-                appmsg = "A wild {2}{0} came through the portal! <i>(BST: {1})</i>".format(displayId.join(""), bst, term);
+                appmsg = "A wild {2}{0} came through the portal! <i>(BST: {1})</i>".format(displayId, bst, term);
             } else {
-                appmsg = wildPokemonMessage.format(displayId.join(""), bst, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
+                appmsg = wildPokemonMessage.format(displayId, bst, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
             }
             var sprite = (cageMode ? cage : pokeInfo.sprite(currentPokemonDisplay));
 
@@ -7999,6 +8011,7 @@ function Safari() {
             }
             var onChannel = sys.playersOfChannel(safchan);
             var abilityMessageList = {};
+            var miscMessageList = {};
             var wildAbilityMessageList = [];
             
             var is_are = amt > 1 ? "are" : "is"
@@ -8018,24 +8031,74 @@ function Safari() {
             for (var e in onChannel) {
                 ballMacro(onChannel[e]);
                 
-                var p = getAvatar(onChannel[e]);
-                if (!p) {
+                var player = getAvatar(onChannel[e]);
+                if (!player) {
                     continue;
                 }
                 if (wildEvent) { // if an Event spawns, reset ball cooldown so everyone can attempt a throw
-                    p.cooldowns.ball = 0;
+                    player.cooldowns.ball = 0;
                 }
 
-                var leader = this.getEffectiveLead(p);
-                var ignore = ignoresWildAbilities(p);
+                if (!abilityMessageList.hasOwnProperty(onChannel[e])) {
+                    abilityMessageList[onChannel[e]] = [];
+                }
+                if (!miscMessageList.hasOwnProperty(onChannel[e])) {
+                    miscMessageList[onChannel[e]] = [];
+                }
+                var leader = this.getEffectiveLead(player);
+                var ignore = ignoresWildAbilities(player);
+                if (this.hasCostumeSkill(player, "typeMatchupHelper")) {
+                    var typeEffectiveness = 0;
+                    var wild = currentDisplay;
+                    var pType1 = type1(leader), pType2 = type2(leader), wType1 = type1(wild), wType2 = type2(wild);
+                    if (currentTypeOverride) {
+                        wType1 = currentTypeOverride;
+                    }
+                    var inverse = (player.costume === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(currentPokemon, abilitynum("Contrary")) && !ignore);
+                    // use currentPokemon instead of currentDisplay for ability related stuff, since they broadcast an ability message anyway
+                    var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) && !ignore, scrappy: canHaveAbility(leader, abilitynum("Scrappy")) };
+                    if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
+                        typeEffectiveness = this.checkEffective([wType1, wType2], [pType1, pType2], !inverse);
+                    }
+                    else {
+                        typeEffectiveness = this.checkEffective([pType1, pType2], [wType1, wType2], inverse, select);
+                    }
+                    if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard")) && !ignore && typeEffectiveness < 2) {
+                        typeEffectiveness = Math.min(typeEffectiveness, immuneMultiplier);
+                    }
+
+                    miscMessageList[onChannel[e]].push("Your {0}'s type effectiveness against the wild {1} is <b>{2}x</b>!".format(poke(leader, true), poke(currentDisplay, true), typeEffectiveness));
+                }
+                if (this.hasCostumeSkill(player, "ballHint")) {
+                    var bestBalls = [];
+                    var bestRate = 0;
+                    for (var i = 0; i < allBalls.length; i++) {
+                        var ball = allBalls[i];
+                        if (isBallAvailable(player, ball) && !["master", "spirit", "uturn"].contains(ball)) {
+                            var ballRate = safari.computeCatchRate(onChannel[e], ball, currentDisplay, true);
+                            if (ballRate >= bestRate) {
+                                if (ballRate > bestRate) {
+                                    bestRate = ballRate;
+                                    bestBalls = [];
+                                }
+                                
+                                bestBalls.push(ball);
+                            }
+                        }
+                    }
+                    if (bestBalls.length > 0) {
+                        bestBalls = readable(bestBalls.map( function(e) { return "«" + link("/" + ccatch + " " + e, finishName(e).split(" ")[0]) + "»" }));
+                        miscMessageList[onChannel[e]].push("The best Balls for you to use against the wild {0} are: {1}".format(poke(currentDisplay, true), bestBalls));
+                    }
+                }
                 if (ignore) {
-                    abilityMessageList[onChannel[e]] = "Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(leader, true), abilityOff(ignore), poke(currentDisplay, true));
+                    abilityMessageList[onChannel[e]].push("Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(leader, true), abilityOff(ignore), poke(currentDisplay, true)));
                 }
                 if (canHaveAbility(leader, abilitynum("Intimidate"))) {
-                    abilityMessageList[onChannel[e]] = "Your {0} weakens the wild {1} with Intimidate!".format(poke(leader, true), poke(currentDisplay, true));
+                    abilityMessageList[onChannel[e]].push("Your {0} weakens the wild {1} with Intimidate!".format(poke(leader, true), poke(currentDisplay, true)));
                 }
                 if (canHaveAbility(leader, abilitynum("Scrappy")) && (hasType(leader, "Normal") || hasType(leader, "Fighting")) && hasType(currentDisplay, "Ghost")) {
-                    abilityMessageList[onChannel[e]] = "Your {0} can strike Ghost-types with Scrappy!".format(poke(leader, true));
+                    abilityMessageList[onChannel[e]].push("Your {0} can strike Ghost-types with Scrappy!".format(poke(leader, true)));
                 }
             }
 
@@ -8043,8 +8106,23 @@ function Safari() {
                 sendAll(wildAbilityMessageList[msg]);
             }
             for (var user in abilityMessageList) {
+                if (abilityMessageList[user].length === 0) {
+                    continue;
+                }
                 if (!cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
-                    safaribot.sendMessage(user, abilityMessageList[user], safchan);
+                    for (var message in abilityMessageList[user]) {
+                        safaribot.sendMessage(user, abilityMessageList[user][message], safchan);
+                    }
+                }
+            }
+            for (var user in miscMessageList) {
+                if (miscMessageList[user].length === 0) {
+                    continue;
+                }
+                if (!cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
+                    for (var message in miscMessageList[user]) {
+                        safaribot.sendHtmlMessage(user, miscMessageList[user][message], safchan);
+                    }
                 }
             }
             preparationPhase = sys.rand(5, 8);
@@ -9074,12 +9152,14 @@ function Safari() {
         }
         return [val, anyNerf];
     };
-    this.computeCatchRate = function(src, ball) {
+    this.computeCatchRate = function(src, ball, target, theory) {
         var player = getAvatar(src), wild, isShiny, wildStats, story = false, storyMultiplier = 1;
         
         var leader = this.getEffectiveLead(player);
 
         var ballBonus = itemData[ball].ballBonus;
+
+        var usingPokemon = target ? target : currentPokemon
 
         if (player.story.inStory && player.story.state == "Catching") {
             isShiny = false;
@@ -9089,8 +9169,8 @@ function Safari() {
             story = true;
         }
         else {
-            isShiny = typeof currentPokemon == "string";
-            wild = isShiny ? parseInt(currentPokemon, 10) : currentPokemon;
+            isShiny = typeof usingPokemon == "string";
+            wild = isShiny ? parseInt(usingPokemon, 10) : usingPokemon;
             wildStats = getBST(wild) + currentExtraBST;
             if (canHaveAbility(leader, abilitynum("Intimidate"))) {
                 if (getBST(wild) < getBST(leader)) {
@@ -9113,46 +9193,46 @@ function Safari() {
         var costumeBoost = function(player, half) {
             return (1.01 + Math.max((((half ? 0.5 : 1) * safari.getCostumeLevel(player) - 5)/100), 0));
         }
-        if (hasType(currentPokemon, "Normal") && this.hasCostumeSkill(player, "catchNormal")) {
+        if (hasType(usingPokemon, "Normal") && this.hasCostumeSkill(player, "catchNormal")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Fighting") && this.hasCostumeSkill(player, "catchFighting")) {
+        if (hasType(usingPokemon, "Fighting") && this.hasCostumeSkill(player, "catchFighting")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Electric") && this.hasCostumeSkill(player, "catchElectric")) {
+        if (hasType(usingPokemon, "Electric") && this.hasCostumeSkill(player, "catchElectric")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Poison") && this.hasCostumeSkill(player, "catchPoison")) {
+        if (hasType(usingPokemon, "Poison") && this.hasCostumeSkill(player, "catchPoison")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Dark") && this.hasCostumeSkill(player, "catchDark")) {
+        if (hasType(usingPokemon, "Dark") && this.hasCostumeSkill(player, "catchDark")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Grass") && this.hasCostumeSkill(player, "catchGrass")) {
+        if (hasType(usingPokemon, "Grass") && this.hasCostumeSkill(player, "catchGrass")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Fire") && this.hasCostumeSkill(player, "catchFire")) {
+        if (hasType(usingPokemon, "Fire") && this.hasCostumeSkill(player, "catchFire")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Water") && this.hasCostumeSkill(player, "catchWater")) {
+        if (hasType(usingPokemon, "Water") && this.hasCostumeSkill(player, "catchWater")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (hasType(currentPokemon, "Ice") && this.hasCostumeSkill(player, "catchIce")) {
+        if (hasType(usingPokemon, "Ice") && this.hasCostumeSkill(player, "catchIce")) {
             costumeBonus = costumeBoost(player);
         } 
-        if ((hasType(currentPokemon, "Rock") || hasType(currentPokemon, "Ground")) && this.hasCostumeSkill(player, "catchRockGround")) {
+        if ((hasType(usingPokemon, "Rock") || hasType(usingPokemon, "Ground")) && this.hasCostumeSkill(player, "catchRockGround")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (this.hasCostumeSkill(player, "catchThief") && canLearnMove(currentPokemon, 168)) {
+        if (this.hasCostumeSkill(player, "catchThief") && canLearnMove(usingPokemon, 168)) {
             costumeBonus *= costumeBoost(player);
         }
-        if (this.hasCostumeSkill(player, "catchSing") && canLearnMove(currentPokemon, 47)) {
+        if (this.hasCostumeSkill(player, "catchSing") && canLearnMove(usingPokemon, 47)) {
             costumeBonus *= costumeBoost(player);
         }
-        if (this.hasCostumeSkill(player, "catchSplash") && canLearnMove(currentPokemon, 150)) {
+        if (this.hasCostumeSkill(player, "catchSplash") && canLearnMove(usingPokemon, 150)) {
             costumeBonus *= costumeBoost(player);
         }
-        if (this.hasCostumeSkill(player, "catchRockClimb") && canLearnMove(currentPokemon, 431)) {
+        if (this.hasCostumeSkill(player, "catchRockClimb") && canLearnMove(usingPokemon, 431)) {
             costumeBonus *= costumeBoost(player);
         }
         if (wildStats <= 480 && this.hasCostumeSkill(player, "catchLowBST")) {
@@ -9196,8 +9276,8 @@ function Safari() {
         if (currentTypeOverride) {
             wType1 = currentTypeOverride;
         }
-        var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(currentPokemon, abilitynum("Contrary")) && !ignoresWildAbilities(player));
-        var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) && !ignoresWildAbilities(player), scrappy: canHaveAbility(leader, abilitynum("Scrappy")) };
+        var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(usingPokemon, abilitynum("Contrary")) && !ignoresWildAbilities(player));
+        var select = { levitate: canHaveAbility(usingPokemon, abilitynum("Levitate")) && !ignoresWildAbilities(player), scrappy: canHaveAbility(leader, abilitynum("Scrappy")) };
         if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
             if (ball === "mono") {
                 typeBonus = this.checkEffective([wType1, wType2], (pType2 === "???" || !player.monoSecondary ? [pType1] : [pType2]), !inverse);
@@ -9307,7 +9387,7 @@ function Safari() {
             }
         }
         if (ball === "uturn") {
-            if (canLearnMove(leader, 369) || canLearnMove(leader, 521)) {
+            if (canLearnMove(leader, 369) || canLearnMove(leader, 521) || canLearnMove(leader, 754)) { // U-Turn, Volt Switch, and Flip Turn
                 ballBonus = itemData[ball].bonusRate;
             }
             else {
@@ -9428,23 +9508,23 @@ function Safari() {
         var timelinemod = (currentThemeEffect == "past" && player.altTimeline.lead !== 0 && player.altTimeline.cooldown > n ? (player.altTimeline.buff && player.altTimeline.buff > 1 ? player.altTimeline.buff : 1.3) : 1);
 
         var wonderGuardBreak = false;
-        if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard")) && !ignoresWildAbilities(player)) {
+        if (canHaveAbility(usingPokemon, abilitynum("Wonder Guard")) && !ignoresWildAbilities(player)) {
             if (typeBonus >= 2) {
-                if (ball === "spy") {
-                    safaribot.sendMessage(sys.id(player.id), "The wild {0}'s Wonder Guard shattered instantly!".format(poke(currentPokemon, true)), safchan);
+                if (ball === "spy" && !theory) {
+                    safaribot.sendMessage(sys.id(player.id), "The wild {0}'s Wonder Guard shattered instantly!".format(poke(usingPokemon, true)), safchan);
                 }
-                else {
-                    safaribot.sendAll("The wild {0}'s Wonder Guard shattered instantly!".format(poke(currentPokemon, true)), safchan);
+                else if (!theory) {
+                    safaribot.sendAll("The wild {0}'s Wonder Guard shattered instantly!".format(poke(usingPokemon, true)), safchan);
                 }
                 wonderGuardBreak = true;
             }
             else {
                 typeBonus = Math.min(typeBonus, immuneMultiplier);
-                //safaribot.sendAll("The wild {0}'s Wonder Guard is protecting it!".format(poke(currentPokemon)), safchan);
+                //safaribot.sendAll("The wild {0}'s Wonder Guard is protecting it!".format(poke(usingPokemon)), safchan);
             }
         }
         var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
-        if (rulesMod[1] == true) {
+        if (rulesMod[1] == true && !theory) {
             if (player.helds.length > 0 && player.helds[0] == 2 && !needsPechaCleared.contains(player.id.toLowerCase())) {
                 player.berries.pecha = true;
                 needsPechaCleared.push(player.id.toLowerCase());
@@ -9474,7 +9554,7 @@ function Safari() {
             }
             if (currentTheme && contestThemes && contestThemes[currentTheme]) {
                 var theme = contestThemes[currentTheme] ? contestThemes[currentTheme] : {};
-                if (theme.eventFinal && theme.eventFinal == currentPokemon) {
+                if (theme.eventFinal && theme.eventFinal == usingPokemon) {
                     if (!(this.allFlagsMet(player, theme.eventFlags))) {
                         finalChance = 0;
                     }
@@ -9557,12 +9637,20 @@ function Safari() {
             safaribot.sendMessage(src, "This is an Event Pokémon, you cannot use " + es(finishName("master")) + "!", safchan);
             return;
         }
+        if (ball === "spirit" && safari.spiritDuelsCanSignup(src, player, true)) {
+            safaribot.sendHtmlMessage(src, "You can't throw " + es(finishName("spirit")) + " without signing up for " + link("/spiritduels", "Spirit Duels") + " first!", safchan);
+            return;
+        }
         if (wildSpirit && ball !== "spirit") {
             safaribot.sendMessage(src, "This is a Spirit Pokémon, you can only use " + es(finishName("spirit")) + "!", safchan);
             return;
         }
         if (currentRules && currentRules.excludeBalls && currentRules.excludeBalls.contains(ball) && ball !== "spirit") {
             safaribot.sendMessage(src, "The use of " + ballName + " is forbidden during this contest!", safchan);
+            return;
+        }
+        if (isBallAvailable(player, "spirit") && player.spiritDuels.box.length >= safari.events.spiritBoxLimit) {
+            safaribot.sendMessage(src, "Your Spirit Box is full!", safchan);
             return;
         }
 
@@ -9653,15 +9741,14 @@ function Safari() {
                 safaribot.sendHtmlAll("Some stealthy person " + catchVerb + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
                 player.records.catchSpy += 1;
             } else if (ball == "spirit") {
-                safari.catchSpiritMon(player, currentPokemon);
+                safari.catchSpiritMon(player, currentPokemon, wildSpirit);
                 player.records.catchSpirit += 1;
                 var team = player.spiritDuels.team;
                 if (team === "None") {
                     team = "Unemployed"
                 }
                 var title = player.spiritDuels.rankName;
-                safaribot.sendHtmlAll(team + " " + title + " " + name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their "  + ch + poke(catchingMon, true), safchan);
-                wildSpirit = false;
+                safaribot.sendHtmlAll(team + " " + title + " " + name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their "  + ch + poke(catchingMon, true) + "!", safchan);
             } else if ((ball === "mono") || (player.scaleDeadline >= now())) {
                 var stype = ball === "mono" && type2(catchingMon) !== "???" ? "pure " + (!player.monoSecondary ? type1(catchingMon) : type2(catchingMon)) + " " : "";
                 var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
@@ -9671,7 +9758,7 @@ function Safari() {
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
             
-            if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !ignoresWildAbilities(player) && !["cherish", "master"].contains(ball) && player.balls[ball] > 1 && chance(0.3)) {
+            if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !ignoresWildAbilities(player) && !["cherish", "master", "spirit"].contains(ball) && player.balls[ball] > 1 && chance(0.3)) {
                 safaribot.sendAll("The wild {0}'s Pressure caused {1} to use up an extra {2}...".format(poke(currentPokemon, true), ball === "spy" ? "the stealthy person" : name, finishName(ball)), safchan);
                 player.balls[ball] -= 1;
             }
@@ -9709,7 +9796,7 @@ function Safari() {
             }
 
             var heldChanceBoost = false;
-            var heldChanceAbilities = [14, 105]; // Compound Eyes, Super Luck
+            var heldChanceAbilities = [14, 105, 119, 124, 187]; // Compound Eyes, Super Luck, Frisk, Pickpocket, Magician
             for (var i = 0; i < heldChanceAbilities.length; i++) {
                 if (canHaveAbility(leader, heldChanceAbilities[i])) {
                     safaribot.sendMessage(src, "Your {0}'s {1} helps you find held items more often!".format(poke(leader, true), abilityOff(heldChanceAbilities[i])), safchan);
@@ -9718,21 +9805,16 @@ function Safari() {
                 }
             }
 
-            if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"")) {
+            if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"") && !wildSpirit) {
                 var wildItemHeldList = globalWildItems[currentPokemon+""];
                 var drop = [], gained = [], discarded = [], lost = [];
-                var customItems = {
-                    "@moneyset": ["$" + (Math.max(10, sys.rand(1, 11) * sys.rand(1, 11)))],
-                    "@moneyset2": ["$" + (sys.rand(10, 21) * sys.rand(10, 26))],
-                    "@apricornset": ["@blkapricorn", "@whtapricorn", "@pnkapricorn", "@ylwapricorn", "@bluapricorn", "@redapricorn", "@grnapricorn"],
-                    "@dewset": ["@dew", "@hdew"]
-                };
+
                 for (var i = 0; i < wildItemHeldList.length; i++) { // sample data - {"1": [ {"item":"bait","perc":0.5}, {"item":"golden","perc":0.1} ]};
                     var itemObj = wildItemHeldList[i];
                     var item = itemObj.item, perc = itemObj.perc;
-                    
-                    if (item in customItems) {
-                        item = customItems[item].random();
+                    var custom = safari.getCustomWildItems();
+                    if (item in custom) {
+                        item = custom[item].random();
                     }
                     
                     if (heldChanceBoost) {
@@ -9769,7 +9851,7 @@ function Safari() {
             }
             if (safari.validDailyBoost(player)) {
                 var drop = [], gained = [], discarded = [];
-                var bonusDrops = [ {"item":"30@dust", "perc":0.1}, {"item":"3@gacha","perc":0.07}, {"item":"@silver","perc":0.04}, {"item":"@pack","perc":0.01} ];
+                var bonusDrops = [ {"item":"70@dust", "perc":0.1}, {"item":"6@gacha","perc":0.07}, {"item":"3@silver","perc":0.04}, {"item":"@pack","perc":0.01} ];
                 
                 for (var i = 0; i < bonusDrops.length; i++) { // sample data - {"1": [ {"item":"bait","perc":0.5}, {"item":"golden","perc":0.1} ]};
                     var itemObj = bonusDrops[i];
@@ -9878,7 +9960,7 @@ function Safari() {
                 player.records.catchLove += 1;
             }
 
-            var clonedAmount = 0;
+            var clonedAmount = 0, cloneDiscarded = 0;
             if (ball === "clone" || crystalEffect.effect === "clone") {
                 if (ball === "clone") {
                     player.records.catchClone += 1;
@@ -9911,17 +9993,17 @@ function Safari() {
                     safaribot.sendAll("What is this?! The " + pokeName + " was further cloned by some mysterious power! In the end, " + name + " received " + plural(clonedAmount+1, pokeName) + "!", safchan);
                 }
                 if (clonedAmount > 0) {
-                    var boxLimit = getPerkBonus(player, "box"), discarded = 0;
+                    var boxLimit = getPerkBonus(player, "box"), cloneDiscarded = 0;
                     for (var i = 0; i < clonedAmount; i++) {
                         if (player.pokemon.length >= boxLimit) {
-                            discarded++;
+                            cloneDiscarded++;
                         } else {
                             player.pokemon.push(currentPokemon);
                         }
                     }
                     player.records.pokesCloned += clonedAmount;
-                    if (discarded > 0) {
-                        safaribot.sendMessage(src, "Oh heck! You didn't have enough space in your boxes for the cloned Pokémon, so you had to let " + plural(discarded, currentPokemon + (typeof currentPokemon === "string" ? "*" : "")) + " go!", safchan);
+                    if (cloneDiscarded > 0) {
+                        safaribot.sendMessage(src, "Oh heck! You didn't have enough space in your boxes for the cloned Pokémon, so you had to let " + plural(cloneDiscarded, currentPokemon + (typeof currentPokemon === "string" ? "*" : "")) + " go!", safchan);
                     }
                 }
             }
@@ -9990,7 +10072,11 @@ function Safari() {
                 }
                 safaribot.sendAll(name + " found " + plural(gained, "silver") + " on the ground after catching " + pokeName + "!" , safchan);
             }
+
             this.fullBoxWarning(src);
+            if (ball === "spirit" && safari.events.spiritBoxLimit - player.spiritDuels.box.length <= 5) {
+                safaribot.sendMessage(src, "Your Spirit Box is almost full! You can only add " + (safari.events.spiritBoxLimit - player.spiritDuels.box.length) + " more Pokémon to your Spirit Box!", safchan);
+            }
 
             var penalty = 2 * (1 - getPerkBonus(player, "soothe") - this.getFortune(player, "soothe", 0));
             if (ball === "spy") {
@@ -10012,8 +10098,8 @@ function Safari() {
                     }
                 }
             }
-            if (isRare(currentPokemon) || ball === "master") {
-                sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
+            if (isRare(currentPokemon) || ball === "master" || ball === "cherish") {
+                sys.appendToFile(mythLog, now() + "|||" + (clonedAmount - cloneDiscarded > 0 ? (clonedAmount - cloneDiscarded + 1) + "x " : "") + (wildSpirit ? "Spirit Realm " : "") + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
             }
             var active = leader;
             var activeNum = parseInt(active, 10);
@@ -10163,13 +10249,13 @@ function Safari() {
             currentThrows -= 1;
             throwAttempts += 1;
 
-            if (canHaveAbility(currentPokemon, abilitynum("Run Away"))) {
+            if (canHaveAbility(currentPokemon, abilitynum("Run Away")) && !ignoresWildAbilities(player)) {
                 currentThrows -= 1;
             }
-            if (canHaveAbility(currentPokemon, abilitynum("Wimp Out"))) {
+            if (canHaveAbility(currentPokemon, abilitynum("Wimp Out")) && !ignoresWildAbilities(player)) {
                 currentThrows = 0;
             }
-            if (canHaveAbility(currentPokemon, abilitynum("Emergency Exit")) && chance(0.5)) {
+            if (canHaveAbility(currentPokemon, abilitynum("Emergency Exit")) && !ignoresWildAbilities(player) && chance(0.5)) {
                 currentThrows = 0;
             }
             if (currentThrows <= 0 && !wildEvent && !resolvingThrows) {
@@ -10631,7 +10717,7 @@ function Safari() {
         
         var period = new Date().getUTCHours();
         period = ["night", "morning", "afternoon", "evening"][Math.floor(period/6)];
-        var where = player.mushroomDeadline > now() ? player.mushroomTheme : (contestCount > 0 && currentTheme ? currentTheme : "default");
+        var where = player.mushroomDeadline > 0 ? player.mushroomTheme : (contestCount > 0 && currentTheme ? currentTheme : "default");
         var photo = {
             id: target,
             amt: currentPokemonCount,
@@ -11024,8 +11110,8 @@ function Safari() {
             if (player.scaleDeadline >= n) {
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("scale") + "'s Color:</b> " + cap(player.scaleColor) + " for the next " + timeLeftString(player.scaleDeadline) + "!", safchan);
             }
-            if (player.mushroomDeadline >= n) {
-                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("mushroom") + "'s Theme:</b> " + themeName(player.mushroomTheme) + " for the next " + timeLeftString(player.mushroomDeadline) + "!", safchan);
+            if (player.mushroomDeadline > 0) {
+                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("mushroom") + "'s Theme:</b> " + themeName(player.mushroomTheme) + " for the next " + utilities.getTimeString(player.mushroomDeadline) + "!", safchan);
             }
             if (player.zcrystalDeadline >= n && player.zcrystalUser) {
                 var type = getCrystalEffect(player.zcrystalUser);
@@ -11114,7 +11200,7 @@ function Safari() {
 
             player.party.push(id);
             player.helds.push(-1);
-            safaribot.sendMessage(src, "You added " + info.name + " to your party!", safchan);
+            safaribot.sendMessage(src, "You added " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " to your party!", safchan);
             if (player.tutorial.inTutorial && player.party.contains(sys.pokeNum("Pikachu"))) {
                 advanceTutorial(src, 4);
             }
@@ -11146,7 +11232,7 @@ function Safari() {
             }
             if (cantBecause(src, reason, restrictions)) {
                 pendingActiveChanges[player.id] = "remove:" + info.name;
-                safaribot.sendMessage(src, "Your " + info.name + " will be removed from your party at the next opportunity!", safchan);
+                safaribot.sendMessage(src, "Your " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " will be removed from your party at the next opportunity!", safchan);
                 return;
             }
 
@@ -11168,7 +11254,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
                 player.berries.petayaCombo = 0;
             }
-            safaribot.sendMessage(src, "You removed " + info.name + " from your party!", safchan);
+            safaribot.sendMessage(src, "You removed " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " from your party!", safchan);
             this.saveGame(player);
         } else if (action === "active") {
             var bypassed = false;
@@ -11184,7 +11270,7 @@ function Safari() {
                 }
                 if (!bypassed) {
                     pendingActiveChanges[player.id] = "active:"+info.input;
-                    safaribot.sendMessage(src, "Your active Pokémon will automatically be changed to " + info.name + " in the next opportunity!", safchan);
+                    safaribot.sendMessage(src, "Your active Pokémon will automatically be changed to " + poke(getInputPokemon(info.input).num + (info.shiny ? "" : 0), true) + " in the next opportunity!", safchan);
                     return;
                 }
             }
@@ -11214,7 +11300,7 @@ function Safari() {
             }
 
             player.party.splice(0, 0, id);
-            safaribot.sendMessage(src, "You are now using " + poke(getInputPokemon(info.name).num, true) + " as your active Pokémon!", safchan);
+            safaribot.sendMessage(src, "You are now using " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " as your active Pokémon!", safchan);
             while (player.party.length > player.helds.length) {
                 player.helds.push(-1);
             }
@@ -11480,9 +11566,10 @@ function Safari() {
         var showLinks = ownParty && sys.os(id) !== "android";
         for (var e in partyShown) {
             var member = getPokemonInfo(partyShown[e]);
-            var name = pokePlain(member[0], true) + (member[1] ? "*" : "");
+            var name = pokePlain(member[0]) + (member[1] ? "*" : "");
+            var displayName = pokePlain(member[0], true) + (member[1] ? "*" : "");
             out += "<td><table width='100%'><tr>";
-            out += "<td align='center' style='white-space: pre;'>#" + pokeInfo.readableNum(member[0]) + " " + name + "</td>";
+            out += "<td align='center' style='white-space: pre;'>#" + pokeInfo.readableNum(member[0]) + " " + displayName + "</td>";
             if (player.helds.length > e && player.helds[e] != -1) {
                 var item = heldCodes[player.helds[e]];
                 var see = "";
@@ -11596,6 +11683,39 @@ function Safari() {
             } else {
                 normal.push(p);
             }
+        }
+        out += "<b>" + title + "</b><br/>";
+        out += normal.join(", ");
+        out += "<br/>";
+        return out;
+    };
+    this.listSpiritPokemon = function(list, title, small, enlist) {
+        var out = "", normal = [], count = 0, count2 = 0, rowSize = small ? 6 : 12, e;
+        for (e in list) {
+            normal.push(pokeInfo.icon(list[e], true));
+        }
+        out = ["<table border=1><tr><th>" + title + "</th></td></tr><tr><td><table cellpadding=5>"];
+        for (e in normal) {
+            if (count == 0) {
+                out.push("<tr>");
+            }
+            count++;
+            count2++;
+            out.push("<td align=center style='vertical-align: middle;" + (count2 <= enlist ? " background-color: #0099ff;" : "") + "'>" + normal[e] + "</td>");
+            if (count == rowSize) {
+                out.push("</tr>");
+                count = 0;
+            }
+        }
+        out.push("</table></td></tr></table>");
+        return out.join("");
+    };
+    this.listSpiritPokemonText = function(list, title, enlist) {
+        var out = "", normal = [], e, p, count = 0;
+        for (e in list) {
+            count++;
+            p = poke(list[e]);
+            normal.push(count <= enlist ? "<b>" + p + "</b>" : p);
         }
         out += "<b>" + title + "</b><br/>";
         out += normal.join(", ");
@@ -11786,6 +11906,12 @@ function Safari() {
                 player.party.splice(player.party.lastIndexOf(pokeNum), 1);
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
+
+        var input = getInput(poke(pokeNum));
+        var total = countRepeated(player.party, pokeNum) + countRepeated(player.pokemon, pokeNum);
+        if (input.input in player.shop && player.shop[input.input].limit > total) {
+            player.shop[input.input].limit = total;
+        }
     };
     this.removePokemon2 = function(player, pokeNum) {
         if (player.pokemon.contains(pokeNum)) {
@@ -11797,6 +11923,12 @@ function Safari() {
                     safari.takeItem(player, player.party.lastIndexOf(pokeNum) + 1, true);
                 player.party.splice(player.party.lastIndexOf(pokeNum), 1);
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
+        }
+
+        var input = getInput(poke(pokeNum));
+        var total = countRepeated(player.party, pokeNum) + countRepeated(player.pokemon, pokeNum);
+        if (input.input in player.shop && player.shop[input.input].limit > total) {
+            player.shop[input.input].limit = total;
         }
     };
     this.findPokemon = function(src, commandData, textOnly, shopLink, showDupes) {
@@ -12879,7 +13011,7 @@ function Safari() {
             }
             hitAny = false;
             data = p.notificationData;
-            if (data.towerWaiting && (!(safari.isBattling(p.id)))) {
+            if (data.towerWaiting) {
                 if (p.quests.tower.cooldown < currentTime) {
                     data.towerWaiting = false;
                     out = "You are able to fight the " + link("/quest tower", "Battle Tower") + " again!";
@@ -12894,7 +13026,7 @@ function Safari() {
                     hitAny = true;
                 }
             }
-            if (data.arenaWaiting && (!(safari.isBattling(p.id)))) {
+            if (data.arenaWaiting) {
                 if (p.quests.arena.cooldown < currentTime) {
                     data.arenaWaiting = false;
                     out = "Trainer " + link("/quest arena:" + data.lastArenaTrainer, capitalizeFirst(data.lastArenaTrainer)) + " is ready for a rematch in the " + link("/quest arena", "Arena") + "!";
@@ -12909,7 +13041,7 @@ function Safari() {
                     hitAny = true;
                 }
             }
-            if (data.leagueWaiting && (!(safari.isBattling(p.id)))) {
+            if (data.leagueWaiting) {
                 if (p.quests.league.cooldown < currentTime) {
                     data.leagueWaiting = false;
                     out = "You are able to fight the " + link("/quest league", "Pokémon League") + " again!";
@@ -13998,7 +14130,7 @@ function Safari() {
         }
         if (chance(finalChance)) {
             if (!(deluxe)) {
-                var showTheme = player.mushroomDeadline > now() && ballUsed !== "spy" ? " from the " + contestThemes[player.mushroomTheme].name + " theme" : "";
+                var showTheme = player.mushroomDeadline > 0 && ballUsed !== "spy" ? " from the " + contestThemes[player.mushroomTheme].name + " theme" : "";
                 safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon" + showTheme + "!", safchan);
             }
             if (golden) {
@@ -14021,7 +14153,7 @@ function Safari() {
             if (iterations) {
                 var out = "Spawned: ";
                 for (x = 0; x < 300; x++) {
-                    var where = player.mushroomDeadline > now() ? player.mushroomTheme : null;
+                    var where = player.mushroomDeadline > 0 ? player.mushroomTheme : null;
                     out += safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where, true);
                 }
                 safaribot.sendMessage(src, out, safchan);
@@ -14052,7 +14184,7 @@ function Safari() {
                         }
                         safari.createWild(mon, null, 1, null, null, player, null, false, null);
                     } else {
-                        var where = player.mushroomDeadline > now() ? player.mushroomTheme : null;
+                        var where = player.mushroomDeadline > 0 ? player.mushroomTheme : null;
                         safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where);
                     }
                 }
@@ -14554,6 +14686,14 @@ function Safari() {
         gachaJackpot += 1;
         SESSION.global().safariGachaJackpot = gachaJackpot;
     };
+    this.getCustomWildItems = function() {
+        return customWildItems = {
+            "@moneyset": ["$" + (Math.max(10, sys.rand(1, 11) * sys.rand(1, 11)))],
+            "@moneyset2": ["$" + (sys.rand(10, 21) * sys.rand(10, 26))],
+            "@apricornset": ["@blkapricorn", "@whtapricorn", "@pnkapricorn", "@ylwapricorn", "@bluapricorn", "@redapricorn", "@grnapricorn"],
+            "@dewset": ["@dew", "@hdew"]
+        };
+    };
     this.candyCostConversion = function(player, val) {
         //ivysaur is 650, bulbasaur 200, dragonair 699
         var out = 0;
@@ -14741,7 +14881,13 @@ function Safari() {
 
         var evoData = devolutions[species];
         var dustRegained = Math.min(Math.floor((evolutions[evoData].candies || 300) * (info.shiny ? 1.15 : 1) * 0.5), itemData.dust.cap);
-
+        var forme = pokeInfo.forme(num);
+        if (forme !== 0) {
+            var tempForme = pokeInfo.calcForme(evoData, forme);
+            if (pokePlain(tempForme).toLowerCase() !== "missingno" && !devolutions.hasOwnProperty(info.num+"")) { // only default to a certain forme if there's no strict devolution match
+                evoData = tempForme;
+            }
+        }
         if (!["confirm", "starter", "normal"].contains(starter)) {
             safaribot.sendHtmlMessage(src, info.name + " can devolve into " + poke(evoData) + " with " + an(finishName("spray")) + " to regain " + plural(dustRegained, "dust") + ".", safchan);
             safaribot.sendHtmlMessage(src, "If you really wish to devolve " + info.name + ", type " + link("/spray " + info.input + ":confirm") + ".", safchan);
@@ -14777,13 +14923,7 @@ function Safari() {
             return;
         }
 
-        var forme = pokeInfo.forme(num);
-        if (forme !== 0 && ![65561,65562].contains(num)) {
-            var tempForme = pokeInfo.calcForme(evoData, forme);
-            if (pokePlain(tempForme).toLowerCase() !== "missingno" && !devolutions.hasOwnProperty(info.num+"")) { // only default to a certain forme if there's no strict devolution match
-                evoData = tempForme;
-            }
-        }
+        
         var evolvedId = shiny ? "" + evoData : evoData;
 
         player.balls.spray -= 1;
@@ -14909,7 +15049,7 @@ function Safari() {
         } else {
             sendAll("", false, true, sys.name(src).toLowerCase());
             sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true, false, sys.name(src).toLowerCase());
-            sendAll(sys.name(src) + "'s " + poke(getInputPokemon(info.name).num, true) + " " + verb + " " + poke(evolution, true) + "!", false, false, sys.name(src).toLowerCase());
+            sendAll(sys.name(src) + "'s " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " " + verb + " " + poke(evolution, true) + "!", false, false, sys.name(src).toLowerCase());
             sendAll("", false, true, sys.name(src).toLowerCase());
         }
         this.saveGame(player);
@@ -16267,21 +16407,21 @@ function Safari() {
             }
             player.balls.mushroom -= 1;
             player.mushroomTheme = possibleResults.random();
-            var dur = itemData.mushroom.duration * 60 * 1000;
+            var dur = itemData.mushroom.duration * 60;
             if (this.hasCostumeSkill(player, "extendedMushroom")) {
                 dur *= 1.25;
             }
-            player.mushroomDeadline = now() + dur;
+            player.mushroomDeadline = dur;
             player.records.mushroomsEaten += 1;
             this.saveGame(player);
-            safaribot.sendMessage(src, "You ate a suspicious " + finishName("mushroom") + "! As you get dizzier and dizzier, you start thinking that you are in " + an(themeName(player.mushroomTheme)) + " environment for " + timeLeftString(player.mushroomDeadline) + "!", safchan);
+            safaribot.sendMessage(src, "You ate a suspicious " + finishName("mushroom") + "! As you get dizzier and dizzier, you start thinking that you are in " + an(themeName(player.mushroomTheme)) + " environment for " + utilities.getTimeString(player.mushroomDeadline) + "!", safchan);
             return;
         }
         if (item === "brush") {
             if (!info.target) {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "To modify a photo, type /use brush:PhotoNumber:WhatToModify. Example: /use brush:3:period would change the period (Morning, Afternoon, Evening or Night) of the 3rd photo in your album to a random different one.", safchan);
-                safaribot.sendMessage(src, "You can modify number of Pokémon in the photo, their mood, action, environment, period or quality. When retouching a photo, there's a chance that the quality will degrade.", safchan);
+                safaribot.sendMessage(src, "You can modify number of Pokémon in the photo, their mood, action, environment, period or quality.", safchan);
                 sys.sendMessage(src, "", safchan);
                 return;
             }
@@ -16379,7 +16519,7 @@ function Safari() {
             var oldQuality = getValueTranslation(photo.score, "score");
             var qualityLost = false;
             
-            var qualityDropChance = { amt: 0.8, when: 0.33, what: 0.6, where: 0.4, mood: 0.5, score: 0.45 };
+            //var qualityDropChance = { amt: 0.8, when: 0.33, what: 0.6, where: 0.4, mood: 0.5, score: 0.45 };
             if (what === "amt") {
                 photo.amt += parseInt(randomSample({ "1": 90, "2": 9, "3": 1}), 10);
             } else if (what !== "score") {
@@ -16389,20 +16529,21 @@ function Safari() {
                 } while (res === photo[what]);
                 photo[what] = res;
             }
-            if (chance(qualityDropChance[what])) {
+            /*if (chance(qualityDropChance[what])) {
                 if (photo.score > 0) {
                     qualityLost = true;
                 }
                 photo.score = Math.max(0, photo.score - sys.rand(scoreLostRange[0], scoreLostRange[1]));
-            } else if (what === "score") {
+            } else*/
+            if (what === "score") {
                 photo.score = Math.min(10, photo.score + [1, 1, 1, 1, 2, 2, 3].random());
             }
             var newValue = getValueTranslation(photo[what], what);
             var newQuality = getValueTranslation(photo.score, "score");
             
-            var changemsg = what === "score" && qualityLost ? "" : "The " + translations[what] + " changed from " + toColor(oldValue, "red") + " to " + toColor(newValue, "blue") + "! ";
-            qualityLost = qualityLost ? "The quality dropped from " + toColor(oldQuality, "blue") + " to " + toColor(newQuality, "red") : "";
-            safaribot.sendHtmlMessage(src, changemsg + qualityLost, safchan);
+            //var changemsg = what === "score" && qualityLost ? "" : "The " + translations[what] + " changed from " + toColor(oldValue, "red") + " to " + toColor(newValue, "blue") + "! ";
+            //qualityLost = qualityLost ? "The quality dropped from " + toColor(oldQuality, "blue") + " to " + toColor(newQuality, "red") : "";
+            //safaribot.sendHtmlMessage(src, changemsg + qualityLost, safchan);
             safaribot.sendHtmlMessage(src, "Your photo of " + toColor(oldDesc, "red") + " was edited and is now a photo of " + toColor(this.describePhoto(photo), "blue") + "!", safchan);
             
             player.records.photosRetouched += 1;
@@ -16466,6 +16607,28 @@ function Safari() {
         else {
             player.alwaysShowMasterBall = true;
             safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>enabled on regular Pokémon</b>!".format(finishName("master")), safchan);
+        }
+
+        safari.saveGame(player);
+    };
+    this.setEnableCherishBall = function(src, data) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        
+        if (!["on", "off"].contains(data)) {
+            safaribot.sendHtmlMessage(src, "Your {0} throw links are currently being <b>{1} on regular Pokémon</b>. Use {2} to change it!".format(finishName("cherish"), (player.alwaysShowCherishBall ? "enabled" : "disabled"), link("/cherishlink " + (player.alwaysShowCherishBall ? "off" : "on"))), safchan);
+            return;
+        }
+        
+        if (data === "off") {
+            player.alwaysShowCherishBall = false;
+            safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>disabled on regular Pokémon</b>! Remember that you can still use /throw or /catch to manually throw a {0}!".format(finishName("cherish")), safchan);
+        }
+        else {
+            player.alwaysShowCherishBall = true;
+            safaribot.sendHtmlMessage(src, "Your {0} throw links will now be <b>enabled on regular Pokémon</b>!".format(finishName("cherish")), safchan);
         }
 
         safari.saveGame(player);
@@ -16622,6 +16785,8 @@ function Safari() {
         preschoolerPack8: "Received prizes for leveling up",
         preschoolerPack9: "Received prizes for leveling up",
         preschoolerPack10: "Received prizes for leveling up",
+        typeMatchupHelper: "Displays type effectiveness of your lead Pokémon against wild Pokémon",
+        ballHint: "Displays the most effective Ball for you to use against the current wild Pokémon",
         fasterFinder: "Reduced cooldown after using the Itemfinder",
         evolveCheap: "Use fewer " + es(finishName("rare")) + " when evolving Pokémon",
         mythBallBoost: "Higher catch rate when using " + es(finishName("myth")),
@@ -16638,6 +16803,7 @@ function Safari() {
         monoBallBoost: "Higher catch rate when using " + es(finishName("mono")),
         cloneBallBoost: "Higher catch rate when using " + es(finishName("clone")),
         cloneBallBoost2: "Even higher catch rate when using " + es(finishName("clone")),
+        fasterPhotos: "Increased priority when taking photos",
         extraDust: "Acquire more " + finishName("dust") + " when evolving Pokémon",
         pokeblockBoost: "Pokéblocks are more effective",
         daycarePlay: "Pokémon gain more affection than usual when you play with them in the Daycare",
@@ -18356,7 +18522,6 @@ function Safari() {
         ls.splice(index - 1, 1);
         ls.unshift(m);
         safaribot.sendHtmlMessage(src, "You featured your medal: " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + "! It will now appear on your trainer screen!", safchan);
-        this.viewMedals(src);
         this.saveGame(player);
         return true;
     };
@@ -18393,7 +18558,7 @@ function Safari() {
         
         //band-aid fix since im not sure what causes this yet, but it just happened and i can't replicate it
         player.medals = player.medals.filter(function(e) { return e !== null });
-        this.viewMedals(src);
+        //this.viewMedals(src);
         this.saveGame(player);
         return true;
     };
@@ -19163,6 +19328,7 @@ function Safari() {
                 src = sys.id(player.id);
                 p = getAvatarOff(player.id);
                 if (p && p.spiritDuels) {
+                    p.balls.spirit = 0;
                     p.spiritDuels.rank = -1;
                     p.spiritDuels.rankName = "Zoomer";
                     p.spiritDuels.team = "None";
@@ -19180,6 +19346,8 @@ function Safari() {
         //Just loads the data
         var m;
         safari.events.spiritDuelsTeams = [];
+        safari.events.spiritDuelsSignups = [];
+        safari.events.spiritDuelsRefugees = [];
         for (var k in data.teams) {
             m = data.teams[k];
             safari.events.spiritDuelsTeams.push({
@@ -19194,6 +19362,8 @@ function Safari() {
             });
         }
         safari.events.spiritDuelsLog = [];
+        safari.events.spiritBoxLimit = 140;
+        safari.events.bonusSpiritEnlistRanks = [3, 7, 9];
         safari.events.spiritDuelsRanks = [
             {rank: "Grunt", exp: 0},
             {rank: "Ensign", exp: 2000},
@@ -19310,6 +19480,7 @@ function Safari() {
     };
     this.resetDuelsTeams = function() {
         safari.events.spiritDuelsSignups = [];
+        safari.events.spiritDuelsRefugees = [];
     };
     this.toRate = function( rate ) {
         return (Math.floor(rate * 10000)/100);
@@ -19382,29 +19553,21 @@ function Safari() {
         //Takes everyone from signups and puts them in teams
         safari.events.spiritDuelsSignups = removeDuplicates(safari.events.spiritDuelsSignups).shuffle();
         var sgnf = [];
-        var i = 0, player, oldBox, name;
+        var i = 0, player, name;
         for (var p in safari.events.spiritDuelsSignups) {
             name = idnumList.get(safari.events.spiritDuelsSignups[p]);
             player = getAvatarOff(name);
-            if (player.spiritDuels) {
-                if (player.spiritDuels.box.length > 0) {
-                    oldBox = player.spiritDuels.box;
-                }
-                else {
-                    oldBox = [19];
-                }
-            }
-            else {
-                oldBox = [19];
-            }
             if (player.spiritDuels.rank < 0) {
-                safari.notification(player, "You could not be assigned to a team because you are still a Zoomer!", "Spirit Duels");
+                safari.notification(player, "You could not be assigned to a team because you are still a Zoomer! If you want to join a team, sign up again and try to advance past Zoomer rank.", "Spirit Duels");
+                player.balls.spirit = 0;
+                safari.saveGame(player);
                 continue;
             }
             sgnf.push({
                 "name": name,
-                "exp": parseInt(player.spiritDuels.exp, 10)
-            })
+                "exp": parseInt(player.spiritDuels.exp, 10),
+                "box": player.spiritDuels.box.length > 0 ? player.spiritDuels.box.slice(0) : [19]
+            });
         }
         sgnf = sgnf.shuffle();
         sgnf = sgnf.sort(function(a, b) {
@@ -19418,18 +19581,23 @@ function Safari() {
                 rankName: "Grunt",
                 team: safari.events.spiritDuelsTeams[i].name,
                 exp: 0,
-                box: oldBox,
+                box: sgnf[p].box.slice(0),
                 skills: [],
                 skillChoices: {}
             };
+            if (!safari.events.spiritDuelsRefugees.contains(player.idnum)) {
+                player.balls.spirit = 5;
+            }
             safaribot.sendAll(player.id.toCorrectCase() + " joined " + safari.events.spiritDuelsTeams[i].name + "!", safchan);
             safari.notification(player, "You've been assigned to team " + safari.events.spiritDuelsTeams[i].name + "!", "Spirit Duels");
+            safari.saveGame(player);
             i++;
             if (i >= safari.events.spiritDuelsTeams.length) {
                 i = 0;
             }
         }
         safari.events.spiritDuelsSignups = [];
+        safari.events.spiritDuelsRefugees = [];
         safari.events.spiritDuelsBattling = true;
     };
     this.spiritDuelsPrizes = function( teams ) {
@@ -19484,13 +19652,13 @@ function Safari() {
                 }
                 finalrew = (finalrew + ("," + rareamt + "@rare"));
                 g = giveStuff(player, toStuffObj(finalrew));
+                sys.appendToFile(giftLog, now() + "|||Spirit Duels|||" + player.casedName + " from " + teams[t].name + "|||nextduels|||received|||" + g + "\n");
                 safari.notification(player, "Your Spirit Duels team " + teams[t].name + " scored " + r + "% and got #" + (i + 1) + "! (You " + g + ").", "Spirit Duels", true);
                 safari.saveGame(player);
             }
             sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "!", true);
             j++;
         }
-        sendAll("");
     }
     this.progressDuels = function( src ) {
         //Counts everyone's scores
@@ -19506,14 +19674,15 @@ function Safari() {
         });
 
         this.spiritDuelsPrizes(safari.events.spiritDuelsTeams);
-
+        sys.sendAll("", safchan);
         safaribot.sendHtmlAll("<b>" + safari.events.spiritDuelsTeams[0].name + " has been eliminated!</b>", safchan);
         
         for (var p in safari.events.spiritDuelsTeams[0].players) {
             var t = idnumList.get(safari.events.spiritDuelsTeams[0].players[p]);
             player = getAvatarOff(t);
             safari.events.spiritDuelsSignups.push(player.idnum);
-            safari.events.spiritDuelsSignupsRanked[player.idnum+""] = player.spiritDuels.exp;
+            safari.events.spiritDuelsRefugees.push(player.idnum); // used solely to check if player needs a spirit ball reset. if they're in this array, do not reset spirit balls since only signups from r1 should be reset
+            //safari.events.spiritDuelsSignupsRanked[player.idnum+""] = player.spiritDuels.exp;
         }
         safari.events.spiritDuelsTeams[0].alive = false;
         safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.slice(1);
@@ -19525,19 +19694,22 @@ function Safari() {
             team = safari.events.spiritDuelsTeams[t];
             team.won = 0;
             team.fought = 0;
+            team.rate = 0;
         }
         this.assignDuelsTeams();
     };
-    this.prepareNextSpiritDuel = function() {
+    this.prepareNextSpiritDuel = function(tiebreak) {
         //Creates a matchup between two teams
         //Should use a formula that makes teams with similar records fight
-        if (chance(0)) {
-            safari.events.spiritDuelsTeams.sort( function(a, b) {
-                return a.fought - b.fought;
+        if (tiebreak) {
+            safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.shuffle().sort( function(a, b) {
+                return a.rate - b.rate;
             });
         }
         else {
-            safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.shuffle();
+            safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.shuffle().sort( function(a, b) {
+                return a.fought - b.fought;
+            });
         }
         sendAll("Next Spirit Duel: " + safari.events.spiritDuelsTeams[0].name + " vs " + safari.events.spiritDuelsTeams[1].name + "!", true);
     };
@@ -19548,6 +19720,12 @@ function Safari() {
         var p1 = safari.events.spiritDuelsTeams[0].name + ": ", p2 = safari.events.spiritDuelsTeams[1].name + ": ";
         var army1init = safari.events.spiritDuelsTeams[0].players;
         var army2init = safari.events.spiritDuelsTeams[1].players;
+        safari.events.spiritDuelsViewers = army1init.concat(army2init)
+            .map(function(e) { return idnumList.get(e) })
+            .filter(function(e) { return isPlaying(e) && !cantBecause(sys.id(e), false, ["auction", "battle", "event", "pyramid", "baking"], false, true) });
+        if (!safari.events.spiritDuelsViewers.contains(idnumList.get(21))) {
+            safari.events.spiritDuelsViewers.push(idnumList.get(21));
+        }
         var army1 = [];
         var army2 = [];
         for (var a in army1init) {
@@ -19572,17 +19750,19 @@ function Safari() {
         if (army2.length < 2) {
             army2 = army2init;
         }
-        var enlistPerPlayer1 = (army1.length >= 6 ? 3 : (army1.length >= 5 ? 4 : (army1.length >= 4 ? 5 : 6)));
-        var enlistPerPlayer2 = (army2.length >= 6 ? 3 : (army2.length >= 5 ? 4 : (army2.length >= 4 ? 5 : 6)));
+        var enlistPerPlayer1 = safari.spiritEnlistsPerPlayer(army1.length);
+        var enlistPerPlayer2 = safari.spiritEnlistsPerPlayer(army2.length);
 
         var p, j, n = now(), hold = 0;
         for (var a in army1) {
             p = getAvatarOff(idnumList.get(army1[a]));
             j = 0;
             hold = parseInt(enlistPerPlayer1, 10);
-            hold += (p.spiritDuels.rank >= 3 ? 1 : 0);
-            hold += (p.spiritDuels.rank >= 7 ? 1 : 0);
-            hold += (p.spiritDuels.rank >= 9 ? 1 : 0);
+            for (var i = 0; i < safari.events.bonusSpiritEnlistRanks.length; i++) {
+                if (p.spiritDuels.rank >= safari.events.bonusSpiritEnlistRanks[i]) {
+                    hold++;
+                }
+            }
             for (var i = 0; i < hold; i++) {
                 team1.push({
                     mon: p.spiritDuels.box[j],
@@ -19605,9 +19785,11 @@ function Safari() {
             p = getAvatarOff(idnumList.get(army2[a]));
             j = 0;
             hold = parseInt(enlistPerPlayer2, 10);
-            hold += (p.spiritDuels.rank >= 3 ? 1 : 0);
-            hold += (p.spiritDuels.rank >= 7 ? 1 : 0);
-            hold += (p.spiritDuels.rank >= 9 ? 1 : 0);
+            for (var i = 0; i < safari.events.bonusSpiritEnlistRanks.length; i++) {
+                if (p.spiritDuels.rank >= safari.events.bonusSpiritEnlistRanks[i]) {
+                    hold++;
+                }
+            }
             for (var i = 0; i < hold; i++) {
                 team2.push({
                     mon: p.spiritDuels.box[j],
@@ -19628,6 +19810,7 @@ function Safari() {
         }
         team1 = team1.shuffle();
         team2 = team2.shuffle();
+
         var smaller = Math.min(team1.length, team2.length);
         safari.events.sd1 = team1.slice(0, smaller).shuffle();
         safari.events.sd2 = team2.slice(0, smaller).shuffle();
@@ -19643,13 +19826,11 @@ function Safari() {
         var range1 = [10, 120], range2 = [10, 120];
         var res;
         if (step === 0) {
-            sendAll("A Spirit Duel between " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " has commenced! [" + link("/spiritduel watch", "Watch") + "]", true);
-        }
-        else if (step === 2) {
-            sendAll("The Spirit Duel between " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " is about to begin! [" + link("/spiritduel watch", "Watch") + "]", true);
+            sendAll("A Spirit Duel between " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " is about to begin! [" + link("/spiritduel watch", "Watch") + "]", true);
         }
         else if (step === 4) {
-            this.spiritDuelsMessage("Preparations complete! Duel about to begin!")
+            sendAll("The Spirit Duel between " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " has commenced! [" + link("/spiritduel watch", "Watch") + "]", true);
+            this.spiritDuelsMessage("Preparations complete!");
         }
         else if (step >= 5) {
             this.spiritDuelsMessage( "Turn " + (step - 4) + ": " );
@@ -19691,7 +19872,7 @@ function Safari() {
             for (var a in team1) {
                 team1[a].rate = (team1[a].won / team1[a].fought);
                 if (team1[a].alive) {
-                    team1fighters += team1[a].owner.id.toCorrectCase() + "'s " + poke(team1[a].mon) + " " + pokeInfo.icon(team1[a].mon) + toColor(" (" + this.toRate(team1[a].rate) + "%)  ", this.getSpiritDuelColor(team1[a].rate) );
+                    team1fighters += pokeInfo.icon(team1[a].mon) + " " + team1[a].owner.casedName + "'s " + poke(team1[a].mon) + " " + toColor(" (" + this.toRate(team1[a].rate) + "%)  ", this.getSpiritDuelColor(team1[a].rate) );
                 }
                 if (team1[a].rate < 0.5) {
                     team1[a].alive = false;
@@ -19706,7 +19887,7 @@ function Safari() {
             for (var a in team2) {
                 team2[a].rate = (team2[a].won / team2[a].fought);
                 if (team2[a].alive) {
-                    team2fighters += team2[a].owner.id.toCorrectCase() + "'s " + poke(team2[a].mon) + " " + pokeInfo.icon(team2[a].mon) + toColor(" (" + this.toRate(team2[a].rate) + "%)  ", this.getSpiritDuelColor(team2[a].rate) );
+                    team2fighters += pokeInfo.icon(team2[a].mon) + " " + team2[a].owner.casedName + "'s " + poke(team2[a].mon) + " " + toColor(" (" + this.toRate(team2[a].rate) + "%)  ", this.getSpiritDuelColor(team2[a].rate) );
                 }
                 if (team2[a].rate < 0.5) {
                     team2[a].alive = false;
@@ -19896,7 +20077,54 @@ function Safari() {
         }
         return out;
     };
-    this.catchSpiritMon = function( player,mon ) {
+    this.getSpiritExpRequired = function(player) {
+        if (!player.spiritDuels.rankName) {
+            return;
+        }
+        if (safari.spiritDuelsMaxLevel(player)) {
+            return 0;
+        }
+
+        safari.events.spiritDuelsRanks = [
+            {rank: "Grunt", exp: 0},
+            {rank: "Ensign", exp: 2000},
+            {rank: "Officer Trainee", exp: 6000},
+            {rank: "Secretary Officer", exp: 10000},
+            {rank: "Squadron Leader", exp: 15000},
+            {rank: "Field Lieutenant", exp: 22000},
+            {rank: "Commander", exp: 30000},
+            {rank: "Vice Admiral", exp: 35000},
+            {rank: "Admin", exp: 40000},
+            {rank: "Supreme Master", exp: 50000}
+        ];
+
+        return safari.events.spiritDuelsRanks[player.spiritDuels.rank + 1].exp || 0;
+    };
+    this.spiritDuelsMaxLevel = function(player) {
+        return player.spiritDuels.rank >= safari.events.spiritDuelsRanks.length - 1;
+    };
+    this.spiritDuelsLevelUp = function(player) {
+        if (safari.spiritDuelsMaxLevel(player)) {
+            return;
+        }
+        var nextLevel = player.spiritDuels.rank + 1 || -1;
+        
+        var expNeeded = safari.getSpiritExpRequired(player);
+
+        if (player.spiritDuels.exp >= expNeeded) {
+            player.spiritDuels.rank++;
+            player.spiritDuels.rankName = safari.events.spiritDuelsRanks[player.spiritDuels.rank].rank;
+            safaribot.sendMessage(sys.id(player.id), "You leveled up and became " + an(player.spiritDuels.rankName) + "!", safchan);
+            if (player.spiritDuels.rank > 0) {
+                canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
+                player.spiritDuels.skillChoices = canLearn;
+                safari.showSpiritSkill(sys.id(player.id),player);
+            }
+        }
+
+        safari.saveGame(player);
+    };
+    this.catchSpiritMon = function( player,mon, spiritRealm ) {
         //Adds the mon to player's spirit box
         //Also increases their EXP
         var id = parseInt(mon, 10), exp;
@@ -19910,44 +20138,28 @@ function Safari() {
         if (isLegendary(id)) {
             exp *= 4;
         }
+        else if (spiritRealm) {
+            exp *= 2;
+        }
+
+        exp = Math.round(exp);
         player.spiritDuels.exp += exp;
-        var expNeeded;
-        switch (player.spiritDuels.rankName) {
-            case "Zoomer": expNeeded = 0; break;
-            case "Grunt": expNeeded = 2000; break;
-            case "Ensign": expNeeded = 6000; break;
-            case "Officer Trainee": expNeeded = 10000; break;
-            case "Secretary Officer": expNeeded = 15000; break;
-            case "Squadron Leader": expNeeded = 22000; break;
-            case "Field Lieutenant": expNeeded = 30000; break;
-            case "Commander": expNeeded = 35000; break;
-            case "Vice Admiral": expNeeded = 40000; break;
-            case "Admin": expNeeded = 50000; break;
-        }
-        safari.events.spiritDuelsRanks = [
-            "Grunt", "Ensign", "Officer Trainee", "Secretary Officer", "Squadron Leader", "Field Lieutenant", "Commander", "Vice Admiral", "Admin", "Supreme Master"
-        ];
-        var nextLevel = player.spiritDuels.rank + 1;
-        if (nextLevel >= safari.events.spiritDuelsRanks.length) {
-            return;
-        }
-        if (player.spiritDuels.exp >= expNeeded) {
-            player.spiritDuels.rank++;
-            player.spiritDuels.rankName = safari.events.spiritDuelsRanks[nextLevel];
-            safaribot.sendMessage(sys.id(player.id), "You leveled up and became a " + player.spiritDuels.rankName + "!", safchan);
-            if (player.spiritDuels.rank > 0) {
-                canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
-                player.spiritDuels.skillChoices = canLearn;
-                this.showSpiritSkill(sys.id(player.id),player);
+        player.spiritDuels.exp = Math.round(player.spiritDuels.exp);
+
+        var expNeeded = safari.getSpiritExpRequired(player);
+
+        if (!safari.spiritDuelsMaxLevel(player)) {
+            safaribot.sendMessage(sys.id(player.id), "You gained {0} Spirit Duels EXP! (Next Rank: {1}/{2})".format(addComma(exp), addComma(player.spiritDuels.exp), addComma(expNeeded)), safchan);
+            while (player.spiritDuels.exp >= safari.getSpiritExpRequired(player) && !safari.spiritDuelsMaxLevel(player)) {
+                safari.spiritDuelsLevelUp(player);
             }
         }
         this.saveGame(player);
-        return;
     };
     this.showSpiritSkill = function( src,player ) {
         //Shows them their spirit monns
         var skill, msg = "", letters = ["a", "b", "c"], i = 0;
-        msg = "Choose one of these skills with /spiritskill [letter]!";
+        msg = "You can learn one of these skills with /spiritskill [letter]!";
         if (Object.keys(player.spiritDuels.skillChoices).length === 0) {
             safaribot.sendMessage(src, "You have no skills to learn!", safchan);
             return;
@@ -19955,7 +20167,7 @@ function Safari() {
         safaribot.sendMessage(src, msg, safchan);
         for (var s in player.spiritDuels.skillChoices) {
             skill = player.spiritDuels.skillChoices[s];
-            safaribot.sendMessage(src, "[" + letters[i] + "] " + skill.desc + " (+" + skill.val + ")", safchan);
+            safaribot.sendHtmlMessage(src, link("/spiritskill " + letters[i], "[" + letters[i].toUpperCase() + "]", true) + " " + skill.desc + " (+" + skill.val + ")", safchan);
             i++;
         }
     };
@@ -19981,6 +20193,15 @@ function Safari() {
         }
         return;
     };
+    this.spiritEnlistsPerPlayer = function(memberAmt) {
+        return memberAmt >= 6 ? 3 : (memberAmt >= 5 ? 4 : (memberAmt >= 4 ? 5 : 6));
+    };
+    this.getSpiritTeamMembers = function(player) {
+        if (["None", "Unemployed"].contains(player.spiritDuels.team)) {
+            return [];
+        }
+        return safari.events.spiritDuelsTeams.filter(function(e) { return e.players.contains(player.idnum) }).pop().players;
+    };
     this.spiritDuelsCommand = function( src,command,commandData ) {
         var player = getAvatar(src);
         if (!safari.events.spiritDuelsEnabled) {
@@ -19991,16 +20212,49 @@ function Safari() {
             case "box": this.showSpiritBox(src,player,false,false); break;
             case "boxt": this.showSpiritBox(src,player,false,true); break;
             case "active": this.activeSpiritMon(src,player,commandData); break;
+            case "release": this.releaseSpiritMon(src,player,commandData); break;
+            case "bench": this.benchSpiritMon(src,player,commandData); break;
             case "join": this.joinSpiritDuels(src,player); break;
             case "watch": this.watchSpiritDuels(src, player ? player : sys.name(src)); break;
             case "history": this.showSpiritDuelsLog(src,player,commandData); break;
             case "party": this.showSpiritDuelsTeam(src,player); break;
             case "skill": case "skills": this.ownSpiritSkills(src,player); break;
             case "teams": case "allteams": this.showEachSpiritDuelTeam(src, player); break;
+            case "standings": case "lb": case "leaderboard": this.showSpiritDuelStandings(src); break;
             default: 
-                var m = "You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "!";
-                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
+                sys.sendMessage(src, "", safchan);
+                var m = "You are <b>" + an(player.spiritDuels.team) + " " + player.spiritDuels.rankName + "</b>!";
+                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels bench:", "Bench", true) + ", " + link("/spiritduels release:", "Release", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels standings", "Standings") + ", " + link("/spiritduels skill", "Skills" + (Object.keys(player.spiritDuels.skillChoices).length > 0 ? " [!]" : "")) + ", " + link("/spiritduels history", "History") + "].");
                 safaribot.sendHtmlMessage(src, m, safchan);
+                if (safari.spiritDuelsMaxLevel(player)) {
+                    safaribot.sendHtmlMessage(src, "You have achieved the highest rank!", safchan);
+                }
+                else {
+                    safaribot.sendHtmlMessage(src, "Next Rank: <b>{0}</b> ({1}/{2} EXP).".format(safari.events.spiritDuelsRanks[player.spiritDuels.rank + 1].rank, addComma(player.spiritDuels.exp), addComma(safari.getSpiritExpRequired(player))), safchan);
+                }
+                for (var i = 0; i < safari.events.spiritDuelsTeams.length; i++) {
+                    var team = safari.events.spiritDuelsTeams[i];
+                    if (team.name.toLowerCase() === player.spiritDuels.team.toLowerCase()) {
+                        safaribot.sendHtmlMessage(src, "Team Record: {0} Duels won out of {1} Duels fought (Win Rate: <b>{2}%</b>).".format(team.won, team.fought, (team.rate * 100).toFixed(2)), safchan);
+                    }
+                }
+                if (safari.events.spiritDuelsBattling && safari.events.spiritDuelsTeams.length > 1) {
+                    safaribot.sendHtmlMessage(src, "Next Spirit Duel: <b>" + safari.events.spiritDuelsTeams[0].name + "</b> vs <b>" + safari.events.spiritDuelsTeams[1].name + "</b>!", safchan);
+                }
+                var bonusRanks = safari.events.bonusSpiritEnlistRanks;
+                var teamMemberAmount = safari.getSpiritTeamMembers(player).length || 0;
+                safaribot.sendHtmlMessage(src, "You can use {0} to place your desired Spirit Duels participants at the front of your Spirit Box, or {1} to place them at the back. If you are running low on Spirit Box space, you can use {2} to permanently remove unwanted Spirit Pokémon (you will not lose EXP or regain any Spirit Balls).".format(link("/spiritduels active:", false, true), link("/spiritduels bench:", false, true), link("/spiritduels release:", false, true)), safchan);
+                safaribot.sendHtmlMessage(src, "You currently have {0} in your team, so <b>each member can enlist the first {1} Pokémon in their Spirit Box</b> per Duel.".format(plural(teamMemberAmount, "player"), safari.spiritEnlistsPerPlayer(teamMemberAmount)), safchan);
+                safaribot.sendHtmlMessage(src, "Reaching the {0} ranks will allow you to enlist 1 extra Spirit Pokémon per each of those ranks, so reaching {1} will allow you to enlist {2} extra Spirit Pokémon, for example."
+                    .format(
+                        readable(bonusRanks.map(function(e) {
+                            return safari.events.spiritDuelsRanks[e].rank
+                        })),
+                        safari.events.spiritDuelsRanks[bonusRanks[bonusRanks.length - 1]].rank,
+                        bonusRanks.length
+                    ),
+                safchan);
+                sys.sendMessage(src, "", safchan);
         }
     };
     this.markActivity = function( src,player ) {
@@ -20065,13 +20319,21 @@ function Safari() {
         return;
     };
     this.ownSpiritSkills = function( src,player ) {
-        if (Object.keys(player.spiritDuels.skills).length === 0) {
+        if (Object.keys(player.spiritDuels.skills).length === 0 && Object.keys(player.spiritDuels.skillChoices).length === 0) {
             safaribot.sendMessage(src, "You have no Spirit Skills!", safchan);
             return;
         }
-        safaribot.sendMessage(src, "You have the following Spirit Skills:", safchan);
-        for (var s in player.spiritDuels.skills) {
-            safaribot.sendMessage(src, player.spiritDuels.skills[s].desc + " (+" + player.spiritDuels.skills[s].val + (player.spiritDuels.skills[s].scaling ? " scaling up to 2x." : "") + ")", safchan);
+        sys.sendMessage(src, "", safchan);
+        if (Object.keys(player.spiritDuels.skills).length > 0) {
+            safaribot.sendMessage(src, "You have the following Spirit Skills:", safchan);
+            for (var s in player.spiritDuels.skills) {
+                safaribot.sendMessage(src, "- " + player.spiritDuels.skills[s].desc + " (+" + player.spiritDuels.skills[s].val + (player.spiritDuels.skills[s].scaling ? " scaling up to 2x." : "") + ")", safchan);
+            }
+            sys.sendMessage(src, "", safchan);
+        }
+        if (Object.keys(player.spiritDuels.skillChoices).length > 0) {
+            safari.showSpiritSkill(src, player);
+            sys.sendMessage(src, "", safchan);
         }
         return;
     }
@@ -20087,16 +20349,17 @@ function Safari() {
         if (data > log.length) {
             data = log.length;
         }
+        sys.sendMessage(src, "", safchan);
         for (var i = 0; i < log.length; i++) {
             safaribot.sendMessage(src, log[i], safchan);
             if (i > data) {
                 break;
             }
         }
+        sys.sendMessage(src, "", safchan);
         return;
     }
-    this.joinSpiritDuels = function( src,player ) {
-        //Joins duels to be assigned a team next time
+    this.spiritDuelsCanSignup = function(src, player, silent) {
         var id = player.id.toLowerCase();
         if (!safari.events.spiritDuelsEnabled) {
             return false;
@@ -20109,18 +20372,28 @@ function Safari() {
             k = safari.events.spiritDuelsTeams[t].players.indexOf(player.idnum);
             if (k !== -1) {
                 team = safari.events.spiritDuelsTeams[t].name;
-                safaribot.sendMessage( src,"You are already assigned to team " + team + "!",safchan );
+                if (!silent)
+                    safaribot.sendMessage( src,"You are already assigned to team " + team + "!",safchan );
                 return false;
             }
         }
         k = safari.events.spiritDuelsSignups.indexOf(player.idnum);
         if (k > -1) {
-            safaribot.sendMessage( src,"You are already signed up!",safchan );
+            if (!silent)
+                safaribot.sendMessage( src,"You are already signed up!",safchan );
             return false;
         }
         if (safari.events.spiritDuelsTeams.length <= 4) {
-            safaribot.sendMessage(src,"You cannot sign up for this season of Spirit Duels anymore!", safchan);
+            if (!silent)
+                safaribot.sendMessage(src,"You cannot sign up for this season of Spirit Duels anymore!", safchan);
             return false;
+        }
+        return true;
+    };
+    this.joinSpiritDuels = function( src,player ) {
+        //Joins duels to be assigned a team next time
+        if (!safari.spiritDuelsCanSignup(src, player)) {
+            return;
         }
         safari.events.spiritDuelsSignups.push(player.idnum);
         if (!player.spiritDuels) {
@@ -20133,44 +20406,58 @@ function Safari() {
         player.spiritDuels.team = "Unemployed";
         player.spiritDuels.exp = -2000;
         player.spiritDuels.skills = [];
+        player.spiritDuels.box = [];
         player.spiritDuels.skillChoices = {};
-        player.balls.spirit = Math.max(player.balls.spirit, 5);
+        player.balls.spirit = 5;
         safari.sanitize(player);
         safari.saveGame(player);
         safaribot.sendMessage(src, "You signed up for Spirit Duels! You will join the next round as soon as it starts!", safchan);
         return true;
     };
     this.showEachSpiritDuelTeam = function(src, player) {
-        var out = "", name, num, teamNames = [];
+        var out = [];
         for (var a in safari.events.spiritDuelsTeams) {
-            if (!(safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team)) {
-                continue;
+            var ownTeam = safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team;
+            var teamNames = safari.events.spiritDuelsTeams[a].players.slice(0).map(function(e) {
+                var avatar = getAvatarOff(idnumList.get(e));
+                return "<b>" + toColor(avatar.casedName, avatar.nameColor) + "</b>";
+            });
+            var tmp = (ownTeam ? "Your team (" + safari.events.spiritDuelsTeams[a].name + "): " : "(" + safari.events.spiritDuelsTeams[a].name + "): ") + readable(teamNames) + ".";
+            if (ownTeam) {
+                out.unshift(tmp);
             }
-            for (var b = 0; b < safari.events.spiritDuelsTeams[a].players.length; b++) {
-                num = safari.events.spiritDuelsTeams[a].players[b];
-                name = idnumList.get(num);
-                teamNames.push(name);
+            else {
+                out.push(tmp);
             }
-            safaribot.sendMessage(src, "Your team (" + name + "): " + readable(teamNames) + ".", safchan);
-            break;
         }
+        
+        sys.sendMessage(src, "", safchan);
+        out.forEach(function(e) {
+            safaribot.sendHtmlMessage(src, e, safchan);
+        });
+        sys.sendMessage(src, "", safchan);
+        return;
+    };
+    this.showSpiritDuelStandings = function(src) {
+        var standings = [];
         for (var a in safari.events.spiritDuelsTeams) {
-            if (safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team) {
-                continue;
+            if (!standings.contains(safari.events.spiritDuelsTeams[a].rate)) {
+                standings.push(safari.events.spiritDuelsTeams[a].rate);
             }
-            teamNames = [];
-            for (var b = 0; b < safari.events.spiritDuelsTeams[a].players.length; b++) {
-                num = safari.events.spiritDuelsTeams[a].players[b];
-                name = idnumList.get(num);
-                teamNames.push(name);
-            }
-            safaribot.sendMessage(src, name + ": " + readable(teamNames) + ".", safchan);
-            break;
         }
+        standings.sort(function(a, b) { return b - a });
+
+        sys.sendMessage(src, "", safchan);
+        safari.events.spiritDuelsTeams.slice(0).sort(function(a, b) {
+            return b.rate - a.rate;
+        }).forEach(function(e) {
+            safaribot.sendHtmlMessage(src, "<b>{0}.</b> {1} with {2}% win rate ({3}/{4} Duels won)".format(getOrdinal(standings.indexOf(e.rate) + 1), e.name, (e.rate * 100).toFixed(2), e.won, e.fought), safchan);
+        });
+        sys.sendMessage(src, "", safchan);
         return;
     };
     this.showSpiritDuelsTeam = function(src, player) {
-        var army1 = null, passed = false, out = "", name = "";
+        var army1 = null, passed = false, out = [], name = "";
         for (var a in safari.events.spiritDuelsTeams) {
             if (safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team) {
                 army1 = safari.events.spiritDuelsTeams[a].players
@@ -20183,17 +20470,19 @@ function Safari() {
             safaribot.sendMessage( src,"You are not on a team!",safchan );
             return;
         }
-        var enlistPerPlayer1 = (army1.length >= 6 ? 3 : (army1.length >= 5 ? 4 : (army1.length >= 4 ? 5 : 6)));
+        var enlistPerPlayer1 = safari.spiritEnlistsPerPlayer(army1.length);
         var hold = 0;
         for (var a in army1) {
             p = getAvatarOff(idnumList.get(army1[a]));
             j = 0;
             hold = parseInt(enlistPerPlayer1, 10);
-            hold += (p.spiritDuels.rank >= 3 ? 1 : 0);
-            hold += (p.spiritDuels.rank >= 7 ? 1 : 0);
-            hold += (p.spiritDuels.rank >= 9 ? 1 : 0);
+            for (var i = 0; i < safari.events.bonusSpiritEnlistRanks.length; i++) {
+                if (p.spiritDuels.rank >= safari.events.bonusSpiritEnlistRanks[i]) {
+                    hold++;
+                }
+            }
             for (var i = 0; i < hold; i++) {
-                out += ("" + poke(p.spiritDuels.box[j]) + " (" + p.id + ") ");
+                out.push(pokeInfo.icon(p.spiritDuels.box[j]) + " <b>" + toColor(p.casedName + "'s " + poke(p.spiritDuels.box[j]), p.nameColor) + "</b>");
                 j++;
                 if (j >= p.spiritDuels.box.length) {
                     if (enlistPerPlayer1 < 5) {
@@ -20203,57 +20492,119 @@ function Safari() {
                 }
             }
         }
-        safaribot.sendMessage( src,"Your team (" + name + ")'s Spirit Duel Party: ",safchan );
-        safaribot.sendMessage( src,out,safchan );
+        safaribot.sendHtmlMessage( src,"Your team (" + name + ")'s Spirit Duel Party: ",safchan );
+        safaribot.sendHtmlMessage( src,readable(out),safchan );
         return;
     };
     this.showSpiritBox = function( src,player,isAndroid,textOnly ) {
         //Shows them their spirit monns
         var out = "";
         var maxPages,
-            list = player.spiritDuels.box;
-
+            list = player.spiritDuels.box.slice(0);
+        var limit = safari.events.spiritBoxLimit || 140;
         var page = 1;
         if (!isNaN(page)) {
-            maxPages = Math.floor(list.length / (140)) + (list.length % 140 === 0 ? 0 : 1);
+            maxPages = Math.floor(list.length / (limit)) + (list.length % limit === 0 ? 0 : 1);
 
             if (page > maxPages) {
                 page = maxPages;
             }
-            list = list.slice(140 * (page - 1), 140 * (page - 1) + 140);
+            list = list.slice(limit * (page - 1), limit * (page - 1) + limit);
         }
 
-        var label = "Spirits (" + player.spiritDuels.box.length + "/" + (140) + ")";
+        var label = "Spirits (" + player.spiritDuels.box.length + "/" + (limit) + ")";
+        var enlist = safari.spiritEnlistsPerPlayer(safari.getSpiritTeamMembers(player).length), bonusRanks = safari.events.bonusSpiritEnlistRanks;
+        for (var i = 0; i < bonusRanks.length; i++) {
+            if (player.spiritDuels.rank >= bonusRanks[i]) {
+                enlist++;
+            }
+        }
         if (textOnly) {
-            out += this.listPokemonText(list, label);
+            out += this.listSpiritPokemonText(list, label, enlist);
         } else {
-            out += this.listPokemon(list, label, player.smallBox);
+            out += this.listSpiritPokemon(list, label, player.smallBox, enlist);
             if (isAndroid) {
                 out += "<br />";
             }
         }
 
-       safaribot.sendHtmlMessage( src,out,safchan );
+        sys.sendHtmlMessage(src, out, safchan);
     };
     this.activeSpiritMon = function( src,player,data ) {
         //Adds the spirit mons to the front of their spirit box if they have it
         if (!data) {
-            safaribot.sendMessage( src,"The command is /spiritduels active:pokemon!",safchan );
+            safaribot.sendMessage( src,"The command is /spiritduels active:pokemon1,pokemon2,... This command moves the specified Spirit Pokémon to the front of your Spirit Box where they will be able to take part in Spirit Duels.",safchan );
             return;
         }
-        data = data.split(",");
+        data = data.split(",").reverse();
         var a, x;
         for (var i=0; i < data.length; i++) {
-            a = data[i];
+            a = data[i].trim();
             a = getInputPokemon(a);
-            x = player.spiritDuels.box.indexOf(a.num);
+            x = player.spiritDuels.box.reverse().indexOf(a.num); // reversing so it takes first index of that pokemon from the back. this makes it easier to load multiples of the same pokemon
+            if (a.input === "Missingno") {
+                safaribot.sendMessage(src, "Invalid Pokémon: " + data[i] + "!", safchan);
+                continue;
+            }
             if (x === -1) {
-                safaribot.sendMessage(src, "You don't have any Spirit Pokémon " + poke(a.name) + "!", safchan);
+                safaribot.sendMessage(src, "You don't have any Spirit " + a.name + "!", safchan);
                 continue;
             }
             player.spiritDuels.box.splice(x, 1);
-            player.spiritDuels.box.unshift(a.num);
+            player.spiritDuels.box.push(a.num);
+            player.spiritDuels.box.reverse();
             safaribot.sendMessage(src, "You added " + a.name + " to the lead of your Spirit Team!", safchan);
+        }
+        this.saveGame(player);
+    };
+    this.releaseSpiritMon = function( src,player,data ) {
+        //Completely removes the spirit mons from their spirit box
+        if (!data) {
+            safaribot.sendMessage( src,"The command is /spiritduels release:pokemon1,pokemon2,... This command will PERMANENTLY delete the specified Spirit Pokémon from your Spirit Box.",safchan );
+            return;
+        }
+        data = data.split(",").reverse();
+        var a, x;
+        for (var i=0; i < data.length; i++) {
+            a = data[i].trim();
+            a = getInputPokemon(a);
+            x = player.spiritDuels.box.indexOf(a.num);
+            if (a.input === "Missingno") {
+                safaribot.sendMessage(src, "Invalid Pokémon: " + data[i] + "!", safchan);
+                continue;
+            }
+            if (x === -1) {
+                safaribot.sendMessage(src, "You don't have any Spirit " + a.name + "!", safchan);
+                continue;
+            }
+            player.spiritDuels.box.splice(x, 1);
+            safaribot.sendMessage(src, "You removed " + a.name + " from your Spirit Box!", safchan);
+        }
+        this.saveGame(player);
+    };
+    this.benchSpiritMon = function( src,player,data ) {
+        //Moves the spirit mons to the back of their spirit box
+        if (!data) {
+            safaribot.sendMessage( src,"The command is /spiritduels bench:pokemon1,pokemon2,... This command will move the specified Spirit Pokémon to the back of your Spirit Box.",safchan );
+            return;
+        }
+        data = data.split(",").reverse();
+        var a, x;
+        for (var i=0; i < data.length; i++) {
+            a = data[i].trim();
+            a = getInputPokemon(a);
+            x = player.spiritDuels.box.indexOf(a.num);
+            if (a.input === "Missingno") {
+                safaribot.sendMessage(src, "Invalid Pokémon: " + data[i] + "!", safchan);
+                continue;
+            }
+            if (x === -1) {
+                safaribot.sendMessage(src, "You don't have any Spirit " + a.name + "!", safchan);
+                continue;
+            }
+            player.spiritDuels.box.splice(x, 1);
+            player.spiritDuels.box.push(a.num);
+            safaribot.sendMessage(src, "You moved " + a.name + " to the back of your Spirit Box!", safchan);
         }
         this.saveGame(player);
     };
@@ -20267,12 +20618,23 @@ function Safari() {
         //num = data.getMonNumber(data) || data if data is a number
         var cmd = commandData.split(":");
         var player = getAvatarOff(cmd[0]);
-        var data = getInputPokemon(cmd[1]);
-        if (cmd.length > 1) {
-            var num = parseInt(cmd[2], 10);
+        var num = 1;
+        if (!player) {
+            safaribot.sendMessage(src, "Player not found!", safchan);
+            return;
         }
-        else {
-            num = 1;
+        else if (cmd.length < 2) {
+            safaribot.sendMessage(src, "Invalid Pokemon input.", safchan);
+            return;
+        }
+        var data = getInputPokemon(cmd[1]);
+
+        if (data.input === "Missingno") {
+            safaribot.sendMessage(src, "Invalid Pokemon input.", safchan);
+            return;
+        }
+        if (cmd.length > 2) {
+            num = parseInt(cmd[2], 10) || 1;
         }
         var i;
         if (num === -1) {
@@ -20281,7 +20643,7 @@ function Safari() {
                 safaribot.sendMessage( src,player.id + " doesn't have that Spirit Pokémon!",safchan );
                 return;
             }
-            player.spiritDuels.box = player.spiritDuels.box.slice(i, 1);
+            player.spiritDuels.box.splice(i, 1);
             safaribot.sendMessage( src,"You took away a " + data.name + " from " + player.id + "'s Spirit Team.",safchan );
         }
         else {
@@ -21872,7 +22234,7 @@ function Safari() {
             return;
         }
 
-        var autoCancel;
+        var autoCancel, isSameUser;
         var targetId = sys.id(data);
         if (!targetId) {
             safaribot.sendMessage(src, "No such person!", safchan);
@@ -21881,11 +22243,9 @@ function Safari() {
         var tName = sys.name(targetId).toLowerCase();
         if (name in challengeRequests) {
             if (challengeRequests[name].opponent === tName) {
-                safaribot.sendHtmlMessage(src, "You already have a pending challenge with this person! To cancel it, type " + link("/challenge cancel") + ".", safchan);
-                return;
-            } else {
-                autoCancel = true;
+                isSameUser = true;
             }
+            autoCancel = true;
         }
 
         if (tName === name) {
@@ -21935,7 +22295,12 @@ function Safari() {
             delete challengeRequests[tName];
         } else {
             if (autoCancel) {
-                safaribot.sendHtmlMessage(src, "You cancelled your challenge against " + challengeRequests[name].opponent + " to challenge " + tName.toCorrectCase() + " instead.", safchan);
+                if (isSameUser) {
+                    safaribot.sendHtmlMessage(src, "You cancelled your previous challenge against " + challengeRequests[name].opponent.toCorrectCase() + " to send a new challenge request.", safchan);
+                }
+                else {
+                    safaribot.sendHtmlMessage(src, "You cancelled your challenge against " + challengeRequests[name].opponent.toCorrectCase() + " to challenge " + tName.toCorrectCase() + " instead.", safchan);
+                }
                 delete challengeRequests[name];
             }
 
@@ -22782,7 +23147,7 @@ function Safari() {
             for (var e = 0; e < team.length; e++) {
                 p = team[e];
                 if (p.hp > 0) {
-                    out.push(pokeInfo.icon(p.id) + "[" + link("/bat " + codes[e], codes[e]) + "] " + poke(p.id) + (p.hp !== p.maxhp ? " (" + self.getHPColor(p.hp, p.maxhp) + ")" : ""));
+                    out.push(pokeInfo.icon(p.id) + link("/bat " + codes[e], "[" + codes[e] + "]") + " " + poke(p.id) + (p.hp !== p.maxhp ? " (" + self.getHPColor(p.hp, p.maxhp) + ")" : ""));
                 }
             }
             self.sendMessage(name, "Your team: " + out.join(" "));
@@ -22993,20 +23358,34 @@ function Safari() {
             this.sendMessage(id, "");
         }
         if (this.select) {
+            var sorted = [];
             for (var j in this.select) {
                 m = safari.getFieldConditionDescription(j, this.select);
                 if (m !== "") {
-                    this.sendMessage(id, toColor("- " + m, "#DC143C"));
+                    sorted.push(m);
                 }
+            }
+            if (sorted.length > 0) {
+                var self = this;
+                sorted.sort().forEach(function(e) {
+                    self.sendMessage(id, toColor("- " + e, "#DC143C"));
+                });
             }
             this.sendMessage(id, "");
         }
         if (this.select2) {
+            var sorted = [];
             for (var j in this.select2) {
                 m = safari.getFieldConditionDescription(j, this.select2);
                 if (m !== "") {
-                    this.sendMessage(id, toColor("- " + m, "#7d34eb"));
+                    sorted.push(m);
                 }
+            }
+            if (sorted.length > 0) {
+                var self = this;
+                sorted.sort().forEach(function(e) {
+                    self.sendMessage(id, toColor("- " + e, "#7d34eb")); 
+                });
             }
             this.sendMessage(id, "");
         }
@@ -23277,12 +23656,14 @@ function Safari() {
                     }
                 }
                 
-                var flowerGiftSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "flowerGift");
-                if (flowerGiftSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
-                    for (var i = 0; i < this.team1.length; i++) {
-                        this.team1[i].boosts["atk"] += flowerGiftSkill.rate;
-                        this.team1[i].boosts["sdef"] += flowerGiftSkill.rate;
-                        this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3} had their ATK and SDEF increased by {4}!".format(poke(flowerGiftSkill.id), flowerGiftSkill.name, this.name1, poke(this.team1[i].id), plural(flowerGiftSkill.rate, "stage")), "#55E"));
+                if (!((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                    var flowerGiftSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "flowerGift");
+                    if (flowerGiftSkill) {
+                        for (var i = 0; i < this.team1.length; i++) {
+                            this.team1[i].boosts["atk"] += flowerGiftSkill.rate;
+                            this.team1[i].boosts["sdef"] += flowerGiftSkill.rate;
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3} had their ATK and SDEF increased by {4}!".format(poke(flowerGiftSkill.id), flowerGiftSkill.name, this.name1, poke(this.team1[i].id), plural(flowerGiftSkill.rate, "stage")), "#55E"));
+                        }
                     }
                 }
             }
@@ -23417,15 +23798,6 @@ function Safari() {
             if (this.tagBattle) {
                 this.sendToViewers(this.name4 + "'s Team: " + opponentInfo(this.team4), null, (this.npcBattle ? null : [this.name4.toLowerCase()]));
             }
-            if (!this.npcBattle) {
-                this.sendMessage(this.name2, "Your team (use /bat [Letter] to choose a move): ");
-                if (this.tagBattle) {
-                    if (!this.oneOnTwo) {
-                        this.sendMessage(this.name3, "Your team (use /bat [Letter] to choose a move): ");
-                    }
-                    this.sendMessage(this.name4, "Your team (use /bat [Letter] to choose a move): ");
-                }
-            }
             this.sendToViewers(this.name1 + "'s Team: " + opponentInfo(this.team1), null, [this.name1.toLowerCase()]);
             if (this.tagBattle && (!this.oneOnTwo)) {
                 this.sendToViewers(this.name3 + "'s Team: " + opponentInfo(this.team3), null, [this.name3.toLowerCase()]);
@@ -23433,15 +23805,28 @@ function Safari() {
             
             if (this.select || this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0 || this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) {
                 var m = [];
-                if (this.select && this.npcItems) {
-                    if (this.npcItems.hyper && this.npcItems.hyper > 0) {
-                        m.push(toColor("Hyper Potion: " + this.npcItems.hyper + " ", "purple"));
+                if (this.select) {
+                    if (this.npcItems) {
+                        if (this.npcItems.hyper && this.npcItems.hyper > 0) {
+                            m.push(toColor(this.name2 + "'s Hyper Potions: " + this.npcItems.hyper + " ", "purple"));
+                        }
+                        if (this.npcItems.full && this.npcItems.full > 0) {
+                            m.push(toColor(this.name2 + "'s Full Restores: " + this.npcItems.full + " ", "purple"));
+                        }
+                        if (this.npcItems.revive && this.npcItems.revive > 0) {
+                            m.push(toColor(this.name2 + "'s Revives: " + this.npcItems.revive + " ", "purple"));
+                        }
                     }
-                    if (this.npcItems.full && this.npcItems.full > 0) {
-                        m.push(toColor("Full Restore: " + this.npcItems.full + " ", "purple"));
-                    }
-                    if (this.npcItems.revive && this.npcItems.revive > 0) {
-                        m.push(toColor("Revive: " + this.npcItems.revive + " ", "purple"));
+                    if (this.npcItems2) {
+                        if (this.npcItems2.hyper && this.npcItems2.hyper > 0) {
+                            m.push(toColor(this.name4 + "'s Hyper Potions: " + this.npcItems2.hyper + " ", "purple"));
+                        }
+                        if (this.npcItems2.full && this.npcItems2.full > 0) {
+                            m.push(toColor(this.name4 + "'s Full Restores: " + this.npcItems2.full + " ", "purple"));
+                        }
+                        if (this.npcItems2.revive && this.npcItems2.revive > 0) {
+                            m.push(toColor(this.name4 + "'s Revives: " + this.npcItems2.revive + " ", "purple"));
+                        }
                     }
                 }
                 if (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0) {
@@ -23490,12 +23875,15 @@ function Safari() {
 
             
             if (!(this.recharge1)) {
-                this.sendMessage(this.name1, "Your team (use /bat [Letter] to choose a move): ");
+                this.sendMessage(this.name1, "Your team " + (this.tagBattle ? "(use /bat [Letter]:[1 or 2] to choose a move and target)" : "(use /bat [Letter] to choose a move)") + ":");
                 prepareTeamForTurn(this.name1, this.idnum1, this.team1, this.p1MoveCodes, this.abilityOptions["1"]);
             } else {
                 this.player1Input = "---";
             }
             if (!(this.recharge2)) {
+                if (!this.npcBattle) {
+                    this.sendMessage(this.name2, "Your team " + (this.tagBattle ? "(use /bat [Letter]:[1 or 2] to choose a move and target)" : "(use /bat [Letter] to choose a move)") + ":");
+                }
                 prepareTeamForTurn(this.name2, this.idnum2, this.team2, this.p2MoveCodes, this.abilityOptions["2"], this.npcBattle);
             } else {
                 this.player2Input = "---";
@@ -23509,6 +23897,7 @@ function Safari() {
                         }
                     }
                     if (!(this.recharge3)) {
+                        this.sendMessage(this.name3, "Your team (use /bat [Letter]:[1 or 2] to choose a move and target):");
                         prepareTeamForTurn(this.name3, this.idnum3, this.team3, this.p3MoveCodes, this.abilityOptions["3"], this.npcBattle);
                     } else {
                         this.player3Input = "---";
@@ -23521,6 +23910,9 @@ function Safari() {
                     }
                 }
                 if (!(this.recharge4)) {
+                    if (!this.oneOnTwo) {
+                        this.sendMessage(this.name4, "Your team (use /bat [Letter]:[1 or 2] to choose a move and target):");
+                    }
                     prepareTeamForTurn(this.name4, this.idnum4, this.team4, this.p4MoveCodes, this.abilityOptions["4"], this.npcBattle);
                 } else {
                     this.player4Input = "---";
@@ -23574,7 +23966,6 @@ function Safari() {
             }
         }
         else if (this.subturn % 8 === 6) {
-            
             var checkWin = function() {
                 if (self.tagBattle) {
                     self.player1Fainted = true;
@@ -24523,7 +24914,7 @@ function Safari() {
                     this.sendToViewers("All stat bonuses were shifted!");
                 }
 
-                if (!this.fullNPC && this.npcBattle) {
+                if (!this.fullNPC && this.npcBattle && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
                     for (var i = 0 ; i < self.team1.length; i++) { // looping through b/c if there are multiple pokemon with this skill, each of them will activate it individually
                         var pokeObj = self.team1[i];
                         var statList = Object.keys(pokeObj.stats);
@@ -24534,28 +24925,10 @@ function Safari() {
                         
                         if (pokeObj.boosts[highestStatName] < 6) {
                             var beastBoostSkill = safari.pokeSkillActivated(self.name1, pokeObj, "beastBoost");
-                            if (beastBoostSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                            if (beastBoostSkill) {
                                 pokeObj.boosts[highestStatName] += beastBoostSkill.rate;
                                 pokeObj.boosts[highestStatName] = Math.min(6, pokeObj.boosts[highestStatName]);
                                 this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s {3} increased by {4}!".format(poke(beastBoostSkill.id), beastBoostSkill.name, poke(pokeObj.id), highestStatName.toUpperCase(), plural(beastBoostSkill.rate, "stage")), "#55E"));
-                            }
-                        }
-                        if (pokeObj.boosts["atk"] < 6) {
-                            var intrepidSwordSkill = safari.pokeSkillActivated(self.name1, pokeObj, "intrepidSword");
-                            if (intrepidSwordSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
-                                pokeObj.boosts["atk"] += intrepidSwordSkill.rate;
-                                pokeObj.boosts["atk"] = Math.min(6, pokeObj.boosts["atk"]);
-                                this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s ATK increased by {3}!".format(poke(intrepidSwordSkill.id), intrepidSwordSkill.name, poke(pokeObj.id), plural(intrepidSwordSkill.rate, "stage")), "#55E"));
-                            }
-                        }
-                        if (pokeObj.boosts["def"] < 6 || pokeObj.boosts["sdef"] < 6) {
-                            var dauntlessShieldSkill = safari.pokeSkillActivated(self.name1, pokeObj, "dauntlessShield");
-                            if (dauntlessShieldSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
-                                pokeObj.boosts["def"] += dauntlessShieldSkill.rate;
-                                pokeObj.boosts["sdef"] += dauntlessShieldSkill.rate;
-                                pokeObj.boosts["def"] = Math.min(6, pokeObj.boosts["def"]);
-                                pokeObj.boosts["sdef"] = Math.min(6, pokeObj.boosts["sdef"]);
-                                this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s DEF and SDEF increased by {3}!".format(poke(dauntlessShieldSkill.id), dauntlessShieldSkill.name, poke(pokeObj.id), plural(dauntlessShieldSkill.rate, "stage")), "#55E"));
                             }
                         }
                     }
@@ -24619,6 +24992,31 @@ function Safari() {
                         mon.boosts["sdef"] = Math.max(mon.boosts["sdef"], -6);
                     }
                     this.sendToViewers("The foe's Pokémon smashed their shells!");
+                }
+            }
+            if (!this.fullNPC && this.npcBattle && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                for (var i = 0 ; i < self.team1.length; i++) { // looping through b/c if there are multiple pokemon with this skill, each of them will activate it individually
+                    var pokeObj = self.team1[i];
+                    if (pokeObj.damagingUsed > 0 && pokeObj.damagingUsed % 4 === 0 && pokeObj.boosts["atk"] < 6) {
+                        var intrepidSwordSkill = safari.pokeSkillActivated(self.name1, pokeObj, "intrepidSword");
+                        if (intrepidSwordSkill) {
+                            pokeObj.boosts["atk"] += intrepidSwordSkill.rate;
+                            pokeObj.boosts["atk"] = Math.min(6, pokeObj.boosts["atk"]);
+                            pokeObj.damagingUsed = 0;
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s ATK increased by {3}!".format(poke(intrepidSwordSkill.id), intrepidSwordSkill.name, poke(pokeObj.id), plural(intrepidSwordSkill.rate, "stage")), "#55E"));
+                        }
+                    }
+                    if (pokeObj.nonDamagingUsed > 0 && pokeObj.nonDamagingUsed % 4 === 0 && (pokeObj.boosts["def"] < 6 || pokeObj.boosts["sdef"] < 6)) {
+                        var dauntlessShieldSkill = safari.pokeSkillActivated(self.name1, pokeObj, "dauntlessShield");
+                        if (dauntlessShieldSkill) {
+                            pokeObj.boosts["def"] += dauntlessShieldSkill.rate;
+                            pokeObj.boosts["sdef"] += dauntlessShieldSkill.rate;
+                            pokeObj.boosts["def"] = Math.min(6, pokeObj.boosts["def"]);
+                            pokeObj.boosts["sdef"] = Math.min(6, pokeObj.boosts["sdef"]);
+                            pokeObj.nonDamagingUsed = 0;
+                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s DEF and SDEF increased by {3}!".format(poke(dauntlessShieldSkill.id), dauntlessShieldSkill.name, poke(pokeObj.id), plural(dauntlessShieldSkill.rate, "stage")), "#55E"));
+                        }
+                    }
                 }
             }
             if (this.select && this.select.speedboost) {
@@ -24978,40 +25376,54 @@ function Safari() {
                 obj = this.dynamaxes["2"];
             }
             if (obj.mon !== 0) {
-                this.sendMessage(name, "You cannot dynamax more than one Pokémon!");
+                this.sendMessage(name, "You cannot Dynamax more than one Pokémon!");
                 return;
             }
             if (obj.timer !== -1) {
-                this.sendMessage(name, "You cannot dynamax yet!");
+                this.sendMessage(name, "You cannot Dynamax yet!");
                 return;
             }
             obj.using = true;
             obj.timer = 3;
-            this.sendMessage(name, "You are activating your dynamax this turn!");
+            this.sendMessage(name, "You are activating your Dynamax this turn!");
         }
 
 
         var aim = 0;
         if (this.tagBattle) {
             var cData = data.split(":");
-            if (cData.length > 1) {
-                data = cData[0];
-                aim = parseInt(cData[1], 10);
-            }
-            else if (cData.length === 1) {
-                data = cData[0];
-                aim = (chance(0.5) ? 1 : 2);
-            }
-            if (!(aim === 1 || aim === 2)) {
-                this.sendMessage(name, "Input a target with " + link("/bat " + data + ":1") + " or " + link("/bat " + data + ":2") + ".");
-                return;
-            }
+            data = cData[0];
+            aim = parseInt(cData[1], 10);          
         }
         if (!codeList.hasOwnProperty(data)) {
             this.sendMessage(name, "This is not a valid move!");
             return;
         }
         
+        if (this.tagBattle) {
+            var onlyOneTarget = false;
+            if (
+                   codeList[data].target === "ALL"
+                || codeList[data].target === "TEAM"
+                || (isP1 && (this.player2Fainted || this.player4Fainted))
+                || (isP2 && this.oneOnTwo)
+                || (isP2 && (this.player1Fainted || this.player3Fainted))
+                || (isP3 && (this.player2Fainted || this.player4Fainted))
+                || (isP4 && this.oneOnTwo)
+                || (isP4 && (this.player1Fainted || this.player3Fainted))
+            ) {
+                onlyOneTarget = true;
+            }
+            if (![1, 2].contains(aim)) {
+                if (onlyOneTarget) {
+                    aim = 1;
+                }
+                else {
+                    this.sendMessage(name, "Invalid target! Input a target with " + link("/bat " + data + ":1") + " or " + link("/bat " + data + ":2") + ".");
+                    return;
+                }
+            }
+        }
         if (isP1) {
             this.player1Input = data;
             if (this.tagBattle && this.oneOnTwo) {
@@ -25050,7 +25462,6 @@ function Safari() {
             this.monChosen[which+""] = 3;
         }
         var move = codeList[data];
-        this.sendMessage(name, toColor("You picked " + poke(move.owner) + "'s move " + data.toUpperCase() + ": " + this.translateMove(move), "crimson"));
         if (this.tagBattle) {
             var tar = 1;
             if ((move.target == "ALL") || (move.target == "TEAM")) {
@@ -25096,6 +25507,7 @@ function Safari() {
                 this.target4 = tar;
             }
         }
+        this.sendMessage(name, toColor("You picked " + poke(move.owner) + "'s move " + data.toUpperCase() + ": " + this.translateMove(move), "crimson"));
         if (this.tagBattle && this.oneOnTwo) {
             if (this.player1Input !== null && (this.player3Input !== null || this.player3Fainted) && (this.npcBattle || this.player2Input !== null) && (this.npcBattle || this.player4Input !== null) && this.subturn < 5) {
                 this.sendToViewers(toColor("Turn is ending early since all players picked their moves!", "crimson"));
@@ -26092,13 +26504,13 @@ function Safari() {
                             }
                         }
                         
-                        if (!self.fullNPC && self.npcBattle && targetSide === 1) {
+                        if (!self.fullNPC && self.npcBattle && targetSide === 1 && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
                             for (var i = 0 ; i < self.team1.length; i++) { // looping through b/c if there are multiple pokemon with this skill, each of them will activate it individually
                                 if (self.team1[i].boosts["satk"] === 6)
                                     continue;
                                 
                                 var soulHeartSkill = safari.pokeSkillActivated(self.name1, self.team1[i], "soulHeart");
-                                if (soulHeartSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                                if (soulHeartSkill) {
                                     self.team1[i].boosts["satk"] += soulHeartSkill.rate;
                                     self.team1[i].boosts["satk"] = Math.min(6, self.team1[i].boosts["satk"])
                                     out.push("<b>[{0}'s {1}]</b> {2}'s SATK increased by {3}!".format(poke(soulHeartSkill.id), soulHeartSkill.name, poke(self.team1[i].id), plural(soulHeartSkill.rate, "stage")));
@@ -26112,7 +26524,7 @@ function Safari() {
                         out.push(tname + "'s balloon popped!");
                         target.item.balloon = false;
                     }
-                    if (!self.fullNPC && self.npcBattle && targetSide === 1 && !friendlyFire) {
+                    if (!self.fullNPC && self.npcBattle && targetSide === 1 && !friendlyFire && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
                         if (typeMultiplier < 1) {
                             var stats = ["atk", "def", "spe", "satk", "sdef"];
                             var validStats = [];
@@ -26124,7 +26536,7 @@ function Safari() {
                             }
                             if (validStats.length > 0) {
                                 var statSpiteSkill = safari.pokeSkillActivated(self.name1, self.originalTeam1, "basicGhost");
-                                if (statSpiteSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                                if (statSpiteSkill) {
                                     var randStat = validStats.shuffle().shift();
                                     user.boosts[randStat] -= statSpiteSkill.rate2;
                                     user.boosts[randStat] = Math.max(-6, user.boosts[randStat]);
@@ -26358,7 +26770,7 @@ function Safari() {
                     }
                     if (self.select.naturalcure && user.condition !== "none" && (move.type === "Water" || move.type === "Grass")) {
                         out.push(tname + " cured its status!");
-                        target.condition = "none";
+                        user.condition = "none";
                     }
                 }
                 out = self.afterDamage(user, move, target, oppparty, true, targetSide, out);
@@ -26471,7 +26883,7 @@ function Safari() {
                         else if (poke3.protect) {
                             out.push(poke3.owner + "'s " + poke(poke3.id) + " protected itself!");
                         }
-                        else if (poke1.hp > 0) {
+                        else if (poke3.hp > 0) {
                             out = dealDamage(poke1, move, poke3, typeMultiplier, 1, out, true);
                         }
                     }
@@ -26709,9 +27121,9 @@ function Safari() {
                                     };
                                     out.push(tname + " " + conditionVerb[move.status] + "!");
                                 }
-                                if (!this.fullNPC && this.npcBattle && targetSide === 1 && !(target.boosts["atk"] === 6 && target.boosts["satk"] === 6)) { // if both stats are maxed, dont use skill
+                                if (!this.fullNPC && this.npcBattle && targetSide === 1 && !(target.boosts["atk"] === 6 && target.boosts["satk"] === 6) && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) { // if both stats are maxed, dont use skill
                                     var berserkGeneSkill = safari.pokeSkillActivated(this.name1, target, "berserkGene");
-                                    if (berserkGeneSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                                    if (berserkGeneSkill) {
                                         target.boosts["atk"] += berserkGeneSkill.rate;
                                         target.boosts["satk"] += berserkGeneSkill.rate;
                                         target.boosts["atk"] = Math.min(6, target.boosts["atk"]);
@@ -26851,12 +27263,12 @@ function Safari() {
             else {
                 var defianted = false;
 
-                if (!this.fullNPC && this.npcBattle && targetSide === 1) {
+                if (!this.fullNPC && this.npcBattle && targetSide === 1 && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
                     var nerfDefenceSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicDark");
                 }
                 for (e = 0; e < move.nerf.length; e++) {
                     obj = move.nerf[e];
-                    if (nerfDefenceSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                    if (nerfDefenceSkill) {
                         obj.nerfChance -= (nerfDefenceSkill.rate2 / 100);
                         out.push("<b>[{0}'s {1}]</b> The stat decrease chance of {2}'s move was reduced by {3}%!".format(poke(nerfDefenceSkill.id), nerfDefenceSkill.name, poke(user.id), nerfDefenceSkill.rate2));
                     }
@@ -26942,9 +27354,9 @@ function Safari() {
         if (!this.fullNPC && this.npcBattle && targetSide !== 1) {
             var stats = ["atk", "def", "spe", "satk", "sdef"];
             
-            if (user.boosts["atk"] < 6 || user.boosts["def"] < 6 || user.boosts["satk"] < 6 || user.boosts["sdef"] < 6 || user.boosts["spe"] < 6) {
+            if (user.boosts["atk"] < 6 || user.boosts["def"] < 6 || user.boosts["satk"] < 6 || user.boosts["sdef"] < 6 || user.boosts["spe"] < 6 && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
                 var rotoLotoSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "rotoLoto");
-                if (rotoLotoSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                if (rotoLotoSkill) {
                     var targetStat;
                     do {
                         targetStat = stats.random();
@@ -26994,9 +27406,9 @@ function Safari() {
                     }
                 }
                 
-                if (validStats.length >= 2) {
+                if (validStats.length >= 2 && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
                     var multiBoostSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicDragon");
-                    if (multiBoostSkill && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
+                    if (multiBoostSkill) {
                         var randStat = validStats.shuffle().shift();
                         var randStat2 = validStats.shift();
                         
@@ -27049,6 +27461,12 @@ function Safari() {
             if (this.select.retaliate && move.category == "special") {
                 target.retaliate = true;
             }
+        }
+        if (damaging) {
+            user.damagingUsed++;
+        }
+        else {
+            user.nonDamagingUsed++;
         }
         return out;
     };
@@ -27126,7 +27544,9 @@ function Safari() {
                 berry: held,
                 crystal: 0,
                 index: t,
-                moves: []
+                moves: [],
+                damagingUsed: 0,
+                nonDamagingUsed: 0
             };
             if (info.types.Normal) {
                 info.types.Normal = Math.round(info.types.Normal/4);
@@ -27456,13 +27876,19 @@ function Safari() {
                 move.power = Math.min(data.movepowers[move.type], move.power);
                 move.power = Math.round(move.power * moveBoost / 5) * 5;
                 move.category = chance(0.5) ? "physical" : "special";
-                if ((this.select && (this.select.categorySplit || this.select.specBan || this.select.physBan)) || (this.select2 && (this.select2.categorySplit || this.select2.specBan || this.select2.physBan))) {
+                if ((this.select && this.select.categorySplit) || (this.select2 && this.select2.categorySplit)) {
                     switch (move.type) {
                         case "Normal": case "Fighting": case "Flying": case "Rock": case "Ground": case "Bug": case "Poison": case "Ghost": case "Steel":
                             move.category = "physical"; break;
                         default:
                             move.category = "special"; break;
                     }
+                }
+                if (( (this.select && this.select.specBan) || (this.select2 && this.select2.specBan)) && move.category === "special") {
+                    move.category = "physical";
+                }
+                if (( (this.select && this.select.physBan) || (this.select2 && this.select2.physBan))  && move.category === "physical") {
+                    move.category = "special";
                 }
                 factor = (60 - move.power) / 100;
                 if (factor > -0.1 && factor < 0.1 && chance(0.5)) {
@@ -28604,7 +29030,7 @@ function Safari() {
                 out[type2(pokeInfo.species(num))] = 0;
             }
         }
-        if (this.select && this.select.physBan) {
+        if (this.select && this.select.physBan && this.select.categorySplit) {
             out.Normal = 0;
             out.Fighting = 0;
             out.Flying = 0;
@@ -28614,7 +29040,7 @@ function Safari() {
             out.Steel = 0;
             out.Ghost = 0;
             out.Poison = 0;
-        } else if (this.select && this.select.specBan) {
+        } else if (this.select && this.select.specBan && this.select.categorySplit) {
             out.Grass = 0;
             out.Water = 0;
             out.Fire = 0;
@@ -29513,15 +29939,14 @@ function Safari() {
             return;
         }
 
-        var autoCancel;
+        var autoCancel, isSameUser;
         var targetName = info[0].toLowerCase();
         if (userName in tradeRequests) {
             if (tradeRequests[userName].target.toLowerCase() === targetName) {
-                safaribot.sendHtmlMessage(src, "You already have a pending trade with this person! To cancel it, type " + link("/trade cancel") + ".", safchan);
-                return;
-            } else {
-                autoCancel = true;
+                isSameUser = true;
             }
+
+            autoCancel = true;
         }
 
         if (!validPlayers("target", src, info[0].toLowerCase())) {
@@ -29633,7 +30058,12 @@ function Safari() {
         sys.sendMessage(targetId, "" , safchan);
 
         if (autoCancel) {
-            safaribot.sendHtmlMessage(src, "You cancelled your trade with " + tradeRequests[userName].target.toCorrectCase() + " to start a new trade with " + targetName.toCorrectCase() + ".", safchan);
+            if (isSameUser) {
+                safaribot.sendHtmlMessage(src, "You cancelled your previous request with " + tradeRequests[userName].target.toCorrectCase() + " to send a new trade request.", safchan);
+            }
+            else {
+                safaribot.sendHtmlMessage(src, "You cancelled your trade with " + tradeRequests[userName].target.toCorrectCase() + " to start a new trade with " + targetName.toCorrectCase() + ".", safchan);
+            }
             delete tradeRequests[userName];
         }
 
@@ -30095,11 +30525,11 @@ function Safari() {
             case "l":
             case "mello":
             case "save me":
-            	if (safari.detectiveUpdates && (!(quest == "save me"))) {
-					this.detectiveQuest(src, args, true);
-            	} else {
-					this.detectiveQuest(src, args);
-				}
+                if (safari.detectiveUpdates && (!(quest == "save me"))) {
+                    this.detectiveQuest(src, args, true);
+                } else {
+                    this.detectiveQuest(src, args);
+                }
             break;
             default:
                 safaribot.sendMessage(src, "This is not a valid quest!", safchan);
@@ -32096,7 +32526,7 @@ function Safari() {
                 "evolvedChangeType": 12,
                 "canMega": 5,
                 "prime": 2,
-                "fewerabilities": 1,
+                "fewerAbilities": 1,
                 "stat": 12,
                 "moves": 48
             };
@@ -32111,7 +32541,7 @@ function Safari() {
             };
             var otherind = 0;
             if (kind == "interact") {
-            	isInteract = true;
+                isInteract = true;
                 otherind = Math.floor(Math.random() * 3);
                 if (otherind == ind) {
                     otherind++;
@@ -32240,13 +32670,7 @@ function Safari() {
                             return false;
                         }
                     }
-                    var l = [], m = [0, 1, 2], amt;
-                    for (i = 0; i < m.length; i++) {
-                        if (getPokeAbility(answer[ind], m[i])) {
-                            amt++;
-                        }
-                    }
-                    if (amt == 3) {
+                    if (getPokeAbility(answer[ind], 1) > 0 && getPokeAbility(answer[ind], 2) > 0) {
                         return false;
                     }
                     strength = 16;
@@ -32706,17 +33130,17 @@ function Safari() {
                     }
                     out3.push(req);
                 }
-				var inds = ["Pokémon #1", "Pokémon #2", "Pokémon #3", "Pokémon #4"];
-				function textFromClue(gClue) {
-					if (detUp && bonusClues.length > 0) {
-						if (gClue.interact) {
-							return bonusCluesInteract.random().format(inds[gClue.ind], inds[gClue.otherind]);
-						}
-						return bonusClues.random().format(inds[gClue.ind], inds[gClue.otherind]);
-					} else {
-						return gClue.str;
-					}
-				}
+                var inds = ["Pokémon #1", "Pokémon #2", "Pokémon #3", "Pokémon #4"];
+                function textFromClue(gClue) {
+                    if (detUp && bonusClues.length > 0) {
+                        if (gClue.interact) {
+                            return bonusCluesInteract.random().format(inds[gClue.ind], inds[gClue.otherind]);
+                        }
+                        return bonusClues.random().format(inds[gClue.ind], inds[gClue.otherind]);
+                    } else {
+                        return gClue.str;
+                    }
+                }
                 if (out.length > 0) {
                     safaribot.sendHtmlMessage(src, "<b>You have the following clues:</b>", safchan);
                     sys.sendMessage(src, "", safchan);
@@ -34026,7 +34450,7 @@ function Safari() {
                         ["mega", 3],
                         ["ldew", 2],
                         ["ldew", 5],
-                        ["ash", 9]
+                        ["ash", 5]
                     ][args.index]; break;
                     case 3: reward = [
                         ["pearl", 10],
@@ -34041,7 +34465,7 @@ function Safari() {
                         ["bright", 2],
                         ["ldew", 4],
                         ["ldew", 12],
-                        ["ash", 27]
+                        ["ash", 10]
                     ][args.index]; break;
                     case 4: reward = [
                         ["nugget", 1],
@@ -34471,7 +34895,7 @@ function Safari() {
                 currentTrainer.sprite += trainer.sprite3;
             }
             var ind = (trainer.elite ? eliteindex : index);
-            currentTrainer.powerBoost = ((trainer.power - 1.08) + ((difficulty - 3)/18) + ((difficulty > 1 ? 0.002 : 0)) + ((difficulty < 1 ? 0.0002 : 0)) + (ind/56) + (trainer.elite ? 0.037 : 0)) + (difficulty < 0 ? -0.27 : 0);
+            currentTrainer.powerBoost = ((trainer.power - 1.08) + ((difficulty - 3)/18) + ((difficulty > 1 ? 0.005 : 0)) + ((difficulty < 1 ? 0.0002 : 0)) + (ind/56) + (trainer.elite ? 0.037 : 0)) + (difficulty < 0 ? -0.27 : 0);
             chal = Math.round(1 + (ind/4) + (difficulty * 1) + (difficulty === 4 ? -3 : 0));
             if (ind >= 5) {
                 chal++;
@@ -36799,6 +37223,7 @@ function Safari() {
             return false;
         }
         player.balls[get] -= 1;
+        safari.updateShop(player, get);
         this.tableNext.push(get);
         safari.saveGame(player);
         this.msgAll(playerName.toCorrectCase() + " is adding " + an(itemAlias(get, false, true)) + " to the table!");
@@ -37430,7 +37855,7 @@ function Safari() {
         var searchedMons1 = 0;
         var searchedMons2 = 0;
         var searchedMons3 = 0;
-        for (var j = 0; j < 891; j++) {
+        for (var j = 0; j < 899; j++) { // not using highest dex num here since these are probably floodgates we want to open manually per new gen
             for (var i = 0; i < 27; i++) {
                 mon = getInputPokemon(poke(j + (65536 * i)));
                 if (!(mon.num)) {
@@ -37460,11 +37885,11 @@ function Safari() {
                 val = 0;
                 eggval = 0;
                 bst = getBST(mon.num);
-                if (ultraBeasts.contains(mon.num)) {
+                if (ultraBeasts.concat(898).contains(mon.num)) { // 898 is calyrex
                     bst = 600;
                 }
-                if (galarFormEvos.concat(789).contains(mon.num)) { // 789 is cosmog
-                    bst = 510;
+                if (galarFormEvos.concat([789, 891]).contains(mon.num)) { // [cosmog, kubfu]
+                    bst = Math.max(bst, 510);
                     rareForm = true;
                 }
                 if ((legendaries.contains(mon.num)) || ultraBeasts.contains(mon.num)) {
@@ -37805,7 +38230,7 @@ function Safari() {
         }
         if (this.ticks % 7 !== 0) {
             if (this.ticks % 3 === 0) {
-                if (!(this.movingRoom || this.turn < 1) || this.movingFloor) {
+                if (!(this.movingRoom || this.turn < 0) || this.movingFloor) {
                     return;
                 }
             } else {
@@ -37880,7 +38305,7 @@ function Safari() {
             }
             this.currentRoom.turnToAdvance = this.turn + roomDuration;
             this.recentRooms.unshift(type);
-            this.recentRooms = this.recentRooms.slice(0,Math.min( 3,this.recentRooms.length ));
+            this.recentRooms = this.recentRooms.slice(0, Math.min(3, this.recentRooms.length));
         }
         else {
             if (this.turn < this.currentRoom.turnToAdvance) {
@@ -38026,7 +38451,7 @@ function Safari() {
             var finishBonus = Math.round(this.points * 0.10);
             this.points += finishBonus;
             this.sendToViewers("You received a bonus " + plural(finishBonus, "Point") + " for clearing all floors!");
-            safaribot.sendAll(readable(this.fullNames, "and") + " reached the " + getOrdinal(this.room) + " room of the " + getOrdinal(this.level) + " floor with a total of " + plural(toFixed(this.points, 2), "Point") + "!", safchan);
+            safaribot.sendAll(readable(this.fullNames, "and") + " cleared the Pyramid with a total of " + plural(toFixed(this.points, 2), "Point") + "!", safchan);
         } else {
             this.sendToViewers(readable(this.fullNames, "and") + " reached the " + getOrdinal(this.room) + " room of the " + getOrdinal(this.level) + " floor with a total of " + plural(toFixed(this.points, 2), "Point") + "!");
         }
@@ -41787,7 +42212,7 @@ function Safari() {
         if (this.phase === "question") { //Prepare next question
             var list = [];
             this.validAnswers = [];
-            for (var e = 1; e < 808; e++) {
+            for (var e = 1; e < highestDexNum; e++) {
                 list.push(e);
             }
 
@@ -43371,13 +43796,13 @@ function Safari() {
             case "spectralThief": m = "'Not Very Effective' attacks transfer stat boosts."; break;
             case "leechseed": m = "Pokémon that learn Leech Seed recover HP."; break;
             case "drainpunch": m = "Pokémon that learn Drain Punch deal more damage when using drain attacks."; break;
-            case "revive": m = "Foe has a Revive at their disposal."; break;
-            case "fullrestore": m = "Foe has a Full Restore at their disposal."; break;
-            case "fullrestore2": m = "Foe has 2 Full Restores at their disposal."; break;
-            case "fullrestore3": m = "Foe has 3 Full Restores at their disposal."; break;
-            case "hyperpotion": m = "Foe has a Hyper Potion at their disposal."; break;
-            case "hyperpotion2": m = "Foe has 2 Hyper Potions at their disposal."; break;
-            case "hyperpotion3": m = "Foe has 3 Hyper Potions at their disposal."; break;
+            case "revive": m = "Each foe has a Revive at their disposal."; break;
+            case "fullrestore": m = "Each foe has a Full Restore at their disposal."; break;
+            case "fullrestore2": m = "Each foe has 2 Full Restores at their disposal."; break;
+            case "fullrestore3": m = "Each foe has 3 Full Restores at their disposal."; break;
+            case "hyperpotion": m = "Each foe has a Hyper Potion at their disposal."; break;
+            case "hyperpotion2": m = "Each foe has 2 Hyper Potions at their disposal."; break;
+            case "hyperpotion3": m = "Each foe has 3 Hyper Potions at their disposal."; break;
             case "boostType1": m = ""; break;
             case "boostType2": m = ""; break;
             default: m = ("Missing help text: " + condition + ". Please contact a Safari Admin");
@@ -44097,7 +44522,7 @@ function Safari() {
         while (loop > 0) {
             loop--;
             row = ["j", "k", "l"].random();
-            column = (1 + Math.floor(3 * Math.random()));
+            column = (1 + Math.floor(12 * Math.random()));
             place = row + column;
             if (this.pokemonAtDayCarePos("grotto", place) === false && this.validDayCareLocation(parseInt(pokemon.num, 10), place, "grotto")) {
                 p = {
@@ -50451,16 +50876,15 @@ function Safari() {
         }
         permObj.add("pyrBonusMons", JSON.stringify(pyrBonusMons));
     };
-    this.checkNewWeek = function(forced) {
+    this.checkNewWeek = function(forced, lbOnly) {
         var currentTime = now();
         var today = getDay(currentTime) - 3;
         var week = Math.floor(today/7);
-        if (forced) {
-            week = permObj.get("currentWeek") - 1;
-        }
         currentDay = ((today - 1) % 7) + 1;
-        if (week != permObj.get("currentWeek")) {
-            this.renewLeague();
+        if (week != permObj.get("currentWeek") || forced) {
+            if (!lbOnly) {
+                this.renewLeague();
+            }
             permObj.add("currentWeek", week);
             
             var old = {}, e, lbInfo;
@@ -50716,14 +51140,16 @@ function Safari() {
         
         player.records.medalsWon += 1;
         if (player.medals.length >= medalCap) {
-            player.medals.length = player.medals.length.slice(0, medalCap);
+            //player.medals = player.medals.slice(0, medalCap);
             if (isPlaying(player.id))
                 safaribot.sendMessage(sys.id(player.id), "You were unable to receive the medal " + medal.desc + " as your medal collection was full!", safchan);
             else
                 safari.inboxMessage(player, "You were unable to receive the medal " + medal.desc + " as your medal collection was full!", isPlaying(player.id));
             return false;
         }
-        player.medals.push(medal);
+        else {
+            player.medals.push(medal);
+        }
         this.saveGame(player);
         return true;
     };
@@ -51401,6 +51827,9 @@ function Safari() {
                 if (player.balls[clean] > cap) {
                     player.balls[clean] = cap;
                 }
+                if (!safari.events.spiritDuelsEnabled && player.balls.spirit > 0) {
+                    player.balls.spirit = 0;
+                }
             }
             var redoBase = false;
             for (i in player.decorations) {
@@ -51903,7 +52332,7 @@ function Safari() {
                     help.push("Note: This item is a Perk and the effects are passive.");
                 } else if (ballHelp.hasOwnProperty(lookup)) {
                     help.push(finishName(lookup) + ": " + ballHelp[lookup]);
-                    help.push("Note: Cooldown value doubles following a successful catch.");
+                    help.push("Note: Cooldown value doubles following a successful catch with the exception of " + es(finishName("spy")) + ".");
                 } else if (berryHelp.hasOwnProperty(lookup)) {
                     help.push(finishName(lookup) + ": " + berryHelp[lookup]);
                 }
@@ -52092,6 +52521,8 @@ function Safari() {
             "/mono [1/2]: To set if you want your Mono Balls to always use your active Pokémon's primary or secondary type. Omit the command data to check your current Mono Ball configuration.",
             "/themerares: Show rare Pokémon that appear in a specified theme.",
             "/mblink [on|off]: Set whether you want Master Ball throw links to appear on regular Pokémon. Omit the command data to check your current configuration.",
+            "/cherishlink [on|off]: Set whether you want Cherish Ball throw links to appear on wild Pokémon. Omit the command data to check your current configuration.",
+            "/cherishmsg [on|off]: Set whether you want your Cherished Pokémon to display the Cherished message when catching Pokémon.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -52249,7 +52680,7 @@ function Safari() {
                 safari.throwBall(src, commandData, null, null, command);
                 return true;
             }
-            if (command === "spiritduel" || command === "spiritduels") {
+            if (["spiritduel", "spiritduels", "sduel", "sduels"].contains(command)) {
                 var info = commandData.split(":");
                 safari.spiritDuelsCommand(src, info[0], info[1]);
                 return true;
@@ -52280,6 +52711,10 @@ function Safari() {
             }
             if (["mblink", "masterballlink", "mbmacro", "masterballmacro"].contains(command)) {
                 safari.setEnableMasterBall(src, commandData);
+                return true;
+            }
+            if (["cherishlink", "cherishballlink", "cherishmacro", "cherishballmacro"].contains(command)) {
+                safari.setEnableCherishBall(src, commandData);
                 return true;
             }
             if (command === "sell") {
@@ -53114,13 +53549,13 @@ function Safari() {
                 var period = new Date().getUTCHours();
                 period = ["Night", "Morning", "Afternoon", "Evening"][Math.floor(period/6)];
                 sys.sendMessage(src, separator, safchan);
-				if (currentThemeEffect == "past" && (chance(0.95))) {
-					if (chance(0.45)) {
-						time = new Date(now() - 400 * 365 * 24 * 60 * 60 * 1000).toUTCString();
-					} else {
-						time = new Date(now() - Math.round((Math.random() + 0.2) * 18 * 60 * 60) * 1000).toUTCString();
-					}
-				}
+                if (currentThemeEffect == "past" && (chance(0.95))) {
+                    if (chance(0.45)) {
+                        time = new Date(now() - 400 * 365 * 24 * 60 * 60 * 1000).toUTCString();
+                    } else {
+                        time = new Date(now() - Math.round((Math.random() + 0.2) * 18 * 60 * 60) * 1000).toUTCString();
+                    }
+                }
                 safaribot.sendMessage(src, "Current Time: " + time + " (" + period + ")", safchan);
                 safari.showNextContest(src);
                 safaribot.sendHtmlMessage(src, "Pokémon-of-the-Day: " + link("/active " + pokePlain(dailyBoost.pokemon), pokePlain(dailyBoost.pokemon)) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active, and wild " + pokePlain(dailyBoost.pokemon) + " have double the chance to be Shiny).", safchan);
@@ -53274,6 +53709,9 @@ function Safari() {
                     efmsg2.push("Not-Very-Effective Against: " + (nve2.join("") || "None"));
                     efmsg2.push("No Effect Against: " + (im2.join("") || "None"));
                 }
+                if (permObj.get("usingLangPack") == "true") {
+                    info.name = poke(getInputPokemon(info.name).num, true);
+                }
                 safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + (pokeInfo.forme(info.num) > 0 ? "-" + pokeInfo.forme(info.num) : "") + (pokeInfo.species(info.num) !== info.num ? " (" + info.num + "). " : ". ") + info.name + "'s BST is " + getBST(info.num) + statsmsg, safchan);
                 safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Tier: " + safari.getTier(info.num) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +".", safchan);
                 safaribot.sendHtmlMessage(src, "Abilities: " + readable([0, 1, 2].map(function(e) { return getPokeAbility(info.num, e) }).filter(function(e) { return !!e }).map(abilityOff)) + ".", safchan);
@@ -53300,7 +53738,7 @@ function Safari() {
                     if (evo !== -1) {
                         var conditionals = [];
                         if (!info.shiny) {
-                            conditionals.push(addComma(Math.floor(safari.candyCostConversion(player, candiesRequired *  1.25))) + " if shiny");
+                            conditionals.push(addComma(Math.floor(safari.candyCostConversion(player, Math.floor(candiesRequired * 1.25)))) + " if shiny");
                         }
                         candiesRequired = safari.candyCostConversion(player, candiesRequired);
                         if (player && player.costumes.contains("breeder") && (!(player.costume == "breeder"))) {
@@ -53324,7 +53762,7 @@ function Safari() {
                 }
                 
                 if (SESSION.channels(safchan).isChannelOwner(src)) {
-                    var editBST = [];
+                    var editBST = [], itemDrops = [];
                     for (var theme in contestThemes) {
                         if (contestThemes[theme].editBST && info.num in contestThemes[theme].editBST) {
                             editBST.push(contestThemes[theme].name + " (" + contestThemes[theme].editBST[info.num] + ")");
@@ -53333,6 +53771,21 @@ function Safari() {
                     
                     if (editBST.length > 0) {
                         safaribot.sendMessage(src, info.name + " has a custom BST value in the following themes: " + readable(editBST), safchan);
+                    }
+                    if (info.num in globalWildItems) {
+                        for (var item in globalWildItems[info.num]) {
+                            var asset = translateAsset(globalWildItems[info.num][item].item);
+                            if (asset.type !== "item") {
+                                if (globalWildItems[info.num][item].item in safari.getCustomWildItems()) {
+                                   itemDrops.push("{0} [Custom Item] ({1}%)".format(globalWildItems[info.num][item].item, globalWildItems[info.num][item].perc * 100));
+                                }
+                                continue;
+                            }
+                            itemDrops.push("{0} ({1}%)".format(plural(asset.amount, asset.name), globalWildItems[info.num][item].perc * 100));
+                        }
+                        if (itemDrops.length > 0) {
+                            safaribot.sendMessage(src, info.name + " drops the following items: " + readable(itemDrops), safchan);
+                        }
                     }
                 }
                 if (opt.contains("trivia")) {
@@ -55695,6 +56148,13 @@ function Safari() {
                 safari.startSpiritDuel();
                 return true;
             }
+            if (command === "tiebreakduel") {
+                safari.prepareNextSpiritDuel(true);
+                safari.events.spiritDuelsBattling = true;
+                safari.events.currentSpiritDuel = true;
+                safari.startSpiritDuel();
+                return true;
+            }
             if (command === "clearspirits") {
                 safari.clearSpiritMons(src,commandData);
                 return true;
@@ -55706,28 +56166,41 @@ function Safari() {
             if (command === "bestowcherish") {
                 var cmd = commandData.split(":");
                 var player = getAvatarOff(cmd[0]);
-                var data = getInputPokemon(cmd[1]);
-                if (cmd.length > 1) {
-                    var num = parseInt(cmd[2], 10);
+                var num = 1;
+                if (!player) {
+                    safaribot.sendMessage(src, "Player not found!", safchan);
+                    return true;
                 }
-                else {
-                    num = 1;
+                else if (cmd.length < 2) {
+                    safaribot.sendMessage(src, "Invalid Pokemon input.", safchan);
+                    return true;
+                }
+                var data = getInputPokemon(cmd[1]);
+
+                if (data.input === "Missingno") {
+                    safaribot.sendMessage(src, "Invalid Pokemon input.", safchan);
+                    return true;
+                }
+                if (cmd.length > 2) {
+                    num = parseInt(cmd[2], 10) || 1;
                 }
                 var i;
                 if (num === -1) {
                     i = player.cherished.indexOf(data.num);
                     if (i === -1) {
                         safaribot.sendMessage( src,player.id + " doesn't have that Cherished Pokémon!",safchan );
-                        return;
+                        return true;
                     }
-                    player.cherished.slice(i, 1);
+                    player.cherished.splice(i, 1);
+                    safari.saveGame(player);
                     safaribot.sendMessage( src,"You took away a " + data.name + " from " + player.id + "'s Cherished List.",safchan );
                 }
                 else {
                     player.cherished.push(data.num);
+                    safari.saveGame(player);
                     safaribot.sendMessage( src,"You added " + data.name + " to " + player.id + "'s Cherished List.",safchan );
-                    return;
                 };
+                return true;
             }
             if (command === "vbdebug") {
                 vbdebug = vbdebug ? false : true;
@@ -57756,11 +58229,29 @@ function Safari() {
         var onChannel = sys.playersOfChannel(safchan);
         for (var e in onChannel) { // potentially server-intensive, but should be okay. shift to after contest w/ mega reversion & lb update if not.
             var p = getAvatar(onChannel[e]);
-            if (p && p.fortune) {
+            if (!p) {
+                continue;
+            }
+            var needsUpdate = false;
+            if (p.fortune) {
                 if (p.fortune.deadline < now() && p.fortune.deadline > 0) {
-                    safaribot.sendHtmlMessage(onChannel[e], "<b>Your Fortune Cookie effect expired!</b>", safchan);
+                    safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect expired!</b>".format(finishName("cookie")), safchan);
                     p.fortune.deadline = 0;
+                    needsUpdate = true;
                 }
+            }
+            if (p.mushroomDeadline > 0) {
+                if (contestCount === 0) {
+                    p.mushroomDeadline--;
+                    needsUpdate = true;
+                }
+                if (contestCooldown === 1) {
+                    safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect was paused due to the contest!</b>".format(finishName("mushroom")), safchan);
+                }
+                
+            }
+            if (needsUpdate) {
+                safari.saveGame(p);
             }
         }
         if (currentEvent && contestCooldown % currentEvent.turnLength === 0) {
