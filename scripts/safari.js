@@ -19647,7 +19647,7 @@ function Safari() {
                 }
                 finalrew = (finalrew + ("," + rareamt + "@rare"));
                 g = giveStuff(player, toStuffObj(finalrew));
-                sys.appendToFile(giftLog, now() + "|||Spirit Duels|||" + player.id + "|||nextduels|||received|||" + g + "\n");
+                sys.appendToFile(giftLog, now() + "|||Spirit Duels|||" + player.id + " from " + teams[t].name + "|||nextduels|||received|||" + g + "\n");
                 safari.notification(player, "Your Spirit Duels team " + teams[t].name + " scored " + r + "% and got #" + (i + 1) + "! (You " + g + ").", "Spirit Duels", true);
                 safari.saveGame(player);
             }
@@ -19802,9 +19802,9 @@ function Safari() {
         }
         team1 = team1.shuffle();
         team2 = team2.shuffle();
-        var smaller = Math.min(team1.length, team2.length);
+        /*var smaller = Math.min(team1.length, team2.length);
         safari.events.sd1 = team1.slice(0, smaller).shuffle();
-        safari.events.sd2 = team2.slice(0, smaller).shuffle();
+        safari.events.sd2 = team2.slice(0, smaller).shuffle();*/
         safari.events.sdStep = -1;
     };
     this.spiritDuelTurn = function() {
