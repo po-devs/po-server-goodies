@@ -9637,7 +9637,7 @@ function Safari() {
             safaribot.sendMessage(src, "This is an Event Pokémon, you cannot use " + es(finishName("master")) + "!", safchan);
             return;
         }
-        if (ball === "spirit" && safari.spiritDuelsCanSignup(src, player)) {
+        if (ball === "spirit" && safari.spiritDuelsCanSignup(src, player, true)) {
             safaribot.sendHtmlMessage(src, "You can't throw " + es(finishName("spirit")) + " without signing up for " + link("/spiritduels", "Spirit Duels") + " first!", safchan);
             return;
         }
@@ -20350,7 +20350,7 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
         return;
     }
-    this.spiritDuelsCanSignup = function(src, player) {
+    this.spiritDuelsCanSignup = function(src, player, silent) {
         var id = player.id.toLowerCase();
         if (!safari.events.spiritDuelsEnabled) {
             return false;
@@ -20363,17 +20363,20 @@ function Safari() {
             k = safari.events.spiritDuelsTeams[t].players.indexOf(player.idnum);
             if (k !== -1) {
                 team = safari.events.spiritDuelsTeams[t].name;
-                safaribot.sendMessage( src,"You are already assigned to team " + team + "!",safchan );
+                if (!silent)
+                    safaribot.sendMessage( src,"You are already assigned to team " + team + "!",safchan );
                 return false;
             }
         }
         k = safari.events.spiritDuelsSignups.indexOf(player.idnum);
         if (k > -1) {
-            safaribot.sendMessage( src,"You are already signed up!",safchan );
+            if (!silent)
+                safaribot.sendMessage( src,"You are already signed up!",safchan );
             return false;
         }
         if (safari.events.spiritDuelsTeams.length <= 4) {
-            safaribot.sendMessage(src,"You cannot sign up for this season of Spirit Duels anymore!", safchan);
+            if (!silent)
+                safaribot.sendMessage(src,"You cannot sign up for this season of Spirit Duels anymore!", safchan);
             return false;
         }
         return true;
