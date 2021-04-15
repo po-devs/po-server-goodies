@@ -19752,10 +19752,53 @@ function Safari() {
         }
         var enlistPerPlayer1 = safari.spiritEnlistsPerPlayer(army1.length);
         var enlistPerPlayer2 = safari.spiritEnlistsPerPlayer(army2.length);
-
-        var p, j, n = now(), hold = 0;
+        
+        var army1Avatars = [], army2Avatars = [];
         for (var a in army1) {
-            p = getAvatarOff(idnumList.get(army1[a]));
+        	army1Avatars.push(getAvatarOff(idnumList.get(army1[a])));
+        }
+        for (var a in army2) {
+        	army2Avatars.push(getAvatarOff(idnumList.get(army1[a])));
+        }
+        
+        var preCount1 = 0, preCount2 = 0, hold;
+        for (var a in army1Avatars) {
+            p = army1Avatars[a];
+            hold = parseInt(enlistPerPlayer1, 10);
+            for (var i = 0; i < safari.events.bonusSpiritEnlistRanks.length; i++) {
+                if (p.spiritDuels.rank >= safari.events.bonusSpiritEnlistRanks[i]) {
+                    hold++;
+                }
+            }
+            preCount1 += hold;
+            hold = 0;
+        }
+        for (var a in army2Avatars) {
+            p = army2Avatars[a];
+            hold = parseInt(enlistPerPlayer1, 10);
+            for (var i = 0; i < safari.events.bonusSpiritEnlistRanks.length; i++) {
+                if (p.spiritDuels.rank >= safari.events.bonusSpiritEnlistRanks[i]) {
+                    hold++;
+                }
+            }
+            preCount2 += hold;
+            hold = 0;
+        }
+        var maxSize = Math.min(preCount1, preCount2);
+        //disp1 and disp2 represent how much the respective army much be decreased in number
+        var disp1 = preCount1 - maxSize;
+        var disp2 = preCount2 - maxSize;
+        
+        army1Avatars.sort(function(a, b) {return a.spiritDuels.exp - b.spiritDuels.exp});
+        army2Avatars.sort(function(a, b) {return a.spiritDuels.exp - b.spiritDuels.exp});
+        
+        var playerAmt1 = army1Avatars.length;
+        var playerAmt2 = army2Avatars.length;
+
+        var p, j, n = now();
+        hold = 0;
+        for (var a in army1Avatars) {
+            p = army1Avatars[a];
             j = 0;
             hold = parseInt(enlistPerPlayer1, 10);
             for (var i = 0; i < safari.events.bonusSpiritEnlistRanks.length; i++) {
@@ -19763,6 +19806,15 @@ function Safari() {
                     hold++;
                 }
             }
+            if (disp1 > 0) {
+            	if (playerAmt1 < disp1) { //in case of a player needing to drop two mons to balance it out (three or more should be virtually impossible)
+            		disp1 -= 1;
+            		hold -= 1;
+            	}
+				disp1 -= 1;
+				hold -= 1;
+            }
+            playerAmt1 -= 1;
             for (var i = 0; i < hold; i++) {
                 team1.push({
                     mon: p.spiritDuels.box[j],
@@ -19781,8 +19833,8 @@ function Safari() {
                 }
             }
         }
-        for (var a in army2) {
-            p = getAvatarOff(idnumList.get(army2[a]));
+        for (var a in army2Avatars) {
+            p = army2Avatars[a];
             j = 0;
             hold = parseInt(enlistPerPlayer2, 10);
             for (var i = 0; i < safari.events.bonusSpiritEnlistRanks.length; i++) {
@@ -19790,6 +19842,15 @@ function Safari() {
                     hold++;
                 }
             }
+            if (disp2 > 0) {
+            	if (playerAmt2 < disp2) { //in case of a player needing to drop two mons to balance it out (three or more should be virtually impossible)
+            		disp2 -= 1;
+            		hold -= 1;
+            	}
+				disp2 -= 1;
+				hold -= 1;
+            }
+            playerAmt2 -= 1;
             for (var i = 0; i < hold; i++) {
                 team2.push({
                     mon: p.spiritDuels.box[j],
@@ -19811,9 +19872,16 @@ function Safari() {
         team1 = team1.shuffle();
         team2 = team2.shuffle();
 
-        var smaller = Math.min(team1.length, team2.length);
-        safari.events.sd1 = team1.slice(0, smaller).shuffle();
-        safari.events.sd2 = team2.slice(0, smaller).shuffle();
+        if (team1.length !== team2.length) {
+        	safaribot.sendHtmlMessage(sys.id("Miki Sayaka"), "Spiritduels Teams were not balanced correctly.", staffchannel);
+        	safaribot.sendHtmlMessage(sys.id("Miki Sayaka"), "Spiritduels Teams were not balanced correctly.", safchan);
+        	
+			var smaller = Math.min(team1.length, team2.length);
+			team1 = team1.slice(0, smaller).shuffle();
+			team2 = team2.slice(0, smaller).shuffle();
+        }
+		safari.events.sd1 = [].concat(team1);
+		safari.events.sd2 = [].concat(team2);
         safari.events.sdStep = -1;
     };
     this.spiritDuelTurn = function() {
@@ -53290,51 +53358,6 @@ function Safari() {
                 safari.dataDumps2[title][moveNum+""].Completed = true;
                 return true;
             }
-            if (command === "clearcpksconfirm") {
-                celebrityPKs = {};
-                return;
-            };
-            if (command === "celebritypks" || command == "cpks") {
-                var rec = commandData.toLowerCase(), e, g, out, i, cdata = rec.split(":");
-                if (cdata.length < 1) {
-                    cdata.unshift("kanto");
-                }
-                if (cdata.length < 2) {
-                    cdata.push("total");
-                }
-                if (cdata.length < 3) {
-                    cdata.push("percentage");
-                }
-
-                if (!celebrityPKs.hasOwnProperty(cdata[0])) {
-                    safaribot.sendMessage(src, "There is no celebrity data for region " + cdata[0] + "!", safchan);
-                    return true;
-                }
-                e = celebrityPKs[cdata[0]];
-                if (!e.hasOwnProperty(cdata[1])) {
-                    safaribot.sendMessage(src, "There is no celebrity data for " + cdata[1] + " in that region!", safchan);
-                    return true;
-                }
-                e = e[cdata[1]];
-                list = Object.keys(e);
-                out = list.sort(function(a, b) {
-                    if (cdata[2] == "percentage") {
-                        return ((e[b][0]/(Math.max(e[b][1] + e[b][0], 1))) - ((e[a][0]/(Math.max(e[a][1] + e[a][0], 1)))));
-                    }
-                    return e[b][0] - e[a][0];
-                });
-                safaribot.sendMessage(src, "Top run killers in " + rec + " for " + cdata[1] + " difficulty: ", safchan);
-                if (cdata[2] !== "percentage") {
-                    for (var i = 0; i < list.length; i++) {
-                        safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + e[list[i]][0] + "].", safchan);
-                    }
-                } else {
-                    for (var i = 0; i < list.length; i++) {
-                        safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + (100 * e[list[i]][0] / (Math.max(e[list[i]][1] + e[list[i]][0], 1))) + "%" + "].", safchan);
-                    }
-                }
-                return true;
-            }
             if (command === "leaderboard" || command == "lb") {
                 var rec = commandData.toLowerCase(), e;
 
@@ -54540,6 +54563,69 @@ function Safari() {
             if (command === "enabledc" || command === "enabledaycare") {
                 dayCareEnabled = (dayCareEnabled ? false : true);
                 safaribot.sendMessage(src, "Daycare enabled: " + dayCareEnabled + ".", safchan);
+                return true;
+            }
+            if (command === "monstonums") {
+            	var l = commandData.split(","), out = [];
+            	for (var i = 0; i < l.length; i++) {
+            		out.push(getInputPokemon(l[i]).num);
+            	}
+				safaribot.sendMessage(src, "Inputed Pokémon: " + l.join(","), safchan);
+				safaribot.sendMessage(src, "Corresponding Dex Numbers: " + out.join(","), safchan);
+                return true;
+            }
+            if (command === "numstomons") {
+            	var l = commandData.split(","), out = [];
+            	for (var i = 0; i < l.length; i++) {
+            		out.push(poke(l[i]));
+            	}
+				safaribot.sendMessage(src, "Inputed Dex Numbers: " + l.join(","), safchan);
+				safaribot.sendMessage(src, "Corresponding Pokémon: " + out.join(","), safchan);
+                return true;
+            }
+            if (command === "clearcpksconfirm") {
+                celebrityPKs = {};
+                return;
+            };
+            if (command === "celebritypks" || command == "cpks") {
+                var rec = commandData.toLowerCase(), e, g, out, i, cdata = rec.split(":");
+                if (cdata.length < 1) {
+                    cdata.unshift("kanto");
+                }
+                if (cdata.length < 2) {
+                    cdata.push("total");
+                }
+                if (cdata.length < 3) {
+                    cdata.push("percentage");
+                }
+
+                if (!celebrityPKs.hasOwnProperty(cdata[0])) {
+                    safaribot.sendMessage(src, "There is no celebrity data for region " + cdata[0] + "!", safchan);
+                    return true;
+                }
+                e = celebrityPKs[cdata[0]];
+                if (!e.hasOwnProperty(cdata[1])) {
+                    safaribot.sendMessage(src, "There is no celebrity data for " + cdata[1] + " in that region!", safchan);
+                    return true;
+                }
+                e = e[cdata[1]];
+                list = Object.keys(e);
+                out = list.sort(function(a, b) {
+                    if (cdata[2] == "percentage") {
+                        return ((e[b][0]/(Math.max(e[b][1] + e[b][0], 1))) - ((e[a][0]/(Math.max(e[a][1] + e[a][0], 1)))));
+                    }
+                    return e[b][0] - e[a][0];
+                });
+                safaribot.sendMessage(src, "Top run killers in " + rec + " for " + cdata[1] + " difficulty: ", safchan);
+                if (cdata[2] !== "percentage") {
+                    for (var i = 0; i < list.length; i++) {
+                        safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + e[list[i]][0] + "].", safchan);
+                    }
+                } else {
+                    for (var i = 0; i < list.length; i++) {
+                        safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + (100 * e[list[i]][0] / (Math.max(e[list[i]][1] + e[list[i]][0], 1))) + "%" + "].", safchan);
+                    }
+                }
                 return true;
             }
             if (command === "trick" || command === "trick2") {
