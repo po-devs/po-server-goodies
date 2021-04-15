@@ -33248,7 +33248,8 @@ function Safari() {
                     } else {
                         req = reqDesc[item.unlock];
                     }
-                    out3.push(req);
+                    var inds = ["Pokémon #1", "Pokémon #2", "Pokémon #3", "Pokémon #4"];
+                    out3.push(req + " for a clue about " + inds[item.ind]);
                 }
                 var inds = ["Pokémon #1", "Pokémon #2", "Pokémon #3", "Pokémon #4"];
                 function textFromClue(gClue) {
