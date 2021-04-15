@@ -19722,8 +19722,8 @@ function Safari() {
         safari.events.spiritDuelsViewers = army1init.concat(army2init)
             .map(function(e) { return idnumList.get(e) })
             .filter(function(e) { return isPlaying(e) && !cantBecause(sys.id(e), false, ["auction", "battle", "event", "pyramid", "baking"], false, true) });
-        if (!safari.events.spiritDuelsViewers.contains(21)) {
-            safari.events.spiritDuelsViewers.push(21);
+        if (!safari.events.spiritDuelsViewers.contains(idnumList.get(21))) {
+            safari.events.spiritDuelsViewers.push(idnumList.get(21));
         }
         var army1 = [];
         var army2 = [];
