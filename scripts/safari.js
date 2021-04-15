@@ -19925,7 +19925,7 @@ function Safari() {
         team2 = team2.shuffle();
 
         if (team1.length !== team2.length) {
-        	safaribot.sendHtmlMessage(sys.id("Miki Sayaka"), "Spiritduels Teams were not balanced correctly.", staffchannel);
+        	safaribot.sendHtmlMessage(sys.id("Miki Sayaka"), "Spiritduels Teams were not balanced correctly. " + team1.length + " - " + team2.length, staffchannel);
         	safaribot.sendHtmlMessage(sys.id("Miki Sayaka"), "Spiritduels Teams were not balanced correctly.", safchan);
         	
 			var smaller = Math.min(team1.length, team2.length);
