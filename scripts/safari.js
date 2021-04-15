@@ -9741,7 +9741,7 @@ function Safari() {
                 safaribot.sendHtmlAll("Some stealthy person " + catchVerb + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
                 player.records.catchSpy += 1;
             } else if (ball == "spirit") {
-                safari.catchSpiritMon(player, currentPokemon);
+                safari.catchSpiritMon(player, currentPokemon, wildSpirit);
                 player.records.catchSpirit += 1;
                 var team = player.spiritDuels.team;
                 if (team === "None") {
@@ -19807,9 +19807,9 @@ function Safari() {
         team1 = team1.shuffle();
         team2 = team2.shuffle();
 
-        //var smaller = Math.min(team1.length, team2.length);
-        safari.events.sd1 = team1.slice(0).shuffle();
-        safari.events.sd2 = team2.slice(0).shuffle();
+        var smaller = Math.min(team1.length, team2.length);
+        safari.events.sd1 = team1.slice(0, smaller).shuffle();
+        safari.events.sd2 = team2.slice(0, smaller).shuffle();
         safari.events.sdStep = -1;
     };
     this.spiritDuelTurn = function() {
@@ -20120,7 +20120,7 @@ function Safari() {
 
         safari.saveGame(player);
     };
-    this.catchSpiritMon = function( player,mon ) {
+    this.catchSpiritMon = function( player,mon, spiritRealm ) {
         //Adds the mon to player's spirit box
         //Also increases their EXP
         var id = parseInt(mon, 10), exp;
@@ -20133,6 +20133,9 @@ function Safari() {
         }
         if (isLegendary(id)) {
             exp *= 4;
+        }
+        else if (spiritRealm) {
+            exp *= 2;
         }
         player.spiritDuels.exp += Math.round(exp);
         player.spiritDuels.exp = Math.round(player.spiritDuels.exp);
