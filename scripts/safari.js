@@ -16421,7 +16421,7 @@ function Safari() {
             if (!info.target) {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "To modify a photo, type /use brush:PhotoNumber:WhatToModify. Example: /use brush:3:period would change the period (Morning, Afternoon, Evening or Night) of the 3rd photo in your album to a random different one.", safchan);
-                safaribot.sendMessage(src, "You can modify number of Pokémon in the photo, their mood, action, environment, period or quality. When retouching a photo, there's a chance that the quality will degrade.", safchan);
+                safaribot.sendMessage(src, "You can modify number of Pokémon in the photo, their mood, action, environment, period or quality.", safchan);
                 sys.sendMessage(src, "", safchan);
                 return;
             }
@@ -16519,7 +16519,7 @@ function Safari() {
             var oldQuality = getValueTranslation(photo.score, "score");
             var qualityLost = false;
             
-            var qualityDropChance = { amt: 0.8, when: 0.33, what: 0.6, where: 0.4, mood: 0.5, score: 0.45 };
+            //var qualityDropChance = { amt: 0.8, when: 0.33, what: 0.6, where: 0.4, mood: 0.5, score: 0.45 };
             if (what === "amt") {
                 photo.amt += parseInt(randomSample({ "1": 90, "2": 9, "3": 1}), 10);
             } else if (what !== "score") {
@@ -16529,20 +16529,21 @@ function Safari() {
                 } while (res === photo[what]);
                 photo[what] = res;
             }
-            if (chance(qualityDropChance[what])) {
+            /*if (chance(qualityDropChance[what])) {
                 if (photo.score > 0) {
                     qualityLost = true;
                 }
                 photo.score = Math.max(0, photo.score - sys.rand(scoreLostRange[0], scoreLostRange[1]));
-            } else if (what === "score") {
+            } else*/
+            if (what === "score") {
                 photo.score = Math.min(10, photo.score + [1, 1, 1, 1, 2, 2, 3].random());
             }
             var newValue = getValueTranslation(photo[what], what);
             var newQuality = getValueTranslation(photo.score, "score");
             
-            var changemsg = what === "score" && qualityLost ? "" : "The " + translations[what] + " changed from " + toColor(oldValue, "red") + " to " + toColor(newValue, "blue") + "! ";
-            qualityLost = qualityLost ? "The quality dropped from " + toColor(oldQuality, "blue") + " to " + toColor(newQuality, "red") : "";
-            safaribot.sendHtmlMessage(src, changemsg + qualityLost, safchan);
+            //var changemsg = what === "score" && qualityLost ? "" : "The " + translations[what] + " changed from " + toColor(oldValue, "red") + " to " + toColor(newValue, "blue") + "! ";
+            //qualityLost = qualityLost ? "The quality dropped from " + toColor(oldQuality, "blue") + " to " + toColor(newQuality, "red") : "";
+            //safaribot.sendHtmlMessage(src, changemsg + qualityLost, safchan);
             safaribot.sendHtmlMessage(src, "Your photo of " + toColor(oldDesc, "red") + " was edited and is now a photo of " + toColor(this.describePhoto(photo), "blue") + "!", safchan);
             
             player.records.photosRetouched += 1;
@@ -37854,7 +37855,7 @@ function Safari() {
         var searchedMons1 = 0;
         var searchedMons2 = 0;
         var searchedMons3 = 0;
-        for (var j = 0; j < 891; j++) {
+        for (var j = 0; j < 899; j++) { // not using highest dex num here since these are probably floodgates we want to open manually per new gen
             for (var i = 0; i < 27; i++) {
                 mon = getInputPokemon(poke(j + (65536 * i)));
                 if (!(mon.num)) {
@@ -37884,11 +37885,11 @@ function Safari() {
                 val = 0;
                 eggval = 0;
                 bst = getBST(mon.num);
-                if (ultraBeasts.contains(mon.num)) {
+                if (ultraBeasts.concat(898).contains(mon.num)) { // 898 is calyrex
                     bst = 600;
                 }
-                if (galarFormEvos.concat(789).contains(mon.num)) { // 789 is cosmog
-                    bst = 510;
+                if (galarFormEvos.concat([789, 891]).contains(mon.num)) { // [cosmog, kubfu]
+                    bst = Math.max(bst, 510);
                     rareForm = true;
                 }
                 if ((legendaries.contains(mon.num)) || ultraBeasts.contains(mon.num)) {
