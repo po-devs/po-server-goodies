@@ -1915,6 +1915,7 @@ beforeChatMessage: function(src, message, chan) {
     }*/
 
     var isBlocked = true, command, commandData;
+    var poChannel = SESSION.channels(channel);
     if (is_command(message)) {
         //Used further down too
         var pos = message.indexOf(' ');
@@ -1962,7 +1963,7 @@ beforeChatMessage: function(src, message, chan) {
         sys.stopEvent();
         return;
     }
-    var poChannel = SESSION.channels(channel);
+
     if (sys.auth(src) < 1 && !poChannel.canTalk(src) && isBlocked) {
         if (poChannel.muted.hasOwnProperty(sys.name(src).toLowerCase())) {
             var auth = poChannel.muted[sys.name(src).toLowerCase()].auth,
