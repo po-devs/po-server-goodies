@@ -3251,11 +3251,11 @@ function Safari() {
     function weatherMessage() {
         if (currentThemeEffect == "rain") {
             safaribot.sendHtmlAll(pokeInfo.icon(131423) + " Looks like it's raining!", safchan);
-        } else if (currentThemeEffect == "sun") {
+        } else if (currentThemeEffect == "sunny") {
             safaribot.sendHtmlAll(pokeInfo.icon(262495) + " Looks like it's sunny!", safchan);
         } else if (currentThemeEffect == "hail") {
             safaribot.sendHtmlAll(pokeInfo.icon(65887) + " Looks like it's snowing!", safchan);
-        } else if (currentThemeEffect == "sand") {
+        } else if (currentThemeEffect == "sandstorm") {
             safaribot.sendHtmlAll(pokeInfo.icon(449) + " Looks like it's a sandstorm!", safchan);
         }
     }
@@ -8323,7 +8323,7 @@ function Safari() {
                 }
             } else if (currentThemeEffect == "distortion") {
                 safaribot.sendHtmlAll(pokeInfo.icon(66023) + " Giratina appeared and twisted the dimensions!", safchan);
-            } else if (["rain","sandstorm","sun","hail"].contains(currentThemeEffect)) {
+            } else if (["rain","sandstorm","sunny","hail"].contains(currentThemeEffect)) {
                 weatherMessage();
             }
         }
@@ -9544,9 +9544,9 @@ function Safari() {
             var abilBoosted = [], boosted = 1;
             if (currentThemeEffect == "rain") {
                 abilBoosted = [abilityNum("Swift Swim"), abilityNum("Hydration"), abilityNum("Rain Dish"), abilityNum("Dry Skin")];
-            } else if (currentThemeEffect == "sun") {
+            } else if (currentThemeEffect == "sunny") {
                 abilBoosted = [abilityNum("Chlorophyll"), abilityNum("Solar Power"), abilityNum("Flower Gift"), abilityNum("Leaf Guard")];
-            } else if (currentThemeEffect == "sand") {
+            } else if (currentThemeEffect == "sandstorm") {
                 abilBoosted = [abilityNum("Sand Rush"), abilityNum("Sand Veil"), abilityNum("Sand Force")];
             } else if (currentThemeEffect == "hail") {
                 abilBoosted = [abilityNum("Slush Rush"), abilityNum("Snow Cloak"), abilityNum("Ice Body"), abilityNum("Ice Face")];
@@ -10215,8 +10215,8 @@ function Safari() {
                     this.runPendingActive();
                 } else if (contestCount <= 150 && (!(contestMidPoint))) {
                     contestMidPoint = true;
-                    if (currentThemeEffect && ["rain","sun","sandstorm","hail"].contains(currentThemeEffect)) {
-                        var opt = ["rain","sun","sandstorm","hail"];
+                    if (currentThemeEffect && ["rain","sunny","sandstorm","hail"].contains(currentThemeEffect)) {
+                        var opt = ["rain","sunny","sandstorm","hail"];
                         opt.splice(opt.indexOf(currentThemeEffect), 1);
                         currentThemeEffect = opt.random();
                         weatherMessage();
@@ -10318,8 +10318,8 @@ function Safari() {
             this.pokemonFlee();
             if (contestCount <= 150 && (!(contestMidPoint))) {
                 contestMidPoint = true;
-                if (currentThemeEffect && ["rain","sun","sandstorm","hail"].contains(currentThemeEffect)) {
-                    var opt = ["rain","sun","sandstorm","hail"];
+                if (currentThemeEffect && ["rain","sunny","sandstorm","hail"].contains(currentThemeEffect)) {
+                    var opt = ["rain","sunny","sandstorm","hail"];
                     opt.splice(opt.indexOf(currentThemeEffect), 1);
                     currentThemeEffect = opt.random();
                     weatherMessage();
