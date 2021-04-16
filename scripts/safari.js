@@ -31152,13 +31152,14 @@ function Safari() {
             var index = parseInt(data[1], 10) - 1;
             if (!index || isNaN(index)) {
                 if (canFulfillPhoto) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Let's see, these are the photos that you have that can help with my research on " + poke(id) + ":", safchan);
+                    var highestScore = 0;
                     for (var e = 0; e < player.photos.length; e++) {
-                        if (this.photoMatchesRequest(player.photos[e], photoReq)) {
-                            safaribot.sendHtmlMessage(src, "[" + (e+1) + "] " + cap(safari.describePhoto(player.photos[e])) + " " + link("/quest scientist:photo:" + (e+1), "[Show this photo]", true), safchan);
+                        if (this.photoMatchesRequest(player.photos[e], photoReq) && player.photos[e].score > highestScore) {
+                            index = e + 1;
+                            highestScore = player.photos[e].score;
                         }
                     }
-                    safaribot.sendHtmlMessage(src, "Scientist: To choose which photo you will show me, type " + link("/quest scientist:photo:Number", false, true) + ".", safchan);
+                    safari.scientistQuest(src, ["photo", index]);
                 }
                 else {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Unfortunately, it doesn't look like you have any photos that can help with my research on " + poke(id) + "!", safchan);
@@ -31171,6 +31172,7 @@ function Safari() {
                 }
                 
                 if (this.photoMatchesRequest(player.photos[index], photoReq)) {
+                    safaribot.sendHtmlMessage(src, "You showed the Scientist a photo of " + safari.describePhoto(player.photos[index]) + "!", safchan);
                     safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Wow, that's a great photo of a " + poke(id) + "! I think I can use this!", safchan);
                     rew = 3;
                     rew = Math.round(1.75 * (player.photos[index].score) - 5);
@@ -31192,6 +31194,7 @@ function Safari() {
 
                     player.records.scientistEarnings += rew;
                     player.quests.scientist.photo = id;
+                    safari.saveGame(player);
                     sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Scientist|||Showed a photo of " + safari.describePhoto(player.photos[index]) + "|||Received " + plural(rew, "silver") + "\n");
                 }
                 else {
