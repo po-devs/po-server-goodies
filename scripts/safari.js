@@ -31003,6 +31003,14 @@ function Safari() {
         }
         var quest = scientistQuest;
         var id = quest.pokemon;
+        var photoReq = {species: id, quality: 7};
+        var canFulfillPhoto = false;
+        for (var i = player.photos.length; i--;) {
+            if (this.photoMatchesRequest(player.photos[i], photoReq)) {
+                canFulfillPhoto = true;
+                break;
+            }
+        }
         var trainerSprite = '<img src="' + base64trainers.scientist + '">';
         if (now() > quest.expires || stopQuests.scientist) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: I'm going to present my research results in a convention. Please come back later!", safchan);
@@ -31069,7 +31077,14 @@ function Safari() {
 
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + plural(quest.reward, "silver") + "!", safchan);
             safaribot.sendHtmlMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you wish to help, bring me " + an(poke(id)) + " before then and type " + link("/quest scientist:finish", null, true) + ".", safchan);
-            safaribot.sendHtmlMessage(src, "Scientist: Or, you could help me by bringing a photo of that Pokémon! Pick a photo that has Great or better quality with " + link("/quest scientist:photo:", null, true) + ".", safchan);
+            if (canFulfillPhoto) {
+                if (player.quests.scientist.photo !== id) {
+                    safaribot.sendHtmlMessage(src, toColor("Scientist: Or, you could help me by bringing a photo of that Pokémon! Please note that I need a photo of Great or better quality. ", "magenta") + "[" + link("/quest scientist:photo", "You can fulfill this request") + "]", safchan);
+                }
+            }
+            else {
+                safaribot.sendHtmlMessage(src, "Scientist: Or, you could help me by bringing a photo of that Pokémon! Please note that I need a photo of Great or better quality. [" + toColor("You do not have a matching photo", "red") + "]", safchan);
+            }
             //safaribot.sendHtmlMessage(src, "Scientist: If you're wondering what else we do at my lab, we're also looking into some new technology! " + link("/quest scientist:moonshard", "Moon Shard") + " or " + link("/quest scientist:sunshard", "Sun Shard") + ".", safchan);
             sys.sendMessage(src, "", safchan);
             return;
@@ -31133,15 +31148,29 @@ function Safari() {
             this.logLostCommand(sys.name(src), "quest scientist:" + data.join(":"), "gave " + poke(id) + theft);
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Scientist|||Gave " + poke(id) + "|||Received " + plural(rew, "silver") + (theft ? ", stole " + poke(id) + " back" : "") + "\n");
             this.saveGame(player);
-        } else if (data[0].toLowerCase() === "photo" && data.length > 1) {
-            var index = parseInt(data[1], 10) - 1; 
-            if (player.photos && index && (!(isNaN(index))) && index > -1 && index < player.photos.length) {
+        } else if (data[0].toLowerCase() === "photo") {
+            var index = parseInt(data[1], 10) - 1;
+            if (!index || isNaN(index)) {
+                if (canFulfillPhoto) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Let's see, these are the photos that you have that can help with my research on " + poke(id) + ":", safchan);
+                    for (var e = 0; e < player.photos.length; e++) {
+                        if (this.photoMatchesRequest(player.photos[e], photoReq)) {
+                            safaribot.sendHtmlMessage(src, "[" + (e+1) + "] " + cap(safari.describePhoto(player.photos[e])) + " " + link("/quest scientist:photo:" + (e+1), "[Show this photo]", true), safchan);
+                        }
+                    }
+                    safaribot.sendHtmlMessage(src, "Scientist: To choose which photo you will show me, type " + link("/quest scientist:photo:Number", false, true) + ".", safchan);
+                }
+                else {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Unfortunately, it doesn't look like you have any photos that can help with my research on " + poke(id) + "!", safchan);
+                }
+            }
+            else if (player.photos && index && (!(isNaN(index))) && index > -1 && index < player.photos.length) {
                 if (player.quests.scientist.photo === id) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Hey, you already showed me a picture of a " + poke(id) + "! Don't you have someone else to give photos to?", safchan);
                     return;
                 }
-                var req = {species: id, quality: 7};
-                if (this.photoMatchesRequest(player.photos[index], req)) {
+                
+                if (this.photoMatchesRequest(player.photos[index], photoReq)) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Wow, that's a great photo of a " + poke(id) + "! I think I can use this!", safchan);
                     rew = 3;
                     rew = Math.round(1.75 * (player.photos[index].score) - 5);
