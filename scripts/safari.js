@@ -19827,7 +19827,7 @@ function Safari() {
         }
         for (var a in army2Avatars) {
             p = army2Avatars[a];
-            hold = parseInt(enlistPerPlayer1, 10);
+            hold = parseInt(enlistPerPlayer2, 10);
             for (var i = 0; i < safari.events.bonusSpiritEnlistRanks.length; i++) {
                 if (p.spiritDuels.rank >= safari.events.bonusSpiritEnlistRanks[i]) {
                     hold++;
@@ -33249,7 +33249,7 @@ function Safari() {
                         req = reqDesc[item.unlock];
                     }
                     var inds = ["Pokémon #1", "Pokémon #2", "Pokémon #3", "Pokémon #4"];
-                    out3.push(req + " for a clue about " + inds[item.ind]);
+                    out3.push(req + " [For a clue about " + inds[item.ind] + "]");
                 }
                 var inds = ["Pokémon #1", "Pokémon #2", "Pokémon #3", "Pokémon #4"];
                 function textFromClue(gClue) {
