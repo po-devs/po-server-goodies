@@ -3250,11 +3250,11 @@ function Safari() {
     }
     function weatherMessage() {
         if (currentThemeEffect == "rain") {
-            safaribot.sendHtmlAll(pokeInfo.icon(131423) + " Looks like it's raining!", safchan);
+            safaribot.sendHtmlAll(pokeInfo.icon(186) + " Looks like it's raining!", safchan);
         } else if (currentThemeEffect == "sunny") {
-            safaribot.sendHtmlAll(pokeInfo.icon(262495) + " Looks like it's sunny!", safchan);
+            safaribot.sendHtmlAll(pokeInfo.icon(38) + " Looks like it's sunny!", safchan);
         } else if (currentThemeEffect == "hail") {
-            safaribot.sendHtmlAll(pokeInfo.icon(65887) + " Looks like it's snowing!", safchan);
+            safaribot.sendHtmlAll(pokeInfo.icon(460) + " Looks like it's snowing!", safchan);
         } else if (currentThemeEffect == "sandstorm") {
             safaribot.sendHtmlAll(pokeInfo.icon(449) + " Looks like it's a sandstorm!", safchan);
         }
@@ -51876,6 +51876,9 @@ function Safari() {
                 data = JSON.parse(rawPlayers.hash[e]);
                 if (today - data.lastLogin > (30 * 5)) { // approx. 5 months
                     var player = getAvatarOff(data.id);
+                    if (player.locked) {
+                        continue;
+                    }
                     player.locked = true;
                     safari.saveGame(player);
                     sys.appendToFile(miscLog, now() + "|||" + data.id.toCorrectCase() + "|||was locked after 5 months of inactivity. Last login: " + data.lastLogin + ", current day: " + today + "\n");
