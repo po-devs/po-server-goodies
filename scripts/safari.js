@@ -3249,15 +3249,15 @@ function Safari() {
         return data;
     }
     function weatherMessage() {
-    	if (currentThemeEffect == "rain") {
-			safaribot.sendHtmlAll(pokeInfo.icon(131423) + " Looks like it's raining!", safchan);
-		} else if (currentThemeEffect == "sun") {
-			safaribot.sendHtmlAll(pokeInfo.icon(262495) + " Looks like it's sunny!", safchan);
-		} else if (currentThemeEffect == "hail") {
-			safaribot.sendHtmlAll(pokeInfo.icon(65887) + " Looks like it's snowing!", safchan);
-		} else if (currentThemeEffect == "sand") {
-			safaribot.sendHtmlAll(pokeInfo.icon(449) + " Looks like it's a sandstorm!", safchan);
-		}
+        if (currentThemeEffect == "rain") {
+            safaribot.sendHtmlAll(pokeInfo.icon(131423) + " Looks like it's raining!", safchan);
+        } else if (currentThemeEffect == "sun") {
+            safaribot.sendHtmlAll(pokeInfo.icon(262495) + " Looks like it's sunny!", safchan);
+        } else if (currentThemeEffect == "hail") {
+            safaribot.sendHtmlAll(pokeInfo.icon(65887) + " Looks like it's snowing!", safchan);
+        } else if (currentThemeEffect == "sand") {
+            safaribot.sendHtmlAll(pokeInfo.icon(449) + " Looks like it's a sandstorm!", safchan);
+        }
     }
 
     /* Formatting Functions */
@@ -8324,7 +8324,7 @@ function Safari() {
             } else if (currentThemeEffect == "distortion") {
                 safaribot.sendHtmlAll(pokeInfo.icon(66023) + " Giratina appeared and twisted the dimensions!", safchan);
             } else if (["rain","sand","sun","hail"].contains(currentThemeEffect)) {
-            	weatherMessage();
+                weatherMessage();
             }
         }
         
@@ -9541,22 +9541,22 @@ function Safari() {
             }
         }
         if (currentThemeEffect) {
-        	var abilBoosted = [], boosted = 1;
-        	if (currentThemeEffect == "rain") {
-        		abilBoosted = [abilityNum("Swift Swim"), abilityNum("Hydration"), abilityNum("Rain Dish"), abilityNum("Dry Skin")];
-        	} else if (currentThemeEffect == "sun") {
-        		abilBoosted = [abilityNum("Chlorophyll"), abilityNum("Solar Power"), abilityNum("Flower Gift"), abilityNum("Leaf Guard")];
-        	} else if (currentThemeEffect == "sand") {
-        		abilBoosted = [abilityNum("Sand Rush"), abilityNum("Sand Veil"), abilityNum("Sand Force")];
-        	} else if (currentThemeEffect == "hail") {
-        		abilBoosted = [abilityNum("Slush Rush"), abilityNum("Snow Cloak"), abilityNum("Ice Body"), abilityNum("Ice Face")];
-        	}
-        	for (var i = 0; i < abilBoosted.length; i++) {
-        		if (canHaveAbility(leader, abilBoosted[i])) {
-        			boosted = 1.3;
-        			break;
-        		}
-        	}
+            var abilBoosted = [], boosted = 1;
+            if (currentThemeEffect == "rain") {
+                abilBoosted = [abilityNum("Swift Swim"), abilityNum("Hydration"), abilityNum("Rain Dish"), abilityNum("Dry Skin")];
+            } else if (currentThemeEffect == "sun") {
+                abilBoosted = [abilityNum("Chlorophyll"), abilityNum("Solar Power"), abilityNum("Flower Gift"), abilityNum("Leaf Guard")];
+            } else if (currentThemeEffect == "sand") {
+                abilBoosted = [abilityNum("Sand Rush"), abilityNum("Sand Veil"), abilityNum("Sand Force")];
+            } else if (currentThemeEffect == "hail") {
+                abilBoosted = [abilityNum("Slush Rush"), abilityNum("Snow Cloak"), abilityNum("Ice Body"), abilityNum("Ice Face")];
+            }
+            for (var i = 0; i < abilBoosted.length; i++) {
+                if (canHaveAbility(leader, abilBoosted[i])) {
+                    boosted = 1.3;
+                    break;
+                }
+            }
         }
         var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true && !theory) {
@@ -10214,13 +10214,13 @@ function Safari() {
                 if (contestCount <= 0) {
                     this.runPendingActive();
                 } else if (contestCount <= 150 && (!(contestMidPoint))) {
-                	contestMidPoint = true;
-                	if (currentThemeEffect && ["rain","sun","sand","hail"].contains(currentThemeEffect)) {
-                		var opt = ["rain","sun","sand","hail"];
-                		opt.splice(opt.indexOf(currentThemeEffect), 1);
-                		currentThemeEffect = opt.random();
-                		weatherMessage();
-                	}
+                    contestMidPoint = true;
+                    if (currentThemeEffect && ["rain","sun","sand","hail"].contains(currentThemeEffect)) {
+                        var opt = ["rain","sun","sand","hail"];
+                        opt.splice(opt.indexOf(currentThemeEffect), 1);
+                        currentThemeEffect = opt.random();
+                        weatherMessage();
+                    }
                 }
                 checkUpdate();
             } else {
@@ -10317,14 +10317,14 @@ function Safari() {
         if (flee) {
             this.pokemonFlee();
             if (contestCount <= 150 && (!(contestMidPoint))) {
-				contestMidPoint = true;
-				if (currentThemeEffect && ["rain","sun","sand","hail"].contains(currentThemeEffect)) {
-					var opt = ["rain","sun","sand","hail"];
-					opt.splice(opt.indexOf(currentThemeEffect), 1);
-					currentThemeEffect = opt.random();
-					weatherMessage();
-				}
-			}
+                contestMidPoint = true;
+                if (currentThemeEffect && ["rain","sun","sand","hail"].contains(currentThemeEffect)) {
+                    var opt = ["rain","sun","sand","hail"];
+                    opt.splice(opt.indexOf(currentThemeEffect), 1);
+                    currentThemeEffect = opt.random();
+                    weatherMessage();
+                }
+            }
         } else {
             this.changeWildAction("catch");
             if (!freeThrow && crystalEffect.effect === "double" && ball !== "spirit" && ball !== "cherish") {
@@ -19807,10 +19807,10 @@ function Safari() {
         
         var army1Avatars = [], army2Avatars = [];
         for (var a in army1) {
-        	army1Avatars.push(getAvatarOff(idnumList.get(army1[a])));
+            army1Avatars.push(getAvatarOff(idnumList.get(army1[a])));
         }
         for (var a in army2) {
-        	army2Avatars.push(getAvatarOff(idnumList.get(army2[a])));
+            army2Avatars.push(getAvatarOff(idnumList.get(army2[a])));
         }
         
         var preCount1 = 0, preCount2 = 0, hold, p, j;
@@ -19859,12 +19859,12 @@ function Safari() {
                 }
             }
             if (disp1 > 0) {
-            	if (playerAmt1 < disp1) { //in case of a player needing to drop two mons to balance it out (three or more should be virtually impossible)
-            		disp1 -= 1;
-            		hold -= 1;
-            	}
-				disp1 -= 1;
-				hold -= 1;
+                if (playerAmt1 < disp1) { //in case of a player needing to drop two mons to balance it out (three or more should be virtually impossible)
+                    disp1 -= 1;
+                    hold -= 1;
+                }
+                disp1 -= 1;
+                hold -= 1;
             }
             playerAmt1 -= 1;
             for (var i = 0; i < hold; i++) {
@@ -19895,12 +19895,12 @@ function Safari() {
                 }
             }
             if (disp2 > 0) {
-            	if (playerAmt2 < disp2) { //in case of a player needing to drop two mons to balance it out (three or more should be virtually impossible)
-            		disp2 -= 1;
-            		hold -= 1;
-            	}
-				disp2 -= 1;
-				hold -= 1;
+                if (playerAmt2 < disp2) { //in case of a player needing to drop two mons to balance it out (three or more should be virtually impossible)
+                    disp2 -= 1;
+                    hold -= 1;
+                }
+                disp2 -= 1;
+                hold -= 1;
             }
             playerAmt2 -= 1;
             for (var i = 0; i < hold; i++) {
@@ -19925,15 +19925,15 @@ function Safari() {
         team2 = team2.shuffle();
 
         if (team1.length !== team2.length) {
-        	safaribot.sendHtmlMessage(sys.id("Miki Sayaka"), "Spiritduels Teams were not balanced correctly. " + team1.length + " - " + team2.length, staffchannel);
-        	safaribot.sendHtmlMessage(sys.id("Miki Sayaka"), "Spiritduels Teams were not balanced correctly.", safchan);
-        	
-			var smaller = Math.min(team1.length, team2.length);
-			team1 = team1.slice(0, smaller).shuffle();
-			team2 = team2.slice(0, smaller).shuffle();
+            safaribot.sendHtmlMessage(sys.id("Miki Sayaka"), "Spiritduels Teams were not balanced correctly. " + team1.length + " - " + team2.length, staffchannel);
+            safaribot.sendHtmlMessage(sys.id("Miki Sayaka"), "Spiritduels Teams were not balanced correctly.", safchan);
+            
+            var smaller = Math.min(team1.length, team2.length);
+            team1 = team1.slice(0, smaller).shuffle();
+            team2 = team2.slice(0, smaller).shuffle();
         }
-		safari.events.sd1 = [].concat(team1);
-		safari.events.sd2 = [].concat(team2);
+        safari.events.sd1 = [].concat(team1);
+        safari.events.sd2 = [].concat(team2);
         safari.events.sdStep = -1;
     };
     this.spiritDuelTurn = function() {
@@ -54619,31 +54619,31 @@ function Safari() {
                 return true;
             }
             if (command === "monstonums") {
-            	var l = commandData.split(","), out = [], item;
-            	for (var i = 0; i < l.length; i++) {
-            		item = getInputPokemon(l[i]).num;
-            		if (!(item)) {
-            			continue;
-            		}
-            		out.push(item);
-            	}
-				safaribot.sendMessage(src, "Inputed Pokémon: " + l.join(","), safchan);
-				safaribot.sendMessage(src, "Corresponding Dex Numbers: " + out.join(","), safchan);
+                var l = commandData.split(","), out = [], item;
+                for (var i = 0; i < l.length; i++) {
+                    item = getInputPokemon(l[i]).num;
+                    if (!(item)) {
+                        continue;
+                    }
+                    out.push(item);
+                }
+                safaribot.sendMessage(src, "Inputed Pokémon: " + l.join(","), safchan);
+                safaribot.sendMessage(src, "Corresponding Dex Numbers: " + out.join(","), safchan);
                 return true;
             }
             if (command === "numstomons") {
-            	var l = commandData.split(","), out = [], item;
-            	for (var i = 0; i < l.length; i++) {
-            		item = l[i];
-            		if (item.indexOf("-") > -1) {
-            			var spl = item.split("-");
-            			item = parseInt(spl[0], 10) + (65536 * parseInt(spl[1], 10));
-            		}
-            		item = poke(parseInt(item, 10));
-            		out.push(item);
-            	}
-				safaribot.sendMessage(src, "Inputed Dex Numbers: " + l.join(","), safchan);
-				safaribot.sendMessage(src, "Corresponding Pokémon: " + out.join(","), safchan);
+                var l = commandData.split(","), out = [], item;
+                for (var i = 0; i < l.length; i++) {
+                    item = l[i];
+                    if (item.indexOf("-") > -1) {
+                        var spl = item.split("-");
+                        item = parseInt(spl[0], 10) + (65536 * parseInt(spl[1], 10));
+                    }
+                    item = poke(parseInt(item, 10));
+                    out.push(item);
+                }
+                safaribot.sendMessage(src, "Inputed Dex Numbers: " + l.join(","), safchan);
+                safaribot.sendMessage(src, "Corresponding Pokémon: " + out.join(","), safchan);
                 return true;
             }
             if (command === "clearcpksconfirm") {
@@ -58392,6 +58392,9 @@ function Safari() {
             if (p.mushroomDeadline > 0) {
                 if (contestCount === 0) {
                     p.mushroomDeadline--;
+                    if (p.mushroomDeadline === 0) {
+                        safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect expired!</b>".format(finishName("mushroom")), safchan);
+                    }
                     needsUpdate = true;
                 }
                 if (contestCooldown === 1) {
@@ -58688,7 +58691,7 @@ function Safari() {
                 contestCount--;
                 contestExtension = 0;
                 if (contestCount === 0) {
-                	contestMidPoint = false;
+                    contestMidPoint = false;
                     var winners = [], pokeWinners = [], maxCaught = 0, maxBST = 0, player, contestInfo = { finished: now() }, fullWinners = [];
                     for (var e in contestCatchers) {
                         if (contestCatchers.hasOwnProperty(e)) {
