@@ -38006,7 +38006,7 @@ function Safari() {
                 val = 0;
                 eggval = 0;
                 bst = getBST(mon.num);
-                if (ultraBeasts.concat(898).contains(mon.num)) { // 898 is calyrex
+                if (ultraBeasts.concat([892, 66428, 898]).contains(mon.num)) { // [urshifu, urshifu-rapid strike, calyrex]
                     bst = 600;
                 }
                 if (galarFormEvos.concat([789, 891]).contains(mon.num)) { // [cosmog, kubfu]
