@@ -10382,7 +10382,7 @@ function Safari() {
             "The wild {0} was divided by zero!"
         ];
         if (isRare(currentPokemon)) {
-            sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::fled" + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "::\n");
+            sys.appendToFile(mythLog, now() + "|||" + (wildSpirit ? "Spirit Realm " : "") + poke(currentPokemon) + "::fled" + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "::\n");
             runmsgs = ["The wild {0} was obliterated by a grumpy old safari coder!"];
         }
         if (canHaveAbility(currentPokemon, abilitynum("Run Away"))) {
@@ -55642,7 +55642,7 @@ function Safari() {
                 if (contestCount > 0 || contestCooldown <= 180) {
                     if (contestCount > 0) {
                         if (currentPokemon && isRare(currentPokemon)) {
-                            sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared with the " + themeName(currentTheme) + " contest" + (wildEvent ? " (Event)" : "") + (Object.keys(wildBallThrows).length === 0 ? " (No Throws)" : "") + "::\n");
+                            sys.appendToFile(mythLog, now() + "|||" + (wildSpirit ? "Spirit Realm " : "") + poke(currentPokemon) + "::disappeared with the " + themeName(currentTheme) + " contest" + (wildEvent ? " (Event)" : "") + (Object.keys(wildBallThrows).length === 0 ? " (No Throws)" : "") + "::\n");
                         }
                         resetVars();
                         currentRules = null;
