@@ -31192,6 +31192,7 @@ function Safari() {
 
                     player.records.scientistEarnings += rew;
                     player.quests.scientist.photo = id;
+                    sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Scientist|||Showed a photo of " + safari.describePhoto(player.photos[index]) + "|||Received " + plural(rew, "silver") + "\n");
                 }
                 else {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Sorry, that won't do! I need a photo of " + poke(id) + " with quality Great or higher!", safchan);
