@@ -8323,7 +8323,7 @@ function Safari() {
                 }
             } else if (currentThemeEffect == "distortion") {
                 safaribot.sendHtmlAll(pokeInfo.icon(66023) + " Giratina appeared and twisted the dimensions!", safchan);
-            } else if (["rain","sand","sun","hail"].contains(currentThemeEffect)) {
+            } else if (["rain","sandstorm","sun","hail"].contains(currentThemeEffect)) {
                 weatherMessage();
             }
         }
@@ -10215,8 +10215,8 @@ function Safari() {
                     this.runPendingActive();
                 } else if (contestCount <= 150 && (!(contestMidPoint))) {
                     contestMidPoint = true;
-                    if (currentThemeEffect && ["rain","sun","sand","hail"].contains(currentThemeEffect)) {
-                        var opt = ["rain","sun","sand","hail"];
+                    if (currentThemeEffect && ["rain","sun","sandstorm","hail"].contains(currentThemeEffect)) {
+                        var opt = ["rain","sun","sandstorm","hail"];
                         opt.splice(opt.indexOf(currentThemeEffect), 1);
                         currentThemeEffect = opt.random();
                         weatherMessage();
@@ -10318,8 +10318,8 @@ function Safari() {
             this.pokemonFlee();
             if (contestCount <= 150 && (!(contestMidPoint))) {
                 contestMidPoint = true;
-                if (currentThemeEffect && ["rain","sun","sand","hail"].contains(currentThemeEffect)) {
-                    var opt = ["rain","sun","sand","hail"];
+                if (currentThemeEffect && ["rain","sun","sandstorm","hail"].contains(currentThemeEffect)) {
+                    var opt = ["rain","sun","sandstorm","hail"];
                     opt.splice(opt.indexOf(currentThemeEffect), 1);
                     currentThemeEffect = opt.random();
                     weatherMessage();
