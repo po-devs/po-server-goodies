@@ -1933,7 +1933,29 @@ beforeChatMessage: function(src, message, chan) {
             isBlocked = false;
         }
     }
+    if (is_command(message) && message.length > 1 && utilities.isLetter(message[1])) {
+        if (parseInt(sys.time(), 10) - lastMemUpdate > 500) {
+            sys.clearChat();
+            lastMemUpdate = parseInt(sys.time(), 10);
+        }
 
+        sys.stopEvent();
+        print("-- Command: " + sys.name(src) + ": " + message);
+
+        var tar = sys.id(commandData);
+
+        // Module commands at the last point.
+        if (callplugins("handleCommand", src, message.substr(1), channel)) {
+            return;
+        }
+        //Topic can be way to communicate while muted
+        if (["topic", "topicadd", "updatepart", "removepart"].contains(command) && (!poChannel.canTalk(src) || (SESSION.users(src).smute.active && sys.auth(src) < 1) || SESSION.users(src).mute.active)) {
+            command = "topic";
+            commandData = undefined;
+        }
+        commands.handleCommand(src, command, commandData, tar, chan);
+        return;
+    } /* end of commands */
     if (sys.auth(src) < 3 && SESSION.users(src).mute.active && isBlocked) {
         var muteinfo = SESSION.users(src).mute;
         normalbot.sendMessage(src, "You are muted" + (muteinfo.by ? " by " + muteinfo.by : '')+". " + (muteinfo.expires > 0 ? "Mute expires in " + getTimeString(muteinfo.expires - parseInt(sys.time(), 10)) + ". " : '') + (muteinfo.reason ? "[Reason: " + muteinfo.reason + "]" : ''), channel);
@@ -2025,30 +2047,6 @@ beforeChatMessage: function(src, message, chan) {
         }
         return false;
     });
-
-    if (is_command(message) && message.length > 1 && utilities.isLetter(message[1])) {
-        if (parseInt(sys.time(), 10) - lastMemUpdate > 500) {
-            sys.clearChat();
-            lastMemUpdate = parseInt(sys.time(), 10);
-        }
-
-        sys.stopEvent();
-        print("-- Command: " + sys.name(src) + ": " + message);
-
-        var tar = sys.id(commandData);
-
-        // Module commands at the last point.
-        if (callplugins("handleCommand", src, message.substr(1), channel)) {
-            return;
-        }
-        //Topic can be way to communicate while muted
-        if (["topic", "topicadd", "updatepart", "removepart"].contains(command) && (!poChannel.canTalk(src) || (SESSION.users(src).smute.active && sys.auth(src) < 1) || SESSION.users(src).mute.active)) {
-            command = "topic";
-            commandData = undefined;
-        }
-        commands.handleCommand(src, command, commandData, tar, chan);
-        return;
-    } /* end of commands */
 
     // Impersonation
     if (typeof SESSION.users(src).impersonation != 'undefined') {
