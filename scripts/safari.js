@@ -9543,13 +9543,13 @@ function Safari() {
         if (currentThemeEffect) {
             var abilBoosted = [], boosted = 1;
             if (currentThemeEffect == "rain") {
-                abilBoosted = [abilityNum("Swift Swim"), abilityNum("Hydration"), abilityNum("Rain Dish"), abilityNum("Dry Skin")];
+                abilBoosted = [abilitynum("Swift Swim"), abilitynum("Hydration"), abilitynum("Rain Dish"), abilitynum("Dry Skin")];
             } else if (currentThemeEffect == "sunny") {
-                abilBoosted = [abilityNum("Chlorophyll"), abilityNum("Solar Power"), abilityNum("Flower Gift"), abilityNum("Leaf Guard")];
+                abilBoosted = [abilitynum("Chlorophyll"), abilitynum("Solar Power"), abilitynum("Flower Gift"), abilitynum("Leaf Guard")];
             } else if (currentThemeEffect == "sandstorm") {
-                abilBoosted = [abilityNum("Sand Rush"), abilityNum("Sand Veil"), abilityNum("Sand Force")];
+                abilBoosted = [abilitynum("Sand Rush"), abilitynum("Sand Veil"), abilitynum("Sand Force")];
             } else if (currentThemeEffect == "hail") {
-                abilBoosted = [abilityNum("Slush Rush"), abilityNum("Snow Cloak"), abilityNum("Ice Body"), abilityNum("Ice Face")];
+                abilBoosted = [abilitynum("Slush Rush"), abilitynum("Snow Cloak"), abilitynum("Ice Body"), abilitynum("Ice Face")];
             }
             for (var i = 0; i < abilBoosted.length; i++) {
                 if (canHaveAbility(leader, abilBoosted[i])) {
