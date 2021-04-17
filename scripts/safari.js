@@ -23412,6 +23412,10 @@ function Safari() {
     };
     Battle2.prototype.showInfo = function(id) {
         var m = "", name = "";
+        if (this.postArgs && this.postArgs.index !== undefined) {
+            this.sendMessage(id, "");
+            this.sendMessage(id, "<b>Battle #" + (this.postArgs.index+1) + "</b>");
+        }
         if (this.biasNPC) {
             if (this.biasNPC.length > 0) {
                 m = "", name = this.name2;
@@ -43934,7 +43938,7 @@ function Safari() {
             case "brine": m = "Pokémon near fainting suffer more damage."; break;
             case "analytic": m = "Foe's attacks adapt to their target's type over consecutive hits."; break;
             case "slowStart": m = "Foe damage output is halved for the first 5 turns."; break;
-            case "guts": m = "All Pokémon have increased attack stat while inflicted with a status condition."; break;
+            case "guts": m = "All Pokémon have increased attack stat while inflicted with a status condition. The ATK reduction from burns is ignored."; break;
             case "defiant": m = "Foe's Pokémon Atk +2 when stat is nerfed."; break;
             case "hex": m = "All Pokémon suffer double damage while afflicted with a status condition."; break;
             case "weakSTAB": m = "There is no bonus for STAB moves."; break;
