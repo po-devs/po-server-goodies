@@ -20661,7 +20661,7 @@ function Safari() {
         for (var i=0; i < data.length; i++) {
             a = data[i].trim();
             a = getInputPokemon(a);
-            x = player.spiritDuels.box.reverse().indexOf(a.num); // reversing so it takes first index of that pokemon from the back. this makes it easier to load multiples of the same pokemon
+            x = player.spiritDuels.box.slice(0).reverse().indexOf(a.num); // reversing so it takes first index of that pokemon from the back. this makes it easier to load multiples of the same pokemon
             if (a.input === "Missingno") {
                 safaribot.sendMessage(src, "Invalid Pokémon: " + data[i] + "!", safchan);
                 continue;
@@ -20669,12 +20669,19 @@ function Safari() {
             if (x === -1) {
                 safaribot.sendMessage(src, "You don't have any Spirit " + a.name + "!", safchan);
                 continue;
-            }
-            player.spiritDuels.box.splice(x, 1);
+            } // we box.slice(0) first for a clone since these checks might cause the loop to progress without reversing the box back at the statements below, if we reversed the actual box up above
+            player.spiritDuels.box.reverse().splice(x, 1); // only reverse the actual array once checks pass
             player.spiritDuels.box.push(a.num);
-            player.spiritDuels.box.reverse();
+            player.spiritDuels.box.reverse(); // and make sure to reverse it back
             safaribot.sendMessage(src, "You added " + a.name + " to the lead of your Spirit Team!", safchan);
         }
+        var enlist = safari.spiritEnlistsPerPlayer(safari.getSpiritTeamMembers(player).length), bonusRanks = safari.events.bonusSpiritEnlistRanks;
+        for (var i = 0; i < bonusRanks.length; i++) {
+            if (player.spiritDuels.rank >= bonusRanks[i]) {
+                enlist++;
+            }
+        }
+        safaribot.sendMessage(src, "Your current active Spirit Team: " + readable(player.spiritDuels.box.slice(0, enlist).map(poke)), safchan);
         this.saveGame(player);
     };
     this.releaseSpiritMon = function( src,player,data ) {
@@ -20726,6 +20733,13 @@ function Safari() {
             player.spiritDuels.box.push(a.num);
             safaribot.sendMessage(src, "You moved " + a.name + " to the back of your Spirit Box!", safchan);
         }
+        var enlist = safari.spiritEnlistsPerPlayer(safari.getSpiritTeamMembers(player).length), bonusRanks = safari.events.bonusSpiritEnlistRanks;
+        for (var i = 0; i < bonusRanks.length; i++) {
+            if (player.spiritDuels.rank >= bonusRanks[i]) {
+                enlist++;
+            }
+        }
+        safaribot.sendMessage(src, "Your current active Spirit Team: " + readable(player.spiritDuels.box.slice(0, enlist).map(poke)), safchan);
         this.saveGame(player);
     };
     this.clearSpiritMons = function( src,commandData ) {
@@ -31173,7 +31187,7 @@ function Safari() {
                 
                 if (this.photoMatchesRequest(player.photos[index], photoReq)) {
                     safaribot.sendHtmlMessage(src, "You showed the Scientist a photo of " + safari.describePhoto(player.photos[index]) + "!", safchan);
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Wow, that's a great photo of a " + poke(id) + "! I think I can use this!", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Wow, that's a great photo of " + an(poke(id)) + "! I think I can use this!", safchan);
                     rew = 3;
                     rew = Math.round(1.75 * (player.photos[index].score) - 5);
                     if (this.hasCostumeSkill(player, "extraScientistSilver")) {
