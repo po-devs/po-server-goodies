@@ -9655,8 +9655,12 @@ function Safari() {
         }
         var ballName = itemAlias(ball, false, true);
 
-        if (player.pokemon.length >= getPerkBonus(player, "box")) {
+        if (player.pokemon.length >= getPerkBonus(player, "box") && ball !== "spirit") {
             safaribot.sendMessage(src, "Your boxes are full! You cannot catch any more Pokémon unless you buy another " + finishName("box") + " or decrease the number of Pokémon in your possession.", safchan);
+            return;
+        }
+        else if (isBallAvailable(player, "spirit") && player.spiritDuels.box.length >= safari.events.spiritBoxLimit) {
+            safaribot.sendMessage(src, "Your Spirit Box is full!", safchan);
             return;
         }
         if (cantBecause(src, reason, ["item", "auction", "battle", "event", "pyramid", "baking"], ball)) {
@@ -9682,10 +9686,6 @@ function Safari() {
         }
         if (currentRules && currentRules.excludeBalls && currentRules.excludeBalls.contains(ball) && ball !== "spirit") {
             safaribot.sendMessage(src, "The use of " + ballName + " is forbidden during this contest!", safchan);
-            return;
-        }
-        if (isBallAvailable(player, "spirit") && player.spiritDuels.box.length >= safari.events.spiritBoxLimit) {
-            safaribot.sendMessage(src, "Your Spirit Box is full!", safchan);
             return;
         }
 
@@ -14182,7 +14182,7 @@ function Safari() {
         }
         if (chance(finalChance)) {
             if (!(deluxe)) {
-                var showTheme = player.mushroomDeadline > 0 && ballUsed !== "spy" ? " from the " + contestThemes[player.mushroomTheme].name + " theme" : "";
+                var showTheme = player.mushroomDeadline > 0 && ballUsed !== "spy" ? " from the " + themeName(player.mushroomTheme) + " theme" : "";
                 safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon" + showTheme + "!", safchan);
             }
             if (golden) {
