@@ -20681,7 +20681,7 @@ function Safari() {
                 enlist++;
             }
         }
-        safaribot.sendMessage(src, "Your current active Spirit Team: " + readable(player.spiritDuels.box.slice(0, enlist).map(function(e) { return pokeInfo.icon(e) + " " + poke(e) })), safchan);
+        safaribot.sendHtmlMessage(src, "Your current active Spirit Team: " + readable(player.spiritDuels.box.slice(0, enlist).map(function(e) { return pokeInfo.icon(e) + " " + poke(e) })), safchan);
         this.saveGame(player);
     };
     this.releaseSpiritMon = function( src,player,data ) {
@@ -20739,7 +20739,7 @@ function Safari() {
                 enlist++;
             }
         }
-        safaribot.sendMessage(src, "Your current active Spirit Team: " + readable(player.spiritDuels.box.slice(0, enlist).map(function(e) { return pokeInfo.icon(e) + " " + poke(e) })), safchan);
+        safaribot.sendHtmlMessage(src, "Your current active Spirit Team: " + readable(player.spiritDuels.box.slice(0, enlist).map(function(e) { return pokeInfo.icon(e) + " " + poke(e) })), safchan);
         this.saveGame(player);
     };
     this.clearSpiritMons = function( src,commandData ) {
