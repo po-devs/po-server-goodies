@@ -58645,10 +58645,10 @@ function Safari() {
                 possibleThemes.splice(possibleThemes.indexOf("seasonal"), 1);
                 nextTheme = nextTheme.concat(possibleThemes.shuffle().slice(0, 2));
             }
-            else if (sys.rand(0, 100) < 38) {
+            /*else if (sys.rand(0, 100) < 38) {
                 nextTheme = ["none"];
                 nextTheme = nextTheme.concat(possibleThemes.shuffle().slice(0, 2));
-            } else {
+            }*/ else {
                 nextTheme = [];
                 nextTheme = possibleThemes.shuffle().slice(0, 3);
             }
