@@ -32685,7 +32685,7 @@ function Safari() {
             var strength = 0;
             var value, isInteract = false;
             var pk;
-            if (ind === false && ind !== 0) {
+            if (ind === false) {
                 ind = Math.floor(Math.random() * 4);
             }
             var kinds = {
@@ -32710,7 +32710,7 @@ function Safari() {
                 "weaknesses": 9,
                 "bsthigher": 4
             };
-            var otherind = 0;
+            var otherind = -1;
             if (kind == "interact") {
                 isInteract = true;
                 otherind = Math.floor(Math.random() * 3);
@@ -33122,6 +33122,7 @@ function Safari() {
                     value = "dual-type";
                     strength = 25;
                     outText = (amt == 0 ? "None of the Pokémon are dual-typed." : (amt == 1 ? "1 of the Pokémon is dual-typed." : (amt + " of the Pokémon are dual-typed.")));
+                    ind = -1;
                     break;
             }
             if (strength < minstrength || strength > maxstrength) {
@@ -33300,7 +33301,13 @@ function Safari() {
                     } else {
                         req = reqDesc[item.unlock];
                     }
-                    out3.push(req + " [For a clue about " + inds[item.ind] + (item.otherind ? " and " + inds[item.otherind] : "") + "]");
+                    if (item.ind !== -1) {
+                         req += " [For a clue about " + inds[item.ind] + (item.otherind !== -1 ? " and " + inds[item.otherind] : "") + "]";
+                    }
+                    else {
+                        req += " [For a general clue about none of the Pokémon in particular]";
+                    }
+                    out3.push(req);
                 }
                 function textFromClue(gClue) {
                     if (detUp && bonusClues.length > 0) {
