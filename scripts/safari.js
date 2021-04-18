@@ -33257,6 +33257,7 @@ function Safari() {
             var found = safari.detectiveData[uid+""].clues;
             var item, out = [], out2 = [], out3 = [], req;
             if (d1 == "*") {
+                var inds = ["Pokémon #1", "Pokémon #2", "Pokémon #3", "Pokémon #4"];
                 //show player's clues
                 for (var x in found) {
                     item = found[x];
@@ -33299,10 +33300,8 @@ function Safari() {
                     } else {
                         req = reqDesc[item.unlock];
                     }
-                    var inds = ["Pokémon #1", "Pokémon #2", "Pokémon #3", "Pokémon #4"];
                     out3.push(req + " [For a clue about " + inds[item.ind] + (item.otherind ? " and " + inds[item.otherind] : "") + "]");
                 }
-                var inds = ["Pokémon #1", "Pokémon #2", "Pokémon #3", "Pokémon #4"];
                 function textFromClue(gClue) {
                     if (detUp && bonusClues.length > 0) {
                         if (gClue.interact) {
@@ -52329,7 +52328,7 @@ function Safari() {
                     prizes = ["2@pebble,8@pack,2@mega,3@crystal,12@golden", "4@pack,1@mega,2@crystal,8@golden", "2@pack,@crystal,4@golden"];
                     break;
                 case "celebrityScoreHard":
-                    prizes = ["3@pebble,8@pack,2@mega,3@crystal,12@golden", "4@pack,1@mega,2@crystal,8@golden", "2@pack,@crystal,4@golden""];
+                    prizes = ["3@pebble,8@pack,2@mega,3@crystal,12@golden", "4@pack,1@mega,2@crystal,8@golden", "2@pack,@crystal,4@golden"];
                     break;
                 case "celebrityScoreExpert":
                     prizes = ["4@pebble,1@ldew,8@pack,2@mega,5@crystal,16@golden", "4@pack,1@mega,3@crystal,10@golden", "2@pack,2@crystal,6@golden"];
