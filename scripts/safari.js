@@ -19499,7 +19499,7 @@ function Safari() {
                 {type: "move", target: "Earthquake", val: 32, desc: "Spirits that can know Earthquake receive a fighting advantage."},
                 {type: "move", target: "Calm Mind", val: 32, desc: "Spirits that can know Calm Mind receive a fighting advantage."},
                 {type: "move", target: "Taunt", val: 32, desc: "Spirits that can know Taunt receive a fighting advantage."},
-                {type: "attack", target: "", val: 12, scaling: true, desc: "Spirits with high Attack stat receive a fighting advantage."},
+                {type: "attack", target: "", val: 12, scaling: true, desc: "Spirits with at least 100 Attack stat receive a fighting advantage. This skill is 0.2x stronger for every 10 Attack stat past 100, up to a maximum multiplier of 3x."},
                 {type: "catch", target: "cooldown", val: 1.17, desc: "Catch cooldown on Spirit Balls reduced slightly."}
             ],
             "Vice Admiral": [
@@ -19509,7 +19509,7 @@ function Safari() {
                 {type: "move", target: "Stored Power", val: 34, desc: "Spirits that can know Stored Power receive a fighting advantage."},
                 {type: "move", target: "Charge Beam", val: 34, desc: "Spirits that can know Charge Beam receive a fighting advantage."},
                 {type: "catch", target: "rate", val: 1.4, desc: "Catch rate with Spirit Balls raised."},
-                {type: "spattack", target: "", val: 14, scaling: true, desc: "Spirits with high Special Attack stat receive a fighting advantage."},
+                {type: "spattack", target: "", val: 14, scaling: true, desc: "Spirits with at least 100 Special Attack stat receive a fighting advantage. This skill is 0.2x stronger for every 10 Special Attack stat past 100, up to a maximum multiplier of 3x."},
                 {type: "catch", target: "cooldown", val: 1.24, desc: "Catch cooldown on Spirit Balls reduced slightly."}
             ],
             "Admin": [
@@ -19518,7 +19518,7 @@ function Safari() {
                 {type: "move", target: "Giga Drain", val: 35, desc: "Spirits that can know Giga Drain receive a fighting advantage."},
                 {type: "move", target: "Hurricane", val: 35, desc: "Spirits that can know Hurricane receive a fighting advantage."},
                 {type: "move", target: "Power Gem", val: 35, desc: "Spirits that can know Power Gem receive a fighting advantage."},
-                {type: "speed", target: "", val: 16, scaling: true, desc: "Spirits with high Speed stat receive a fighting advantage."},
+                {type: "speed", target: "", val: 16, scaling: true, desc: "Spirits with at least 100 Speed stat receive a fighting advantage. This skill is 0.2x stronger for every 10 Speed stat past 100, up to a maximum multiplier of 3x."},
                 {type: "catch", target: "cooldown", val: 1.35, desc: "Catch cooldown on Spirit Balls reduced."}
             ],
             "Supreme Master": [
@@ -19780,6 +19780,7 @@ function Safari() {
         }
         var army1 = [];
         var army2 = [];
+        var n = now();
         for (var a in army1init) {
             if (safari.events.spiritDuelsTeams[0].activityWarned.hasOwnProperty(army1init[a]+"")) {
                 if (n > safari.events.spiritDuelsTeams[0].activityWarned[army1init[a]+""]) {
@@ -19847,7 +19848,6 @@ function Safari() {
         var playerAmt1 = army1Avatars.length;
         var playerAmt2 = army2Avatars.length;
 
-        var n = now();
         hold = 0;
         for (var a in army1Avatars) {
             p = army1Avatars[a];
@@ -20110,78 +20110,21 @@ function Safari() {
                     }
                     break;
                 case "attack":
-                    if (getStatsNamed(mon).Attack >= 100) {
+                    if (getStatsNamed(mon)["Attack"] >= 100) {
                         active = true;
-                    }
-                    if (getStatsNamed(mon).Attack >= 110) {
-                        active = true;
-                        mult = 1.2
-                    }
-                    if (getStatsNamed(mon).Attack >= 120) {
-                        active = true;
-                        mult = 1.4
-                    }
-                    if (getStatsNamed(mon).Attack >= 130) {
-                        active = true;
-                        mult = 1.6
-                    }
-                    if (getStatsNamed(mon).Attack >= 140) {
-                        active = true;
-                        mult = 1.8
-                    }
-                    if (getStatsNamed(mon).Attack >= 150) {
-                        active = true;
-                        mult = 2
+                        mult = Math.min(3, 1 + Math.floor((getStatsNamed(mon)["Attack"] - 100) / 10) * 0.2);
                     }
                     break;
                 case "spattack":
                     if (getStatsNamed(mon)["Special Attack"] >= 100) {
                         active = true;
-                    }
-                    if (getStatsNamed(mon)["Special Attack"] >= 110) {
-                        active = true;
-                        mult = 1.2
-                    }
-                    if (getStatsNamed(mon)["Special Attack"] >= 120) {
-                        active = true;
-                        mult = 1.4
-                    }
-                    if (getStatsNamed(mon)["Special Attack"] >= 130) {
-                        active = true;
-                        mult = 1.6
-                    }
-                    if (getStatsNamed(mon)["Special Attack"] >= 140) {
-                        active = true;
-                        mult = 1.8
-                    }
-                    if (getStatsNamed(mon)["Special Attack"] >= 150) {
-                        active = true;
-                        mult = 2
+                        mult = Math.min(3, 1 + Math.floor((getStatsNamed(mon)["Special Attack"] - 100) / 10) * 0.2);
                     }
                     break;
                 case "speed":
                     if (getStats(mon)["Speed"] >= 100) {
                         active = true;
-                    }
-                    if (getStats(mon)["Speed"] >= 110) {
-                        active = true;
-                        mult = 1.2
-                    }
-                    if (getStats(mon)["Speed"] >= 120) {
-                        active = true;
-                        mult = 1.4
-                    }
-                    if (getStats(mon)["Speed"] >= 130) {
-                        active = true;
-                        mult = 1.6
-                    }
-                    if (getStats(mon)["Speed"] >= 140) {
-                        active = true;
-                        mult = 1.8
-                    }
-                    if (getStats(mon)["Speed"] >= 150) {
-                        active = true;
-                        mult = 2
+                        mult = Math.min(3, 1 + Math.floor((getStatsNamed(mon)["Speed"] - 100) / 10) * 0.2);
                     }
                     break;
                 case "any":
@@ -20447,7 +20390,7 @@ function Safari() {
         if (Object.keys(player.spiritDuels.skills).length > 0) {
             safaribot.sendMessage(src, "You have the following Spirit Skills:", safchan);
             for (var s in player.spiritDuels.skills) {
-                safaribot.sendMessage(src, "- " + player.spiritDuels.skills[s].desc + " (+" + player.spiritDuels.skills[s].val + (player.spiritDuels.skills[s].scaling ? " scaling up to 2x." : "") + ")", safchan);
+                safaribot.sendMessage(src, "- " + player.spiritDuels.skills[s].desc + " (+" + player.spiritDuels.skills[s].val + ")", safchan);
             }
             sys.sendMessage(src, "", safchan);
         }
