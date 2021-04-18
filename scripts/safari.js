@@ -20681,7 +20681,7 @@ function Safari() {
                 enlist++;
             }
         }
-        safaribot.sendMessage(src, "Your current active Spirit Team: " + readable(player.spiritDuels.box.slice(0, enlist).map(poke)), safchan);
+        safaribot.sendMessage(src, "Your current active Spirit Team: " + readable(player.spiritDuels.box.slice(0, enlist).map(function(e) { return pokeInfo.icon(e) + " " + poke(e) })), safchan);
         this.saveGame(player);
     };
     this.releaseSpiritMon = function( src,player,data ) {
@@ -20739,7 +20739,7 @@ function Safari() {
                 enlist++;
             }
         }
-        safaribot.sendMessage(src, "Your current active Spirit Team: " + readable(player.spiritDuels.box.slice(0, enlist).map(poke)), safchan);
+        safaribot.sendMessage(src, "Your current active Spirit Team: " + readable(player.spiritDuels.box.slice(0, enlist).map(function(e) { return pokeInfo.icon(e) + " " + poke(e) })), safchan);
         this.saveGame(player);
     };
     this.clearSpiritMons = function( src,commandData ) {
@@ -33300,7 +33300,7 @@ function Safari() {
                         req = reqDesc[item.unlock];
                     }
                     var inds = ["Pokémon #1", "Pokémon #2", "Pokémon #3", "Pokémon #4"];
-                    out3.push(req + " [For a clue about " + inds[item.ind] + "]");
+                    out3.push(req + " [For a clue about " + inds[item.ind] + (item.otherind ? " and " + inds[item.otherind] : "") + "]");
                 }
                 var inds = ["Pokémon #1", "Pokémon #2", "Pokémon #3", "Pokémon #4"];
                 function textFromClue(gClue) {
@@ -52326,19 +52326,19 @@ function Safari() {
             
             switch (lbName) {
                 case "celebrityScore":
-                    prizes = ["2@pebble,8@pack,2@mega,3@crystal,12@golden", "4@pack,1@mega,2@crystal,8@golden", "2@pack,@crystal,4@golden", "@rock"];
+                    prizes = ["2@pebble,8@pack,2@mega,3@crystal,12@golden", "4@pack,1@mega,2@crystal,8@golden", "2@pack,@crystal,4@golden"];
                     break;
                 case "celebrityScoreHard":
-                    prizes = ["3@pebble,8@pack,2@mega,3@crystal,12@golden", "4@pack,1@mega,2@crystal,8@golden", "2@pack,@crystal,4@golden", "@rock"];
+                    prizes = ["3@pebble,8@pack,2@mega,3@crystal,12@golden", "4@pack,1@mega,2@crystal,8@golden", "2@pack,@crystal,4@golden""];
                     break;
                 case "celebrityScoreExpert":
-                    prizes = ["4@pebble,1@ldew,8@pack,2@mega,5@crystal,16@golden", "4@pack,1@mega,3@crystal,10@golden", "2@pack,2@crystal,6@golden", "@rock"];
+                    prizes = ["4@pebble,1@ldew,8@pack,2@mega,5@crystal,16@golden", "4@pack,1@mega,3@crystal,10@golden", "2@pack,2@crystal,6@golden"];
                     break;
                 case "celebrityScoreSuperExpert":
-                    prizes = ["5@pebble,1@ldew,8@pack,2@mega,5@crystal,16@golden", "4@pack,1@mega,3@crystal,10@golden", "2@pack,2@crystal,6@golden", "@rock"];
+                    prizes = ["5@pebble,1@ldew,8@pack,2@mega,5@crystal,16@golden", "4@pack,1@mega,3@crystal,10@golden", "2@pack,2@crystal,6@golden"];
                     break;
                 case "celebrityScoreAbyssal":
-                    prizes = ["1@pebble,5@pack", "3@pack", "1@pack", "@rock"];
+                    prizes = ["1@pebble,5@pack", "3@pack", "1@pack"];
                     break;
                 default:
                     prizes = ["3@crystal,3@pack,15@golden,30@silver", "1@crystal,3@pack,10@golden,20@silver", "2@pack,8@golden,10@silver", "1@pack,5@golden,5@silver"];
@@ -52358,8 +52358,15 @@ function Safari() {
                 default:
                     rest.push(p.pos + ". " + p.fullName);
             }
-            
-            winners[p.name] = prizes[(p.pos <= 3 ? p.pos-1 : 3)];
+
+            if (lbName.indexOf("celebrityScore") === 0) {
+                if (p.pos <= 3) {
+                    winners[p.name] = prizes[p.pos - 1];
+                }
+            }
+            else {
+                winners[p.name] = prizes[(p.pos <= 3 ? p.pos-1 : 3)];
+            }
             
             if (reverse)
                 winners[p.name] = winners[p.name].split(",").map(function(e) { return "-" + e }).join(",");
