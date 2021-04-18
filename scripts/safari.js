@@ -20263,7 +20263,11 @@ function Safari() {
         if (["None", "Unemployed"].contains(player.spiritDuels.team)) {
             return [];
         }
-        return safari.events.spiritDuelsTeams.filter(function(e) { return e.players.contains(player.idnum) }).pop().players;
+        var team = safari.events.spiritDuelsTeams.filter(function(e) { return e.players.contains(player.idnum) });
+        if (team.length > 0) {
+            return team.pop().players;
+        }
+        return [];
     };
     this.spiritDuelsCommand = function( src,command,commandData ) {
         var player = getAvatar(src);
