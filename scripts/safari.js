@@ -26907,7 +26907,7 @@ function Safari() {
                         }
                     }
                     if (self.select.naturalcure && user.condition !== "none" && (move.type === "Water" || move.type === "Grass")) {
-                        out.push(tname + " cured its status!");
+                        out.push(name + " cured its status!");
                         user.condition = "none";
                     }
                 }
