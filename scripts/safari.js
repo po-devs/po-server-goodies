@@ -33305,7 +33305,7 @@ function Safari() {
                          req += " [For a clue about " + inds[item.ind] + (item.otherind !== -1 ? " and " + inds[item.otherind] : "") + "]";
                     }
                     else {
-                        req += " [For a general clue about none of the Pokémon in particular]";
+                        req += " [For a general clue]";
                     }
                     out3.push(req);
                 }
