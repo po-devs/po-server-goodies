@@ -30703,7 +30703,7 @@ function Safari() {
                 if (player.tutorial.inTutorial) {
                     tutorMsg(src, "You can complete the Collector's request with " + link("/quest collector:finish"));
                 } else {
-                    safaribot.sendHtmlMessage(src, "Collector: If you did, type " + link("/quest collector:finish", null, true) + " and I will pay you $" + addComma(quest.reward) + " for those Pokémon, but please bring them in less than " + timeLeftString(quest.deadline) + ".", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: If you did, type " + link("/quest collector:finish", null, true) + " and I will pay you $" + addComma(Math.floor(quest.reward * (player.costume === "pokefan" ? costumeData.pokefan.rate : 1))) + " for those Pokémon, but please bring them in less than " + timeLeftString(quest.deadline) + ".", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: You can also type " + link("/quest collector:abort", null, true) + " if you no longer wish to help me.", safchan);
                 }
                 sys.sendMessage(src, "", safchan);
