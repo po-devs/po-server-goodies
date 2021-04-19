@@ -20122,7 +20122,7 @@ function Safari() {
                     }
                     break;
                 case "speed":
-                    if (getStats(mon)["Speed"] >= 100) {
+                    if (getStatsNamed(mon)["Speed"] >= 100) {
                         active = true;
                         mult = Math.min(3, 1 + Math.floor((getStatsNamed(mon)["Speed"] - 100) / 10) * 0.2);
                     }
@@ -20752,11 +20752,11 @@ function Safari() {
             return;
         }
         if (safari.events.spiritDuelsViewers.indexOf(name.toLowerCase()) !== -1) {
-            this.spiritDuelsMessage(name + " stopped watching this battle!");
+            this.spiritDuelsMessage(name + " stopped watching this Spirit Duel!");
             safari.events.spiritDuelsViewers.splice(safari.events.spiritDuelsViewers.indexOf(name.toLowerCase()), 1);
         } else {
             safari.events.spiritDuelsViewers.push(name.toLowerCase());
-            this.spiritDuelsMessage(name + " is watching this battle!");
+            this.spiritDuelsMessage(name + " is watching this Spirit Duel!");
         }
         return;
     };
