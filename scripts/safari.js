@@ -20565,7 +20565,7 @@ function Safari() {
     };
     this.showSpiritBox = function( src,player,isAndroid,textOnly ) {
         //Shows them their spirit monns
-        var out = "";
+        var out = [];
         var maxPages,
             list = player.spiritDuels.box.slice(0);
         var limit = safari.events.spiritBoxLimit || 140;
@@ -20587,15 +20587,39 @@ function Safari() {
             }
         }
         if (textOnly) {
-            out += this.listSpiritPokemonText(list, label, enlist);
+            out.push(this.listSpiritPokemonText(list, label, enlist));
         } else {
-            out += this.listSpiritPokemon(list, label, player.smallBox, enlist);
+            out.push(this.listSpiritPokemon(list, label, player.smallBox, enlist));
             if (isAndroid) {
-                out += "<br />";
+                out.push("<br />");
             }
         }
 
-        sys.sendHtmlMessage(src, out, safchan);
+        var buffs = [];
+        for (var i = 0; i < enlist; i++) {
+            var mon = player.spiritDuels.box[i];
+            var boost = safari.spiritMonBoost(player, mon);
+            if (boost > 0) {
+                buffs.push((textOnly ? "" : pokeInfo.icon(mon) + " ") + poke(mon) + " (+" + boost + ")");
+            }
+        }
+        if (buffs.length > 0) {
+            if (!textOnly) {
+                out.push("");
+            }
+            out.push("<b>Current Spirit Party Boosts</b>:");
+            if (textOnly) {
+                out.push(buffs.join(", "));
+            }
+            else {
+                out = out.concat(buffs);
+            }
+            out.push("");
+        }
+
+        out.forEach(function(e) {
+            sys.sendHtmlMessage(src, e, safchan);
+        });
     };
     this.activeSpiritMon = function( src,player,data ) {
         //Adds the spirit mons to the front of their spirit box if they have it
@@ -20620,7 +20644,7 @@ function Safari() {
             player.spiritDuels.box.reverse().splice(x, 1); // only reverse the actual array once checks pass
             player.spiritDuels.box.push(a.num);
             player.spiritDuels.box.reverse(); // and make sure to reverse it back
-            safaribot.sendMessage(src, "You added " + a.name + " to the lead of your Spirit Team!", safchan);
+            safaribot.sendMessage(src, "You added " + a.name + " to the lead of your Spirit Party!", safchan);
         }
         var enlist = safari.spiritEnlistsPerPlayer(safari.getSpiritTeamMembers(player).length), bonusRanks = safari.events.bonusSpiritEnlistRanks;
         for (var i = 0; i < bonusRanks.length; i++) {
@@ -20628,7 +20652,7 @@ function Safari() {
                 enlist++;
             }
         }
-        safaribot.sendHtmlMessage(src, "Your current active Spirit Team: " + readable(player.spiritDuels.box.slice(0, enlist).map(function(e) { return pokeInfo.icon(e) + " " + poke(e) })), safchan);
+        safaribot.sendHtmlMessage(src, "Your current active Spirit Party: " + readable(player.spiritDuels.box.slice(0, enlist).map(function(e) { return pokeInfo.icon(e) + " " + poke(e) })), safchan);
         this.saveGame(player);
     };
     this.releaseSpiritMon = function( src,player,data ) {
@@ -20686,7 +20710,7 @@ function Safari() {
                 enlist++;
             }
         }
-        safaribot.sendHtmlMessage(src, "Your current active Spirit Team: " + readable(player.spiritDuels.box.slice(0, enlist).map(function(e) { return pokeInfo.icon(e) + " " + poke(e) })), safchan);
+        safaribot.sendHtmlMessage(src, "Your current active Spirit Party: " + readable(player.spiritDuels.box.slice(0, enlist).map(function(e) { return pokeInfo.icon(e) + " " + poke(e) })), safchan);
         this.saveGame(player);
     };
     this.clearSpiritMons = function( src,commandData ) {
@@ -20725,11 +20749,11 @@ function Safari() {
                 return;
             }
             player.spiritDuels.box.splice(i, 1);
-            safaribot.sendMessage( src,"You took away a " + data.name + " from " + player.id + "'s Spirit Team.",safchan );
+            safaribot.sendMessage( src,"You took away a " + data.name + " from " + player.id + "'s Spirit Box.",safchan );
         }
         else {
             player.spiritDuels.box.push(data.num);
-            safaribot.sendMessage( src,"You added " + data.name + " to " + player.id + "'s Spirit Team.",safchan );
+            safaribot.sendMessage( src,"You added " + data.name + " to " + player.id + "'s Spirit Box.",safchan );
             return;
         }
         this.saveGame(player);
