@@ -19785,6 +19785,7 @@ function Safari() {
             });
         }
         sendAll("Next Spirit Duel: " + safari.events.spiritDuelsTeams[0].name + " vs " + safari.events.spiritDuelsTeams[1].name + "!", true);
+        permObj.add("events", JSON.stringify(safari.events));
     };
     this.startSpiritDuel = function() {
         //Creates horde v horde battle
@@ -20317,7 +20318,7 @@ function Safari() {
             default: 
                 sys.sendMessage(src, "", safchan);
                 var m = "You are <b>" + an(player.spiritDuels.team) + " " + player.spiritDuels.rankName + "</b>!";
-                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels bench:", "Bench", true) + ", " + link("/spiritduels release:", "Release", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels standings", "Standings") + ", " + link("/spiritduels skill", "Skills" + (Object.keys(player.spiritDuels.skillChoices).length > 0 ? " [!]" : "")) + ", " + link("/spiritduels history", "History") + "].");
+                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels bench:", "Bench", true) + ", " + link("/spiritduels release:", "Release", true) + ", " + link("/spiritduels party", "Team Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels standings", "Standings") + ", " + link("/spiritduels skill", "Skills" + (Object.keys(player.spiritDuels.skillChoices).length > 0 ? " [!]" : "")) + ", " + link("/spiritduels history", "History") + "].");
                 safaribot.sendHtmlMessage(src, m, safchan);
                 if (safari.spiritDuelsMaxLevel(player)) {
                     safaribot.sendHtmlMessage(src, "You have achieved the highest rank!", safchan);
@@ -31160,7 +31161,7 @@ function Safari() {
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Scientist|||Gave " + poke(id) + "|||Received " + plural(rew, "silver") + (theft ? ", stole " + poke(id) + " back" : "") + "\n");
             this.saveGame(player);
         } else if (data[0].toLowerCase() === "photo") {
-            var index = parseInt(data[1], 10) - 1;
+            var index = parseInt(data[1]);
             if (!index || isNaN(index)) {
                 if (canFulfillPhoto) {
                     var highestScore = 0;
