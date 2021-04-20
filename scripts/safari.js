@@ -8756,13 +8756,13 @@ function Safari() {
         }
 
         if ("minBST" in rules && "maxBST" in rules) {
-            out.push("Recommended BST: " + rules.minBST + "~" + rules.maxBST);
+            out.push("Recommended BST: " + link("/find bst " + rules.minBST + " + && bst " + rules.maxBST + " -", rules.minBST + "~" + rules.maxBST));
         } else {
             if ("minBST" in rules) {
-                out.push(optionalColor("Recommended BST: " + rules.minBST + " or more", colored, "red"));
+                out.push(optionalColor("Recommended BST: " + link("/find bst " + rules.minBST + " +", rules.minBST + " or more"), colored, "red"));
             }
             if ("maxBST" in rules) {
-                out.push(optionalColor("Recommended BST: " + rules.maxBST + " or less", colored, "red"));
+                out.push(optionalColor("Recommended BST: " + link("/find bst " + rules.maxBST + " -", rules.maxBST + " or less"), colored, "red"));
             }
         }
         if ("excludeBalls" in rules && rules.excludeBalls.length > 0) {
@@ -12453,7 +12453,7 @@ function Safari() {
                     case "+":
                     case "above":
                         mode = "greater";
-                        title = "with " + paramName + " greater than " + val;
+                        title = "with " + paramName + " greater than or equal to " + val;
                         break;
                     case "<":
                     case "lower":
@@ -12461,7 +12461,7 @@ function Safari() {
                     case "-":
                     case "below":
                         mode = "less";
-                        title = "with " + paramName + " less than " + val;
+                        title = "with " + paramName + " less than or equal to " + val;
                         break;
                 }
                 if (mode !== "greater" && mode !== "less") {
