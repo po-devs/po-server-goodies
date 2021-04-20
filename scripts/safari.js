@@ -19825,8 +19825,8 @@ function Safari() {
         if (army2.length < 2) {
             army2 = army2init;
         }
-        var enlistPerPlayer1 = safari.spiritEnlistsPerPlayer(army1.length);
-        var enlistPerPlayer2 = safari.spiritEnlistsPerPlayer(army2.length);
+        var enlistPerPlayer1 = safari.events.spiritDuelsTeams[0].admin ? 100 : safari.spiritEnlistsPerPlayer(army1.length);
+        var enlistPerPlayer2 = safari.events.spiritDuelsTeams[1].admin ? 100 : safari.spiritEnlistsPerPlayer(army2.length);
         
         var army1Avatars = [], army2Avatars = [];
         for (var a in army1) {
@@ -36162,7 +36162,7 @@ function Safari() {
             var forms;
             
             for (p = 1; p < highestDexNum; p++) {
-                if (isLegendary(p)) {
+                if (isRare(p) || [772, 773].contains(p)) { // type: null & silvally
                     continue;
                 }
                 forms = [];
@@ -36321,7 +36321,7 @@ function Safari() {
                         return false;
                     }
                     val = sys.rand(1, highestDexNum);
-                    if (isRare(val)) {
+                    if (isRare(val) || [772, 773].contains(val)) { // type: null & silvally
                         return false;
                     }
                     if (val in wildForms && chance(0.25)) {
@@ -57764,11 +57764,11 @@ function Safari() {
                 safari.resetCostumes();
                 return true;
             }
-            if (command === "clearduels") {
+            if (command === "resetduels") {
                 safari.resetDuelsTeams();
                 return true;
             }
-            if (command == "resetduels") {
+            if (command === "clearduels") {
                 safari.clearSpiritDuels();
                 return true;
             }
@@ -59037,7 +59037,7 @@ function Safari() {
                     }
                     safari.pendingNotifications();
                     if (safari.events.spiritDuelsEnabled) {
-                        if (safari.events.spiritDuelsBattling) {
+                        if (safari.events.spiritDuelsBattling && safari.events.spiritDuelsTeams.length > 1) {
                             safari.events.currentSpiritDuel = true;
                             safari.startSpiritDuel();
                         }
