@@ -8829,7 +8829,7 @@ function Safari() {
         for (var ef in variations) {
             var variation = variations[ef];
 
-            if (currentThemeEffect === variation && variation.contains(pokeId)) {
+            if (currentThemeEffect === ef && variation.contains(pokeId)) {
                 return true;
             }
         }
