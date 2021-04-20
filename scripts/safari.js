@@ -31161,8 +31161,8 @@ function Safari() {
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Scientist|||Gave " + poke(id) + "|||Received " + plural(rew, "silver") + (theft ? ", stole " + poke(id) + " back" : "") + "\n");
             this.saveGame(player);
         } else if (data[0].toLowerCase() === "photo") {
-            var index = parseInt(data[1]);
-            if (!index || isNaN(index)) {
+            var index = parseInt(data[1]) - 1;
+            if (isNaN(index)) {
                 if (canFulfillPhoto) {
                     var highestScore = 0;
                     for (var e = 0; e < player.photos.length; e++) {
