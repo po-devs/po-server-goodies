@@ -1898,6 +1898,7 @@ function Safari() {
     var contestBroadcast = true; //Determines whether Tohjo gets notified
     var contestCooldownLength = 1800; //1 contest every 30 minutes
     var contestCooldown = (SESSION.global() && SESSION.global().safariContestCooldown ? SESSION.global().safariContestCooldown : contestCooldownLength);
+    var contestForfeited = [];
     var contestantsCount = {};
     var contestantsWild = [];
     var currentTheme;
@@ -2704,21 +2705,21 @@ function Safari() {
             }
         }
         if (arr.contains("contest")) {
-            if (contestCount > 0) {
+            if (contestCount > 0 && !contestForfeited.contains(player.idnum)) {
                 if (!silent)
                     safaribot.sendMessage(src, "You can't " + action + " during a contest!", safchan);
                 return true;
             }
         }
         if (arr.contains("distortion")) {
-            if (contestCount > 0 && currentThemeEffect == "distortion") {
+            if ((contestCount > 0 && !contestForfeited.contains(player.idnum)) && currentThemeEffect == "distortion") {
                 if (!silent)
                     safaribot.sendMessage(src, "You can't " + action + " during the twisted dimensions!", safchan);
                 return true;
             }
         }
         if (arr.contains("wild")) {
-            if (currentPokemon) {
+            if (currentPokemon && contestCount === 0 || (contestCount > 0 && !contestForfeited.contains(player.idnum))) {
                 if (!silent)
                     safaribot.sendMessage(src, "You can't " + action + " while a Wild Pokemon is out!", safchan);
                 return true;
@@ -2746,7 +2747,7 @@ function Safari() {
             }
         }
         if (arr.contains("story")) {
-            if (contestCount > 0) {
+            if ((contestCount > 0 && !contestForfeited.contains(player.idnum))) {
                 if (!silent)
                     safaribot.sendMessage(src, "You can't " + action + " during Story Mode!", safchan);
                 return true;
@@ -9666,6 +9667,10 @@ function Safari() {
         if (cantBecause(src, reason, ["item", "auction", "battle", "event", "pyramid", "baking"], ball)) {
             return;
         }
+        if (contestCount > 0 && contestForfeited.contains(player.idnum)) {
+            safaribot.sendMessage(src, "You forfeited this contest, so you can't catch any Pokémon from the contest!", safchan);
+            return;
+        }
         var currentTime = now();
         if (!bypass && (!preparationFirst || name.toLowerCase() !== preparationFirst) && (player.cooldowns.ball > currentTime) && (preparationPhase <= 0 || player.cooldowns.ball + preparationPhase > currentTime)) {
             safaribot.sendMessage(src, "Please wait " + timeLeftString(player.cooldowns.ball) + " before throwing a ball!", safchan);
@@ -10724,6 +10729,10 @@ function Safari() {
         if (cantBecause(src, reason, ["item", "auction", "battle", "event", "pyramid"])) {
             return;
         }
+        if (contestCount > 0 && contestForfeited.contains(player.idnum)) {
+            safaribot.sendMessage(src, "You forfeited this contest, so you can't takes photos of any Pokémon from the contest!", safchan);
+            return;
+        }
         var currentTime = now();
         if (!bypass && (!preparationFirst || name.toLowerCase() !== preparationFirst) && player.cooldowns.ball > currentTime) {
             safaribot.sendMessage(src, "Please wait " + timeLeftString(player.cooldowns.ball) + " before taking a photo!", safchan);
@@ -11320,9 +11329,12 @@ function Safari() {
                         bypassed = true;
                     }
                 }
+                if (contestCount > 0 && contestForfeited.contains(player.idnum)) {
+                    bypassed = true;
+                }
                 if (!bypassed) {
                     pendingActiveChanges[player.id] = "active:"+info.input;
-                    safaribot.sendMessage(src, "Your active Pokémon will automatically be changed to " + poke(getInputPokemon(info.input).num + (info.shiny ? "" : 0), true) + " in the next opportunity!", safchan);
+                    safaribot.sendMessage(src, "Your active Pokémon will automatically be changed to " + poke(getInputPokemon(info.input).num + (info.shiny ? "" : 0), true) + " at the next opportunity!", safchan);
                     return;
                 }
             }
@@ -11433,9 +11445,11 @@ function Safari() {
                 return;
             }
             if (contestCount > 0 || currentPokemon) {
-                pendingActiveChanges[player.id] = "load:"+targetId;
-                safaribot.sendMessage(src, "Your party saved in the slot " + targetId + " (" + readable(toLoad.map(poke), "and") + ") will be loaded in the next opportunity!", safchan);
-                return;
+                if (!(contestCount > 0 && contestForfeited.contains(player.idnum))) {
+                    pendingActiveChanges[player.id] = "load:"+targetId;
+                    safaribot.sendMessage(src, "Your party saved in the slot " + targetId + " (" + readable(toLoad.map(poke), "and") + ") will be loaded at the next opportunity!", safchan);
+                    return;
+                }
             }
             
             // synchronise held array and party array size
@@ -11502,9 +11516,11 @@ function Safari() {
         }
         
         if (contestCount > 0 || currentPokemon) {
-            pendingActiveChanges[player.id] = "qload:" + data;
-            safaribot.sendMessage(src, "Your party will be changed to " + readable(toLoad.map(poke), "and") + " in the next opportunity!", safchan);
-            return;
+            if (!(contestCount > 0 && contestForfeited.contains(player.idnum))) {
+                pendingActiveChanges[player.id] = "qload:" + data;
+                safaribot.sendMessage(src, "Your party will be changed to " + readable(toLoad.map(poke), "and") + " at the next opportunity!", safchan);
+                return;
+            }
         }
 
         if (toLoad.length === 0) {
@@ -14077,6 +14093,10 @@ function Safari() {
         var bName = baitName.toLowerCase();
 
         if (cantBecause(src, "throw " + bName, ["contest", "auction", "battle", "item", "event", "pyramid", "baking", "tutorial"], item)) {
+            return;
+        }
+        if (contestCount > 0) { // special case for people who opt out of the contest
+            safaribot.sendMessage(src, "You can't throw " + bName + " during a contest!", safchan);
             return;
         }
         if (isPreparing) {
@@ -31870,7 +31890,7 @@ function Safari() {
             return;
         }
 
-        if (contestCount > 0) {
+        if ((contestCount > 0 && !contestForfeited.contains(player.idnum))) {
             safaribot.sendMessage(src, "You can't finish this quest during a contest.", safchan);
             return;
         }/*
@@ -51013,6 +51033,39 @@ function Safari() {
         permObj.add("gyms", JSON.stringify(gyms));
         permObj.add("elite", JSON.stringify(elite));
     };
+    this.forfeitContest = function(src, commandData) {
+        var player = getAvatar(src);
+        if (!player) {
+            return;
+        }
+
+        if (contestCount === 0) {
+            safaribot.sendMessage(src, "There is no ongoing contest!", safchan);
+            return;
+        }
+        if (contestForfeited.contains(player.idnum)) {
+            safaribot.sendMessage(src, "You already withdrew from this contest!", safchan);
+            return;
+        }
+        if (!commandData || commandData !== "confirm") {
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "Using this command will allow you to withdraw from the current contest. By withdrawing, you will no longer be able to throw balls or take photos of Pokémon in this contest, but any other actions that were otherwise restricted by the contest can be performed.", safchan);
+            safaribot.sendHtmlMessage(src, "<b>You cannot reverse this decision and rejoin the contest</b>. If you are sure you want to withdraw, type " + link("/contestforfeit confirm", false, true) + ".", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        
+        contestForfeited.push(player.idnum);
+
+        var nameLower = sys.name(src).toLowerCase();
+        if (nameLower in contestCatchers) {
+            delete contestCatchers[nameLower];
+        }
+
+        sys.sendMessage(src, "", safchan);
+        safaribot.sendAll(sys.name(src) + " withdew from the current contest!", safchan);
+        sys.sendMessage(src, "", safchan);
+    };
     this.pyrBonusMons = function() {
         var possible = [663, 426, 332, 381, 380, 121, 184, 282, 530, 230, 442, 609, 699, 144, 145, 715, 785, 212, 38, 395, 485, 635, 787, 479, 6, 330, 284, 3, 169, 303, 473, 452, 189, 687, 365, 658, 880, 248, 334, 689, 437, 724];
         possible = possible.shuffle().slice(0, 7);
@@ -51447,7 +51500,7 @@ function Safari() {
             safaribot.sendMessage(user, "This save is locked, so you cannot change alt! Contact a Safari Admin to solve this issue!", safchan);
             return true;
         }
-        if (contestCount > 0) {
+        if ((contestCount > 0 && !contestForfeited.contains(player.idnum))) {
             safaribot.sendMessage(user, "You can't pass save data during a contest!", safchan);
             return true;
         }
@@ -52684,6 +52737,7 @@ function Safari() {
             "/mblink [on|off]: Set whether you want Master Ball throw links to appear on regular Pokémon. Omit the command data to check your current configuration.",
             "/cherishlink [on|off]: Set whether you want Cherish Ball throw links to appear on wild Pokémon. Omit the command data to check your current configuration.",
             "/cherishmsg [on|off]: Set whether you want your Cherished Pokémon to display the Cherished message when catching Pokémon.",
+            "/contestforfeit: Allows you to withdraw from any ongoing contest.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -52835,6 +52889,10 @@ function Safari() {
             }
             if (command === "start") {
                 safari.startGame(src, commandData);
+                return true;
+            }
+            if (["contestforfeit", "contestwithdraw"].contains(command)) {
+                safari.forfeitContest(src, commandData);
                 return true;
             }
             if (command === "catch" || command === "throw" || command === ccatch || command === ccatch2) {
@@ -58929,6 +58987,7 @@ function Safari() {
                     resetVars();
                     currentRules = null;
                     contestCatchers = {};
+                    contestForfeited = [];
                     wildSpirit = false;
                     for (var e = 0; e < needsPechaCleared.length; e++) {
                         var p = getAvatarOff(needsPechaCleared[e]);
