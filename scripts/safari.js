@@ -51056,10 +51056,11 @@ function Safari() {
         }
         
         contestForfeited.push(player.idnum);
-
-        var nameLower = sys.name(src).toLowerCase();
-        if (nameLower in contestCatchers) {
-            delete contestCatchers[nameLower];
+        if (player.id in contestCatchers) {
+            delete contestCatchers[player.id];
+        }
+        if (player.id in pendingActiveChanges) {
+            delete pendingActiveChanges[player.id];
         }
 
         sys.sendMessage(src, "", safchan);
