@@ -8653,14 +8653,14 @@ function Safari() {
         var nerfed = [];
 
         if ("bonusTypes" in rules && rules.bonusTypes.length > 0) {
-            buffed = buffed.concat(rules.bonusTypes);
+            buffed = buffed.concat(rules.bonusTypes.map(function(e) { return link("/find type " + e, e) }));
         }
         if ("excludeTypes" in rules && rules.excludeTypes.length > 0) {
             if (rules.excludeTypes.length > Object.keys(effectiveness).length / 2) {
                 list = [];
                 for (e in effectiveness) {
                     if (!rules.excludeTypes.contains(e)) {
-                        list.push(e);
+                        list.push(link("/find type " + e, e));
                     }
                 }
                 out.push("Enforced Types: " + readable(list, "and"));
@@ -8670,7 +8670,8 @@ function Safari() {
         }
         if (rules.buffMoves) {
             for (var i = 0; i < rules.buffMoves.length; i++) {
-                buffed.push(moveOff(parseInt(rules.buffMoves[i], 10)) + "-compatible");
+                var moveName = moveOff(parseInt(rules.buffMoves[i], 10));
+                buffed.push(link("/find move " + moveName, moveName + "-compatible"));
             }
         }
         if (rules.buffMons && rules.buffMonsDesc) {
@@ -8692,7 +8693,7 @@ function Safari() {
         if (rules.nerfShiny) {
             nerfed.push("Shiny");
         } else if (rules.buffShiny) {
-            buffed.push("Shiny");
+            buffed.push(link("/find shiny", "Shiny"));
         }
 
         for (var i = 1; i < generations.length; i++) {
@@ -8700,14 +8701,14 @@ function Safari() {
             if (rules["nerfGen" + g]) {
                 nerfed.push(g);
             } else if (rules["buffGen" + g]) {
-                buffed.push(g);
+                buffed.push(link("/find region " + g, g));
             }
         }
         for (i in pokeColors) {
             if (rules["nerfColor" + cap(i)]) {
                 nerfed.push(cap(i));
             } else if (rules["buffColor" + cap(i)]) {
-                buffed.push(cap(i));
+                buffed.push(link("/find color " + i, cap(i)));
             }
         }
         
@@ -12007,7 +12008,7 @@ function Safari() {
         if (commandData === "*") {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "How to use /find:", safchan);
-            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Move, Ability, Shiny, NotEvolved, CanEvolve, HasEvolved, FinalForm, CanMega, Duplicate, Duplicate+, Region or Tier) and a value to find Pokémon in your box. Examples: ", safchan);
+            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Color, Move, Ability, Shiny, NotEvolved, CanEvolve, HasEvolved, FinalForm, CanMega, Duplicate, Duplicate+, Region or Tier) and a value to find Pokémon in your box. Examples: ", safchan);
             safaribot.sendMessage(src, "For Name: Type any part of the Pokémon's name. e.g.: /find name LUG (both Lugia and Slugma will be displayed, among others with LUG on the name)", safchan);
             safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
             safaribot.sendMessage(src, "For Move: Type any move. e.g.: /find move tackle (will show all Pokémon that can learn Tackle)", safchan);
