@@ -36319,7 +36319,7 @@ function Safari() {
                         return false;
                     }
                     val = sys.rand(1, highestDexNum);
-                    if (isLegendary(val)) {
+                    if (isRare(val)) {
                         return false;
                     }
                     if (val in wildForms && chance(0.25)) {
