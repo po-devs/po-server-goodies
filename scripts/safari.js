@@ -51065,7 +51065,7 @@ function Safari() {
         }
 
         sys.sendMessage(src, "", safchan);
-        safaribot.sendAll(sys.name(src) + " withdew from the current contest!", safchan);
+        safaribot.sendAll(sys.name(src) + " withdrew from the current contest!", safchan);
         sys.sendMessage(src, "", safchan);
     };
     this.pyrBonusMons = function() {
