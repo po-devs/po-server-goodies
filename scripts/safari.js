@@ -31161,10 +31161,9 @@ function Safari() {
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Scientist|||Gave " + poke(id) + "|||Received " + plural(rew, "silver") + (theft ? ", stole " + poke(id) + " back" : "") + "\n");
             this.saveGame(player);
         } else if (data[0].toLowerCase() === "photo") {
-            var index = parseInt(data[1]) - 1;
-            if (isNaN(index)) {
+            if (data[1] === undefined) {
                 if (canFulfillPhoto) {
-                    var highestScore = 0;
+                    var highestScore = 0, index = 0;
                     for (var e = 0; e < player.photos.length; e++) {
                         if (this.photoMatchesRequest(player.photos[e], photoReq) && player.photos[e].score > highestScore) {
                             index = e + 1;
@@ -31177,7 +31176,12 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Unfortunately, it doesn't look like you have any photos that can help with my research on " + poke(id) + "!", safchan);
                 }
             }
-            else if (player.photos && index && (!(isNaN(index))) && index > -1 && index < player.photos.length) {
+            else {
+                var index = parseInt(data[1]) - 1;
+                if (isNaN(index) || index >= player.photos.length || index < 0) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: I don't think I can help you with that photo.", safchan);
+                    return;
+                }
                 if (player.quests.scientist.photo === id) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Hey, you already showed me a picture of a " + poke(id) + "! Don't you have someone else to give photos to?", safchan);
                     return;
@@ -31212,9 +31216,6 @@ function Safari() {
                 else {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Sorry, that won't do! I need a photo of " + poke(id) + " with quality Great or higher!", safchan);
                 }
-            }
-            else {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: I don't think I can help you with that photo.", safchan);
             }
         }/* else if (codeResearch.hasOwnProperty(data[0].toLowerCase())) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: " + codeResearch[data[0].toLowerCase()], safchan);
