@@ -2124,9 +2124,9 @@ function Safari() {
     /* Bait Variables */
     var lastBaiters = [];
     var lastBaitersAmount = 3; //Amount of people that need to bait before you can
-    var lastBaitersDecay = 40; //Seconds before the first entry in lastBaiters is purged
-    var lastBaitersDecayTime = 40;
-    var successfulBaitCount = 40;
+    var lastBaitersDecay = 15; //Seconds before the first entry in lastBaiters is purged
+    var lastBaitersDecayTime = 15;
+    var successfulBaitCount = 15;
     var nextGachaSpawn = 0;
     var baitCooldownLength = 0;
     var baitCooldown = (SESSION.global() && SESSION.global().safariBaitCooldown ? SESSION.global().safariBaitCooldown : baitCooldownLength);
@@ -14244,7 +14244,7 @@ function Safari() {
             currentPokemonAction = "eating";
             safari.throwBall(src, commandData, true);
             preparationFirst = sys.name(src).toLowerCase();
-            if (!golden) {
+            if (!golden && !deluxe) {
                 lastBaitersDecay = lastBaitersDecayTime;
             }
             isBaited = true;
@@ -20555,7 +20555,7 @@ function Safari() {
             }
             for (var i = 0; i < hold; i++) {
                 var boost = safari.spiritMonBoost(p, p.spiritDuels.box[j]);
-                out.push(pokeInfo.icon(p.spiritDuels.box[j]) + " <b>" + toColor(p.casedName + "'s " + poke(p.spiritDuels.box[j]), p.nameColor) + (boost > 0 ? " (+" + boost + ")" : "") + "</b>");
+                out.push(pokeInfo.icon(p.spiritDuels.box[j]) + " <b>" + toColor(p.casedName + "'s " + poke(p.spiritDuels.box[j]) + (boost > 0 ? " (+" + boost + ")" : ""), p.nameColor) + "</b>");
                 j++;
                 if (j >= p.spiritDuels.box.length) {
                     if (enlistPerPlayer1 < 5) {
