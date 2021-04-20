@@ -20090,7 +20090,7 @@ function Safari() {
                     }
                     break;
                 case "color": 
-                    if (getPokeColor(mon) === target) {
+                    if (getPokeColor(mon).toLowerCase() === target.toLowerCase()) {
                         active = true;
                     }
                     break;
@@ -20125,6 +20125,11 @@ function Safari() {
                     if (getStatsNamed(mon)["Speed"] >= 100) {
                         active = true;
                         mult = Math.min(3, 1 + Math.floor((getStatsNamed(mon)["Speed"] - 100) / 10) * 0.2);
+                    }
+                    break;
+                case "singletype":
+                    if (type2(mon) === "???") {
+                        active = true;
                     }
                     break;
                 case "any":
@@ -20549,7 +20554,8 @@ function Safari() {
                 }
             }
             for (var i = 0; i < hold; i++) {
-                out.push(pokeInfo.icon(p.spiritDuels.box[j]) + " <b>" + toColor(p.casedName + "'s " + poke(p.spiritDuels.box[j]), p.nameColor) + "</b>");
+                var boost = safari.spiritMonBoost(p, p.spiritDuels.box[j]);
+                out.push(pokeInfo.icon(p.spiritDuels.box[j]) + " <b>" + toColor(p.casedName + "'s " + poke(p.spiritDuels.box[j]), p.nameColor) + (boost > 0 ? " (+" + boost + ")" : "") + "</b>");
                 j++;
                 if (j >= p.spiritDuels.box.length) {
                     if (enlistPerPlayer1 < 5) {
@@ -20608,12 +20614,7 @@ function Safari() {
                 out.push("");
             }
             out.push("<b>Current Spirit Party Boosts</b>:");
-            if (textOnly) {
-                out.push(buffs.join(", "));
-            }
-            else {
-                out = out.concat(buffs);
-            }
+            out.push(buffs.join(", "));
             out.push("");
         }
 
