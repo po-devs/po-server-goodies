@@ -8029,7 +8029,7 @@ function Safari() {
             var miscMessageList = {};
             var wildAbilityMessageList = [];
             
-            var is_are = amt > 1 ? "are" : "is"
+            var is_are = amount > 1 ? "are" : "is"
             if (canHaveAbility(currentPokemon, abilitynum("Contrary"))) {
                 wildAbilityMessageList.push("The wild {0} {1} inverting type matchups with Contrary!".format(poke(currentDisplay, true), is_are));
             }
@@ -58488,6 +58488,13 @@ function Safari() {
                 if (p.fortune.deadline < now() && p.fortune.deadline > 0) {
                     safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect expired!</b>".format(finishName("cookie")), safchan);
                     p.fortune.deadline = 0;
+                    needsUpdate = true;
+                }
+            }
+            if (p.zcrystalDeadline) {
+                if (p.zcrystalDeadline < now() && p.zcrystalDeadline > 0) {
+                    safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect expired!</b>".format(finishName("crystal")), safchan);
+                    p.zcrystalDeadline = 0;
                     needsUpdate = true;
                 }
             }
