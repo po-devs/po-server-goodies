@@ -2719,7 +2719,7 @@ function Safari() {
             }
         }
         if (arr.contains("wild")) {
-            if (currentPokemon && contestCount === 0 || (contestCount > 0 && !contestForfeited.contains(player.idnum))) {
+            if ((currentPokemon && contestCount === 0) || (currentPokemon && contestCount > 0 && !contestForfeited.contains(player.idnum))) {
                 if (!silent)
                     safaribot.sendMessage(src, "You can't " + action + " while a Wild Pokemon is out!", safchan);
                 return true;
