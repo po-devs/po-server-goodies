@@ -20305,7 +20305,7 @@ function Safari() {
         switch (command) {
             case "box": this.showSpiritBox(src,player,false,false); break;
             case "boxt": this.showSpiritBox(src,player,false,true); break;
-            case "active": this.activeSpiritMon(src,player,commandData); break;
+            case "add": this.activeSpiritMon(src,player,commandData); break;
             case "release": this.releaseSpiritMon(src,player,commandData); break;
             case "bench": this.benchSpiritMon(src,player,commandData); break;
             case "join": this.joinSpiritDuels(src,player); break;
@@ -20318,7 +20318,7 @@ function Safari() {
             default: 
                 sys.sendMessage(src, "", safchan);
                 var m = "You are <b>" + an(player.spiritDuels.team) + " " + player.spiritDuels.rankName + "</b>!";
-                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels bench:", "Bench", true) + ", " + link("/spiritduels release:", "Release", true) + ", " + link("/spiritduels party", "Team Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels standings", "Standings") + ", " + link("/spiritduels skill", "Skills" + (Object.keys(player.spiritDuels.skillChoices).length > 0 ? " [!]" : "")) + ", " + link("/spiritduels history", "History") + "].");
+                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels add:", "Add", true) + ", " + link("/spiritduels bench:", "Bench", true) + ", " + link("/spiritduels release:", "Release", true) + ", " + link("/spiritduels party", "Team Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels standings", "Standings") + ", " + link("/spiritduels skill", "Skills" + (Object.keys(player.spiritDuels.skillChoices).length > 0 ? " [!]" : "")) + ", " + link("/spiritduels history", "History") + "].");
                 safaribot.sendHtmlMessage(src, m, safchan);
                 if (safari.spiritDuelsMaxLevel(player)) {
                     safaribot.sendHtmlMessage(src, "You have achieved the highest rank!", safchan);
@@ -20337,7 +20337,7 @@ function Safari() {
                 }
                 var bonusRanks = safari.events.bonusSpiritEnlistRanks;
                 var teamMemberAmount = safari.getSpiritTeamMembers(player).length || 0;
-                safaribot.sendHtmlMessage(src, "You can use {0} to place your desired Spirit Duels participants at the front of your Spirit Box, or {1} to place them at the back. If you are running low on Spirit Box space, you can use {2} to permanently remove unwanted Spirit Pokémon (you will not lose EXP or regain any Spirit Balls).".format(link("/spiritduels active:", false, true), link("/spiritduels bench:", false, true), link("/spiritduels release:", false, true)), safchan);
+                safaribot.sendHtmlMessage(src, "You can use {0} to move your Spirit Pokémon around your Spirit Box, or {1} to place them at the back. If you are running low on Spirit Box space, you can use {2} to permanently remove unwanted Spirit Pokémon (you will not lose EXP or regain any Spirit Balls).".format(link("/spiritduels active:", false, true), link("/spiritduels bench:", false, true), link("/spiritduels release:", false, true)), safchan);
                 safaribot.sendHtmlMessage(src, "You currently have {0} in your team, so <b>each member can enlist the first {1} Pokémon in their Spirit Box</b> per Duel.".format(plural(teamMemberAmount, "player"), safari.spiritEnlistsPerPlayer(teamMemberAmount)), safchan);
                 safaribot.sendHtmlMessage(src, "Reaching the {0} ranks will allow you to enlist 1 extra Spirit Pokémon per each of those ranks, so reaching {1} will allow you to enlist {2} extra Spirit Pokémon, for example."
                     .format(
@@ -20647,7 +20647,7 @@ function Safari() {
     this.activeSpiritMon = function( src,player,data ) {
         //Adds the spirit mons to the front of their spirit box if they have it
         if (!data) {
-            safaribot.sendMessage( src,"The command is /spiritduels active:[pokemon1,pokemon2,...]:[box position]. This command moves the specified Spirit Pokémon to the front of your Spirit Box where they will be able to take part in Spirit Duels.",safchan );
+            safaribot.sendMessage( src,"The command is /spiritduels add:[pokemon1,pokemon2,...]:[box position]. This command moves the specified Spirit Pokémon to the specified position in your Spirit Box. Spirits at the front of your box will take part in Spirit Duels. If no position is specified, it will move the Spirits to the front of your box.",safchan );
             return;
         }
         data = typeNull(data).split(":");
