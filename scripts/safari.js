@@ -20647,11 +20647,19 @@ function Safari() {
     this.activeSpiritMon = function( src,player,data ) {
         //Adds the spirit mons to the front of their spirit box if they have it
         if (!data) {
-            safaribot.sendMessage( src,"The command is /spiritduels active:pokemon1,pokemon2,... This command moves the specified Spirit Pokémon to the front of your Spirit Box where they will be able to take part in Spirit Duels.",safchan );
+            safaribot.sendMessage( src,"The command is /spiritduels active:[pokemon1,pokemon2,...]:[box position]. This command moves the specified Spirit Pokémon to the front of your Spirit Box where they will be able to take part in Spirit Duels.",safchan );
             return;
         }
-        data = data.split(",").reverse();
-        var a, x;
+        data = typeNull(data).split(":");
+        var pos = data[1] || 0;
+        if (isNaN(pos)) {
+            pos = 0;
+        }
+        else {
+            pos = parseInt(pos) - 1;
+        }
+        data = data[0].split(",").reverse();
+        var a, x, toMove = [];
         for (var i=0; i < data.length; i++) {
             a = data[i].trim();
             a = getInputPokemon(a);
@@ -20664,11 +20672,18 @@ function Safari() {
                 safaribot.sendMessage(src, "You don't have any Spirit " + a.name + "!", safchan);
                 continue;
             } // we box.slice(0) first for a clone since these checks might cause the loop to progress without reversing the box back at the statements below, if we reversed the actual box up above
-            player.spiritDuels.box.reverse().splice(x, 1); // only reverse the actual array once checks pass
-            player.spiritDuels.box.push(a.num);
+            toMove.push(player.spiritDuels.box.reverse().splice(x, 1)[0]); // only reverse the actual array once checks pass
             player.spiritDuels.box.reverse(); // and make sure to reverse it back
-            safaribot.sendMessage(src, "You added " + a.name + " to the lead of your Spirit Party!", safchan);
         }
+
+        if (toMove.length === 0) {
+            return;
+        }
+        pos = Math.max(Math.min(pos, player.spiritDuels.box.length), 0); // only clamp pos here after specified mons have been removed, so as to use an updated box length
+        toMove.forEach(function(e) {
+            player.spiritDuels.box.splice(pos, 0, e);
+        });
+        safaribot.sendMessage(src, "You added " + readable(toMove.map(function(e) { return poke(e) })) + " to the " + (pos === 0 ? "lead" : getOrdinal(pos + 1) + " position") + " of your Spirit Box!", safchan);
         var enlist = safari.spiritEnlistsPerPlayer(safari.getSpiritTeamMembers(player).length), bonusRanks = safari.events.bonusSpiritEnlistRanks;
         for (var i = 0; i < bonusRanks.length; i++) {
             if (player.spiritDuels.rank >= bonusRanks[i]) {
@@ -20681,7 +20696,7 @@ function Safari() {
     this.releaseSpiritMon = function( src,player,data ) {
         //Completely removes the spirit mons from their spirit box
         if (!data) {
-            safaribot.sendMessage( src,"The command is /spiritduels release:pokemon1,pokemon2,... This command will PERMANENTLY delete the specified Spirit Pokémon from your Spirit Box.",safchan );
+            safaribot.sendMessage( src,"The command is /spiritduels release:[pokemon1,pokemon2,..]. This command will PERMANENTLY delete the specified Spirit Pokémon from your Spirit Box.",safchan );
             return;
         }
         data = data.split(",").reverse();
@@ -20706,7 +20721,7 @@ function Safari() {
     this.benchSpiritMon = function( src,player,data ) {
         //Moves the spirit mons to the back of their spirit box
         if (!data) {
-            safaribot.sendMessage( src,"The command is /spiritduels bench:pokemon1,pokemon2,... This command will move the specified Spirit Pokémon to the back of your Spirit Box.",safchan );
+            safaribot.sendMessage( src,"The command is /spiritduels bench:[pokemon1,pokemon2,...]. This command will move the specified Spirit Pokémon to the back of your Spirit Box.",safchan );
             return;
         }
         data = data.split(",").reverse();
@@ -52905,7 +52920,7 @@ function Safari() {
             }
             if (["spiritduel", "spiritduels", "sduel", "sduels"].contains(command)) {
                 var info = commandData.split(":");
-                safari.spiritDuelsCommand(src, info[0], info[1]);
+                safari.spiritDuelsCommand(src, info[0], info.slice(1).join(":"));
                 return true;
             }
             if (command === "spiritskill" || command === "spiritskills") {
