@@ -20159,7 +20159,7 @@ function Safari() {
                     break;
             }
             if (active) {
-                out += (data.val * mult);
+                out += Math.round(data.val * mult);
             }
         }
         if (isLegendary(mon)) {
