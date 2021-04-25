@@ -10673,9 +10673,8 @@ function Safari() {
             safaribot.sendMessage(src, "You do not have any " + es(finishName("rock")) + " to throw!", safchan);
             return;
         }
-
         if (isRare(currentPokemon)) {
-            sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::was rock scared by " + sys.name(src) + "::\n");
+            sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + (currentDisplay !== currentPokemon ? " (disguised as " + poke(currentDisplay) + ")" : "") + "::was rock scared by " + sys.name(src) + "::\n");
         }
 
         player.balls.rock -= 1;
