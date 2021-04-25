@@ -10678,7 +10678,7 @@ function Safari() {
         }
 
         player.balls.rock -= 1;
-        safari.pokemonFlee("{0} threw {1} at the wild {2}, causing {3} to run away!".format(name, an(finishName("rock")), poke(currentDisplay), currentPokemonCount > 1 ? "them" : "it"));
+        safari.pokemonFlee("{0} threw {1} at the wild {2}, causing {3} to flee!".format(name, an(finishName("rock")), poke(currentDisplay), currentPokemonCount > 1 ? "them" : "it"));
         safaribot.sendMessage(src, "You have " + plural(player.balls.rock, finishName("rock")) + " remaining.", safchan);
         this.saveGame(player);
     };
