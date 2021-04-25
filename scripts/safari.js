@@ -9682,7 +9682,7 @@ function Safari() {
             safaribot.sendMessage(src, "This is an Event Pokémon, you cannot use " + es(finishName("master")) + "!", safchan);
             return;
         }
-        if (ball === "spirit" && safari.spiritDuelsCanSignup(src, player, true)) {
+        if (ball === "spirit" && (safari.spiritDuelsCanSignup(src, player, true) || !safari.inSpiritTeam(src, player))) {
             safaribot.sendHtmlMessage(src, "You can't throw " + es(finishName("spirit")) + " without signing up for " + link("/spiritduels", "Spirit Duels") + " first!", safchan);
             return;
         }
@@ -10532,7 +10532,7 @@ function Safari() {
                 result *= countImmune(0);
             }
         }
-        
+
         if (atk[1] !== "???") {
             typeCount++;
         }
@@ -14657,7 +14657,7 @@ function Safari() {
                         ballUsed = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
                     }
                     this.trackMessage("[Track] " + sys.name(src) + " is using /gacha " + commandData, player);
-                    safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " goes to grab their item from the Gachapon Machine but the noise lured " + an(finishName(reward)) + "!", safchan);
+                    safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " goes to grab their item from the Gachapon Machine but the noise lured a wild Pokémon!", safchan);
 
                     if (chance(0.15) || nextGachaSpawn > currentTime || player.cooldowns.bait > currentTime) {
                         safaribot.sendAll("Unfortunately " + (spawnHorde ? "they" : "it") + " fled before anyone could try to catch "+ (spawnHorde ? "them" : "it") + "!", safchan);
@@ -20477,12 +20477,25 @@ function Safari() {
                 safaribot.sendMessage( src,"You are already signed up!",safchan );
             return false;
         }
+        if (safari.inSpiritTeam(src, player)) {
+            if (!silent)
+                safaribot.sendMessage(src, "You are already in a team!", safchan);
+            return false;
+        }
         if (safari.events.spiritDuelsTeams.length <= 4) {
             if (!silent)
                 safaribot.sendMessage(src,"You cannot sign up for this season of Spirit Duels anymore!", safchan);
             return false;
         }
         return true;
+    };
+    this.inSpiritTeam = function(src, player) {
+        for (var a in safari.events.spiritDuelsTeams) {
+            if (safari.events.spiritDuelsTeams[a].players.contains(player.idnum)) {
+                return true;
+            }
+        }
+        return false;
     };
     this.joinSpiritDuels = function( src,player ) {
         //Joins duels to be assigned a team next time
@@ -55713,7 +55726,7 @@ function Safari() {
                 } else if (command === "wild2" && contestCount === 0) {
                     var bName = finishName("bait").toLowerCase();
                     if (amount > 1 || baitCooldown > 28 || chance(0.3)) {
-                        safaribot.sendAll("Some stealthy person goes to grab their item from the Gachapon Machine but the noise lured " + an(finishName("wild")) + "!", safchan);
+                        safaribot.sendAll("Some stealthy person goes to grab their item from the Gachapon Machine but the noise lured a wild Pokémon!", safchan);
                     } else {
                         safaribot.sendAll("Some stealthy person left some " + bName + " out. The " + bName + " attracted a wild Pokémon!", safchan);
                     }
