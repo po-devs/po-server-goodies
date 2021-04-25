@@ -10666,7 +10666,7 @@ function Safari() {
             return;
         }
         if (timeSinceLastAction < rockScareThreshold) {
-            safaribot.sendMessage(src, "You can only scare the Pokémon away if " + (currentPokemonCount > 1 ? "they have" : "it has") + " not been interacted with for " + plural(Math.round((rockScareThreshold - timeSinceLastAction) / 1000), "more second") + "!", safchan);
+            safaribot.sendMessage(src, "You can only scare the Pokémon away if " + (currentPokemonCount > 1 ? "they have" : "it has") + " not been interacted with for " + plural(Math.ceil((rockScareThreshold - timeSinceLastAction) / 1000), "more second") + "!", safchan);
             return;
         }
         if (player.balls.rock < 1) {
