@@ -9682,7 +9682,7 @@ function Safari() {
             safaribot.sendMessage(src, "This is an Event Pokémon, you cannot use " + es(finishName("master")) + "!", safchan);
             return;
         }
-        if (ball === "spirit" && (safari.spiritDuelsCanSignup(src, player, true)) { // || !safari.inSpiritTeam(src, player))) {
+        if (ball === "spirit" && (safari.spiritDuelsCanSignup(src, player, true))) { // || !safari.inSpiritTeam(src, player))) {
             safaribot.sendHtmlMessage(src, "You can't throw " + es(finishName("spirit")) + " without signing up for " + link("/spiritduels", "Spirit Duels") + " first!", safchan);
             return;
         }
