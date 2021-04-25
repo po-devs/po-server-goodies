@@ -1056,18 +1056,18 @@ function Safari() {
             bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
             golden: {name: "golden", fullName: "Golden Bait", type: "items", icon: 8016, price: 750, successRate: 0.75, failCD: 20, successCD: 25, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["goldenbait", "golden bait", "golden"], tradable: false},
             deluxe: {name: "deluxe", fullName: "Deluxe Bait", type: "items", icon: 8016, price: 200, successRate: 1, failCD: 0, successCD: 6, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["deluxebait", "deluxe bait", "deluxe"], tradable: false},
-            gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 218, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
+            gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 218, cooldown: 8000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
             spray: {name: "spray", fullName: "Devolution Spray", type: "items", icon: 137, price: 5000, aliases:["spray", "devolution", "devolution spray", "devolutionspray"], tradable: true},
             mega: {name: "mega", fullName: "Mega Stone", type: "items", icon: 2001, price: 10000, aliases:["mega", "mega stone", "megastone"], duration: 3, tradable: true},
             stick: {name: "stick", fullName: "Stick", type: "items", icon: 164, price: 99999, cooldown: 20000, aliases:["stick","sticks"], tradable: false, cap: 1},
-            itemfinder: {name: "itemfinder", fullName: "Itemfinder Charge", type: "items", icon: 69, price: 50, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], tradable: false},
+            itemfinder: {name: "itemfinder", fullName: "Itemfinder Charge", type: "items", icon: 69, price: 50, cooldown: 8000, charges: 30, aliases:["itemfinder", "finder", "item finder"], tradable: false},
             permfinder: {name: "permfinder", fullName: "Itemfinder Bonus Charges", type: "items", icon: 0, price: 50, aliases:["permfinder"], tradable: false},
             dust: {name: "dust", fullName: "Candy Dust", type: "items", icon: 24, price: 100, aliases:["dust", "candydust", "candy dust"], tradable: false, cap: 9999},
             salt: {name: "salt", fullName: "Salt", type: "items", icon: 127, price: 1000, aliases: ["salt", "nacl"], tradable: false, invisible: true},
             burn: {name: "burn", fullName: "Burn Heal", type: "items", icon: 54, price: 5000, cooldown: 3600000, threshold: 96, aliases: ["burn", "burnheal", "burn heal"], tradable: false},
             dummy: {name: "dummy", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy"], tradable: false, invisible: true},
-            dummy2: {name: "dummy2", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy2"], tradable: false, invisible: true},
-            dummy3: {name: "dummy3", fullName: "Free Galarian Form Transmutation on Pokémon of your Choice", type: "items", icon: 50, price: 1000, aliases: ["dummy3"], tradable: false, invisible: true},
+            dummy2: {name: "dummy2", fullName: "Dummy2", type: "items", icon: 50, price: 1000, aliases: ["dummy2"], tradable: false, invisible: true},
+            dummy3: {name: "dummy3", fullName: "Dummy3", type: "items", icon: 50, price: 1000, aliases: ["dummy3"], tradable: false, invisible: true},
 
             silver: {name: "silver", fullName: "Silver Coin", type: "items", icon: 273, price: 300, aliases: ["silver", "silver coin", "silvercoin"], tradable: false, cap: 9999},
             shady: {name: "shady", fullName: "Shady Coin", type: "items", icon: 300, price: 500, aliases: ["shady", "shady coin", "shadycoin"], tradable: false, cap: 9999},
@@ -1140,7 +1140,7 @@ function Safari() {
             scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["scarf", "silkscarf", "silk scarf", "silk"], tradable: true},
             battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 2000, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], tradable: true},
             eviolite: {name: "eviolite", fullName: "Eviolite", type: "perk", icon: 233, price: 2000, bonusRate: 8, maxRate: 80, threshold: 420, aliases:["eviolite"], tradable: true},
-            lens: {name: "lens", fullName: "Zoom Lens", type: "perk", icon: 41, price: 30000, cooldown: 16000, bonusRate: 1, maxRate: 10, threshold: 2000, aliases:["lens", "zoom lens", "zoom", "zoomlens"], tradable: false },
+            lens: {name: "lens", fullName: "Zoom Lens", type: "perk", icon: 41, price: 30000, cooldown: 10000, bonusRate: 1, maxRate: 10, threshold: 2000, aliases:["lens", "zoom lens", "zoom", "zoomlens"], tradable: false },
             box: {name: "box", fullName: "Box", type: "perk", icon: 175, price: [0, 0, 0, 0, 100000, 200000, 400000, 600000, 800000, 1000000], bonusRate: 120, aliases:["box", "boxes"], tradable: false},
 
             //Valuables
@@ -1690,7 +1690,7 @@ function Safari() {
             golden: "A premium bait used to attract wild Pokémon. Has " + an(itemData.golden.successRate*100) + "% success rate and can be used more often than normal Baits. Use with \"/gbait\".",
             deluxe: "A customizable bait. Made from /quest baking.",
             gacha: "A ticket that allows you to try the Gachapon Machine to get a random reward! " + cdSeconds("gacha") + " Use with \"/gacha\".",
-            rock: "A small rock that can be thrown to potentially stun another player for a short period of time. " + cdSeconds("rock", "throwCD") + " Use with \"/rock [Player]\".",
+            rock: "A small rock that can be thrown at another player for amusement. " + cdSeconds("rock", "throwCD") + " Use with \"/rock [Player]\". Can also be used to scare unwanted Pokémon away with \"/rockscare\". You can only scare Pokémon that haven't been interacted with for " + plural(rockScareThreshold/1000, "second") + ".",
             rare: "Can be smashed and transformed into around " + (itemData.rare.charges + Math.floor(itemData.rare.maxVar/2)) + " Candy Dusts. Use with \"/use rare\". Found with Itemfinder and obtained in Pyramid.",
             dust: "What you obtain after smashing a Rare Candy into powder. Has the power to evolve Pokémon. Use with \"/evolve [Pokémon]\".",
             spray: "A spray that affects the genetic code of a Pokémon, making them devolve and generating some Candy Dust. Use with \"/spray [Pokémon]\". Obtained from Prize Packs and Pyramid.",
@@ -1820,7 +1820,9 @@ function Safari() {
     var preparationPhase = 0;
     var preparationThrows = {};
     var preparationFirst = null;
+    var rockScareThreshold = 15000;
     var lastWild = 0;
+    var lastWildAction = 0;
     var wildEvent = false;
     var isBaited = false;
     var resolvingThrows = false;
@@ -7206,8 +7208,9 @@ function Safari() {
             }
         }
         var dashboard = player.story.inStory ? "" : "«" + link("/dashboard", "Dashboard") + "» ";
+        var rock = player.balls.rock > 0 && !wildEvent && !isRare(currentDisplay) && !player.story.inStory ? "«" + link("/rockscare", "Scare") + "» " : "";
         if (hasBalls) {
-            safaribot.sendHtmlMessage(src, "Throw: " + ret +  "[" + link("/" + ccatch + " cancel", "Cancel") + "] " + (player.balls.lens > 0 ? ph : "") + (player.balls.pokeblock > 0 ? pkblk : "") + dashboard, safchan);
+            safaribot.sendHtmlMessage(src, "Throw: " + ret +  "[" + link("/" + ccatch + " cancel", "Cancel") + "] " + (player.balls.lens > 0 ? ph : "") + (player.balls.pokeblock > 0 ? pkblk : "") + rock + dashboard, safchan);
         } else if (player.balls.lens > 0) {
             safaribot.sendHtmlMessage(src, "Throw: " + ph +  "[" + link("/" + ccatch + " cancel", "Cancel") + "] ", safchan);
         }
@@ -8147,6 +8150,7 @@ function Safari() {
                 this.compileThrowers();
             }
             lastWild = now();
+            lastWildAction = now();
         }
     };
     this.allFlagsMet = function(player, flags) {
@@ -8284,7 +8288,7 @@ function Safari() {
             if (currentThemeEffect == "portal") {
                 var ph = [];
                 for (var i = 0; i < themesListed.length; i++) {
-                    if (themesListed[i].toLowerCase() == currentTheme.toLowerCase()) {
+                    if (!themesListed[i] || themesListed[i].toLowerCase() == currentTheme.toLowerCase()) {
                         continue;
                     }
                     ph.push(themesListed[i]);
@@ -10354,9 +10358,10 @@ function Safari() {
             }
         }
 
+        lastWildAction = now();
         this.saveGame(player);
     };
-    this.pokemonFlee = function() {
+    this.pokemonFlee = function(customFlee) {
         var pokeName = poke(currentPokemon, true);
         var runmsgs = [
             "The wild {0} got spooked and fled!",
@@ -10399,6 +10404,9 @@ function Safari() {
         }
         if (canHaveAbility(currentPokemon, abilitynum("Emergency Exit"))) {
             runmsgs = ["The wild {0} made a tactical retreat using Emergency Exit!"];
+        }
+        if (customFlee) {
+            runmsgs = [customFlee];
         }
         sys.sendAll("", safchan);
         safaribot.sendAll(runmsgs.random().format(pokeName), safchan);
@@ -10627,6 +10635,54 @@ function Safari() {
         }
     };
 
+    this.rockScare = function(src) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        var reason = "scare a wild Pokémon";
+        if (player.tutorial.inTutorial) {
+            if (cantBecause(src, reason, ["tutorial"])) {
+                return;
+            }
+        }
+
+        var name = sys.name(src);
+        var timeSinceLastAction = now() - lastWildAction;
+        if (cantBecause(src, reason, ["item", "auction", "battle", "event", "pyramid"])) {
+            return;
+        }
+
+        if (!currentPokemon) {
+            safaribot.sendMessage(src, "No wild Pokémon around!", safchan);
+            return;
+        }
+        if (wildEvent) {
+            safaribot.sendMessage(src, "You can't scare an Event Pokémon!", safchan);
+            return;
+        }
+        if (isRare(currentDisplay)) {
+            safaribot.sendMessage(src, "You can't scare a rare Pokémon!", safchan);
+            return;
+        }
+        if (timeSinceLastAction < rockScareThreshold) {
+            safaribot.sendMessage(src, "You can only scare the Pokémon away if they have not been interacted with for " + plural(Math.round((rockScareThreshold - timeSinceLastAction) / 1000), "more second") + "!", safchan);
+            return;
+        }
+        if (player.balls.rock < 1) {
+            safaribot.sendMessage(src, "You do not have any " + es(finishName("rock")) + " to throw!", safchan);
+            return;
+        }
+
+        if (isRare(currentPokemon)) {
+            sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::was rock scared by " + sys.name(src) + "::\n");
+        }
+
+        player.balls.rock -= 1;
+        safari.pokemonFlee("{0} threw {1} at the wild {2}, causing {3} to run away!".format(name, an(finishName("rock")), poke(currentDisplay), currentPokemonCount > 1 ? "them" : "it"));
+        safaribot.sendMessage(src, "You have " + plural(player.balls.rock, finishName("rock")) + " remaining.", safchan);
+        this.saveGame(player);
+    };
     this.throwPokeblock = function(src) {
         if (!validPlayers("self", src)) {
             return;
@@ -10666,6 +10722,7 @@ function Safari() {
         player.balls.pokeblock -= 1;
 
         safaribot.sendMessage(src, "You threw a Pokéblock! You now have " + plural(player.balls.pokeblock, "Pokéblock") + "!", safchan);
+        lastWildAction = now();
         this.saveGame(player);
 
         safaribot.sendHtmlAll(toColor(sys.name(src) + " is feeding the " + poke(currentDisplay, true) + " a Pokéblock!", "#438ed9"), safchan);
@@ -10754,6 +10811,8 @@ function Safari() {
         if (this.hasCostumeSkill(player, "lowPhotoCD")) {
             cooldown *= (1 - (this.getCostumeLevel(player)/40));
         }
+
+        cooldown = Math.max(6000, cooldown);
         var p = player.balls.lens * itemData.lens.bonusRate;
         p = Math.min(p, itemData.lens.maxRate);
         var quality = randomSample({
@@ -10801,6 +10860,7 @@ function Safari() {
         }
         player.cooldowns.ball = currentTime + cooldown;
         this.missionProgress(player, "photo", currentPokemon, 1, { photo: photo });
+        lastWildAction = now();
         this.saveGame(player);
         
         currentThrows -= 2;
@@ -52770,6 +52830,7 @@ function Safari() {
             "/cherishlink [on|off]: Set whether you want Cherish Ball throw links to appear on wild Pokémon. Omit the command data to check your current configuration.",
             "/cherishmsg [on|off]: Set whether you want your Cherished Pokémon to display the Cherished message when catching Pokémon.",
             "/contestforfeit: Allows you to withdraw from any ongoing contest.",
+            "/rockscare: Allows you to scare a wild Pokémon away. You can only scare Pokémon that haven't been interacted with for " + plural(rockScareThreshold/1000, "second") + ".",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -52954,6 +53015,10 @@ function Safari() {
             }
             if (command === "pokeblock") {
                 safari.throwPokeblock(src);
+                return true;
+            }
+            if (["rockwild", "rockscare", "baitscare"].contains(command)) {
+                safari.rockScare(src);
                 return true;
             }
             if (command === "mono") {
