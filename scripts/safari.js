@@ -621,7 +621,8 @@ function Safari() {
             idolActivated: 0,
             casesSolved: 0,
             fastestCaseSolved: 0,
-            medalsWon: 0
+            medalsWon: 0,
+            wildsScared: 0
         },
         photos: [],
         hideLB: [],
@@ -10103,7 +10104,7 @@ function Safari() {
                             }
                         }
                         
-                        safaribot.sendMessage(src, "Your {0} in the Daycare gained {1} affection points!".format(poke(this.daycarePokemon[t].id), addComma(addedHearts)), safchan);
+                        safaribot.sendMessage(src, "Your {0} in the Daycare gained {1}!".format(poke(this.daycarePokemon[t].id), plural(addedHearts, "affection point")), safchan);
                         this.daycarePokemon[t].hearts += addedHearts;
                     }
                 }
@@ -10678,6 +10679,7 @@ function Safari() {
         }
 
         player.balls.rock -= 1;
+        player.records.wildsScared += 1;
         safari.pokemonFlee("{0} threw {1} at the wild {2}, causing {3} to flee!".format(name, an(finishName("rock")), poke(currentDisplay), currentPokemonCount > 1 ? "them" : "it"));
         safaribot.sendMessage(src, "You have " + plural(player.balls.rock, finishName("rock")) + " remaining.", safchan);
         this.saveGame(player);
@@ -14207,12 +14209,12 @@ function Safari() {
             slip = 1;
         }
         if (!(hax)) {
-            if (slip) {
+            /*if (slip) {
                 var n = now(), amt = sys.rand(2, 3 + slip) * 1000;
                 player.cooldowns.bait = (player.cooldowns.bait > n ? player.cooldowns.bait : n) + amt;
                 safaribot.sendMessage(src, "The " + bName + " you were preparing to throw slipped from your hand! You went to catch it and now need to wait " + timeLeftString(player.cooldowns.bait) + " to throw again!", safchan);
                 return;
-            }
+            }*/
             if (golden) {
                 if (goldenBaitCooldown > 0) {
                     safaribot.sendMessage(src, "Please wait " + plural(goldenBaitCooldown, "second") + " before trying to attract another Pokémon with " + an(bName) + "!", safchan);
