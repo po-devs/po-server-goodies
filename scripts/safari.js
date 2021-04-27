@@ -781,7 +781,9 @@ function Safari() {
             exp: 0,
             box: [],
             skills: [],
-            skillChoices: {}
+            skillChoices: {},
+            roundStreak: 0,
+            prizePoints: 0
         },
         bonusLogin: {
             index: 0,
@@ -19476,6 +19478,8 @@ function Safari() {
                     p.spiritDuels.box = [];
                     p.spiritDuels.skills = [];
                     p.spiritDuels.skillChoices = {};
+                    p.spiritDuels.roundStreak = 0;
+                    p.spiritDuels.prizePoints = 0;
                     safari.saveGame(p);
                 }
             }
@@ -19513,7 +19517,7 @@ function Safari() {
             {rank: "Field Lieutenant", exp: 22000},
             {rank: "Commander", exp: 30000},
             {rank: "Vice Admiral", exp: 35000},
-            {rank: "Admin", exp: 40000},
+            {rank: "Administrator", exp: 40000},
             {rank: "Supreme Master", exp: 50000}
         ];
         safari.events.spiritDuelsSkills = {
@@ -19600,7 +19604,7 @@ function Safari() {
                 {type: "spattack", target: "", val: 14, scaling: true, desc: "Spirits with at least 100 Special Attack stat receive a fighting advantage. This skill is 0.2x stronger for every 10 Special Attack stat past 100, up to a maximum multiplier of 3x."},
                 {type: "catch", target: "cooldown", val: 1.24, desc: "Catch cooldown on Spirit Balls reduced slightly."}
             ],
-            "Admin": [
+            "Administrator": [
                 {type: "singletype", target: "", val: 42, desc: "Single-type Spirits receive a major fighting advantage."},
                 {type: "move", target: "Hydro Pump", val: 35, desc: "Spirits that can know Hydro Pump receive a fighting advantage."},
                 {type: "move", target: "Giga Drain", val: 35, desc: "Spirits that can know Giga Drain receive a fighting advantage."},
@@ -19677,7 +19681,8 @@ function Safari() {
             player.spiritDuels = {
                 box: oldBox,
                 skills: [],
-                skillChoices: {}
+                skillChoices: {},
+                roundStreak: 0
             };
             player.spiritDuels.rank = 0;
             player.spiritDuels.rankName = "Grunt";
@@ -19723,7 +19728,8 @@ function Safari() {
                 exp: 0,
                 box: sgnf[p].box.slice(0),
                 skills: [],
-                skillChoices: {}
+                skillChoices: {},
+                roundStreak: 0
             };
             if (!safari.events.spiritDuelsRefugees.contains(player.idnum)) {
                 player.balls.spirit = 5;
@@ -19767,10 +19773,10 @@ function Safari() {
                 if (!player) {
                     continue;
                 }
-                pamt = (Math.round((((j) * 1.8) + (9 - teams.length))/2) * ((player.spiritDuels.rank + 4) * 0.15));
-                pamt2 = (Math.round((((j) * 1.2) + (10 - teams.length))/2) * ((player.spiritDuels.rank + 3) * 0.2));
-                pamt3 = Math.round(((((j) * 1.5) + (5 - teams.length))) * ((player.spiritDuels.rank + 6) * 0.08));
-                rareamt = Math.round(((((j) * 1.67) + (10 - teams.length))/2) * ((player.spiritDuels.rank + 5) * 0.2));
+                pamt = Math.round( ((j * 1.8 + (9 - teams.length)) / 2) * (player.spiritDuels.rank + 4) * 0.15 ) * player.spiritDuels.roundStreak;
+                pamt2 = Math.round( ((j * 1.2 + (10 - teams.length)) / 2) * (player.spiritDuels.rank + 3) * 0.2 ) * Math.round(player.spiritDuels.roundStreak / 2);
+                pamt3 = Math.round( (j * 1.5 + (5 - teams.length)) * (player.spiritDuels.rank + 6) * 0.08 ) * Math.round(player.spiritDuels.roundStreak / 2);
+                rareamt = Math.round( ((j * 1.67 + (10 - teams.length)) / 2) * (player.spiritDuels.rank + 5) * 0.2 ) * player.spiritDuels.roundStreak;
                 if (round >= 1) {
                     finalrew += ("," + pamt + "@pearl");
                     finalrew += ("," + pamt2 + "@silver");
@@ -19800,6 +19806,10 @@ function Safari() {
             j++;
         }
     }
+    this.getMinimumDuelsRank = function(player) {
+        var streak = player.spiritDuels.roundStreak;
+        return streak >= 6 ? streak - 2 : streak >= 4 ? streak - 1 : streak;
+    };
     this.progressDuels = function( src ) {
         //Counts everyone's scores
         //The one with the least points is eliminated
@@ -19816,13 +19826,28 @@ function Safari() {
         this.spiritDuelsPrizes(safari.events.spiritDuelsTeams);
         sys.sendAll("", safchan);
         safaribot.sendHtmlAll("<b>" + safari.events.spiritDuelsTeams[0].name + " has been eliminated!</b>", safchan);
-        
-        for (var p in safari.events.spiritDuelsTeams[0].players) {
-            var t = idnumList.get(safari.events.spiritDuelsTeams[0].players[p]);
-            player = getAvatarOff(t);
-            safari.events.spiritDuelsSignups.push(player.idnum);
-            safari.events.spiritDuelsRefugees.push(player.idnum); // used solely to check if player needs a spirit ball reset. if they're in this array, do not reset spirit balls since only signups from r1 should be reset
-            //safari.events.spiritDuelsSignupsRanked[player.idnum+""] = player.spiritDuels.exp;
+
+        for (var t = 0; t < safari.events.spiritDuelsTeams.length; t++) {
+            team = safari.events.spiritDuelsTeams[t];
+            team.won = 0;
+            team.fought = 0;
+            team.rate = 0;
+            for (var p = 0; p < team.players.length; p++) {
+                var name = idnumList.get(safari.events.spiritDuelsTeams[t].players[p]);
+                var player = getAvatarOff(name);
+                if (player.spiritDuels.rank < safari.getMinimumDuelsRank(player)) { // indicates inactivity, disqualify
+                    team.players.splice(p, 1);
+                    safaribot.sendAll(player.casedName + " failed to qualify for the next round and was removed!", safchan);
+                    p--;
+                }
+                else if (t === 0) {
+                    safari.events.spiritDuelsSignups.push(player.idnum);
+                    safari.events.spiritDuelsRefugees.push(player.idnum); // used solely to check if player needs a spirit ball reset. if they're in this array, do not reset spirit balls since only signups from r1 should be reset
+                }
+                else {
+                    player.spiritDuels.roundStreak++;
+                }
+            }
         }
         safari.events.spiritDuelsTeams[0].alive = false;
         safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.slice(1);
@@ -19830,12 +19855,6 @@ function Safari() {
         safari.events.spiritDuelsTeams.sort( function(a, b) {
             return a.players.length - b.players.length;
         });
-        for (var t in safari.events.spiritDuelsTeams) {
-            team = safari.events.spiritDuelsTeams[t];
-            team.won = 0;
-            team.fought = 0;
-            team.rate = 0;
-        }
         this.assignDuelsTeams();
     };
     this.prepareNextSpiritDuel = function(tiebreak) {
@@ -20391,7 +20410,11 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "You have achieved the highest rank!", safchan);
                 }
                 else {
+                    
                     safaribot.sendHtmlMessage(src, "Next Rank: <b>{0}</b> ({1}/{2} EXP).".format(safari.events.spiritDuelsRanks[player.spiritDuels.rank + 1].rank, addComma(player.spiritDuels.exp), addComma(safari.getSpiritExpRequired(player))), safchan);
+                    if (player.spiritDuels.rank < safari.getMinimumDuelsRank(player) && safari.inSpiritTeam(src, player)) {
+                        safaribot.sendHtmlMessage(src, "You have been on this team for {0} rounds <b>and must reach the {1} rank to qualify for the next round</b>.".format(player.spiritDuels.roundStreak, safari.events.spiritDuelsRanks[safari.getMinimumDuelsRank(player) - 1].rank), safchan);
+                    }
                 }
                 for (var i = 0; i < safari.events.spiritDuelsTeams.length; i++) {
                     var team = safari.events.spiritDuelsTeams[i];
@@ -20582,6 +20605,8 @@ function Safari() {
         player.spiritDuels.skills = [];
         player.spiritDuels.box = [];
         player.spiritDuels.skillChoices = {};
+        player.spiritDuels.roundStreak = 0;
+        player.spiritDuels.prizePoints = 0;
         player.balls.spirit = 5;
         safari.sanitize(player);
         safari.saveGame(player);
