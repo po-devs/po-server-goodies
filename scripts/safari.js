@@ -7177,8 +7177,11 @@ function Safari() {
     function ballMacro(src, override) {
         var player = getAvatar(src);
         var name = sys.name(src);
+        if (!player) {
+            return;
+        }
         if (!isRare(currentDisplay) && !wildEvent) {
-            if (!player || (currentEvent && currentEvent.isInEvent(name)) || (currentGame && currentGame.playerInGame(name)) || (player.tutorial.inTutorial && !override) || safari.isBattling(name)) {
+            if ((currentEvent && currentEvent.isInEvent(name)) || (currentGame && currentGame.playerInGame(name)) || (player.tutorial.inTutorial && !override) || safari.isBattling(name)) {
                 return;
             }
             for (var p in currentPyramids) {
