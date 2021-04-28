@@ -2909,8 +2909,11 @@ function Safari() {
     }
 
     /* Message Functions */
-    function sendAll(mess, html, system, bypass) {
+    function sendAll(mess, html, system, bypass, rareWild) {
         var players = sys.playersOfChannel(safchan).filter(function(x) {
+            if (rareWild) { // special case for event/rare wild mons to give people a chance to forfeit/quit or whatever to catch it if they want
+                return true;
+            }
             var name = sys.name(x);
             var isBypassed = bypass && bypass === name.toLowerCase();
             if (currentEvent && currentEvent.isInEvent(name) && !isBypassed) {
@@ -7174,21 +7177,23 @@ function Safari() {
     function ballMacro(src, override) {
         var player = getAvatar(src);
         var name = sys.name(src);
-        if (!player || (currentEvent && currentEvent.isInEvent(name)) || (currentGame && currentGame.playerInGame(name)) || (player.tutorial.inTutorial && !override) || safari.isBattling(name)) {
-            return;
-        }
-        for (var p in currentPyramids) {
-            if (currentPyramids[p].isInPyramid(name)) {
+        if (!isRare(currentDisplay) && !wildEvent) {
+            if (!player || (currentEvent && currentEvent.isInEvent(name)) || (currentGame && currentGame.playerInGame(name)) || (player.tutorial.inTutorial && !override) || safari.isBattling(name)) {
                 return;
             }
-        }
-        for (var p in currentBakings) {
-            if (currentBakings[p].isInKitchen(name)) {
+            for (var p in currentPyramids) {
+                if (currentPyramids[p].isInPyramid(name)) {
+                    return;
+                }
+            }
+            for (var p in currentBakings) {
+                if (currentBakings[p].isInKitchen(name)) {
+                    return;
+                }
+            }
+            if (player.story.inStory && (!(override))) {
                 return;
             }
-        }
-        if (player.story.inStory && (!(override))) {
-            return;
         }
         var ret = "", hasBalls = false, isAndroid = sys.os(src) === "android";
         for (var i = 0; i < allBalls.length; i++) {
@@ -8025,6 +8030,8 @@ function Safari() {
                     sprite = "<img src='" + ghostSprite + "'>";
                 }
             }
+
+            var mandatoryDisplay = isRare(currentDisplay) || wildEvent;
             if (amount > 1) {
                 var ret = [];
                 ret += "<hr><center>" + appmsg + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "");
@@ -8032,9 +8039,9 @@ function Safari() {
                     ret += sprite;
                 }
                 ret += "</center><hr>";
-                sendAll(ret, true, true);
+                sendAll(ret, true, true, false, mandatoryDisplay);
             } else {
-                sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + (wildEvent ? "<br/><b>All ball cooldowns were reset!</b>" : "") + "</center><hr>", true, true);
+                sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + (wildEvent ? "<br/><b>All ball cooldowns were reset!</b>" : "") + "</center><hr>", true, true, false, mandatoryDisplay);
             }
             var onChannel = sys.playersOfChannel(safchan);
             var abilityMessageList = {};
@@ -8153,13 +8160,13 @@ function Safari() {
             }
 
             for (var msg in wildAbilityMessageList) {
-                sendAll(wildAbilityMessageList[msg]);
+                sendAll(wildAbilityMessageList[msg], false, false, false, mandatoryDisplay);
             }
             for (var user in abilityMessageList) {
                 if (abilityMessageList[user].length === 0) {
                     continue;
                 }
-                if (!cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
+                if (mandatoryDisplay || !cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
                     for (var message in abilityMessageList[user]) {
                         safaribot.sendMessage(user, abilityMessageList[user][message], safchan);
                     }
@@ -8169,7 +8176,7 @@ function Safari() {
                 if (miscMessageList[user].length === 0) {
                     continue;
                 }
-                if (!cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
+                if (mandatoryDisplay || !cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
                     for (var message in miscMessageList[user]) {
                         safaribot.sendHtmlMessage(user, miscMessageList[user][message], safchan);
                     }
