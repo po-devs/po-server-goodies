@@ -29655,6 +29655,13 @@ function Safari() {
                 turn: this.turn,
                 winMsg: this.winMsg,
                 loseMsg: this.loseMsg
+            };
+            if (this.tagBattle) {
+                var npcSurviving = this.team2.filter(function(e) { return e.hp > 0 }).length + this.team4.filter(function(e) { return e.hp > 0 }).length;
+                this.postArgs.defeated = (5 - npcSurviving) * (3/5);
+            }
+            else {
+                this.postArgs.defeated = 3 - this.team2.filter(function(e) { return e.hp > 0 }).length;
             }
             this.postBattle(this.name1, winnerID === this.idnum1, this.getHpPercent(this.idnum1), this.postArgs, this.viewers, extraArgs);
         }
