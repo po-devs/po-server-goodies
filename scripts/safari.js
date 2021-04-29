@@ -33019,7 +33019,7 @@ function Safari() {
                         return false;
                     }
                     for (var i = 0; i < clues.length; i++) {
-                        if (ind == clues[i].ind && (clues[i].kind == "evolved" || clues[i].kind == "canMega")) {
+                        if (ind == clues[i].ind && clues[i].kind == "canMega") {
                             return false;
                         }
                     }
