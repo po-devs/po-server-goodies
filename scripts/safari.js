@@ -27121,7 +27121,7 @@ function Safari() {
                         }
                     }
                     
-                    if (typeMultiplier === 0) {
+                    if (typeMultiplier === 0 && poke2.id !== undefined) {
                         out.push("It has no effect on " + poke2.owner + "'s " + poke(poke2.id) + "!");
                     }
                     else if (poke2.protect) {
@@ -27155,7 +27155,7 @@ function Safari() {
                         }
                     }
 
-                    if (typeMultiplier === 0) {
+                    if (typeMultiplier === 0 && poke4.id !== undefined) {
                         out.push("It has no effect on " + poke4.owner + "'s " + poke(poke4.id) + "!");
                     }
                     else if (poke4.protect) {
@@ -27169,7 +27169,7 @@ function Safari() {
                         if (move.type == "Ground" && poke3.item.balloon) {
                             typeMultiplier = 0;
                         }
-                        if (typeMultiplier === 0) {
+                        if (typeMultiplier === 0 && poke3.id !== undefined) {
                             out.push("It has no effect on " + poke3.owner + "'s " + poke(poke3.id) + "!");
                         }
                         else if (poke3.protect) {
@@ -27185,7 +27185,7 @@ function Safari() {
                     if (move.type == "Ground" && poke2.item.balloon) {
                         typeMultiplier = 0;
                     }
-                    if (typeMultiplier === 0) {
+                    if (typeMultiplier === 0 && poke2.id !== undefined) {
                         out.push("It has no effect on " + poke2.owner + "'s " + poke(poke2.id) + "!");
                     }
                     else if (poke2.protect) {
@@ -27198,7 +27198,7 @@ function Safari() {
                     if (move.type == "Ground" && poke4.item.balloon) {
                         typeMultiplier = 0;
                     }
-                    if (typeMultiplier === 0) {
+                    if (typeMultiplier === 0 && poke4.id !== undefined) {
                         out.push("It has no effect on " + poke4.owner + "'s " + poke(poke4.id) + "!");
                     }
                     else if (poke4.protect) {
@@ -27212,7 +27212,7 @@ function Safari() {
                         if (move.type == "Ground" && poke1.item.balloon) {
                             typeMultiplier = 0;
                         }
-                        if (typeMultiplier === 0) {
+                        if (typeMultiplier === 0 && poke1.id !== undefined) {
                             out.push("It has no effect on " + poke1.owner + "'s " + poke(poke1.id) + "!");
                         }
                         else if (poke1.protect) {
@@ -27228,7 +27228,7 @@ function Safari() {
                     if (move.type == "Ground" && poke1.item.balloon) {
                         typeMultiplier = 0;
                     }
-                    if (typeMultiplier === 0) {
+                    if (typeMultiplier === 0 && poke1.id !== undefined) {
                         out.push("It has no effect on " + poke1.owner + "'s " + poke(poke1.id) + "!");
                     }
                     else if (poke1.protect) {
@@ -27241,7 +27241,7 @@ function Safari() {
                     if (move.type == "Ground" && poke3.item.balloon) {
                         typeMultiplier = 0;
                     }
-                    if (typeMultiplier === 0) {
+                    if (typeMultiplier === 0 && poke3.id !== undefined) {
                         out.push("It has no effect on " + poke3.owner + "'s " + poke(poke3.id) + "!");
                     }
                     else if (poke3.protect) {
@@ -27255,7 +27255,7 @@ function Safari() {
                         if (move.type == "Ground" && poke4.item.balloon) {
                             typeMultiplier = 0;
                         }
-                        if (typeMultiplier === 0) {
+                        if (typeMultiplier === 0 && poke4.id !== undefined) {
                             out.push("It has no effect on " + poke4.owner + "'s " + poke(poke4.id) + "!");
                         }
                         else if (poke4.protect) {
@@ -27271,7 +27271,7 @@ function Safari() {
                     if (move.type == "Ground" && poke1.item.balloon) {
                         typeMultiplier = 0;
                     }
-                    if (typeMultiplier === 0) {
+                    if (typeMultiplier === 0 && poke1.id !== undefined) {
                         out.push("It has no effect on " + poke1.owner + "'s " + poke(poke1.id) + "!");
                     }
                     else if (poke1.protect) {
@@ -27284,7 +27284,7 @@ function Safari() {
                     if (move.type == "Ground" && poke3.item.balloon) {
                         typeMultiplier = 0;
                     }
-                    if (typeMultiplier === 0) {
+                    if (typeMultiplier === 0 && poke3.id !== undefined) {
                         out.push("It has no effect on " + poke3.owner + "'s " + poke(poke3.id) + "!");
                     }
                     else if (poke3.protect) {
@@ -27298,7 +27298,7 @@ function Safari() {
                         if (move.type == "Ground" && poke2.item.balloon) {
                             typeMultiplier = 0;
                         }
-                        if (typeMultiplier === 0) {
+                        if (typeMultiplier === 0 && poke2.id !== undefined) {
                             out.push("It has no effect on " + poke2.owner + "'s " + poke(poke2.id) + "!");
                         }
                         else if (poke2.protect) {
