@@ -20449,8 +20449,7 @@ function Safari() {
                 if (safari.spiritDuelsMaxLevel(player)) {
                     safaribot.sendHtmlMessage(src, "You have achieved the highest rank!", safchan);
                 }
-                else {
-                    
+                else {                    
                     safaribot.sendHtmlMessage(src, "Next Rank: <b>{0}</b> ({1}/{2} EXP).".format(safari.events.spiritDuelsRanks[player.spiritDuels.rank + 1].rank, addComma(player.spiritDuels.exp), addComma(safari.getSpiritExpRequired(player))), safchan);
                     if (player.spiritDuels.rank < safari.getMinimumDuelsRank(player) && safari.inSpiritTeam(src, player)) {
                         safaribot.sendHtmlMessage(src, "You have been on this team for {0} rounds <b>and must reach the {1} rank to qualify for the next round</b>.".format(player.spiritDuels.roundStreak, safari.events.spiritDuelsRanks[safari.getMinimumDuelsRank(player) - 1].rank), safchan);
@@ -36041,26 +36040,37 @@ function Safari() {
         var rewLevel = Math.floor(score/30);
         var rew;
         switch (rewLevel) {
-            case 0: //0~30
-                rew = ["20@dust", "1@gacha", "1@pearl", "5@pnkapricorn"].random();
+            case 0: //0~29
+                rew = ["70@dust", "5@gacha", "3@pearl", "5@pnkapricorn,5@grnapricorn"].random();
             break;
-            case 1: //31~60
-                rew = ["35@dust", "2@gacha", "1@silver", "7@grnapricorn", "1@pearl", "7@pnkapricorn"].random();
+            case 1: //30~59
+                rew = ["150@dust", "10@gacha", "3@silver", "10@grnapricorn,10@pnkapricorn", "5@pearl"].random();
             break;
-            case 2: //61~90
-                rew = ["@rare", "3@gacha", "2@silver", "10@grnapricorn", "2@pearl", "10@pnkapricorn"].random();
+            case 2: //60~89
+                rew = ["2@rare", "20@gacha", "7@silver", "15@grnapricorn,15@pinkapricorn", "8@pearl"].random();
             break;
-            case 3: //91~120
-                rew = ["@rare", "5@gacha", "4@silver", "15@grnapricorn", "2@gem", "2@bigpearl", "15@pnkapricorn"].random();
+            case 3: //90~119
+                rew = ["4@rare", "20@gacha,2@gem", "10@silver", "15@grnapricorn,15@pinkapricorn,5@dew,5@hdew", "3@bigpearl"].random();
             break;
-            case 4: //121~150
-                rew = ["2@rare", "7@gacha", "5@silver", "3@gem", "3@bigpearl", "1@golden"].random();
+            case 4: //120~149
+                rew = ["6@rare", "20@gacha,4@gem", "15@silver", "10@dew,10@hdew", "6@bigpearl", "3@golden"].random();
             break;
-            case 5: //151~180
-                rew = ["2@rare", "10@gacha", "7@silver", "7@myth", "4@gem", "3@bigpearl", "2@golden"].random();
+            case 5: //150~179
+                rew = ["8@rare", "30@gacha,6@gem", "20@silver", "6@bigpearl,3@nugget", "5@golden"].random();
             break;
-            default: //181+
-                rew = ["3@rare", "20@gacha", "10@silver", "10@myth", "5@gem", "5@bigpearl", "3@golden", "1@nugget"].random();
+            default: //180+
+                rew = ["10@rare,30@gacha,6@gem", "25@silver", "6@bigpearl,3@nugget,1@bignugget", "8@golden"].random();
+            break;
+        }
+
+        var excessPoints = score - 209;
+        if (excessPoints >= 0) {
+            var bonusRewLevel = Math.ceil(excessPoints/30);
+            var bonusList = ["3@bigmushroom", "@fossil", "@sunshard", "@moonshard", "@spray", "@crystal", "3@egg"];
+            for (var i = 0; i < bonusRewLevel; i++) {
+                // starting at 210 (inclusive), every 30 points gives you one element from the bonusList randomly
+                rew += "," + bonusList.random();
+            }
         }
         var rewardName = translateStuff(rew);
         rew = giveStuff(player, toStuffObj(rew));
@@ -36087,16 +36097,23 @@ function Safari() {
         if (added > 0) {
             rewards.push(plural(added, "lens"));
         }
-        var div = newPoints - (newPoints % 1000);
-        if (oldPoints < div && newPoints >= div) {
-            if (Math.floor(newPoints/1000) % 2 === 0) {
-                player.balls.pack += 1;
-                rewards.push(plural(1, "pack"));
-            } else {
-                player.balls.egg += 1;
-                rewards.push(plural(1, "egg"));
-            }
+        if (Math.floor(oldPoints / 10000) < Math.floor(newPoints / 10000)) { // every 10k points
+            giveStuff(player, "@bright");
+            rewards.push(plural(1, "bright"));
         }
+        else if (Math.floor(oldPoints / 1000) < Math.floor(newPoints / 1000)) { // every 1k points
+            if (Math.floor(newPoints / 1000) % 2 === 0) {
+                giveStuff(player, "5@pack");
+                rewards.push(plural(5, "pack"));
+            }
+            else {
+                giveStuff(player, "@celebrityTicket");
+                rewards.push(plural(1, "celebrityTicket"));
+            }
+            giveStuff(player, "5@brush");
+            rewards.push(plural(5, "brush"));
+        }
+
         if (rewards.length > 0) {
             safaribot.sendMessage(src, "Editor-in-chief: You have been a great help with these photos! Here's some extra goodies for your hard work!", safchan);
             safaribot.sendMessage(src, "You received " + readable(rewards) + "!", safchan);
@@ -36479,8 +36496,11 @@ function Safari() {
                     }
                     obj.amt = val;
                     return true;
-                case "where": 
-                    val = chance(0.33) ? "default" : Object.keys(contestThemes).random();
+                case "where":
+                    do {
+                        val = chance(0.33) ? "default" : Object.keys(contestThemes).random();
+                    }
+                    while (val === "asia"); // block day-specific festival themes from appearing
                     obj.where = val;
                     return true;
                 case "what": 
