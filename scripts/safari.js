@@ -8144,6 +8144,9 @@ function Safari() {
                 if (canHaveAbility(leader, abilitynum("Tinted Lens"))) {
                     abilityMessageList[onChannel[e]].push("Your {0}'s Tinted Lens mitigates type resistances!".format(poke(leader, true)));
                 }
+                if (canHaveAbility(leader, abilitynum("Keen Eye"))) {
+                    abilityMessageList[onChannel[e]].push("Your {0}'s Keen Eye gives you a better chance of taking higher quality photos!".format(poke(leader, true)));
+                }
 
                 var abilBoosted = [];
                 if (currentThemeEffect == "rain") {
@@ -10881,7 +10884,6 @@ function Safari() {
 
         var leader = safari.getEffectiveLead(player);
         if (canHaveAbility(leader, abilitynum("Keen Eye"))) {
-            safaribot.sendMessage(src, "Your {0}'s Keen Eye gives you a better chance of taking higher quality photos!".format(poke(leader)), safchan);
             for (var i = -5, q = 0; i <= 5; i++, q++) {
                 qualityOdds[q] += i;
             }
@@ -31517,7 +31519,7 @@ function Safari() {
                 if (amt <= 0) {
                     continue;
                 }
-                safari.notification(player, "The " + link("/quest scientist", "Scientist") + " is now looking for a " + poke(randomNum) + ", of which you have " + amt + "!", "Scientist");
+                safari.notification(player, "The " + link("/quest scientist", "Scientist") + " is now looking for " + an(poke(randomNum)) + ", of which you have " + amt + "!", "Scientist");
                 player.notificationData.scientistWaiting = false;
                 safari.saveGame(player);
             }
