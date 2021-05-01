@@ -30653,8 +30653,7 @@ function Safari() {
             return link("/playertradeblock " + id, idToName(id));
         };
         list = player.playerBlacklist;
-        if (data === "*") {
-            
+        if (data === "*") {            
             if (list.length > 0) {
                 safaribot.sendHtmlMessage(src, "You currently have the following users tradeblocked (" + list.length + "): " + readable(list.map(removeBlock)), safchan);
             }
@@ -36121,7 +36120,7 @@ function Safari() {
                 rew = ["8@rare", "30@gacha,6@gem", "20@silver", "6@bigpearl,3@nugget", "5@golden"].random();
             break;
             default: //180+
-                rew = ["10@rare,30@gacha,6@gem", "25@silver", "6@bigpearl,3@nugget,1@bignugget", "8@golden"].random();
+                rew = ["8@rare,30@gacha", "40@gacha,8@gem", "25@silver", "6@bigpearl,3@nugget,1@bignugget", "8@golden"].random();
             break;
         }
 
