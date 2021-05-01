@@ -36110,7 +36110,7 @@ function Safari() {
             giveStuff(player, "@bright");
             rewards.push(plural(1, "bright"));
         }
-        else if (Math.floor(oldPoints / 1000) < Math.floor(newPoints / 1000)) { // every 1k points
+        if (Math.floor(oldPoints / 1000) < Math.floor(newPoints / 1000)) { // every 1k points
             if (Math.floor(newPoints / 1000) % 2 === 0) {
                 giveStuff(player, "5@pack");
                 rewards.push(plural(5, "pack"));
