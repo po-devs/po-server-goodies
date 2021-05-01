@@ -36120,7 +36120,7 @@ function Safari() {
                 rew = ["8@rare", "30@gacha,6@gem", "20@silver", "6@bigpearl,3@nugget", "5@golden"].random();
             break;
             default: //180+
-                rew = ["8@rare,30@gacha", "40@gacha,8@gem", "25@silver", "6@bigpearl,3@nugget,1@bignugget", "8@golden"].random();
+                rew = ["8@rare,20@gacha", "40@gacha,8@gem", "25@silver", "6@bigpearl,3@nugget,1@bignugget", "8@golden"].random();
             break;
         }
 
