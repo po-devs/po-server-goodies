@@ -10864,7 +10864,7 @@ function Safari() {
         cooldown = Math.max(6000, cooldown);
         var p = player.balls.lens * itemData.lens.bonusRate;
         p = Math.min(p, itemData.lens.maxRate);
-        var quality = randomSample({
+        var qualityOdds = {
             0: 11,
             1: Math.min(10 + p, 11),
             2: Math.min(9 + p, 11),
@@ -10876,7 +10876,16 @@ function Safari() {
             8: Math.min(3 + p, 11),
             9: Math.min(2 + p, 11),
             10: Math.min(1 + p, 11)
-        });
+        };
+
+        var leader = safari.getEffectiveLead(player);
+        if (canHaveAbility(leader, abilitynum("Keen Eye"))) {
+            safaribot.sendMessage(src, "Your {0}'s Keen Eye allows you to take higher quality photos!".format(poke(leader)), safchan);
+            for (var i = -5, q = 0; i <= 5; i++, q++) {
+                qualityOdds[q] += i;
+            }
+        }
+        var quality = randomSample(qualityOdds);
 
         var target = currentDisplay;
         if (target === 0 || wildEvent) {
