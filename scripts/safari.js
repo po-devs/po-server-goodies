@@ -38241,7 +38241,7 @@ function Safari() {
         var searchedMons2 = 0;
         var searchedMons3 = 0;
         for (var j = 0; j < 899; j++) { // not using highest dex num here since these are probably floodgates we want to open manually per new gen
-            for (var i = 0; i < 27; i++) {
+            for (var i = 0; i <= 62; i++) { // 62 for alcremie formes excluding finale. could probably rewrite this section to utilise getAllForms or something as a more elegant solution but i dont have energy for that :v
                 mon = getInputPokemon(poke(j + (65536 * i)));
                 if (!(mon.num)) {
                     break;
