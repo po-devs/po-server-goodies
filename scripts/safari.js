@@ -10881,13 +10881,13 @@ function Safari() {
 
         var leader = safari.getEffectiveLead(player);
         if (canHaveAbility(leader, abilitynum("Keen Eye"))) {
-            safaribot.sendMessage(src, "Your {0}'s Keen Eye allows you to take higher quality photos!".format(poke(leader)), safchan);
+            safaribot.sendMessage(src, "Your {0}'s Keen Eye gives you a better chance of taking higher quality photos!".format(poke(leader)), safchan);
             for (var i = -5, q = 0; i <= 5; i++, q++) {
                 qualityOdds[q] += i;
             }
         }
-        var quality = randomSample(qualityOdds);
 
+        var quality = randomSample(qualityOdds);
         var target = currentDisplay;
         if (target === 0 || wildEvent) {
             target = currentPokemon;
@@ -58903,7 +58903,7 @@ function Safari() {
                                 else {
                                     if (canHaveAbility(lead, abilitynum("Prankster"))) {
                                         if (isPlaying(p.id)) {
-                                            safaribot.sendMessage(sys.id(p.id), "Your {0}'s Prankster gives you a better chance of snapping photos before others!".format(poke(lead, true)), safchan);
+                                            safaribot.sendMessage(sys.id(p.id), "Your {0}'s Prankster gives you a better chance of taking photos before others!".format(poke(lead, true)), safchan);
                                         }
 
                                         throwChances[i] *= 3;
