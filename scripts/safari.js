@@ -649,6 +649,7 @@ function Safari() {
         visible: true,
         trading: true,
         tradeBlacklist: [],
+        playerBlacklist: [],
         lastSold: {},
         flashme: false,
         locked: false,
@@ -30265,7 +30266,6 @@ function Safari() {
             safaribot.sendMessage(src, "This person cannot receive trade requests right now!", safchan);
             return;
         }
-        
         var allowShared = allowedSharedIPNames.contains(targetName) || allowedSharedIPNames.contains(userName);
         if (info[0].toLowerCase() == userName || (sys.ip(targetId) === sys.ip(src) && !allowShared)) {
             safaribot.sendMessage(src, "You can't trade with yourself!", safchan);
@@ -30277,6 +30277,10 @@ function Safari() {
         }
         if (!target.trading) {
             safaribot.sendMessage(src, "This person is not accepting any trade right now!", safchan);
+            return;
+        }
+        if (target.playerBlacklist.contains(player.idnum)) {
+            safaribot.sendMessage(src, "This person is not accepting trade requests from you right now!", safchan);
             return;
         }
 
@@ -30637,6 +30641,55 @@ function Safari() {
         }
         return warns.length === 0;
     };
+    this.blacklistPlayer = function(src, data) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src), list;
+        var idToName = function(id) {
+            return idnumList.get(id).toCorrectCase();
+        };
+        var removeBlock = function(id) {
+            return link("/playertradeblock " + id, idToName(id));
+        };
+        list = player.playerBlacklist;
+        if (data === "*") {
+            
+            if (list.length > 0) {
+                safaribot.sendHtmlMessage(src, "You currently have the following users tradeblocked (" + list.length + "): " + readable(list.map(removeBlock)), safchan);
+            }
+            safaribot.sendMessage(src, "Use /playertradeblock [Username] to automatically reject trade offers from that user. Use the command again to remove it.", safchan);
+            return;
+        }
+
+        var target = getAvatarOff(data);
+        if (!target) {
+            safaribot.sendMessage(src, "Invalid username!", safchan);
+            return;
+        }
+
+        var targetID = target.idnum;
+        if (target.idnum === player.idnum) {
+            safaribot.sendMessage(src, "You can't tradeblock yourself!", safchan);
+            return;
+        }
+        if (list.contains(targetID)) {
+            list.splice(list.indexOf(targetID), 1);
+            safaribot.sendMessage(src, "You removed " + data.toCorrectCase() + " from your Player Tradeblocked list! Current list: " + (readable(list.map(idToName)) || "Empty"), safchan);
+        }
+        else {
+            var maxSize = 101;
+            if (list.length > maxSize) {
+                safaribot.sendMessage(src, "You can only add up to " + maxSize + " users to your Player Tradeblocked list.", safchan);
+                return;
+            }
+            list.push(targetID);
+            safaribot.sendMessage(src, "You added " + data.toCorrectCase() + " to your Player Tradeblocked list! Current list: " + (readable(list.map(idToName)) || "Empty"), safchan);
+        }
+
+        player.playerBlacklist = list;
+        this.saveGame(player);
+    }
     this.blacklistTrade = function(src, data) {
         if (!validPlayers("self", src)) {
             return;
@@ -52908,6 +52961,7 @@ function Safari() {
             "/pawn: To sell specific items. Use /pawnall to sell all your pawnable items at once!",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
             "/tradeblock: To edit your tradeblocked list. You will instantly reject trade requests asking you for an Item/Pokémon you tradeblocked. Pokémon in this list cannot be sold with /sell. To reject all trades, use /trade off.",
+            "/playertradeblock: To edit your player tradeblocked list. You will instantly reject trade requests from the users you tradeblocked. To reject all trades, use /trade off.",
             "/evolve: Use a Rare Candy (or candies) to evolve a Pokémon, which will give you Candy Dusts depending on the amount of Rare Candies used*.",
             "/spray: Use a Devolution Spray to devolve a Pokémon*.",
             "/mega [Pokémon*]: Use a Mega Stone to Mega Evolve a Pokémon. Use /mega [Pokémon*]:[X or Y] to choose between Mega Evolutions for species that have multiple.",
@@ -53243,6 +53297,10 @@ function Safari() {
             }
             if (command === "tradeblock") {
                 safari.blacklistTrade(src, commandData);
+                return true;
+            }
+            if (command === "playertradeblock") {
+                safari.blacklistPlayer(src, commandData);
                 return true;
             }
             if (command === "auction") {
