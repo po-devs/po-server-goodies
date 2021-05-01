@@ -30696,7 +30696,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "<b>Quests available:</b>" + sprites.join(""), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest collector", "Collector") + " " + (quest.collector.cooldown > n ? "[Available in " + timeLeftString(quest.collector.cooldown) + "]" : (quest.collector.deadline > n ? "[Ends in " + timeLeftString(quest.collector.deadline) + "]" : "[Available]")) + (stopQuests.collector ? " <b>[Disabled]</b>" : ""), safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest scientist", "Scientist") + " " + (scientistQuest.expires > n ? (quest.scientist.cooldown >= now() && quest.scientist.pokemon == scientistQuest.pokemon ? "[Available in " : "[Ends in ") + timeLeftString(scientistQuest.expires) + "]" : "[Standby]") + (stopQuests.scientist ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest scientist", "Scientist") + " " + (scientistQuest.expires > n ? (quest.scientist.cooldown >= now() && quest.scientist.pokemon == scientistQuest.pokemon && quest.scientist.photo == scientistQuest.pokemon ? "[Available in " : "[Ends in ") + timeLeftString(scientistQuest.expires) + "]" : "[Standby]") + (stopQuests.scientist ? " <b>[Disabled]</b>" : ""), safchan);
 
             safaribot.sendHtmlMessage(src, "-" + link("/quest arena", "Arena") + " " + (quest.arena.cooldown > n ? "[Available in " + timeLeftString(quest.arena.cooldown) + "]" : "[Available]") + (stopQuests.arena ? " <b>[Disabled]</b>" : ""), safchan);
 
@@ -31195,7 +31195,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: I'm going to present my research results in a convention. Please come back later!", safchan);
             return;
         }
-        if (player.quests.scientist.cooldown >= now() && player.quests.scientist.pokemon == id) {
+        if (player.quests.scientist.cooldown >= now() && player.quests.scientist.pokemon == id && player.quests.scientist.photo == id) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: That " + poke(id) + " that you brought earlier is really helping me! Come back in " + timeLeftString(quest.expires) + " to check my next research!", safchan);
             return;
         }
@@ -31254,15 +31254,26 @@ function Safari() {
             };
             researching += " and " + typeResearch[type];
 
-            safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + plural(quest.reward, "silver") + "!", safchan);
-            safaribot.sendHtmlMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you wish to help, bring me " + an(poke(id)) + " before then and type " + link("/quest scientist:finish", null, true) + ".", safchan);
-            if (canFulfillPhoto) {
-                if (player.quests.scientist.photo !== id) {
-                    safaribot.sendHtmlMessage(src, toColor("Scientist: Or, you could help me by bringing a photo of that Pokémon! Please note that I need a photo of Great or better quality. ", "magenta") + "[" + link("/quest scientist:photo", "You can fulfill this request") + "]", safchan);
+            if (player.quests.scientist.pokemon !== id) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + plural(quest.reward, "silver") + "!", safchan);
+                safaribot.sendHtmlMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you wish to help, bring me " + an(poke(id)) + " before then and type " + link("/quest scientist:finish", null, true) + ".", safchan);
+                if (canFulfillPhoto) {
+                    if (player.quests.scientist.photo !== id) {
+                        safaribot.sendHtmlMessage(src, toColor("Scientist: Or, you could help me by bringing a photo of that Pokémon! Please note that I need a photo of Great or better quality. ", "magenta") + "[" + link("/quest scientist:photo", "You can fulfill this request") + "]", safchan);
+                    }
+                }
+                else {
+                    safaribot.sendHtmlMessage(src, "Scientist: Or, you could help me by bringing a photo of that Pokémon! Please note that I need a photo of Great or better quality. [" + toColor("You do not have a matching photo", "red") + "]", safchan);
                 }
             }
             else {
-                safaribot.sendHtmlMessage(src, "Scientist: Or, you could help me by bringing a photo of that Pokémon! Please note that I need a photo of Great or better quality. [" + toColor("You do not have a matching photo", "red") + "]", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Hello, my friend! I'm currently researching " + researching + "! I expect to finish this research in about " + timeLeftString(quest.expires) + ".", safchan);
+                if (canFulfillPhoto) {
+                    safaribot.sendHtmlMessage(src, toColor("Scientist: Thanks for bringing me " + an(pokePlain(id)) + " earlier, but if you have any photos of it they would still be helpful! Please note that I need a photo of Great or better quality. ", "magenta") + "[" + link("/quest scientist:photo", "You can fulfill this request") + "]", safchan);
+                }
+                else {
+                    safaribot.sendHtmlMessage(src, "Scientist: Thanks for bringing me " + an(pokePlain(id)) + " earlier, but if you have any photos of it they would still be helpful! Please note that I need a photo of Great or better quality. [" + toColor("You do not have a matching photo", "red") + "]", safchan);
+                }
             }
             //safaribot.sendHtmlMessage(src, "Scientist: If you're wondering what else we do at my lab, we're also looking into some new technology! " + link("/quest scientist:moonshard", "Moon Shard") + " or " + link("/quest scientist:sunshard", "Sun Shard") + ".", safchan);
             sys.sendMessage(src, "", safchan);
@@ -31270,6 +31281,10 @@ function Safari() {
         }
 
         if (data[0].toLowerCase() === "finish") {
+            if (player.quests.scientist.pokemon === id) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Hey, you already brought me " + an (pokePlain(id)) + "! Don't you have someone else to give Pokémon to?", safchan);
+                return;
+            }
             if (!player.pokemon.contains(id)) {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: You don't have " + an(pokePlain(id)) + "!", safchan);
                 return;
