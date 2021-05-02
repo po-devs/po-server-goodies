@@ -8195,6 +8195,12 @@ function Safari() {
             if (contestCount > 0) {
                 this.compileThrowers();
             }
+            for (t = allTrackers.length; t--; ) {
+                id = sys.id(allTrackers[t]);
+                if (id) {
+                    safaribot.sendMessage(id, "[Track] " + appmsg + (wildEvent ? " [Event]" : ""), safchan);
+                }
+            }
             lastWild = now();
             lastWildAction = now();
         }
