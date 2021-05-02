@@ -29326,11 +29326,11 @@ function Safari() {
             out[t]++;
         }
         if ((this.select && this.select.nostab) || (this.select2 && this.select2.nostab)) {
-            if (out.hasOwnProperty(type1(pokeInfo.species(num)))) {
-                out[type1(pokeInfo.species(num))] = 0;
+            if (out.hasOwnProperty(type1(num))) {
+                out[type1(num)] = 0;
             }
-            if (out.hasOwnProperty(type2(pokeInfo.species(num)))) {
-                out[type2(pokeInfo.species(num))] = 0;
+            if (out.hasOwnProperty(type2(num))) {
+                out[type2(num)] = 0;
             }
         }
         if (this.select && this.select.physBan && this.select.categorySplit) {
