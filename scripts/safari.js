@@ -884,7 +884,8 @@ function Safari() {
         ],
         excludeFromEconomy: false,
         alwaysShowMasterBall: true,
-        alwaysShowCherishBall: true
+        alwaysShowCherishBall: true,
+        sellPrompt: false
     };
 
     /* Item Variables */
@@ -10066,12 +10067,12 @@ function Safari() {
                     player.records.catchClone += 1;
                 }
                 var costumed = player.costume === "scientist";
-                var triple = chance(costumeData.scientist.bonusChance) && !isLegend && !isShiny;
-                if (this.hasCostumeSkill(player, "tripleChance") && chance(0.07) && chance((this.getCostumeLevel(player)-10)/10)) {
+                var triple = costumed && chance(costumeData.scientist.bonusChance);
+                if (!triple && this.hasCostumeSkill(player, "tripleChance") && chance(costumeData.scientist.bonusChance + costumeData.scientist.bonusChance * 0.4) && chance((this.getCostumeLevel(player)-10)/10)) { // if failed triple RNG first time, tripleChance gives you a reroll
                     triple = true;
-                    if ((isLegend || isShiny) && (chance(0.75))) {
-                        triple = false;
-                    }
+                }
+                if (triple && (isLegend || isShiny) && chance(0.75)) {
+                    triple = false;
                 }
                 if (triple) {
                     //TWO CLONES
@@ -10265,6 +10266,9 @@ function Safari() {
                 for (var i in player.eventFlags) {
                     player.eventFlags[i] = 0;
                 }
+            }
+            if (player.sellPrompt && !isRare(currentPokemon)) {
+                safaribot.sendHtmlMessage(src, "«{0}»".format(link("/sell " + poke(currentPokemon) + ":confirm", "Click here to sell the " + poke(currentPokemon) + " you just caught")), safchan);
             }
             if (amt < 1) {
                 sendAll("", true, true);
@@ -10716,6 +10720,10 @@ function Safari() {
             safaribot.sendMessage(src, "No wild Pokémon around!", safchan);
             return;
         }
+        if (contestCount > 0 && contestForfeited.contains(player.idnum)) {
+            safaribot.sendMessage(src, "You forfeited this contest, so you can't scare any Pokémon from the contest!", safchan);
+            return;
+        }
         if (wildEvent) {
             safaribot.sendMessage(src, "You can't scare an Event Pokémon!", safchan);
             return;
@@ -10738,7 +10746,7 @@ function Safari() {
 
         player.balls.rock -= 1;
         player.records.wildsScared += 1;
-        safari.pokemonFlee("{0} threw {1} at the wild {2}, causing {3} to flee!".format(name, an(finishName("rock")), poke(currentDisplay), currentPokemonCount > 1 ? "them" : "it"));
+        safari.pokemonFlee("{0} threw {1} at the wild {2}, causing {3} to flee!".format(name, an(finishName("rock")), poke(currentPokemon, true), currentPokemonCount > 1 ? "them" : "it"));
         safaribot.sendMessage(src, "You have " + plural(player.balls.rock, finishName("rock")) + " remaining.", safchan);
         this.saveGame(player);
     };
@@ -10760,6 +10768,10 @@ function Safari() {
         }
         if (!currentPokemon) {
             safaribot.sendMessage(src, "No wild Pokémon around!", safchan);
+            return;
+        }
+        if (contestCount > 0 && contestForfeited.contains(player.idnum)) {
+            safaribot.sendMessage(src, "You forfeited this contest, so you can't feed any Pokémon from the contest!", safchan);
             return;
         }
         if (wildEvent) {
@@ -16787,7 +16799,29 @@ function Safari() {
         this.inboxMessage(targetPlayer, "[" + sys.name(src) + "] " + msg, false);
         this.saveGame(player);
         this.saveGame(targetPlayer);
+    };
+    this.setEnableSellPrompt = function(src, data) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
         
+        if (!["on", "off"].contains(data)) {
+            safaribot.sendHtmlMessage(src, "You can edit your sell prompt settings here. Sell prompts are links that appear after you catch a wild Pokémon that allow you to instantly sell that Pokémon to the NPC. A sell prompt will never appear after you catch a rare Pokémon such as Legendaries or Shinies.", safchan);
+            safaribot.sendHtmlMessage(src, "Your sell prompts are currently {0}. Use {1} to change it!".format((player.sellPrompt ? "enabled" : "disabled"), link("/sellprompt " + (player.sellPrompt ? "off" : "on"))), safchan);
+            return;
+        }
+        
+        if (data === "off") {
+            player.sellPrompt = false;
+            safaribot.sendHtmlMessage(src, "Sell prompts will now be <b>disabled</b> after catching a wild Pokémon!", safchan);
+        }
+        else {
+            player.sellPrompt = true;
+            safaribot.sendHtmlMessage(src, "Sell prompts will now be <b>enabled</b> after catching a wild Pokémon!", safchan);
+        }
+
+        safari.saveGame(player);
     };
     this.setEnableMasterBall = function(src, data) {
         if (!validPlayers("self", src)) {
@@ -17041,7 +17075,7 @@ function Safari() {
         megaPacker: "This costume's boosted perks have a 10% higher effect cap",
         haggler: "Increased chance of getting a discounted item stock at the market",
         extraBuyBonus: "Obtain extra patronage items from the market",
-        tripleChance: "Increased chance of triple-cloning a Pokémon",
+        tripleChance: "Increased chance of double-cloning a Pokémon",
         towerLoot: "Earn extra rewards from participating in the Tower quest",
         extraTourRare: "Earn an extra " + finishName("rare") + " from Event Tournaments",
         extraTourMega: "Earn an extra " + finishName("mega") + " from winning Event Tournaments",
@@ -28711,6 +28745,16 @@ function Safari() {
                     out.status = (bias.freeze && chance(0.35) ? "freeze": out.status);
                     out.status = (bias.poison && chance(0.35) ? "poison": out.status);
                 }
+
+                if (out.status === "freeze") {
+                    if (!hasType(user.id, "Ice")) {
+                        out.statusChance *= 0.7;
+                        if (out.statusChance <= 0.01) {
+                            return { type: "none" };
+                        }
+                        out.statusChance = Math.min(0.5, effChance.status);
+                    }
+                }
                 out.type = eff;
             break;
             case "buff":
@@ -34404,7 +34448,8 @@ function Safari() {
         }
         var hasRaffle = false;
         var cantHold = [], pokeRew = 0, ing, reward = Array.isArray(rec.reward) ? rec.reward.random() : rec.reward;
-        
+        var mythReward = []; // store rare poke rewards to add to mythlog later
+
         for (e in reward) {
             asset = translateAsset(e);
             ing = rec.ingredients[e] || 0;
@@ -34421,6 +34466,7 @@ function Safari() {
                 }
             } else {
                 pokeRew += reward[e];
+                mythReward.push(plural(reward[e], poke(e)));
             }
         }
         if (pokeRew > 0 && player.pokemon.length - pokeIng + pokeRew > getPerkBonus(player, "box")) {
@@ -34502,6 +34548,9 @@ function Safari() {
                 if (lostRare.length > 0) {
                     sys.appendToFile(mythLog, now() + "|||" + readable(lostRare) + "::have been given to the Alchemist by " + sys.name(src) + "::\n");
                 }
+            }
+            if (mythReward.length > 0) {
+                sys.appendToFile(mythLog, now() + "|||" + readable(mythReward) + "::have been received from the Alchemist by " + sys.name(src) + " via the " + cap(item, true) + " recipe::\n");
             }
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Alchemist|||Gave " + translateStuff(rec.ingredients) + "|||Received " + readable(rew.gained) + "\n");
         }
@@ -36039,7 +36088,7 @@ function Safari() {
         var photos = player.photos, req, n = now();
         if (act === "*") {
             var obj, e, i, canFulfill, desc, t;
-            safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: I'm currently looking for the following photos. If you have any of those, use " + link("/quest journal:Number", null, true) + " to give them to me.", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: I'm currently looking for the following photos. If you have any of these, use " + link("/quest journal:Number", null, true) + " to give them to me.", safchan);
             for (e in photographQuest) {
                 obj = photographQuest[e];
                 canFulfill = false;
@@ -36179,12 +36228,12 @@ function Safari() {
                 giveStuff(player, "@celebrityTicket");
                 rewards.push(plural(1, "celebrityTicket"));
             }
-            giveStuff(player, "5@brush");
-            rewards.push(plural(5, "brush"));
+            giveStuff(player, "3@brush");
+            rewards.push(plural(3, "brush"));
         }
 
         if (rewards.length > 0) {
-            safaribot.sendMessage(src, "Editor-in-chief: You have been a great help with these photos! Here's some extra goodies for your hard work!", safchan);
+            safaribot.sendMessage(src, "Editor-in-chief: You have been a great help with these photos! Here are some extra goodies for your hard work!", safchan);
             safaribot.sendMessage(src, "You received " + readable(rewards) + "!", safchan);
         }
         
@@ -36869,14 +36918,20 @@ function Safari() {
             line2 = link("/showcostume", costumeAlias(player.costume, false, true) + " (Lv. " + safari.getCostumeLevel(player) + ")");
         }
         var currentTime = now();
-        if (player.cooldowns.itemfinder <= currentTime && player.balls.itemfinder + player.balls.permfinder > 0) {
+        if (player.balls.itemfinder + player.balls.permfinder > 0) {
             line2 += "   " + link("/finder", "«Finder»");
         }
-        if (player.cooldowns.gacha <= currentTime && player.balls.gacha > 0) {
+        if (player.balls.gacha > 0) {
             line2 += "   " + link("/gacha", "«Gachapon»");
         }
-        if (player.cooldowns.bait <= currentTime && player.cooldowns.ball <= currentTime && contestCount <= 0 && player.balls.bait > 0) {
+        if (player.balls.bait > 0) {
             line2 += "   " + link("/bait", "«Bait»");
+        }
+        if (player.balls.golden > 0) {
+            line2 += "   " + link("/gbait", "«Golden Bait»");
+        }
+        if (player.balls.deluxe > 0) {
+            line2 += "   " + link("/dbait", "«Deluxe Bait»");
         }
         line2 += "   " + link("/info", "«Info»");
         line2 += "   " + link("/buy", "«Buy»");
@@ -53015,6 +53070,7 @@ function Safari() {
             "/cherishmsg [on|off]: Set whether you want your Cherished Pokémon to display the Cherished message when catching Pokémon.",
             "/contestforfeit: Allows you to withdraw from any ongoing contest.",
             "/rockscare: Allows you to scare a wild Pokémon away. You can only scare Pokémon that haven't been interacted with for " + plural(rockScareThreshold/1000, "second") + ".",
+            "/sellprompt [on|off]: Edit your sell prompt settings. Sell prompts are links that appear after you catch a wild Pokémon that allow you to instantly sell that Pokémon to the NPC. A sell prompt will never appear after you catch a rare Pokémon such as Legendaries or Shinies.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -53215,6 +53271,10 @@ function Safari() {
             }
             if (["cherishlink", "cherishballlink", "cherishmacro", "cherishballmacro"].contains(command)) {
                 safari.setEnableCherishBall(src, commandData);
+                return true;
+            }
+            if (["sellprompt", "sellprompts"].contains(command)) {
+                safari.setEnableSellPrompt(src, commandData);
                 return true;
             }
             if (command === "sell") {
@@ -59080,7 +59140,10 @@ function Safari() {
             else {
                 contestCount--;
                 contestExtension = 0;
-                if (contestCount === 0) {
+                if (contestCount === 0 && preparationPhase > 0) {
+                    contestCount += 1;
+                }
+                else if (contestCount === 0) {
                     contestMidPoint = false;
                     var winners = [], pokeWinners = [], maxCaught = 0, maxBST = 0, player, contestInfo = { finished: now() }, fullWinners = [];
                     for (var e in contestCatchers) {
@@ -59333,8 +59396,10 @@ function Safari() {
                     safari.runPendingActive();
                     checkUpdate();
                 } else {
-                    if (!currentPokemon && (chance(0.092743 + (sys.playersOfChannel(safchan).length > 54 ? 0.011 : 0)) || ((lastWild > now() + 12000 && (chance(0.25))) )) ) {
-                        var amt = chance(0.05919) ? (chance(0.35) ? 3 : 2) : 1;
+                    var timeSinceLastWild = Math.floor((now() - lastWild) / 1000);
+                    var wildChance = Math.max(0.1, 0.02 * timeSinceLastWild);
+                    if (!currentPokemon && chance(wildChance)) {
+                        var amt = chance(0.05919) ? (chance(0.35) ? (chance(0.042069) ? 4 : 3) : 2) : 1;
                         if (currentTheme && (chance(0.02)) && (currentTheme === "seasonal" || (currentTheme === "seasonal2"))) {
                             amt++;
                         }
