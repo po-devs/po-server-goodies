@@ -28752,7 +28752,7 @@ function Safari() {
                         if (out.statusChance <= 0.01) {
                             return { type: "none" };
                         }
-                        out.statusChance = Math.min(0.5, effChance.status);
+                        out.statusChance = Math.min(0.5, out.statusChance);
                     }
                 }
                 out.type = eff;
