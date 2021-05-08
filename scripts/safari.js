@@ -34466,7 +34466,7 @@ function Safari() {
                 }
             } else {
                 pokeRew += reward[e];
-                mythReward.push(plural(reward[e], poke(e)));
+                mythReward.push(plural(reward[e], e));
             }
         }
         if (pokeRew > 0 && player.pokemon.length - pokeIng + pokeRew > getPerkBonus(player, "box")) {
