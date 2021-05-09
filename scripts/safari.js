@@ -34493,7 +34493,7 @@ function Safari() {
                 if (asset.type === "poke") {
                     lostPoke = true;
                     if (isRare(asset.id)) {
-                        lostRare.push(poke(asset.id));
+                        lostRare.push(plural(rec.failUses[e], poke(asset.id)));
                     }
                     lostStuff[e] = rec.failUses[e];
                 }
@@ -34516,7 +34516,7 @@ function Safari() {
                 if (asset.type === "poke") {
                     lostPoke = true;
                     if (isRare(asset.id)) {
-                        lostRare.push(poke(asset.id));
+                        lostRare.push(plural(rec.ingredients[e], poke(asset.id)));
                     }
                 }
             }
@@ -34525,7 +34525,7 @@ function Safari() {
                 if (asset.type === "poke" && reward[e] < 0) {
                     lostPoke = true;
                     if (isRare(asset.id)) {
-                        lostRare.push(poke(asset.id));
+                        lostRare.push(plural(reward[e], poke(asset.id)));
                     }
                 }
             }
