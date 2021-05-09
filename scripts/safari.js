@@ -18929,14 +18929,18 @@ function Safari() {
         // target  = Action's target (Pokémon caught, photographed, quest finished, etc)
         // value  = How many of target this action accomplished (How many Pokémon were caught, how much money was earned, etc)
         // data   = Other info (Pokémon used, Pokéball used, etc
-        var e, m, p;
+        var e, m, p, g;
         if (player.missions) {
-            for (e = player.missions.length; e--; ) {
+            for (e = 0; e < player.missions.length; e++) {
                 m = player.missions[e];
                 if (!m.finished && m.count < m.goal) {
                     p = this.countProgress(m, action, target, value, data);
                     if (p) {
                         m.count = Math.min(m.count + p, m.goal);
+                        if (isPlaying(player.id)) {
+                            g = Math.min(m.count, m.goal) + "/" + m.goal;
+                            sys.sendHtmlMessage(sys.id(player.id), toColor("<timestamp/><b>±Mission:</b> ", "#3daa68") + m.desc + " " + (m.count >= m.goal ? toColor("(" + g + ")", "blue") : "("+g+")") + " -  Reward: " + translateStuff(m.reward) + " + " + plural(m.points, "mission point") + (m.finished ? toColor(" [Received]", "red") : ""), safchan);
+                        }
                     }
                 }
             }
@@ -34466,7 +34470,7 @@ function Safari() {
                 }
             } else {
                 pokeRew += reward[e];
-                if (isRare(getInputPokemon(e).num)) {
+                if (isRare(getInputPokemon(e).id)) {
                     mythReward.push(plural(reward[e], e));
                 }
             }
