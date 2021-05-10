@@ -7925,8 +7925,9 @@ function Safari() {
                 var pickedForm = sys.rand(0, wildForms[num] + 1);
                 num = pokeInfo.calcForme(num, pickedForm);
             }
-            if (amount === 1 && dailyBoost && dailyBoost.pokemon === pokeInfo.species(num) && shinyRand < 2 && !noDailyBonusForms.contains(num)) {
+            if (dailyBoost && dailyBoost.pokemon === pokeInfo.species(num) && shinyRand < 2 && !noDailyBonusForms.contains(num)) {
                 shiny = true; // wild botd mon has 2x chance to be shiny
+                amount = 1;
             }
             if (noShinySprite.indexOf(num) !== -1) {
                 shiny = false;
@@ -8145,8 +8146,21 @@ function Safari() {
                 if (canHaveAbility(leader, abilitynum("Tinted Lens"))) {
                     abilityMessageList[onChannel[e]].push("Your {0}'s Tinted Lens mitigates type resistances!".format(poke(leader, true)));
                 }
-                if (canHaveAbility(leader, abilitynum("Keen Eye"))) {
+                if (canHaveAbility(leader, abilitynum("Keen Eye")) && player.balls.lens > 0) {
                     abilityMessageList[onChannel[e]].push("Your {0}'s Keen Eye gives you a better chance of taking higher quality photos!".format(poke(leader, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Simple"))) {
+                    abilityMessageList[onChannel[e]].push("Your {0}'s Simple intensifies type matchups!".format(poke(leader, true)));
+                }
+
+                var ignoreRules = [12, 109]; // Oblivious, Unaware
+                if (contestCount > 0 && currentRules) {
+                    for (var i = 0; i < ignoreRules.length; i++) {
+                        if (canHaveAbility(leader, ignoreRules[i])) {
+                            abilityMessageList[onChannel[e]].push("Your {0}'s {1} ignores contest buffs and nerfs!".format(poke(leader, true), abilityOff(ignoreRules[i])));
+                            break;
+                        }
+                    }
                 }
 
                 var abilBoosted = [];
@@ -9353,7 +9367,12 @@ function Safari() {
             wType1 = currentTypeOverride;
         }
         var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(usingPokemon, abilitynum("Contrary")) && !ignoresWildAbilities(player));
-        var select = { levitate: canHaveAbility(usingPokemon, abilitynum("Levitate")) && !ignoresWildAbilities(player), scrappy: canHaveAbility(leader, abilitynum("Scrappy")), tintedLens: canHaveAbility(leader, abilitynum("Tinted Lens")) };
+        var select = {
+            levitate: canHaveAbility(usingPokemon, abilitynum("Levitate")) && !ignoresWildAbilities(player),
+            scrappy: canHaveAbility(leader, abilitynum("Scrappy")),
+            tintedLens: canHaveAbility(leader, abilitynum("Tinted Lens")),
+            simple: canHaveAbility(leader, abilitynum("Simple"))
+        };
         if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
             if (ball === "mono") {
                 typeBonus = this.checkEffective([wType1, wType2], (pType2 === "???" || !player.monoSecondary ? [pType1] : [pType2]), !inverse);
@@ -9543,6 +9562,15 @@ function Safari() {
         var costumeMod = 1;
         if (story) {
             rulesMod = storyMultiplier;
+        }
+        if (rulesMod[0] !== 1) {
+            var ignoreRules = [12, 109]; // Oblivious, Unaware
+            for (var i = 0; i < ignoreRules.length; i++) {
+                if (canHaveAbility(leader, ignoreRules[i])) {
+                    rulesMod = [1, false];
+                    break;
+                }
+            }
         }
         if (leader === player.starter || player.starter2.contains(leader)) {
             if (player.costume === "preschooler") {
@@ -10601,8 +10629,18 @@ function Safari() {
             }
         }
 
-        if (select && select.tintedLens && result <= 0.5) {
-            result *= 2;
+        if (select) {
+            if (select.tintedLens && result <= 0.5) {
+                result *= 2;
+            }
+            if (select.simple) {
+                if (result > 1) {
+                    result *= 2;
+                }
+                else if (result < 1) {
+                    result /= 2;
+                }
+            }
         }
         if (atk[1] !== "???") {
             typeCount++;
