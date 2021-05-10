@@ -3285,8 +3285,8 @@ function Safari() {
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
     }
-    function plural(qty, string, forceNumber) {
-        var input = getInput(string);
+    function plural(qty, string, forceNumber, forceRawString) {
+        var input = forceRawString ? string : getInput(string);
         var q = parseFloat(qty);
         var plur = isNaN(q) || Math.abs(q) !== 1;
         qty = addComma(qty);
@@ -10935,7 +10935,7 @@ function Safari() {
         if (player.photos.length >= 20) {
             safaribot.sendMessage(src, "Your camera's memory is now full! You need to free up some space to take more photos!", safchan);
         } else {
-            safaribot.sendMessage(src, "You can still take " + (20-player.photos.length) + " photo(s)!", safchan);
+            safaribot.sendMessage(src, "You can still take " + plural(20-player.photos.length, "photo", false, true) + "!", safchan);
         }
         player.cooldowns.ball = currentTime + cooldown;
         this.missionProgress(player, "photo", currentPokemon, 1, { photo: photo });
@@ -18929,7 +18929,7 @@ function Safari() {
         // target  = Action's target (Pokémon caught, photographed, quest finished, etc)
         // value  = How many of target this action accomplished (How many Pokémon were caught, how much money was earned, etc)
         // data   = Other info (Pokémon used, Pokéball used, etc
-        var e, m, p, g;
+        var e, m, p, g, src;
         if (player.missions) {
             for (e = 0; e < player.missions.length; e++) {
                 m = player.missions[e];
@@ -18938,8 +18938,9 @@ function Safari() {
                     if (p) {
                         m.count = Math.min(m.count + p, m.goal);
                         if (isPlaying(player.id)) {
+                            src = sys.id(player.id);
                             g = Math.min(m.count, m.goal) + "/" + m.goal;
-                            sys.sendHtmlMessage(sys.id(player.id), toColor("<timestamp/><b>±Mission:</b> ", "#3daa68") + m.desc + " " + (m.count >= m.goal ? toColor("(" + g + ")", "blue") : "("+g+")") + " -  Reward: " + translateStuff(m.reward) + " + " + plural(m.points, "mission point") + (m.finished ? toColor(" [Received]", "red") : ""), safchan);
+                            sys.sendHtmlMessage(src, toColor("<timestamp/><b>±Mission:</b> ", "#3daa68") + "<i>" + m.desc + " " + (m.count >= m.goal ? toColor("(" + g + ")", "blue") : "("+g+")") + " -  Reward: " + translateStuff(m.reward) + " + " + plural(m.points, "mission point") + (m.finished ? toColor(" [Received]", "red") : "") + "</i>", safchan);
                         }
                     }
                 }
