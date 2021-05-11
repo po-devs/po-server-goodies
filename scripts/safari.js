@@ -9563,7 +9563,7 @@ function Safari() {
         if (story) {
             rulesMod = storyMultiplier;
         }
-        if (rulesMod[0] !== 1) {
+        if (currentRules) {
             var ignoreRules = [12, 109]; // Oblivious, Unaware
             for (var i = 0; i < ignoreRules.length; i++) {
                 if (canHaveAbility(leader, ignoreRules[i])) {
@@ -23055,6 +23055,7 @@ function Safari() {
     function Battle2(p1, p2, opt, p3, p4, select, viewers, difficulty, select2) {
         this.battle2 = true;
         this.paused = false;
+        this.pendingPause = false;
         this.totalPauseTime = 0;
         this.pauseLimit = 600 * 3; // in seconds
         this.tagBattle = false;
@@ -23777,10 +23778,19 @@ function Safari() {
         }
     };
     Battle2.prototype.nextTurn = function() {
-        if (!isPlaying(this.name1) && this.phase !== "preview" && !this.canPickMoves && this.npcBattle && !this.paused && this.totalPauseTime < this.pauseLimit) {
-            this.sendToViewers(toColor("<b>The battle was paused since {0} left the channel! (Battle can only remain paused for {1})</b>".format(this.name1, timeString(this.pauseLimit - this.totalPauseTime)), "crimson"));
-            this.paused = true;
-            return;
+        if (this.phase !== "preview" && !this.canPickMoves && this.npcBattle && !this.paused && this.totalPauseTime < this.pauseLimit) {
+            if (!isPlaying(this.name1)) {
+                this.sendToViewers(toColor("<b>The battle was paused since {0} left the channel! (Battle can only remain paused for {1})</b>".format(this.name1, timeString(this.pauseLimit - this.totalPauseTime)), "crimson"));
+                this.paused = true;
+                this.pendingPause = false;
+                return;
+            }
+            else if (this.pendingPause) {
+                this.sendToViewers(toColor("<b>The battle has been paused! Note: The battle will automatically be unpaused after {0}.</b>".format(timeString(this.pauseLimit - this.totalPauseTime)), "crimson"));
+                this.paused = true;
+                this.pendingPause = false;
+                return;
+            }
         }
         if (this.phase === "preview") {
             this.subturn++;
@@ -25576,17 +25586,20 @@ function Safari() {
                 this.sendMessage(name, "You can't pause a player vs player battle!");
                 return;
             }
-            if (this.canPickMoves) {
-                this.sendMessage(name, "You can't pause during move selection!");
-                return;
-            }
-            if (this.phase === "preview") {
-                this.sendMessage(name, "You can't pause during team preview!");
-                return;
-            }
             if (data.toLowerCase() === "pause") {
                 if (!this.paused && this.totalPauseTime > this.pauseLimit) {
                     this.sendMessage(name, "You can't pause this battle for any longer!");
+                    return;
+                }
+                if (this.canPickMoves || this.phase === "preview") {
+                    if (this.pendingPause) {
+                        this.sendMessage(name, "The pending pause was cancelled!");
+                        this.pendingPause = false;
+                    }
+                    else {
+                        this.sendMessage(name, "The battle will be paused at the next opportunity!");
+                        this.pendingPause = true;
+                    }
                     return;
                 }
                 this.paused = !this.paused;
