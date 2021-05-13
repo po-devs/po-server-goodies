@@ -484,6 +484,11 @@ function Safari() {
                 level: 1,
                 skills: [],
                 exp: 0
+            },
+            journalist: {
+                level: 1,
+                skills: [],
+                exp: 0
             }
         },
         records: {
@@ -625,7 +630,9 @@ function Safari() {
             casesSolved: 0,
             fastestCaseSolved: 0,
             medalsWon: 0,
-            wildsScared: 0
+            wildsScared: 0,
+            goodJournalSubmission: 0,
+            scientistPhotoSubmission: 0
         },
         photos: [],
         hideLB: [],
@@ -1264,7 +1271,7 @@ function Safari() {
         },
         battle: {
             icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 20,
-            effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offensive techniques, attacks deal more damage in NPC Battles.",
+            effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offensive techniques, attacks deal more damage in NPC Auto-Battles.",
             effect2: "Has slightly increased cooldown when sucessfully catching.",
             noAcq: "Accumulate {0} more Arena Points",
             expTypes: ["wintour", "arenasilver", "fighttower", "catch"],
@@ -1315,7 +1322,7 @@ function Safari() {
         rocket: {
             icon: 999, name: "rocket", fullName: "Rocket", aliases: ["rocket"], acqReq: 100, record: "notBaitedCaught", acqReq2: 150000, record2: "pokeSoldEarnings", rate: 0.05, rate2: 0.03,
             effect: "A master in deception. Years of trickery have granted a small chance to steal back a Pokémon given to NPCs!",
-            effect2: "Has less success befriending Pokémon in the daycare.",
+            effect2: "Has less success befriending Pokémon in the Daycare.",
             noAcq: "Catch {0} Pokémon attracted by other players and earn ${1} more from selling Pokémon",
             expTypes: ["stealpoke", "arenasilver", "wincontest", "catch", "winmafia"],
             expItem: "amulet",
@@ -1397,6 +1404,25 @@ function Safari() {
                 catchFairy: [12, 18],
                 betterFinder: [17, 19],
                 megaPacker: [20, 20]
+            }
+        },
+        journalist: {
+            icon: 327, name: "journalist", fullName: "Journalist", aliases: ["journalist", "journal", "photographer", "photo"], acqReq: 20, record: "goodJournalSubmission", acqReq2: 5, record2: "scientistPhotoSubmission", rate: 2, rate2: 1,
+            effect: "A master in photography. Keen spacial awareness grants you the best photo opportunities, allowing you to take higher quality photos than usual!",
+            effect2: "The Monger probably won't want anything to do with a nosy journalist...",
+            noAcq: "Complete {0} more Journal requests worth at least 50 points and submit {1} more photos to the Scientist",
+            expTypes: ["journal", "wincontest", "takephoto", "catch"],
+            expItem: "scarf",
+            skills: {
+                fasterPhotos: [3, 6],
+                photoBallBoost: [6, 7],
+                lowPhotoCD: [8, 11],
+                catchGhost: [10, 13],
+                smartPhoto: [11, 14],
+                moreJournalPoints: [15, 18],
+                revealAction: [16, 19],
+                revealMood: [16, 19],
+                scientistPhotoGuarantee: [20, 20]
             }
         },
         inver: {
@@ -8136,6 +8162,12 @@ function Safari() {
                         miscMessageList[onChannel[e]].push("The best Balls for you to use against the wild {0} are: {1}".format(poke(currentDisplay, true), bestBalls));
                     }
                 }
+                if (safari.hasCostumeSkill(player, "revealAction")) {
+                    miscMessageList[onChannel[e]].push("The wild {0} is currently {1}!".format(poke(currentDisplay, true), currentPokemonAction));
+                }
+                if (safari.hasCostumeSkill(player, "revealMood")) {
+                    miscMessageList[onChannel[e]].push("The wild's {0} mood is {1}!".format(poke(currentDisplay, true), currentPokemonMood));
+                }
                 if (player.options.leadAbilityMessages) {
                     if (ignore) {
                         abilityMessageList[onChannel[e]].push("Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(leader, true), abilityOff(ignore), poke(currentDisplay, true)));
@@ -8157,6 +8189,9 @@ function Safari() {
                     }
                     if (canHaveAbility(leader, abilitynum("Simple"))) {
                         abilityMessageList[onChannel[e]].push("Your {0}'s Simple intensifies type matchups!".format(poke(leader, true)));
+                    }
+                    if (canHaveAbility(leader, abilitynum("Sniper"))) {
+                        abilityMessageList[onChannel[e]].push("Your {0}'s Sniper boosts your catch rate against Pokémon baited by others!".format(poke(leader, true)));
                     }
 
                     var ignoreRules = [12, 109]; // Oblivious, Unaware
@@ -9547,6 +9582,14 @@ function Safari() {
                     break;
                 }
             }
+            if (this.hasCostumeSkill(player, "photoBallBoost")) {
+                costumeBonus *= costumeBoost(player, true);
+            }
+        }
+        if (ball === "luxury") {
+            if (this.hasCostumeSkill(player, "luxuryBallBoost")) {
+                costumeBonus *= costumeBoost(player, true);
+            }
         }
         if (currentTheme && currentRules && currentRules.ballBuff && currentRules.ballBuff.contains(ball)) {
             ballBonus *= 1.15;
@@ -9644,8 +9687,10 @@ function Safari() {
         if (canHaveAbility(leader, abilitynum("Technician")) && ballBonus < itemData.great.ballBonus) {
             ballBonus = itemData.great.ballBonus;
         }
+
+        var abilityBoost = 1;
         if (currentThemeEffect) {
-            var abilBoosted = [], boosted = 1;
+            var abilBoosted = [];
             if (currentThemeEffect == "rain") {
                 abilBoosted = [abilitynum("Swift Swim"), abilitynum("Hydration"), abilitynum("Rain Dish"), abilitynum("Dry Skin")];
             } else if (currentThemeEffect == "sunny") {
@@ -9657,12 +9702,15 @@ function Safari() {
             }
             for (var i = 0; i < abilBoosted.length; i++) {
                 if (canHaveAbility(leader, abilBoosted[i])) {
-                    boosted = 1.3;
+                    abilityBoost *= 1.3;
                     break;
                 }
             }
         }
-        var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
+        if (isBaited && canHaveAbility(leader, abilitynum("Sniper"))) {
+            abilityBoost *= 1.3;
+        }
+        var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff * abilityBoost + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true && !theory) {
             if (player.helds.length > 0 && player.helds[0] == 2 && !needsPechaCleared.contains(player.id.toLowerCase())) {
                 player.berries.pecha = true;
@@ -10955,10 +11003,18 @@ function Safari() {
         if (canHaveAbility(leader, abilitynum("Keen Eye"))) {
             for (var i = -5, q = 0; i <= 5; i++, q++) {
                 qualityOdds[q] += i;
+                if (i >= 0 && player.costume === "journalist") {
+                    qualityOdds[q] += costumeData.journalist.rate;
+                }
             }
         }
 
         var quality = randomSample(qualityOdds);
+
+        if (safari.hasCostumeSkill(player, "scientistPhotoGuarantee")) {
+            quality = Math.max(7, quality);
+        }
+
         var target = currentDisplay;
         if (target === 0 || wildEvent) {
             target = currentPokemon;
@@ -10982,7 +11038,9 @@ function Safari() {
         safaribot.sendHtmlMessage(src, toColor("You took a photo of " + this.describePhoto(photo) + "! [", "#DD4411") + link("/album delete:" + (player.photos.length+1), "Delete", true) + toColor("]", "#DD4411"), safchan);
         
         player.records.photosTaken += 1;
+
         player.photos.push(photo);
+        safari.costumeEXP(player, "takephoto");
         if (player.photos.length >= 20) {
             safaribot.sendMessage(src, "Your camera's memory is now full! You need to free up some space to take more photos!", safchan);
         } else {
@@ -10998,6 +11056,21 @@ function Safari() {
             this.pokemonFlee();
         } else {
             this.changeWildAction("photo");
+        }
+
+        var e, i, t, desc;
+        if (safari.hasCostumeSkill(player, "smartPhoto") && photographQuest) {
+            for (e in photographQuest) {
+                obj = photographQuest[e];
+                if (safari.photoMatchesRequest(photo, obj)) {
+                    t = timeLeftString(obj.deadline);
+                    if (obj.deadline - now() <= (3*60*1000)) {
+                        t = toColor(t, "red");
+                    }
+                    desc = "{0}. A photo of {1} (Score: {2} | Deadline: {3})".format(e, safari.translatePhotoRequest(obj), obj.fscore, t);
+                    safaribot.sendHtmlMessage(src, toColor(desc, player.quests.journal.cooldown > now() ? "crimson" : "magenta") + " [" + link("/quest journal:" + e, "You can fulfill this request" + (player.quests.journal.cooldown > now() ? " in " + timeLeftString(player.quests.journal.cooldown) : "")) + "]", safchan);
+                }
+            }
         }
     };
     this.changeWildMood = function(attacker) {
@@ -11017,8 +11090,18 @@ function Safari() {
         currentPokemonMoodRate += mod;
         currentPokemonMoodRate = Math.max(1, Math.min(30, currentPokemonMoodRate));
         var newMood = ["Negative", "Neutral", "Positive"][Math.ceil(currentPokemonMoodRate/10)-1];
-        if (newMood !== previousMood) {
+        if (newMood !== previousMood && currentPokemon) {
             currentPokemonMood = photoMood[newMood].random();
+            var players = sys.playersOfChannel(safchan);
+            for (var id in players) {
+                var player = getAvatar(players[id]);
+                if (!player) {
+                    continue;
+                }
+                if (safari.hasCostumeSkill(player, "revealMood")) {
+                    safaribot.sendMessage(players[id], "The wild {0}'s mood became {1}!".format(poke(currentDisplay, true), currentPokemonMood), safchan);
+                }
+            }
         }
     };
     this.changeWildAction = function(action) {
@@ -11028,6 +11111,7 @@ function Safari() {
         var id = currentPokemon;
         var t = type1(id);
         var list = photoActions[t];
+        var newAction;
         
         t = type2(id);
         if (t !== "???") {
@@ -11044,7 +11128,21 @@ function Safari() {
             type = action === "photo" ? "Positive" : "Negative";
         }
         list = removeDuplicates(list.concat(photoActions[type]));
-        currentPokemonAction = list.random();
+
+        newAction = list.random();
+        if (currentPokemonAction !== newAction && currentPokemon) {
+            currentPokemonAction = newAction;
+            var players = sys.playersOfChannel(safchan);
+            for (var id in players) {
+                var player = getAvatar(players[id]);
+                if (!player) {
+                    continue;
+                }
+                if (safari.hasCostumeSkill(player, "revealAction")) {
+                    safaribot.sendMessage(players[id], "The wild {0} started {1}!".format(poke(currentDisplay, true), currentPokemonAction), safchan);
+                }
+            }
+        }
     };
     this.describePhoto = function(photo) {
         var qualityName = photoQuality[photo.score];
@@ -13141,7 +13239,7 @@ function Safari() {
             return;
         }
         if (commandData === "*") {
-            safaribot.sendMessage(src, "Your favorite ball is " + finishName(player.options.favoriteBall) + "! This ball will be thrown automatically if you do not specify a ball when throwing.", safchan);
+            safaribot.sendHtmlMessage(src, "Your favorite ball is " + finishName(player.options.favoriteBall) + "! This ball will be thrown automatically if you do not specify a ball when throwing. Use " + link("/options favorite:[Ball Name]") + " to set a different favorite Ball!", safchan);
             return;
         }
 
@@ -16866,7 +16964,7 @@ function Safari() {
                         safari.saveGame(player);
                         break;
                     default:
-                        safaribot.sendHtmlMessage(src, "Your party and battles are currently <b>{0} other players</b>! Use /options view:[on|off] to change it.".format(player.options.visible ? "visible to" : "hidden from"), safchan);
+                        safaribot.sendHtmlMessage(src, "Your party and battles are currently <b>{0} other players</b>! Use {1} to change it.".format(player.options.visible ? "visible to" : "hidden from", link("/options view:" + (player.options.visible ? "off" : "on"))), safchan);
                         break;
                 }
                 break;
@@ -16883,7 +16981,7 @@ function Safari() {
                         safari.saveGame(player);
                         break;
                     default:
-                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b> when a contest or event starts! Use /options flashme:[on|off] to change it.".format(player.options.flashme ? "being flashed" : "not being flashed"), safchan);
+                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b> when a contest or event starts! Use {1} to change it.".format(player.options.flashme ? "being flashed" : "not being flashed", link("/options flashme:" + (player.options.flashme ? "off" : "on"))), safchan);
                         break;
                 }
                 break;
@@ -16900,11 +16998,13 @@ function Safari() {
                         safari.saveGame(player);
                         break;
                     default:
-                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b>! Use /options smallbox:[on|off] to change it.".format(player.options.smallBox ? "using a narrower box view" : "using a regular box view"), safchan);
+                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b>! Use {1} to change it.".format(player.options.smallBox ? "using a narrower box view" : "using a regular box view", link("/options smallbox:" + (player.options.smallBox ? "off" : "on"))), safchan);
                         break;
                 }
                 break;
             case "trade":
+            case "trades":
+            case "trading":
                 switch (dataInput) {
                     case "on":
                         player.options.trading = true;
@@ -16917,7 +17017,7 @@ function Safari() {
                         safari.saveGame(player);
                         break;
                     default:
-                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b>! Use /options trade:[on|off] to change it.".format(player.options.trading ? "accepting trade requests" : "rejecting trade requests"), safchan);
+                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b>! Use {1} to change it.".format(player.options.trading ? "accepting trade requests" : "rejecting trade requests", link("/options trade:" + (player.options.trading ? "off" : "on"))), safchan);
                         break;
                 }
                 break;
@@ -17232,7 +17332,8 @@ function Safari() {
         "scientist": "Earn " + es(finishName("silver")) + " from the Scientist quest",
         "arenasilver": "Earn " + es(finishName("silver")) + " from the Arena quest",
         "soda": "Win " + es(finishName("soda")) + " from Event Trivia games",
-        "stealpoke": "Snag Pokémon from NPCs"
+        "stealpoke": "Snag Pokémon from NPCs",
+        "takephoto": "Take photos of Pokémon"
     };
     var costumeSkillInfo = {
         botdboost: "Catch rate increased when using the Pokémon-of-the-Day",
@@ -17263,6 +17364,7 @@ function Safari() {
         lightningBallBoost: "Higher catch rate when using " + es(finishName("lightning")),
         spyBallBoost: "Higher catch rate when using " + es(finishName("spy")),
         luxuryBallBoost: "Higher catch rate when using " + es(finishName("luxury")),
+        photoBallBoost: "Higher catch rate when using " + es(finishName("photo")),
         mirrorBallBoost: "Higher catch rate when using " + es(finishName("mirror")),
         premierBallBoost: "Higher catch rate when using " + es(finishName("premier")),
         levelBallBoost: "Higher catch rate when using " + es(finishName("level")),
@@ -17289,6 +17391,7 @@ function Safari() {
         catchDark: "Increased chance to catch Dark-type Pokémon",
         catchFairy: "Increased chance to catch Fairy-type Pokémon",
         catchPoison: "Increased chance to catch Poison-type Pokémon",
+        catchGhost: "Increased chance to catch Ghost-type Pokémon",
         catchSing: "Increased chance to catch Pokémon that can learn Sing",
         catchThief: "Increased chance to catch Pokémon that can learn Thief",
         catchRockClimb: "Increased chance to catch Pokémon that can learn Rock Climb",
@@ -17317,7 +17420,12 @@ function Safari() {
         extraScientistSilver: "Earn extra " + es(finishName("silver")) + " from the Scientist quest",
         extraTriviaSoda: "Earn extra " + es(finishName("soda")) + " from Event Trivia games",
         extraMafiaShady: "Earn extra " + es(finishName("shady")) + " from Event Mafia games",
-        extraApricornsFromContest: "Earn extra apricorns from winning Contests"
+        extraApricornsFromContest: "Earn extra apricorns from winning Contests",
+        moreJournalPoints: "Earn extra Journal points from the Journal quest",
+        smartPhoto: "Notifies you if a photo you just took matches any current Journal request",
+        revealAction: "Instantly reveals a wild Pokémon's current action",
+        revealMood: "Instantly reveals a wild Pokémon's current mood",
+        scientistPhotoGuarantee: "Any photos you take of the Scientist's current research subject are guaranteed to be at least Great quality"
     };
     this.showCostumeInfo = function(src, commandData) {
         var player = getAvatar(src);
@@ -17469,6 +17577,7 @@ function Safari() {
             case "catchwater": exp = 20; break;
             case "catchlowbst": exp = 20; break;
             case "catchhighbst": exp = 20 + Math.floor((val - 540)*0.75); break;
+            case "takephoto": exp = 10; break;
             case "clonepoke": exp = 20 * val; break;
             case "daycareplay": exp = 5; break;
             case "fighttower": exp = (2 * (5 + val + (val > 10 ? (val - 10) : 0) + (val > 15 ? (2 * (val - 15)) : 0))); break;
@@ -31747,6 +31856,7 @@ function Safari() {
                     }
 
                     player.records.scientistEarnings += rew;
+                    player.records.scientistPhotoSubmission += 1;
                     player.quests.scientist.photo = id;
                     safari.saveGame(player);
                     sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Scientist|||Showed a photo of " + safari.describePhoto(player.photos[index]) + "|||Received " + plural(rew, "silver") + "\n");
@@ -36401,6 +36511,10 @@ function Safari() {
             return;
         }
         var score = Math.round(req.fscore * (0.5 + (photo.score / 10)) * (1 + this.getFortune(player, "journalbuff", 0)));
+        if (safari.hasCostumeSkill(player, "moreJournalPoints")) {
+            score = Math.round(score * 1.2);
+        }
+        
         var rewLevel = Math.floor(score/30);
         var rew;
         switch (rewLevel) {
@@ -36485,6 +36599,7 @@ function Safari() {
         
         if (score >= 50) {
             safari.detectiveClue(player.idnum, "journal", src);
+            player.records.goodJournalSubmission += 1;
         }
         
         sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Journal|||Submitted photo of " + this.describePhoto(photo) + "|||Fulfilled request for " + this.translatePhotoRequest(req) + ", received " + rewardName + (rewards.length > 0 ? ", " + readable(rewards) : "") + " and " + plural(score, "Photo Point") + "\n");
@@ -36980,6 +37095,10 @@ function Safari() {
         var trainerSprite = '<img src="' + base64trainers.monger + '">';
         if (stopQuests.monger) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Monger: I will have to leave the town for a while, contact me again later...", safchan);
+            return;
+        }
+        if (player.costume === "journalist") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Monger: Hey hey, no cameras here. What are you, some kind of journalist? Quit snooping around if you know what's good for you...", safchan);
             return;
         }
         var set = data[0];
