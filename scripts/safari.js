@@ -55522,14 +55522,14 @@ function Safari() {
                 safaribot.sendMessage(src, "Corresponding Pokémon: " + out.join(","), safchan);
                 return true;
             }
-            if (command === "clueresearch") {
+            if (command === "clueresearch" || command === "clueresearch2") {
             	var foundTypes = {}, reg, typing;
             	for (var j = 1; j < highestDexNum; j++) {
-            		reg = generation(highestDexNum) + "";
+            		reg = generation(highestDexNum, true) + "";
             		if (!foundTypes.hasOwnProperty(reg)) {
             			foundTypes[reg] = {};
             		}
-            		typing = type1(j) + ", " + type2(j);
+            		typing = type1(j) + "," + (type2(j) == "???" ? "" : type2(j));
             		if (!foundTypes[reg].hasOwnProperty(typing)) {
             			foundTypes[reg][typing] = [];
             		}
@@ -55538,12 +55538,21 @@ function Safari() {
             	var out = [];
             	for (var x in foundTypes) {
             		for (var y in foundTypes[x]) {
+						if (command == "clueresearch2") {
+							if (foundTypes[x][y].length <= 2) {
+								out.push(poke(foundTypes[x][y][0]));
+								if (foundTypes[x][y].length == 2) {
+									out.push(poke(foundTypes[x][y][0]));
+								}
+							}
+							continue;
+						}
             			if (foundTypes[x][y].length == 1) {
             				out.push(poke(foundTypes[x][y][0]));
             			}
             		}
             	}
-                safaribot.sendMessage(src, "Pokémon with unique typing within their region: " + out.join(", ") + "( " + out.length + ")", safchan);
+                safaribot.sendMessage(src, "Pokémon with unique typing within their region: " + out.join(", ") + " (" + out.length + ")", safchan);
                 return true;
             }
             if (command === "clearcpksconfirm") {
