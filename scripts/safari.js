@@ -8166,7 +8166,7 @@ function Safari() {
                     miscMessageList[onChannel[e]].push("The wild {0} is currently {1}!".format(poke(currentDisplay, true), currentPokemonAction));
                 }
                 if (safari.hasCostumeSkill(player, "revealMood")) {
-                    miscMessageList[onChannel[e]].push("The wild's {0} mood is {1}!".format(poke(currentDisplay, true), currentPokemonMood));
+                    miscMessageList[onChannel[e]].push("The wild's {0} is feeling {1}!".format(poke(currentDisplay, true), currentPokemonMood));
                 }
                 if (player.options.leadAbilityMessages) {
                     if (ignore) {
@@ -11099,7 +11099,7 @@ function Safari() {
                     continue;
                 }
                 if (safari.hasCostumeSkill(player, "revealMood")) {
-                    safaribot.sendMessage(players[id], "The wild {0}'s mood became {1}!".format(poke(currentDisplay, true), currentPokemonMood), safchan);
+                    safaribot.sendMessage(players[id], "The wild {0} began feeling {1}!".format(poke(currentDisplay, true), currentPokemonMood), safchan);
                 }
             }
         }
