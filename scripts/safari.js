@@ -55522,6 +55522,30 @@ function Safari() {
                 safaribot.sendMessage(src, "Corresponding Pokémon: " + out.join(","), safchan);
                 return true;
             }
+            if (command === "clueresearch") {
+            	var foundTypes = {}, reg, typing;
+            	for (var j = 1; j < highestDexNumber; j++) {
+            		reg = generation(highestDexNumber) + "";
+            		if (!foundTypes.hasOwnProperty(reg)) {
+            			foundTypes[reg] = {};
+            		}
+            		typing = type1(j) + ", " + type2(j);
+            		if (!foundTypes[reg].hasOwnProperty(typing)) {
+            			foundTypes[reg][typing] = [];
+            		}
+            		foundTypes[reg][typing].push(j);
+            	}
+            	var out = [];
+            	for (var x in foundTypes) {
+            		for (var y in foundTypes[x]) {
+            			if (foundTypes[x][y].length == 1) {
+            				out.push(poke(foundTypes[x][y][0]));
+            			}
+            		}
+            	}
+                safaribot.sendMessage(src, "Pokémon with unique typing within their region: " + out.join(", ") + "( " + out.length + ")", safchan);
+                return true;
+            }
             if (command === "clearcpksconfirm") {
                 celebrityPKs = {};
                 return;
