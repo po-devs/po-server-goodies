@@ -55524,8 +55524,8 @@ function Safari() {
             }
             if (command === "clueresearch") {
             	var foundTypes = {}, reg, typing;
-            	for (var j = 1; j < highestDexNumber; j++) {
-            		reg = generation(highestDexNumber) + "";
+            	for (var j = 1; j < highestDexNum; j++) {
+            		reg = generation(highestDexNum) + "";
             		if (!foundTypes.hasOwnProperty(reg)) {
             			foundTypes[reg] = {};
             		}
