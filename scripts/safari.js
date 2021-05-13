@@ -8996,32 +8996,34 @@ function Safari() {
         }
         return false;
     };
-    this.isInTheme = function(pokeId, name) { // this checks poke validity in a theme excluding alters and across all periods of the day, and if a theme has daily variations, across all daily variations of that theme
+    this.isInTheme = function(pokeId, name, baseOnly) { // this checks poke validity in a theme excluding alters and across all periods of the day, and if a theme has daily variations, across all daily variations of that theme
         pokeId = parseInt(pokeId);
         var theme = contestThemes[name];
         
         if (!theme) {
             return false;
         }
-        
-        var variations = theme.variations || {};
-        for (var ef in variations) {
-            var variation = variations[ef];
+
+        if (!baseOnly) {
+            var variations = theme.variations || {};
+            for (var ef in variations) {
+                var variation = variations[ef];
+                
+                if (variation.contains(pokeId)) {
+                    return true;
+                }
+            }
+            var periods = ["night", "morning", "afternoon", "evening"];
             
-            if (variation.contains(pokeId)) {
-                return true;
+            for (var p = 0 ; p < periods.length; p++) {
+                if (theme[periods[p]] && theme[periods[p]].contains(pokeId)) {
+                    return true;
+                }
             }
-        }
-        var periods = ["night", "morning", "afternoon", "evening"];
-        
-        for (var p = 0 ; p < periods.length; p++) {
-            if (theme[periods[p]] && theme[periods[p]].contains(pokeId)) {
-                return true;
-            }
-        }
-        for (var day = 1; day <= 7; day++) {
-            if (theme.hasOwnProperty("day"+day) && theme["day"+day].contains(pokeId)) {
-                return true;
+            for (var day = 1; day <= 7; day++) {
+                if (theme.hasOwnProperty("day"+day) && theme["day"+day].contains(pokeId)) {
+                    return true;
+                }
             }
         }
         if (theme.exclude.contains(pokeId)) {
@@ -9097,10 +9099,13 @@ function Safari() {
         }
 
         var ascendingSpecies = function(a, b) {
-            return pokeInfo.species(a) - pokeInfo.species(b);
+            return pokeInfo.species(a) !== pokeInfo.species(b) ? pokeInfo.species(a) - pokeInfo.species(b) : pokeInfo.forme(a) - pokeInfo.forme(b);
         };
         var notExcluded = function(e) {
             return !contestThemes[theme].exclude.contains(e);
+        };
+        var finalFormat = function(pokeId) {
+            return pokeInfo.icon(pokeId) + " " + link("/bst " + pokeId, poke(pokeId));
         };
         var ret = {},
             include = contestThemes[theme].include.slice(0).sort(ascendingSpecies).filter(notExcluded),
@@ -9120,7 +9125,7 @@ function Safari() {
                     ret[contestThemes[theme]["day" + day + "name"]] = [];
                 }
                 if (isRare(dayIncludes[pokeId])) {
-                    ret[contestThemes[theme]["day" + day + "name"]].push(pokeInfo.icon(dayIncludes[pokeId]) + " " + link("/bst " + dayIncludes[pokeId], poke(dayIncludes[pokeId])));
+                    ret[contestThemes[theme]["day" + day + "name"]].push(dayIncludes[pokeId]);
                 }  // e.g. {"Festival": ["Jirachi, Furfrou-Kabuki"...], "Moon Festival": ["Lunala"], "Fire Festival": [""]}
             }
         }
@@ -9141,7 +9146,7 @@ function Safari() {
                     ret[key] = [];
                 }
                 if (isRare(variationIncludes[pokeId])) {
-                    ret[key].push(pokeInfo.icon(variationIncludes[pokeId]) + " " + link("/bst " + variationIncludes[pokeId], poke(variationIncludes[pokeId])));
+                    ret[key].push(variationIncludes[pokeId]);
                 }
             }
         }
@@ -9152,13 +9157,13 @@ function Safari() {
                     if (!ret.hasOwnProperty(contestThemes[theme].name + " [All Variations]")) {
                         ret[contestThemes[theme].name + " [All Variations]"] = [];
                     }
-                    ret[contestThemes[theme].name + " [All Variations]"].push(pokeInfo.icon(include[pokeId]) + " " + link("/bst " + include[pokeId], poke(include[pokeId])));
+                    ret[contestThemes[theme].name + " [All Variations]"].push(include[pokeId]);
                 }
                 else {
                     if (!ret.hasOwnProperty(contestThemes[theme].name)) {
                         ret[contestThemes[theme].name] = [];
                     }
-                    ret[contestThemes[theme].name].push(pokeInfo.icon(include[pokeId]) + " " + link("/bst " + include[pokeId], poke(include[pokeId])));
+                    ret[contestThemes[theme].name].push(include[pokeId]);
                 }
             } // e.g. {"Desert": ["Regirock, Registeel"...]}
         }
@@ -9170,9 +9175,118 @@ function Safari() {
                     ret[contestThemes[theme].alterName] = [];
                 }
                 if (isRare(alterIncludes[pokeId])) {
-                    ret[contestThemes[theme].alterName].push(pokeInfo.icon(alterIncludes[pokeId]) + " " + link("/bst " + alterIncludes[pokeId], poke(alterIncludes[pokeId])));
+                    ret[contestThemes[theme].alterName].push(alterIncludes[pokeId]);
                 } // e.g. {"Desert": ["Regirock, Registeel"...], "Cursed Pharaoh's Treasury":["Runerigus, Groudon"...]}
             }
+        }
+
+        for (var arr in ret) {
+            ret[arr] = removeDuplicates(ret[arr], true).sort(ascendingSpecies).map(finalFormat);
+        }
+        return ret;
+    };
+    this.getAllSpawnsInTheme = function(theme) {
+        if (!contestThemes.hasOwnProperty(theme)) {
+            return null;
+        }
+
+        var ascendingSpecies = function(a, b) {
+            return pokeInfo.species(a) !== pokeInfo.species(b) ? pokeInfo.species(a) - pokeInfo.species(b) : pokeInfo.forme(a) - pokeInfo.forme(b);
+        };
+        var notExcluded = function(e) {
+            return !contestThemes[theme].exclude.contains(e);
+        };
+        var finalFormat = function(pokeId) {
+            return pokeInfo.icon(pokeId) + " " + link("/bst " + pokeId, poke(pokeId));
+        };
+        var ret = {},
+            include = contestThemes[theme].include.slice(0).sort(ascendingSpecies).filter(notExcluded),
+            hasPermanentVariation = false;
+
+        for (var day = 1; day <= 7; day++) {
+            var dayIncludes = contestThemes[theme]["day"+day];
+            
+            if (!dayIncludes) {
+                continue;
+            }
+
+            hasPermanentVariation = true;
+            dayIncludes = dayIncludes.slice(0).sort(ascendingSpecies);
+            for (var pokeId in dayIncludes) {
+                if (!ret.hasOwnProperty(contestThemes[theme]["day" + day + "name"])) {
+                    ret[contestThemes[theme]["day" + day + "name"]] = [];
+                }
+                ret[contestThemes[theme]["day" + day + "name"]].push(dayIncludes[pokeId]); // e.g. {"Festival": ["Jirachi, Furfrou-Kabuki"...], "Moon Festival": ["Lunala"], "Fire Festival": [""]}
+            }
+        }
+
+        var variations = contestThemes[theme].variations || {};
+        for (var ef in variations) {
+            var variationIncludes = variations[ef];
+            var key = contestThemes[theme].name + " [" + cap(ef) + "]";
+            
+            if (!variationIncludes) {
+                continue;
+            }
+            
+            hasPermanentVariation = true;
+            variationIncludes = variationIncludes.slice(0).sort(ascendingSpecies);
+            for (var pokeId in variationIncludes) {
+                if (!ret.hasOwnProperty(key)) {
+                    ret[key] = [];
+                }
+                ret[key].push(variationIncludes[pokeId]);
+            }
+        }
+
+        for (var pokeId in include) {
+            if (hasPermanentVariation) { // theme has variations but they're in the base include i.e. will be in every variation
+                if (!ret.hasOwnProperty(contestThemes[theme].name + " [All Variations]")) {
+                    ret[contestThemes[theme].name + " [All Variations]"] = [];
+                }
+                ret[contestThemes[theme].name + " [All Variations]"].push(include[pokeId]);
+            }
+            else {
+                if (!ret.hasOwnProperty(contestThemes[theme].name)) {
+                    ret[contestThemes[theme].name] = [];
+                }
+                ret[contestThemes[theme].name].push(include[pokeId]);
+            }  // e.g. {"Desert": ["Regirock, Registeel"...]}
+        }
+
+        for (var i = 1; i < highestDexNum; i++) {
+            var forms = i in wildForms ? wildForms[i] : 0;
+            for (var j = 0; j < forms+1; j++) {
+                var pokeId = i + 65536 * j;
+                if (!this.isInTheme(pokeId, theme, true)) {
+                    continue;
+                }
+                if (hasPermanentVariation) { // theme has variations but they're in the base include i.e. will be in every variation
+                    if (!ret.hasOwnProperty(contestThemes[theme].name + " [All Variations]")) {
+                        ret[contestThemes[theme].name + " [All Variations]"] = [];
+                    }
+                    ret[contestThemes[theme].name + " [All Variations]"].push(pokeId);
+                }
+                else {
+                    if (!ret.hasOwnProperty(contestThemes[theme].name)) {
+                        ret[contestThemes[theme].name] = [];
+                    }
+                    ret[contestThemes[theme].name].push(pokeId);
+                }  // e.g. {"Desert": ["Regirock, Registeel"...]}
+            }
+        }
+        if (contestThemes[theme].alter) {
+            var alterIncludes = contestThemes[theme].alter.slice(0).sort(ascendingSpecies);
+            for (var pokeId in alterIncludes) {
+                if (!ret.hasOwnProperty(contestThemes[theme].alterName)) {
+                    ret[contestThemes[theme].alterName] = [];
+                }
+                ret[contestThemes[theme].alterName].push(alterIncludes[pokeId]); // e.g. {"Desert": ["Regirock, Registeel"...], "Cursed Pharaoh's Treasury":["Runerigus, Groudon"...]}
+            }
+        }
+
+        for (var arr in ret) {
+            ret[arr] = removeDuplicates(ret[arr], true).sort(ascendingSpecies).map(finalFormat);
         }
         return ret;
     };
@@ -9213,6 +9327,31 @@ function Safari() {
 
        for (var key in themeRares) {
            safaribot.sendHtmlMessage(src, "<b>{0}</b>: {1}".format(key, readable(themeRares[key])), safchan);
+       }
+
+       sys.sendMessage(src, "", safchan);
+    };
+    this.showThemeSpawns = function(src, theme) {
+        var themeKey = safari.getThemeKeyByName(theme);
+ 
+        if (!themeKey || themeKey === "none") {
+            var valid = Object.keys(contestThemes).filter(function(e) {
+                return e !== "none";
+            }).map(function(e) {
+                return link("/themespawns " + contestThemes[e].name, contestThemes[e].name);
+            });
+            
+            safaribot.sendHtmlMessage(src, "Valid theme inputs are: " + readable(valid) + ".", safchan);
+            return;
+        }
+
+       var themeSpawns = safari.getAllSpawnsInTheme(themeKey);
+       
+       sys.sendMessage(src, "", safchan);
+       safaribot.sendHtmlMessage(src, "<u>Pokémon that appear in the following themes</u>:", safchan);
+
+       for (var key in themeSpawns) {
+           safaribot.sendHtmlMessage(src, "<b>{0}</b>: {1}".format(key, readable(themeSpawns[key])), safchan);
        }
 
        sys.sendMessage(src, "", safchan);
@@ -51243,7 +51382,7 @@ function Safari() {
     this.showNextContest = function(src) {
         if (contestCount > 0) {
             var hasExtension = wildEvent && contestCount === 1 && contestExtension <= contestExtensionLimit;
-            safaribot.sendHtmlMessage(src, "Current Contest's theme: " + (currentTheme ? link("/themerares " + currentTheme, themeName(currentTheme)) + (currentThemeAlter ? " (" + contestThemes[currentTheme].alterName + ")" : "") + (currentThemeEffect ? " [" + cap(currentThemeEffect) + "]": "") : "Default") + ".", safchan);
+            safaribot.sendHtmlMessage(src, "Current Contest's theme: " + (currentTheme ? link("/themespawns " + currentTheme, themeName(currentTheme)) + (currentThemeAlter ? " (" + contestThemes[currentTheme].alterName + ")" : "") + (currentThemeEffect ? " [" + cap(currentThemeEffect) + "]": "") : "Default") + ".", safchan);
             if (currentRules) {
                 safaribot.sendHtmlMessage(src, "Contest's Rules: " + this.translateRules(currentRules, true), safchan);
             }
@@ -51261,7 +51400,7 @@ function Safari() {
                     for (n = 0; n < nextTheme.length; n++) {
                         t = nextTheme[n];
                         if (nextRules && t in nextRules) {
-                            safaribot.sendHtmlMessage(src, "--- Rules for " + (t === "none" ? themeName(t) : link("/themerares " + themeName(t), themeName(t)))+ ": " + this.translateRules(nextRules[t], true), safchan);
+                            safaribot.sendHtmlMessage(src, "--- Rules for " + (t === "none" ? themeName(t) : link("/themespawns " + themeName(t), themeName(t)))+ ": " + this.translateRules(nextRules[t], true), safchan);
                         }
                     }
                 }
@@ -53430,6 +53569,7 @@ function Safari() {
             "/view: To view another player's party. If no player is specified, all of your data will show up. Use /viewt for a text-only version of your data (excluding party).",
             "/mail [Name]։[Message]: To send a message to another player's inbox. Requires a Mail.",
             "/changealt: To pass your Safari data to another alt.",
+            "/themespawns: Show Pokémon that appear in a specified theme.",
             "/themerares: Show rare Pokémon that appear in a specified theme.",
             "/options: View and set miscellaneous settings and options for Safari",
             "/contestforfeit: Allows you to withdraw from any ongoing contest.",
@@ -53855,6 +53995,10 @@ function Safari() {
             }
             if (command === "changealt") {
                 safari.changeAlt(src, commandData);
+                return true;
+            }
+            if (command === "themespawn" || command === "themespawns") {
+                safari.showThemeSpawns(src, commandData);
                 return true;
             }
             if (command === "themerare" || command === "themerares") {
@@ -59347,7 +59491,7 @@ function Safari() {
                 } else {
                     nextRules[t] = safari.pickRules(t);
                 }
-                rulesDesc.push("Rules for " + (t === "none" ? themeName(t) : link("/themerares " + t, themeName(t))) + " --- " + safari.translateRules(nextRules[t], true));
+                rulesDesc.push("Rules for " + (t === "none" ? themeName(t) : link("/themespawns " + t, themeName(t))) + " --- " + safari.translateRules(nextRules[t], true));
             }
             contestVotingCount--;
             contestVotes = null;
