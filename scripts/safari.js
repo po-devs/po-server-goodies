@@ -11014,13 +11014,12 @@ function Safari() {
 
         var quality = randomSample(qualityOdds);
 
-        if (safari.hasCostumeSkill(player, "scientistPhotoGuarantee")) {
-            quality = Math.max(7, quality);
-        }
-
         var target = currentDisplay;
         if (target === 0 || wildEvent) {
             target = currentPokemon;
+        }
+        if (safari.hasCostumeSkill(player, "scientistPhotoGuarantee") && target == scientistQuest.pokemon) {
+            quality = Math.max(7, quality);
         }
         var pokeName = poke(target, true);
         this.changeWildMood(safari.getEffectiveLead(player));
