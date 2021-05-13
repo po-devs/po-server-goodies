@@ -9361,6 +9361,9 @@ function Safari() {
         } 
         if ((hasType(usingPokemon, "Rock") || hasType(usingPokemon, "Ground")) && this.hasCostumeSkill(player, "catchRockGround")) {
             costumeBonus = costumeBoost(player);
+        }
+        if (hasType(usingPokemon, "Ghost") && this.hasCostumeSkill(player, "catchGhost")) {
+            costumeBonus = costumeBoost(player);
         } 
         if (this.hasCostumeSkill(player, "catchThief") && canLearnMove(usingPokemon, 168)) {
             costumeBonus *= costumeBoost(player);
