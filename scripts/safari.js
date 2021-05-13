@@ -9865,7 +9865,6 @@ function Safari() {
         var aType = type1(leader);
         var crystalEffect = ball !== "master" && player.zcrystalDeadline >= now() && player.zcrystalUser === leader && chance(zCrystalData[aType].chance) ? zCrystalData[aType] : { effect: "none" };
 
-        this.changeWildMood(leader);
         if (!freeThrow) {
             player.balls[ball] -= 1;
             this.updateShop(player, ball);
@@ -10393,7 +10392,7 @@ function Safari() {
             if (!wildBallThrows.hasOwnProperty(ball)) {
                 wildBallThrows[ball] = 0;
             }
-            
+
             wildBallThrows[ball]++;
             cooldown = cooldown * (1 - this.getFortune(player, "soothe", 0));
             if (ball == "ultra" && this.hasCostumeSkill(player, "lowUltraCD")) {
@@ -10484,7 +10483,8 @@ function Safari() {
                 }
             }
         } else {
-            this.changeWildAction("catch");
+            this.changeWildMood(leader);
+            this.changeWildAction("catch")
             if (!freeThrow && crystalEffect.effect === "double" && ball !== "spirit" && ball !== "cherish") {
                 this.throwBall(src, ball, true, true, command, false, true);
             }
@@ -17072,11 +17072,11 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Favorite Ball: " + link("/options favorite:", finishName(player.options.favoriteBall)), safchan);
                 safaribot.sendHtmlMessage(src, "Idol Skills: " + link("/options idolskills:", player.options.pokeskillsDisabled ? "Disabled" : "Enabled"), safchan);
                 safaribot.sendHtmlMessage(src, "Mono Ball Type: " + link("/options mono:", player.options.monoSecondary ? "Secondary Type" : "Main Type"), safchan);
-                safaribot.sendHtmlMessage(src, "Cherish Ball Message: " + link("/options cherishmsg:", player.options.cherishVisible ? "Show" : "Do Not Show"), safchan);
-                safaribot.sendHtmlMessage(src, "Cherish Ball Link: " + link("/options cherishlink:", player.options.alwaysShowCherishBall ? "Always On" : "Always Off"), safchan);
-                safaribot.sendHtmlMessage(src, "Master Ball Link: " + link("/options mblink:", player.options.alwaysShowMasterBall ? "Always On" : "Only Show on Rare Pokémon"), safchan);
-                safaribot.sendHtmlMessage(src, "Sell Prompts: " + link("/options sellprompt:", player.options.sellPrompts ? "Show" : "Do Not Show"), safchan);
-                safaribot.sendHtmlMessage(src, "Lead Ability Messages: " + link("/options abilitymessage:", player.options.leadAbilityMessages ? "Show" : "Do Not Show"), safchan);
+                safaribot.sendHtmlMessage(src, "Cherish Ball Message: " + link("/options cherishmsg:", player.options.cherishVisible ? "Always Show" : "Do Not Show"), safchan);
+                safaribot.sendHtmlMessage(src, "Cherish Ball Link: " + link("/options cherishlink:", player.options.alwaysShowCherishBall ? "Always Active" : "Inactive"), safchan);
+                safaribot.sendHtmlMessage(src, "Master Ball Link: " + link("/options mblink:", player.options.alwaysShowMasterBall ? "Always Active" : "Only Active on Rare Pokémon"), safchan);
+                safaribot.sendHtmlMessage(src, "Sell Prompts: " + link("/options sellprompt:", player.options.sellPrompts ? "Always Show" : "Do Not Show"), safchan);
+                safaribot.sendHtmlMessage(src, "Lead Ability Messages: " + link("/options abilitymessage:", player.options.leadAbilityMessages ? "Always Show" : "Do Not Show"), safchan);
                 var dexOptions = ["stats", "effectiveness", "trivia"];
                 safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
                     return player.options.dexOptional.contains(e) ? link("/options hidedex:" + e, cap(e)) + " <b>[Enabled]</b>" : link("/options showdex:" + e, cap(e)) + " <b>[Disabled]</b>";
