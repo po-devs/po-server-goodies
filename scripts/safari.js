@@ -8163,10 +8163,10 @@ function Safari() {
                     }
                 }
                 if (safari.hasCostumeSkill(player, "revealAction")) {
-                    miscMessageList[onChannel[e]].push("The wild {0} is currently {1}!".format(poke(currentDisplay, true), currentPokemonAction));
+                    miscMessageList[onChannel[e]].push("The wild {0} {1} currently {2}!".format(poke(currentDisplay, true), is_are, currentPokemonAction));
                 }
                 if (safari.hasCostumeSkill(player, "revealMood")) {
-                    miscMessageList[onChannel[e]].push("The wild {0} is feeling {1}!".format(poke(currentDisplay, true), currentPokemonMood));
+                    miscMessageList[onChannel[e]].push("The wild {0} {1} feeling {2}!".format(poke(currentDisplay, true), is_are, currentPokemonMood));
                 }
                 if (player.options.leadAbilityMessages) {
                     if (ignore) {
