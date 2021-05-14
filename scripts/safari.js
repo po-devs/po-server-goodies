@@ -8194,6 +8194,12 @@ function Safari() {
                     if (canHaveAbility(leader, abilitynum("Sniper"))) {
                         abilityMessageList[onChannel[e]].push("Your {0}'s Sniper boosts your catch rate against Pokémon baited by others!".format(poke(leader, true)));
                     }
+                    if (canHaveAbility(leader, abilitynum("Speed Boost"))) {
+                        abilityMessageList[onChannel[e]].push("Your {0}'s Speed Boost gives you a better chance of throwing before others!".format(poke(leader, true)));
+                    }
+                    if (canHaveAbility(leader, abilitynum("Prankster"))) {
+                        abilityMessageList[onChannel[e]].push("Your {0}'s Prankster gives you a better chance of taking photos before others!".format(poke(leader, true)));
+                    }
 
                     var ignoreRules = [12, 109]; // Oblivious, Unaware
                     if (contestCount > 0 && currentRules) {
@@ -59479,19 +59485,11 @@ function Safari() {
                             if (preparationFirst !== p.id) {
                                 if (preparationThrows[i] !== "takephoto") {
                                     if (canHaveAbility(lead, abilitynum("Speed Boost"))) {
-                                        if (isPlaying(p.id)) {
-                                            safaribot.sendMessage(sys.id(p.id), "Your {0}'s Speed Boost gives you a better chance of throwing before others!".format(poke(lead, true)), safchan);
-                                        }
-
                                         throwChances[i] += size;
                                     }
                                 }
                                 else {
                                     if (canHaveAbility(lead, abilitynum("Prankster"))) {
-                                        if (isPlaying(p.id)) {
-                                            safaribot.sendMessage(sys.id(p.id), "Your {0}'s Prankster gives you a better chance of taking photos before others!".format(poke(lead, true)), safchan);
-                                        }
-
                                         throwChances[i] *= 3;
                                     }
                                 }
