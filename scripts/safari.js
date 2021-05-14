@@ -8170,8 +8170,19 @@ function Safari() {
                     miscMessageList[onChannel[e]].push("The wild {0} {1} feeling {2}!".format(poke(currentDisplay, true), is_are, currentPokemonMood));
                 }
                 if (player.options.leadAbilityMessages) {
-                    if (ignore) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s {1} bypasses the wild {2}'s ability!".format(poke(leader, true), abilityOff(ignore), poke(currentDisplay, true)));
+                    var getIgnorableAbilities = function(id) {
+                        var ignorable = ["Color Change", "Contrary", "Defeatist", "Emergency Exit", "Levitate", "Moxie", "Pressure", "Run Away", "Wimp Out", "Wonder Guard"].map(abilitynum);
+                        var ret = [];
+                        for (var i = 0; i < ignorable.length; i++) {
+                            if (canHaveAbility(id, ignorable[i])) {
+                                ret.push(ignorable[i]);
+                            }
+                        }
+                        return ret;
+                    };
+                    var ignorable = getIgnorableAbilities(currentDisplay);
+                    if (ignore && ignorable.length > 0) {
+                        abilityMessageList[onChannel[e]].push("Your {0}'s {1} bypasses the wild {2}'s {3}!".format(poke(leader, true), abilityOff(ignore), poke(currentDisplay, true), ignorable.map(abilityOff)));
                     }
                     if (canHaveAbility(leader, abilitynum("Intimidate"))) {
                         abilityMessageList[onChannel[e]].push("Your {0} weakens the wild {1} with Intimidate!".format(poke(leader, true), poke(currentDisplay, true)));
@@ -8191,7 +8202,7 @@ function Safari() {
                     if (canHaveAbility(leader, abilitynum("Simple"))) {
                         abilityMessageList[onChannel[e]].push("Your {0}'s Simple intensifies type matchups!".format(poke(leader, true)));
                     }
-                    if (canHaveAbility(leader, abilitynum("Sniper"))) {
+                    if (canHaveAbility(leader, abilitynum("Sniper")) && isBaited) {
                         abilityMessageList[onChannel[e]].push("Your {0}'s Sniper boosts your catch rate against Pokémon baited by others!".format(poke(leader, true)));
                     }
                     if (canHaveAbility(leader, abilitynum("Speed Boost"))) {
