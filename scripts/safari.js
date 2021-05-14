@@ -894,7 +894,8 @@ function Safari() {
             dexOptional: ["stats", "effectiveness", "trivia"],
             pokeskillsDisabled: false,
             cherishOff: false,
-            monoSecondary: false
+            monoSecondary: false,
+            autoForfeitThrow: true
         }
     };
 
@@ -9990,7 +9991,7 @@ function Safari() {
             contestantsWild.push(name.toLowerCase());
         }
         if (cantBecause(src, reason, ["item", "auction", "battle", "event", "pyramid", "baking"], ball)) {
-            if (cantBecause(src, reason, ["battle"], ball, true) && (isRare(currentDisplay) || wildEvent)) { // if there's a rare spawn and you're in a battle
+            if (cantBecause(src, reason, ["battle"], ball, true) && (isRare(currentDisplay) || wildEvent) && player.options.autoForfeitThrow) { // if there's a rare spawn and you're in a battle
                 // you can throw, but at the cost of instantly forfeiting the match once the preparation phase is over
                 safaribot.sendHtmlMessage(src, "<b>You are forfeiting this battle to catch the wild " + poke(currentDisplay) + "!</b> " + (preparationPhase > 0 ? "[" + link("/" + ccatch + " cancel", "Cancel") + "]" : ""), safchan);
             }
@@ -17172,6 +17173,24 @@ function Safari() {
                         break;
                 }
                 break;
+            case "autoforfeit":
+            case "autoforfeitthrow":
+                switch (dataInput) {
+                    case "on":
+                        player.options.autoForfeitThrow = true;
+                        safaribot.sendMessage(src, "You enabled auto-forfeiting when throwing Balls at a rare Pokémon during a battle!", safchan);
+                        safari.saveGame(player);
+                        break;
+                    case "off":
+                        player.options.autoForfeitThrow = false;
+                        safaribot.sendMessage(src, "You disabled auto-forfeiting when throwing Balls at a rare Pokémon during a battle!", safchan);
+                        safari.saveGame(player);
+                        break;
+                    default:
+                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b>! Use {1} to change it.".format(player.options.autoForfeitThrow ? "auto-forfeiting if you throw a Ball at a rare Pokémon during a battle" : "not auto-forfeiting if you throw a Ball at a rare Pokémon during a battle", link("/options autoforfeit:" + (player.options.autoForfeitThrow ? "off" : "on"))), safchan);
+                        break;
+                }
+                break;
             case "favorite":
             case "favourite":
             case "favoriteball":
@@ -17228,6 +17247,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Master Ball Link: " + link("/options mblink:", player.options.alwaysShowMasterBall ? "Always Active" : "Only Active on Rare Pokémon"), safchan);
                 safaribot.sendHtmlMessage(src, "Sell Prompts: " + link("/options sellprompt:", player.options.sellPrompts ? "Always Show" : "Do Not Show"), safchan);
                 safaribot.sendHtmlMessage(src, "Lead Ability Messages: " + link("/options abilitymessage:", player.options.leadAbilityMessages ? "Always Show" : "Do Not Show"), safchan);
+                safaribot.sendHtmlMessage(src, "Auto-Forfeit Battle: " + link("/options autoforfeit:", player.options.autoForfeitThrow ? "Automatically Forfeit When Throwing on Rare Pokémon" : "Do Not Forfeit When Throwing on Rare Pokémon"), safchan);
                 var dexOptions = ["stats", "effectiveness", "trivia"];
                 safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
                     return player.options.dexOptional.contains(e) ? link("/options hidedex:" + e, cap(e)) + " <b>[Enabled]</b>" : link("/options showdex:" + e, cap(e)) + " <b>[Disabled]</b>";
