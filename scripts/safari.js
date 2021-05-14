@@ -8015,6 +8015,9 @@ function Safari() {
             currentPokemonMoodRate = sys.rand(1, 31);
             var mood = ["Negative", "Neutral", "Positive"][Math.ceil(currentPokemonMoodRate/10)-1];
             currentPokemonMood = photoMood[mood].random();
+            if (themeOverride || leader) { // bait or shroom bait
+                currentPokemonAction = "eating";
+            }
 
             var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
             var term = amount >= 4 ? "horde of " : ["", "pair of ", "group of "][amount-1];
@@ -14714,7 +14717,6 @@ function Safari() {
                     }
                 }
             }
-            currentPokemonAction = "eating";
             safari.throwBall(src, commandData, true);
             preparationFirst = sys.name(src).toLowerCase();
             if (!golden && !deluxe) {
