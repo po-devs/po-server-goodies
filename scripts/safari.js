@@ -9957,13 +9957,12 @@ function Safari() {
             safaribot.sendMessage(src, "Your Spirit Box is full!", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["item", "auction", "battle", "event", "pyramid", "baking"], ball)) {
-            return;
-        }
+
         if (contestCount > 0 && contestForfeited.contains(player.idnum)) {
             safaribot.sendMessage(src, "You forfeited this contest, so you can't catch any Pokémon from the contest!", safchan);
             return;
         }
+
         var currentTime = now();
         if (!bypass && (!preparationFirst || name.toLowerCase() !== preparationFirst) && (player.cooldowns.ball > currentTime) && (preparationPhase <= 0 || player.cooldowns.ball + preparationPhase > currentTime)) {
             safaribot.sendMessage(src, "Please wait " + timeLeftString(player.cooldowns.ball) + " before throwing a ball!", safchan);
@@ -9990,7 +9989,15 @@ function Safari() {
         if (contestCount > 0 && contestantsWild.indexOf(name.toLowerCase()) === -1) {
             contestantsWild.push(name.toLowerCase());
         }
-
+        if (cantBecause(src, reason, ["item", "auction", "battle", "event", "pyramid", "baking"], ball)) {
+            if (cantBecause(src, reason, ["battle"], ball, true) && (isRare(currentDisplay) || wildEvent)) { // if there's a rare spawn and you're in a battle
+                // you can throw, but at the cost of instantly forfeiting the match once the preparation phase is over
+                safaribot.sendHtmlMessage(src, "<b>You are forfeiting this battle to catch the wild " + poke(currentDisplay) + "!</b> " + (preparationPhase > 0 ? "[" + link("/" + ccatch + " cancel", "Cancel") + "]" : ""), safchan);
+            }
+            else { // otherwise, block the action
+                return;
+            }
+        }
         if (baitThrow) {
             safaribot.sendMessage(src, "You quickly scramble to put your " + finishName(command === "gbait" ? "golden" : "bait") + " away in order to try to catch the wild Pokémon lured by someone else!", safchan);
         }
@@ -10003,6 +10010,9 @@ function Safari() {
             }
             preparationThrows[name.toLowerCase()] = ball;
             return;
+        }
+        if (safari.isBattling(sys.name(src))) {
+            safari.forfeitBattle(src);
         }
         var aType = type1(leader);
         var crystalEffect = ball !== "master" && player.zcrystalDeadline >= now() && player.zcrystalUser === leader && chance(zCrystalData[aType].chance) ? zCrystalData[aType] : { effect: "none" };
@@ -59490,6 +59500,9 @@ function Safari() {
                         name = throwers[i];
                         if (sys.isInChannel(sys.id(name), safchan) && alreadyThrow.indexOf(name) === -1) {
                             alreadyThrow.push(name);
+                            if (safari.isBattling(name)) {
+                                safari.forfeitBattle(sys.id(name));
+                            }
                             if (preparationThrows[name] === "takephoto") {
                                 safari.takePhoto(sys.id(name), preparationThrows[name], false, true);
                             } else {
