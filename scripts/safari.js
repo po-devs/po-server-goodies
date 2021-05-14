@@ -8384,7 +8384,7 @@ function Safari() {
         if (votesResult) {
             safaribot.sendAll(votesResult, safchan);
         }
-        safaribot.sendHtmlAll("A new " + (currentTheme ? "<b>" + themeName(currentTheme) + alterMsg + "</b>-themed" : "") + " Safari contest is starting now!", safchan);
+        safaribot.sendHtmlAll("A new " + (currentTheme ? "<b>" + link("/themespawns " + currentTheme, themeName(currentTheme)) + alterMsg + "</b>-themed" : "") + " Safari contest is starting now!", safchan);
         if (currentRules && Object.keys(currentRules).length > 0) {
             safaribot.sendHtmlAll("Rules: " + this.translateRules(currentRules, true), safchan);
         }
@@ -36619,13 +36619,23 @@ function Safari() {
         var offer = data.length > 1 && data[1] ? parseInt(data[1], 10) : "*";
         
         var req = photographQuest[act];
+        var getFinalPhotoScore = function(req, photo) {
+            var ret = Math.round(req.fscore * (0.5 + (photo.score / 10)) * (1 + safari.getFortune(player, "journalbuff", 0)));
+            if (safari.hasCostumeSkill(player, "moreJournalPoints")) {
+                ret = Math.round(ret * 1.2);
+            }
+            if (isRare(photo.id)) {
+                ret = Math.round(ret * 1.3);
+            }
+            return ret;
+        };
         if (offer === "*") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Let's see, these are the photos that you have that fill my request " + act + " (" + cap(this.translatePhotoRequest(req)) + "): ", safchan);
             var found = false;
             for (var e = 0; e < photos.length; e++) {
                 if (this.photoMatchesRequest(photos[e], req)) {
                     found = true;
-                    safaribot.sendHtmlMessage(src, "[" + (e+1) + "] " + cap(this.describePhoto(photos[e])) + " (Score: " + Math.round(req.fscore * (0.5 + (photos[e].score / 10))) + ") " + link("/quest journal:" + act + ":" + (e+1), "[Give this photo]", true), safchan);
+                    safaribot.sendHtmlMessage(src, "[" + (e+1) + "] " + cap(this.describePhoto(photos[e])) + " (Score: " + getFinalPhotoScore(req, photos[e]) + ") " + link("/quest journal:" + act + ":" + (e+1), "[Give this photo]", true), safchan);
                 }
             }
             if (found) {
@@ -36651,11 +36661,8 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: This photo doesn't match this request!", safchan);
             return;
         }
-        var score = Math.round(req.fscore * (0.5 + (photo.score / 10)) * (1 + this.getFortune(player, "journalbuff", 0)));
-        if (safari.hasCostumeSkill(player, "moreJournalPoints")) {
-            score = Math.round(score * 1.2);
-        }
-        
+
+        var score = getFinalPhotoScore(req, photo);
         var rewLevel = Math.floor(score/30);
         var rew;
         switch (rewLevel) {
