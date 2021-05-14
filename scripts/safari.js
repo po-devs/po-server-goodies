@@ -31915,7 +31915,7 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, toColor("Scientist: Or, you could help me by bringing a photo of that Pokémon! Please note that I need a photo of Great or better quality. ", "magenta") + "[" + link("/quest scientist:photo", "You can fulfill this request") + "]", safchan);
                     }
                 }
-                else {
+                else if (player.quests.scientist.photo !== id) {
                     safaribot.sendHtmlMessage(src, "Scientist: Or, you could help me by bringing a photo of that Pokémon! Please note that I need a photo of Great or better quality. [" + toColor("You do not have a matching photo", "red") + "]", safchan);
                 }
             }
