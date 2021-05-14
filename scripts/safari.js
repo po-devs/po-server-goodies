@@ -895,7 +895,8 @@ function Safari() {
             pokeskillsDisabled: false,
             cherishOff: false,
             monoSecondary: false,
-            autoForfeitThrow: true
+            autoForfeitThrow: true,
+            showLeadMessage: false
         }
     };
 
@@ -8182,7 +8183,7 @@ function Safari() {
                     };
                     var ignorable = getIgnorableAbilities(currentDisplay);
                     if (ignore && ignorable.length > 0) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s {1} bypasses the wild {2}'s {3}!".format(poke(leader, true), abilityOff(ignore), poke(currentDisplay, true), ignorable.map(abilityOff)));
+                        abilityMessageList[onChannel[e]].push("Your {0}'s {1} bypasses the wild {2}'s {3}!".format(poke(leader, true), abilityOff(ignore), poke(currentDisplay, true), readable(ignorable.map(abilityOff))));
                     }
                     if (canHaveAbility(leader, abilitynum("Intimidate"))) {
                         abilityMessageList[onChannel[e]].push("Your {0} weakens the wild {1} with Intimidate!".format(poke(leader, true), poke(currentDisplay, true)));
@@ -8253,6 +8254,9 @@ function Safari() {
             }
             for (var user in abilityMessageList) {
                 if (abilityMessageList[user].length === 0) {
+                    if (player.options.showLeadMessage && (mandatoryDisplay || !cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true))) {
+                        safaribot.sendMessage(user, "Your lead Pokémon is {0}!".format(poke(leader, true)), safchan);
+                    }
                     continue;
                 }
                 if (mandatoryDisplay || !cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
@@ -17249,6 +17253,11 @@ function Safari() {
             case "showabilitymessage":
                 safari.setShowAbilityMessage(src, dataInput);
                 break;
+            case "showlead":
+            case "leadmessage":
+            case "showleadmessage":
+                safari.setShowLeadMessage(src, dataInput);
+                break;
             default:
                 sys.sendMessage(src, "", safchan);
                 sys.sendMessage(src, "*** Safari Settings ***", safchan);
@@ -17264,6 +17273,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Master Ball Link: " + link("/options mblink:", player.options.alwaysShowMasterBall ? "Always Active" : "Only Active on Rare Pokémon"), safchan);
                 safaribot.sendHtmlMessage(src, "Sell Prompts: " + link("/options sellprompt:", player.options.sellPrompts ? "Always Show" : "Do Not Show"), safchan);
                 safaribot.sendHtmlMessage(src, "Lead Ability Messages: " + link("/options abilitymessage:", player.options.leadAbilityMessages ? "Always Show" : "Do Not Show"), safchan);
+                safaribot.sendHtmlMessage(src, "Lead Display Messages: " + link("/options leadmessage:", player.options.showLeadMessage ? "Show if No Relevant Ability" : "Do Not Show"), safchan);
                 safaribot.sendHtmlMessage(src, "Auto-Forfeit Battle: " + link("/options autoforfeit:", player.options.autoForfeitThrow ? "Automatically Forfeit When Throwing on Rare Pokémon" : "Do Not Forfeit When Throwing on Rare Pokémon"), safchan);
                 var dexOptions = ["stats", "effectiveness", "trivia"];
                 safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
@@ -17342,6 +17352,28 @@ function Safari() {
         else {
             player.options.leadAbilityMessages = true;
             safaribot.sendHtmlMessage(src, "Lead ability messages will now be <b>enabled</b>!", safchan);
+        }
+
+        safari.saveGame(player);
+    };
+    this.setShowLeadMessage = function(src, data) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        
+        if (!["on", "off"].contains(data)) {
+            safaribot.sendHtmlMessage(src, "Your lead display messages are currently {0}. Use {1} to change it!".format((player.options.showLeadMessage ? "enabled" : "disabled"), link("/options showlead:" + (player.options.showLeadMessage ? "off" : "on"))), safchan);
+            return;
+        }
+        
+        if (data === "off") {
+            player.options.showLeadMessage = false;
+            safaribot.sendHtmlMessage(src, "Lead display messages will now be <b>disabled</b>!", safchan);
+        }
+        else {
+            player.options.showLeadMessage = true;
+            safaribot.sendHtmlMessage(src, "Lead display messages will now be <b>enabled</b>!", safchan);
         }
 
         safari.saveGame(player);
