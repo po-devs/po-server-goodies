@@ -53574,6 +53574,7 @@ function Safari() {
             "/options: View and set miscellaneous settings and options for Safari",
             "/contestforfeit: Allows you to withdraw from any ongoing contest.",
             "/rockscare: Allows you to scare a wild Pokémon away. You can only scare Pokémon that haven't been interacted with for " + plural(rockScareThreshold/1000, "second") + ".",
+            "/showdeluxe: View your " + finishName("deluxe") + " pools.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -54015,6 +54016,20 @@ function Safari() {
             }
             if (command === "gbait" || command === "golden") {
                 safari.throwBait(src, commandData, true);
+                return true;
+            }
+            if (["showdbait", "showdeluxe", "showdeluxebait", "viewdeluxe", "viewdeluxebait", "viewdbait"].contains(command)) {
+                var player = getAvatar(src);
+                if (!player) {
+                    return true;
+                }
+                safaribot.sendHtmlMessage(src, "<b>Deluxe Bait Data:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Commons (" + toFixed(player.deluxeBait.commons.rate, 3) + "%): " + player.deluxeBait.commons.list.map(function(x) { return poke(x); }).join(", "), safchan);
+                safaribot.sendHtmlMessage(src, "- Uncommons (" + toFixed(player.deluxeBait.uncommons.rate, 3) + "%): " + player.deluxeBait.uncommons.list.map(function(x) { return poke(x); }).join(", "), safchan);
+                safaribot.sendHtmlMessage(src, "- Rares (" + toFixed(player.deluxeBait.rares.rate, 5) + "%): " + player.deluxeBait.rares.list.map(function(x) { return poke(x); }).join(", "), safchan);
+                if (player.deluxeBait.inedible > 0) {
+                    safaribot.sendHtmlMessage(src, "- Somewhat inedible (" + toFixed(player.deluxeBait.inedible * 100, 5) + "%)", safchan);
+                }
                 return true;
             }
             if (command === "rock" || command === "snowball" || command === "snow") {
