@@ -738,7 +738,8 @@ function Safari() {
                 eliteNext: false
             },
             journal: {
-                cooldown: 0
+                cooldown: 0,
+                trackedRequests: {}
             }
         },
         altTimeline: {
@@ -2424,6 +2425,7 @@ function Safari() {
     var eliteData = [];
     var eliteHall = [];
     var pyrBonusMons = [];
+    var journalDoneDeadline = 3*60*1000;
     
     /* Photo Variables */
     var photoQuality = ["Disastrous", "Terrible", "Awful", "Bad", "Poor", "Okay", "Good", "Great", "Superb", "Excellent", "Perfect"];
@@ -11234,17 +11236,17 @@ function Safari() {
             this.changeWildAction("photo");
         }
 
-        var e, i, t, desc;
         if (safari.hasCostumeSkill(player, "smartPhoto") && photographQuest) {
+            var e, i, t, desc, playerTracks = player.quests.journal.trackedRequests;
             for (e in photographQuest) {
                 obj = photographQuest[e];
                 if (safari.photoMatchesRequest(photo, obj)) {
                     t = timeLeftString(obj.deadline);
-                    if (obj.deadline - now() <= (3*60*1000)) {
+                    if (obj.deadline - now() <= journalDoneDeadline) {
                         t = toColor(t, "red");
                     }
                     desc = "{0}. A photo of {1} (Score: {2} | Deadline: {3})".format(e, safari.translatePhotoRequest(obj), obj.fscore, t);
-                    safaribot.sendHtmlMessage(src, toColor(desc, player.quests.journal.cooldown > now() ? "crimson" : "magenta") + " [" + link("/quest journal:" + e, "You can fulfill this request" + (player.quests.journal.cooldown > now() ? " in " + timeLeftString(player.quests.journal.cooldown) : "")) + "]", safchan);
+                    safaribot.sendHtmlMessage(src, toColor(desc, player.quests.journal.cooldown > now() ? "crimson" : "magenta") + " [" + (playerTracks.hasOwnProperty(e) ? link("/quest journal:untrack:" + e, "Stop Tracking") : (obj.deadline - now() <= journalDoneDeadline ? "You cannot track expiring requests" : link("/quest journal:track:" + e, "Track"))) + "] [" + link("/quest journal:" + e, "You can fulfill this request" + (player.quests.journal.cooldown > now() ? " in " + timeLeftString(player.quests.journal.cooldown) : "")) + "]", safchan);
                 }
             }
         }
@@ -31927,7 +31929,7 @@ function Safari() {
                 "Ghost": "if and how a {0} can move into the ethereal world",
                 "Steel": "if {0}'s body is similar to industrial steel",
                 "Fire": "{0}'s maximum body temperature",
-                "Water": "how much percent of {0}'s body is composed of water",
+                "Water": "what percentage of {0}'s body is composed of water",
                 "Grass": "how the photosynthesis process works for {0}",
                 "Electric": "how many houses a {0} could provide energy to",
                 "Psychic": "if a {0} can read an human's mind",
@@ -36661,6 +36663,7 @@ function Safari() {
         }
         
         var act = data.length > 0 && data[0] ? data[0] : "*";
+        var offer = data.length > 1 && data[1] ? parseInt(data[1], 10) : "*";
         if (player.balls.lens === 0) {
             var cost = itemData.lens.price;
             if (act.toLowerCase() === "buy camera") {
@@ -36685,7 +36688,7 @@ function Safari() {
         
         this.updatePhotographQuest();
         
-        var photos = player.photos, req, n = now();
+        var photos = player.photos, req, n = now(), playerTracks = player.quests.journal.trackedRequests;
         if (act === "*") {
             var obj, e, i, canFulfill, desc, t;
             safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: I'm currently looking for the following photos. If you have any of these, use " + link("/quest journal:Number", null, true) + " to give them to me.", safchan);
@@ -36699,18 +36702,114 @@ function Safari() {
                     }
                 }
                 t = timeLeftString(obj.deadline);
-                if (obj.deadline - n <= (3*60*1000)) {
+                if (obj.deadline - n <= journalDoneDeadline) {
                     t = toColor(t, "red");
                 }
                 desc = "{0}. A photo of {1} (Score: {2} | Deadline: {3})".format(e, this.translatePhotoRequest(obj), obj.fscore, t);
                 if (canFulfill) {
-                    safaribot.sendHtmlMessage(src, toColor(desc, "magenta") + " [" + link("/quest journal:" + e, "You can fulfill this request") + "]", safchan);
+                    safaribot.sendHtmlMessage(src, toColor(desc, "magenta") + " [" + (playerTracks.hasOwnProperty(e) ? link("/quest journal:untrack:" + e, "Stop Tracking") : (obj.deadline - n <= journalDoneDeadline ? "You cannot track expiring requests" : link("/quest journal:track:" + e, "Track"))) + "] [" + link("/quest journal:" + e, "You can fulfill this request") + "]", safchan);
                 } else {
-                    safaribot.sendHtmlMessage(src, desc, safchan);
+                    safaribot.sendHtmlMessage(src, desc + " [" + (playerTracks.hasOwnProperty(e) ? link("/quest journal:untrack:" + e, "Stop Tracking") : (obj.deadline - n <= journalDoneDeadline ? "You cannot track expiring requests" : link("/quest journal:track:" + e, "Track"))) + "]", safchan);
                 }
             }
             if (player.quests.journal.cooldown >= n) {
                 safaribot.sendMessage(src, "Editor-in-chief: I'm still editing the last photo that you brought, so come back in " + timeLeftString(player.quests.journal.cooldown) + " if you wish to submit more photos!", safchan);
+            }
+            if (Object.keys(playerTracks).length > 0) {
+                safaribot.sendHtmlMessage(src, "Editor-in-chief: By the way, you can use " + link("/quest journal:showtracked") + " to view your tracked requests!", safchan);
+            }
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        if (act === "track") { // reusing earlier variables here, "offer" in this code block refers to photo request #
+            var maxTracks = 20;
+            var photoRequest = photographQuest[offer];
+            if (offer === "*") {
+                safaribot.sendHtmlMessage(src, "Editor-in-chief: You can keep track of Journal requests that you're interested in here using {0}! You will receive a notification if a tracked request is completed by someone else or expires. You can only track up to {1} at once, though.".format(link("/quest journal:track:RequestNumber", false, true), plural(maxTracks, "request")), safchan);
+                return;
+            }
+            if (Object.keys(playerTracks).length >= maxTracks) {
+                safaribot.sendHtmlMessage(src, "Editor-in-chief: You can only track up to {0} at a time! Use {1} to view your list of tracked requests.".format(plural(maxTracks, "request"), link("/quest journal:showtracked")), safchan);
+                return;
+            }
+            if (!photoRequest) {
+                safaribot.sendMessage(src, "Editor-in-chief: That's not a valid request!", safchan);
+                return;
+            }
+            if (photoRequest.deadline - n <= journalDoneDeadline) {
+                safaribot.sendMessage(src, "Editor-in-chief: You can't track a request that's about to expire!", safchan);
+                return;
+            }
+
+            var formattedRequest = "A photo of {0} | Score: {1} | Deadline: {2}".format(this.translatePhotoRequest(photoRequest), photoRequest.fscore, timeLeftString(photoRequest.deadline));
+            if (playerTracks.hasOwnProperty(offer)) {
+                safaribot.sendHtmlMessage(src, "Editor-in-chief: You are already tracking request #{0} ({1})! Use {2} to view your list of tracked requests.".format(offer, formattedRequest, link("/quest journal:showtracked")), safchan);
+                return;
+            }
+
+            playerTracks[offer] = "A photo of {0} | Score: {1}".format(this.translatePhotoRequest(photoRequest), photoRequest.fscore); // store some of the request data on the player side in case we have to print details of expired requests later
+            safaribot.sendHtmlMessage(src, "Editor-in-chief: You started tracking request #{0} ({1})! Use {2} to view your list of tracked requests.".format(offer, formattedRequest, link("/quest journal:showtracked")), safchan);
+            safari.saveGame(player);
+            return;
+        }
+        if (["untrack", "removetrack"].contains(act)) {
+            if (offer === "*") {
+                safaribot.sendHtmlMessage(src, "Editor-in-chief: You can remove Journal requests that you're no longer interested in here using {0}!".format(link("/quest journal:untrack:RequestNumber", false, true)), safchan);
+                return;
+            }
+            if (isNaN(offer) || !playerTracks.hasOwnProperty(offer)) {
+                safaribot.sendHtmlMessage(src, "Editor-in-chief: Invalid request! Use {0} to view your list of tracked requests.".format(link("/quest journal:showtracked")), safchan);
+                return;
+            }
+
+            var photoRequest = photographQuest[offer];
+            var formattedRequest = photoRequest ? "A photo of {0} | Score: {1} | Deadline: {2}".format(this.translatePhotoRequest(photoRequest), photoRequest.fscore, timeLeftString(photoRequest.deadline)) : playerTracks[offer];
+            safaribot.sendHtmlMessage(src, "Editor-in-chief: You stopped tracking request #{0} ({1})! Use {2} to view your list of tracked requests.".format(offer, formattedRequest, link("/quest journal:showtracked")), safchan);
+            delete playerTracks[offer];
+            safari.saveGame(player);
+            return;
+        }
+        if (["showtrack", "showtracked", "showtracks", "viewtrack", "viewtracked", "viewtracks"].contains(act)) {
+            if (Object.keys(playerTracks).length === 0) {
+                safaribot.sendHtmlMessage(src, "Editor-in-chief: You don't seem to be tracking any Journal requests! You can add some here with {0}.".format(link("/quest journal:track:RequestNumber", false, true)), safchan);
+                return;
+            }
+
+            safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Let's see, these are the requests you are currently tracking:", safchan);
+            var obj, e, i, canFulfill, desc, t, expired, toDelete = [], requestNum, sortedKeys = Object.keys(playerTracks).sort(function(a, b) { return parseInt(a) - parseInt(b) });
+            for (e = 0; e < sortedKeys.length; e++) {
+                requestNum = sortedKeys[e];
+                expired = !photographQuest.hasOwnProperty(requestNum); // this shouldn't happen since expired tracks are cleared on loadGame, but just in case
+                obj = expired ? playerTracks[requestNum] : photographQuest[requestNum];
+                canFulfill = false;
+                if (!expired) {
+                    for (i = photos.length; i--; ) {
+                        if (this.photoMatchesRequest(photos[i], obj)) {
+                            canFulfill = true;
+                            break;
+                        }
+                    }
+                }
+                t = expired ? "[Expired]" : timeLeftString(obj.deadline);
+                if (expired || obj.deadline - n <= journalDoneDeadline) {
+                    t = toColor(t, "red");
+                }
+                desc = expired ? "{0}. {1} | Deadline: {2}".format(e, obj, t) : "{0}. A photo of {1} (Score: {2} | Deadline: {3})".format(requestNum, this.translatePhotoRequest(obj), obj.fscore, t);
+                if (canFulfill) {
+                    safaribot.sendHtmlMessage(src, toColor(desc, "magenta") + " [" + link("/quest journal:untrack:" + requestNum, "Stop Tracking") + "] [" + link("/quest journal:" + requestNum, "You can fulfill this request") + "]", safchan);
+                } else {
+                    safaribot.sendHtmlMessage(src, desc + " [" + link("/quest journal:untrack:" + requestNum, "Stop Tracking") + "]", safchan);
+                }
+                if (expired) {
+                    toDelete.push(requestNum);
+                }
+            }
+            if (toDelete.length > 0) {
+                for (e in toDelete) {
+                    delete playerTracks[toDelete[e]];
+                }
+                safaribot.sendMessage(src, "Expired requests #{0} will be deleted.".format(readable(toDelete)), safchan);
+                safari.saveGame(player);
             }
             sys.sendMessage(src, "", safchan);
             return;
@@ -36719,7 +36818,6 @@ function Safari() {
             safaribot.sendMessage(src, "Editor-in-chief: That's not a valid request!", safchan);
             return;
         }
-        var offer = data.length > 1 && data[1] ? parseInt(data[1], 10) : "*";
         
         var req = photographQuest[act];
         var getFinalPhotoScore = function(req, photo) {
@@ -36733,6 +36831,10 @@ function Safari() {
             return ret;
         };
         if (offer === "*") {
+            var t = timeLeftString(req.deadline);
+            if (req.deadline - now() <= journalDoneDeadline) {
+                t = toColor(t, "red");
+            }
             safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Let's see, these are the photos that you have that fill my request " + act + " (" + cap(this.translatePhotoRequest(req)) + "): ", safchan);
             var found = false;
             for (var e = 0; e < photos.length; e++) {
@@ -36742,7 +36844,7 @@ function Safari() {
                 }
             }
             if (found) {
-                safaribot.sendHtmlMessage(src, "Editor-in-chief: To choose which photo you will give me, type " + link("/quest journal:" + act + ":Number", false, true) + ".", safchan);
+                safaribot.sendHtmlMessage(src, "Editor-in-chief: To choose which photo you will give me, type " + link("/quest journal:" + act + ":Number", false, true) + ". (Deadline: " + t + ")", safchan);
             } else {
                 safaribot.sendMessage(src, "None", safchan);
             }
@@ -36853,13 +36955,41 @@ function Safari() {
             safari.detectiveClue(player.idnum, "journal", src);
             player.records.goodJournalSubmission += 1;
         }
-        
+
+        if (playerTracks.hasOwnProperty(act)) {
+            delete playerTracks[act];
+        }
         sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Journal|||Submitted photo of " + this.describePhoto(photo) + "|||Fulfilled request for " + this.translatePhotoRequest(req) + ", received " + rewardName + (rewards.length > 0 ? ", " + readable(rewards) : "") + " and " + plural(score, "Photo Point") + "\n");
         this.saveGame(player);
         if (!req.done) {
             req.done = true;
-            req.deadline = n + 3*60*1000;
+            req.deadline = n + journalDoneDeadline;
             permObj.add("photographQuest", JSON.stringify(photographQuest));
+        }
+        var onChannel = sys.playersOfChannel(safchan);
+        for (e in onChannel) {
+            player = getAvatar(onChannel[e]);
+            if (!player) {
+                continue;
+            }
+            playerTracks = player.quests.journal.trackedRequests;
+            var toDelete = [];
+            for (var request in playerTracks) {
+                var photoRequest = photographQuest[request];
+                if (!photoRequest) { // expired, shouldnt happen bc expired requests are cleared on loadGame and completed requests while online are cleared after deadline is checked below
+                    safari.notification(player, "Journal request #{0} ({1}) expired and will be deleted from your tracked requests.".format(request, playerTracks[request]), "Journal");
+                    toDelete.push(request);
+                    safari.saveGame(player);
+                }
+                else if (photoRequest.deadline - n <= journalDoneDeadline) {
+                    safari.notification(player, "Journal request #{0} ({1}){2} is expiring in {3}!".format(request, playerTracks[request], (photoRequest.done ? " was completed by someone and" : ""), timeLeftString(photoRequest.deadline)), "Journal");
+                    toDelete.push(request);
+                    safari.saveGame(player);
+                }
+            }
+            for (var d in toDelete) {
+                delete playerTracks[toDelete[d]];
+            }
         }
     };
     this.photoMatchesRequest = function(photo, request) {
@@ -51482,6 +51612,23 @@ function Safari() {
             if (player.fortune.deadline > now() || player.fortune.limit > 0) {
                 safaribot.sendMessage(src, "You still have " + an(finishName("cookie")) + "'s effect active: \"" + this.fortuneDescription(player.fortune) + "\"!", safchan);
             }
+            var toDelete = [];
+            for (var request in player.quests.journal.trackedRequests) {
+                var photoRequest = photographQuest[request];
+                if (!photoRequest) { // meaning it expired while they were offline or something
+                    safari.notification(player, "Journal request #{0} ({1}) expired while you were away!".format(request, player.quests.journal.trackedRequests[request]), "Journal");
+                    toDelete.push(request);
+                    safari.saveGame(player);
+                }
+                else if (photoRequest.deadline - now() <= journalDoneDeadline) {
+                    safari.notification(player, "Journal request #{0} ({1}){2} is expiring in {3}!".format(request, player.quests.journal.trackedRequests[request], (photoRequest.done ? " was completed by someone and" : ""), timeLeftString(photoRequest.deadline)), "Journal");
+                    toDelete.push(request);
+                    safari.saveGame(player);
+                }
+            }
+            for (var d in toDelete) {
+                delete player.quests.journal.trackedRequests[toDelete[d]];
+            }
             var unread = countRepeated(player.unreadInbox, true);
             if (unread > 0) {
                 safaribot.sendHtmlMessage(src, toFlashing(addFlashTag(sys.name(src)) + ", you have " + plural(unread, "unread message") + ". To read them, type " + link("/inbox") + ". ", sys.name(src)), safchan);
@@ -52950,7 +53097,7 @@ function Safari() {
                     }
                     delete obj[prop];
                 } else if (!Array.isArray(obj[prop]) && typeof obj[prop] == "object" && typeof template[prop] == "object") {
-                    if (!["shop", "decorations", "secretBase", "nextSpawn", "pokeskills"].contains(prop)) {
+                    if (!["shop", "decorations", "secretBase", "nextSpawn", "pokeskills", "trackedRequests"].contains(prop)) {
                         for (p in obj[prop]) {
                             removeInvalid(obj[prop], p, template[prop]);
                         }
@@ -54834,7 +54981,7 @@ function Safari() {
                 }
                 var themes = safari.getAllThemesForPoke(info.num, true);
                 if (themes.length > 0) {
-                    safaribot.sendMessage(src, info.name + " can be found in the following " + plural(themes.length, "theme") + ": " + readable(themes, "and") + ".", safchan);
+                    safaribot.sendHtmlMessage(src, info.name + " can be found in the following " + plural(themes.length, "theme") + ": " + readable(themes.map(function(e) { return link("/themespawns " + e, e) }), "and") + ".", safchan);
                 } else {
                     safaribot.sendMessage(src, info.name + " cannot be found in any theme currently.", safchan);
                 }
