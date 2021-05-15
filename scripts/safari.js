@@ -37147,7 +37147,7 @@ function Safari() {
                 i++;
                 if (i > 9999) {
                     i = 1;
-                }    
+                }
             }
             return i;
         };
@@ -37161,7 +37161,7 @@ function Safari() {
                 current[getRequestDiff(req)]++;
             }
         }
-        justRemoved = justRemoved.map(function(x) { parseInt(x, 10); });
+        justRemoved = justRemoved.map(function(x) { return parseInt(x, 10); });
         var diffModifiers = { easy: 0.75, normal: 0.9, hard: 1.05, ultra: 1.2 };
         
         while (current.easy < goal.easy || current.normal < goal.normal | current.hard < goal.hard || current.ultra < goal.ultra) {
