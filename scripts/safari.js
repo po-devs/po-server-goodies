@@ -8264,7 +8264,7 @@ function Safari() {
                 }
                 if (abilityMessageList[user].length === 0 || !player.options.leadAbilityMessages) {
                     if (player.options.showLeadMessage && (mandatoryDisplay || !cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true))) {
-                        safaribot.sendMessage(user, "Your lead Pokémon is {0}!".format(poke(safari.getEffectiveLead(player), true)), safchan);
+                        safaribot.sendMessage(user, "Your {0} prepares to fight!".format(poke(safari.getEffectiveLead(player), true)), safchan);
                     }
                     continue;
                 }
