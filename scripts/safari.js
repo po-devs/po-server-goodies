@@ -8409,7 +8409,7 @@ function Safari() {
         if (votesResult) {
             safaribot.sendAll(votesResult, safchan);
         }
-        safaribot.sendHtmlAll("A new " + (currentTheme ? "<b>" + link("/themespawns " + currentTheme, themeName(currentTheme)) + alterMsg + "</b>-themed" : "") + " Safari contest is starting now!", safchan);
+        safaribot.sendHtmlAll("A new " + (currentTheme ? "<b>" + link("/themerares " + currentTheme, themeName(currentTheme)) + alterMsg + "</b>-themed" : "") + " Safari contest is starting now!", safchan);
         if (currentRules && Object.keys(currentRules).length > 0) {
             safaribot.sendHtmlAll("Rules: " + this.translateRules(currentRules, true), safchan);
         }
@@ -26538,22 +26538,22 @@ function Safari() {
         var def = move.category === "physical" ? this.getStatValue(target, "def", 1, (crit ? -1 : 0)) : this.getStatValue(target, "sdef", 1, (crit ? -1 : 0));
         if (this.select && this.select.bodypress) {
             if (move.category == "physical") {
-                atk = Math.max(this.getStatValue(user, "atk", 1, (crit ? -1 : 0)), this.getStatValue(user, "def", 1, (crit ? -1 : 0)));
+                atk = Math.max(this.getStatValue(user, "atk", 1, (crit ? 1 : 0)), this.getStatValue(user, "def", 1, (crit ? 1 : 0)));
             }
         }
         if (this.select && this.select.electroball) {
             if (move.category == "physical") {
-                atk = Math.max(this.getStatValue(user, "atk", 1, (crit ? -1 : 0)), this.getStatValue(user, "spe", 1, (crit ? -1 : 0)));
+                atk = Math.max(this.getStatValue(user, "atk", 1, (crit ? 1 : 0)), this.getStatValue(user, "spe", 1, (crit ? 1 : 0)));
             }
         }
         if (this.select && this.select.psystrike) {
             if (move.type == "Psychic") {
-                def = Math.min(this.getStatValue(target, "def", 1, (crit ? -1 : 0)), this.getStatValue(target, "sdef", 1, (crit ? -1 : 0)));
+                def = Math.min(this.getStatValue(target, "def", 1, (crit ? 1 : 0)), this.getStatValue(target, "sdef", 1, (crit ? 1 : 0)));
             }
         }
         if (this.select && this.select.fairystrike) {
             if (move.type == "Fairy") {
-                def = Math.min(this.getStatValue(target, "def", 1, (crit ? -1 : 0)), this.getStatValue(target, "atk", 1, (crit ? -1 : 0)));
+                def = Math.min(this.getStatValue(target, "def", 1, (crit ? 1 : 0)), this.getStatValue(target, "atk", 1, (crit ? 1 : 0)));
             }
         }
         if (!this.fullNPC && this.npcBattle && targetSide !== 1) {
@@ -29965,6 +29965,28 @@ function Safari() {
             }
             if (out.hasOwnProperty(type2(num))) {
                 out[type2(num)] = 0;
+            }
+            if (this.select && this.select.nostab) {
+                if (this.select.normalcy) {
+                    out.Normal = 0;
+                }
+                if (this.select.draconian) {
+                    out.Dragon = 0;
+                }
+                if (this.select.mechanical) {
+                    out.Steel = 0;
+                }
+            }
+            if (this.select2 && this.select2.nostab) {
+                if (this.select2.normalcy) {
+                    out.Normal = 0;
+                }
+                if (this.select2.draconian) {
+                    out.Dragon = 0;
+                }
+                if (this.select2.mechanical) {
+                    out.Steel = 0;
+                }
             }
         }
         if (this.select && this.select.physBan && this.select.categorySplit) {
@@ -36701,7 +36723,7 @@ function Safari() {
         
         var req = photographQuest[act];
         var getFinalPhotoScore = function(req, photo) {
-            var ret = Math.round(req.fscore * (0.5 + (photo.score / 10)) * (1 + safari.getFortune(player, "journalbuff", 0)));
+            var ret = Math.round(req.fscore * (0.5 + (photo.score / 10)) * (1 + safari.getFortune(player, "journalbuff", 0, false, true)));
             if (safari.hasCostumeSkill(player, "moreJournalPoints")) {
                 ret = Math.round(ret * 1.2);
             }
@@ -36743,6 +36765,7 @@ function Safari() {
             return;
         }
 
+        safari.getFortune(player, "journalbuff", 0);
         var score = getFinalPhotoScore(req, photo);
         var rewLevel = Math.floor(score/30);
         var rew;
@@ -51470,7 +51493,7 @@ function Safari() {
     this.showNextContest = function(src) {
         if (contestCount > 0) {
             var hasExtension = wildEvent && contestCount === 1 && contestExtension <= contestExtensionLimit;
-            safaribot.sendHtmlMessage(src, "Current Contest's theme: " + (currentTheme ? link("/themespawns " + currentTheme, themeName(currentTheme)) + (currentThemeAlter ? " (" + contestThemes[currentTheme].alterName + ")" : "") + (currentThemeEffect ? " [" + cap(currentThemeEffect) + "]": "") : "Default") + ".", safchan);
+            safaribot.sendHtmlMessage(src, "Current Contest's theme: " + (currentTheme ? link("/themerares " + currentTheme, themeName(currentTheme)) + (currentThemeAlter ? " (" + contestThemes[currentTheme].alterName + ")" : "") + (currentThemeEffect ? " [" + cap(currentThemeEffect) + "]": "") : "Default") + ".", safchan);
             if (currentRules) {
                 safaribot.sendHtmlMessage(src, "Contest's Rules: " + this.translateRules(currentRules, true), safchan);
             }
@@ -51488,7 +51511,7 @@ function Safari() {
                     for (n = 0; n < nextTheme.length; n++) {
                         t = nextTheme[n];
                         if (nextRules && t in nextRules) {
-                            safaribot.sendHtmlMessage(src, "--- Rules for " + (t === "none" ? themeName(t) : link("/themespawns " + themeName(t), themeName(t)))+ ": " + this.translateRules(nextRules[t], true), safchan);
+                            safaribot.sendHtmlMessage(src, "--- Rules for " + (t === "none" ? themeName(t) : link("/themerares " + themeName(t), themeName(t)))+ ": " + this.translateRules(nextRules[t], true), safchan);
                         }
                     }
                 }
@@ -59622,7 +59645,7 @@ function Safari() {
                 } else {
                     nextRules[t] = safari.pickRules(t);
                 }
-                rulesDesc.push("Rules for " + (t === "none" ? themeName(t) : link("/themespawns " + t, themeName(t))) + " --- " + safari.translateRules(nextRules[t], true));
+                rulesDesc.push("Rules for " + (t === "none" ? themeName(t) : link("/themerares " + t, themeName(t))) + " --- " + safari.translateRules(nextRules[t], true));
             }
             contestVotingCount--;
             contestVotes = null;
