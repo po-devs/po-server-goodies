@@ -37742,7 +37742,7 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
     };
     this.organizeRecentQuests = function(player) {
-        var out = [], item, everyQuest = ["arena", "tower", "collector", "pyramid", "celebrity", "daycare", "missions", "journal", "monger", "wonder trade", "league", "baking", "alchemist", "arborist", "scientist"];
+        var out = [], item, everyQuest = ["arena", "tower", "collector", "pyramid", "celebrity", "daycare", "missions", "journal", "monger", "wonder trade", "league", "baking", "alchemist", "arborist", "scientist", "idol"];
         for (var i = 20; i > 1; i--) {
             for (var j = 0; j < everyQuest.length; j++) {
                 item = everyQuest[j];
@@ -51627,19 +51627,23 @@ function Safari() {
             if (player.fortune.deadline > now() || player.fortune.limit > 0) {
                 safaribot.sendMessage(src, "You still have " + an(finishName("cookie")) + "'s effect active: \"" + this.fortuneDescription(player.fortune) + "\"!", safchan);
             }
-            var toDelete = [];
+            var toDelete = [], journalExpired = [], journalExpiring = [];
             for (var request in player.quests.journal.trackedRequests) {
                 var photoRequest = photographQuest[request];
                 if (!photoRequest) { // meaning it expired while they were offline or something
-                    safari.notification(player, "Journal request #{0} ({1}) expired while you were away!".format(request, player.quests.journal.trackedRequests[request]), "Journal");
+                    journalExpired.push("#{0} ({1})".format(request, player.quests.journal.trackedRequests[request]));
                     toDelete.push(request);
-                    safari.saveGame(player);
                 }
                 else if (photoRequest.deadline - now() <= journalDoneDeadline) {
-                    safari.notification(player, "Journal request #{0} ({1}){2} is expiring in {3}!".format(request, player.quests.journal.trackedRequests[request], (photoRequest.done ? " was completed by someone and" : ""), timeLeftString(photoRequest.deadline)), "Journal");
+                    journalExpiring.push("#{0} ({1})".format(request, player.quests.journal.trackedRequests[request]));
                     toDelete.push(request);
-                    safari.saveGame(player);
                 }
+            }
+            if (journalExpired.length > 0) {
+                safari.notification(player, "{0}: {1} expired while you were away!".format(plural(journalExpired.length, "Journal request"), readable(journalExpired)), "Journal");
+            }
+            if (journalExpiring.length > 0) {
+                safari.notification(player, "{0}: {1} {2} expiring soon!".format(plural(journalExpiring.length, "Journal request"), readable(journalExpiring), journalExpiring.length === 1 ? "is" : "are"), "Journal");
             }
             for (var d in toDelete) {
                 delete player.quests.journal.trackedRequests[toDelete[d]];
@@ -51648,6 +51652,7 @@ function Safari() {
             if (unread > 0) {
                 safaribot.sendHtmlMessage(src, toFlashing(addFlashTag(sys.name(src)) + ", you have " + plural(unread, "unread message") + ". To read them, type " + link("/inbox") + ". ", sys.name(src)), safchan);
             }
+            safari.saveGame(player);
         } else if (getAvatar(src)) {
             SESSION.users(src).safari = null;
         }
