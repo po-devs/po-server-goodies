@@ -13597,9 +13597,10 @@ function Safari() {
             for (var t in safari.daycarePokemon) {
                 if (safari.daycarePokemon[t].ownernum === p.idnum) {
                     var mon = safari.daycarePokemon[t];
-                    if (mon.berry && mon.berry.time <= now()) {
+                    if (mon.berry && mon.berry.time <= now() && !mon.berry.notified) {
                         var monName = (mon.shiny ? "Shiny " : "") + poke(mon.id);
-                        safari.notification(p, "Your {0} grew some berries for you! Go visit the {1} to harvest them!".format(monName, link("/daycare", "Daycare")), "Daycare", true);
+                        mon.berry.notified = true;
+                        safari.notification(p, "Your {0} grew some berries for you! Go visit the {1} to harvest them!".format(monName, link("/daycare berry", "Daycare")), "Daycare", true);
                         hitAny = true;
                     }
                 }
