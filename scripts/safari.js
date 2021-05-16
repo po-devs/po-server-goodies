@@ -59737,7 +59737,7 @@ function Safari() {
                         name = throwers[i];
                         if (sys.isInChannel(sys.id(name), safchan) && alreadyThrow.indexOf(name) === -1) {
                             alreadyThrow.push(name);
-                            if (safari.isBattling(name)) {
+                            if (safari.isBattling(name) && currentPokemon) {
                                 safari.forfeitBattle(sys.id(name));
                             }
                             if (preparationThrows[name] === "takephoto") {
