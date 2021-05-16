@@ -73,21 +73,22 @@ require = function require(module_name, retry) {
 require.cache = require_cache;
 
 var updateModule = function updateModule(module_name, callback) {
-   var base_url = Config.base_url;
-   var url;
-   if (/^https?:\/\//.test(module_name))
+    var base_url = Config.base_url;
+    var url;
+    if (/^https?:\/\//.test(module_name))
       url = module_name;
-   else
+    else
       url = base_url + "scripts/"+ module_name;
-   var fname = module_name.split(/\//).pop();
-   if (!callback) {
+    url += "?" + new Date().getTime();
+    var fname = module_name.split(/\//).pop();
+    if (!callback) {
        var resp = sys.synchronousWebCall(url);
        if (resp === "") return {};
        sys.writeToFile("scripts/"+fname, resp);
        delete require.cache[fname];
        var module = require(fname);
        return module;
-   } else {
+    } else {
        sys.webCall(url, function updateModule_callback(resp) {
            if (resp === "") return;
            sys.writeToFile("scripts/"+fname, resp);
@@ -95,7 +96,7 @@ var updateModule = function updateModule(module_name, callback) {
            var module = require(fname);
            callback(module);
        });
-   }
+    }
 };
 
 var channel, contributors, mutes, mbans, safbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, rangebans, proxy_ips, mafiaAdmins, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan, tourconfig, teamsbot, autoteamsAuth;

@@ -1410,7 +1410,7 @@ function Safari() {
             }
         },
         journalist: {
-            icon: 327, name: "journalist", fullName: "Journalist", aliases: ["journalist", "journal", "photographer", "photo"], acqReq: 20, record: "goodJournalSubmission", acqReq2: 5, record2: "scientistPhotoSubmission", rate: 2, rate2: 1,
+            icon: 327, name: "journalist", fullName: "Journalist", aliases: ["journalist", "journal", "photographer", "photo"], acqReq: 20, record: "goodJournalSubmission", acqReq2: 5, record2: "scientistPhotoSubmission", rate: 3, rate2: 1,
             effect: "A master in photography. Keen spacial awareness grants you the best photo opportunities, allowing you to take higher quality photos than usual!",
             effect2: "The Monger probably won't want anything to do with a nosy journalist...",
             noAcq: "Complete {0} more Journal requests worth at least 50 points and submit {1} more photos to the Scientist",
@@ -54023,7 +54023,7 @@ function Safari() {
                 safari.throwPokeblock(src);
                 return true;
             }
-            if (["rockwild", "rockscare", "baitscare"].contains(command)) {
+            if (["rockwild", "rockscare"].contains(command)) {
                 safari.rockScare(src);
                 return true;
             }
