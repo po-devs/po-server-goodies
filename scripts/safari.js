@@ -13594,6 +13594,16 @@ function Safari() {
                     hitAny = true;
                 }
             }
+            for (var t in safari.daycarePokemon) {
+                if (safari.daycarePokemon[t].ownernum === p.idnum) {
+                    var mon = safari.daycarePokemon[t];
+                    if (mon.berry && mon.berry.time <= now()) {
+                        var monName = (mon.shiny ? "Shiny " : "") + poke(mon.id);
+                        safari.notification(p, "Your {0} grew some berries for you! Go visit the {1} to harvest them!".format(monName, link("/daycare", "Daycare")), "Daycare", true);
+                        hitAny = true;
+                    }
+                }
+            }
             if (data.daycarePlay && chance(0.25)) {
                 data.daycarePlay = false;
                 if (data.daycareHungry) {
@@ -46009,7 +46019,7 @@ function Safari() {
             this.saveGame(player);
             safari.saveDaycare();
         } else {
-            daycarebot.sendMessage(src, "Sorry, but your all your Pokémon are already busy growing berries!", safchan);
+            daycarebot.sendMessage(src, "Sorry, but that Pokémon is already busy growing berries!", safchan);
         }
         return gardener !== null;
     };
@@ -55800,35 +55810,35 @@ function Safari() {
                 return true;
             }
             if (command === "clueresearch" || command === "clueresearch2") {
-            	var foundTypes = {}, reg, typing;
-            	for (var j = 1; j < highestDexNum; j++) {
-            		reg = generation(highestDexNum, true) + "";
-            		if (!foundTypes.hasOwnProperty(reg)) {
-            			foundTypes[reg] = {};
-            		}
-            		typing = type1(j) + "," + (type2(j) == "???" ? "" : type2(j));
-            		if (!foundTypes[reg].hasOwnProperty(typing)) {
-            			foundTypes[reg][typing] = [];
-            		}
-            		foundTypes[reg][typing].push(j);
-            	}
-            	var out = [];
-            	for (var x in foundTypes) {
-            		for (var y in foundTypes[x]) {
-						if (command == "clueresearch2") {
-							if (foundTypes[x][y].length <= 2) {
-								out.push(poke(foundTypes[x][y][0]));
-								if (foundTypes[x][y].length == 2) {
-									out.push(poke(foundTypes[x][y][0]));
-								}
-							}
-							continue;
-						}
-            			if (foundTypes[x][y].length == 1) {
-            				out.push(poke(foundTypes[x][y][0]));
-            			}
-            		}
-            	}
+                var foundTypes = {}, reg, typing;
+                for (var j = 1; j < highestDexNum; j++) {
+                    reg = generation(highestDexNum, true) + "";
+                    if (!foundTypes.hasOwnProperty(reg)) {
+                        foundTypes[reg] = {};
+                    }
+                    typing = type1(j) + "," + (type2(j) == "???" ? "" : type2(j));
+                    if (!foundTypes[reg].hasOwnProperty(typing)) {
+                        foundTypes[reg][typing] = [];
+                    }
+                    foundTypes[reg][typing].push(j);
+                }
+                var out = [];
+                for (var x in foundTypes) {
+                    for (var y in foundTypes[x]) {
+                        if (command == "clueresearch2") {
+                            if (foundTypes[x][y].length <= 2) {
+                                out.push(poke(foundTypes[x][y][0]));
+                                if (foundTypes[x][y].length == 2) {
+                                    out.push(poke(foundTypes[x][y][0]));
+                                }
+                            }
+                            continue;
+                        }
+                        if (foundTypes[x][y].length == 1) {
+                            out.push(poke(foundTypes[x][y][0]));
+                        }
+                    }
+                }
                 safaribot.sendMessage(src, "Pokémon with unique typing within their region: " + out.join(", ") + " (" + out.length + ")", safchan);
                 return true;
             }
