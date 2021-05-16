@@ -54435,7 +54435,7 @@ function Safari() {
                 safari.editBase(src, commandData);
                 return true;
             }
-            if (command === "quest" || command === "quests") {
+            if (command === "quest" || command === "quests" || command === "q") {
                 safari.questNPC(src, commandData);
                 return true;
             }
