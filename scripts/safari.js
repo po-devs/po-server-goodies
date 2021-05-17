@@ -10043,7 +10043,12 @@ function Safari() {
             return;
         }
         if (safari.isBattling(sys.name(src))) {
-            safari.forfeitBattle(src);
+            for (var b = 0; b < currentBattles.length; b++) {
+                var battle = currentBattles[b];
+                if (battle.isInBattle(name) && battle.startTime < lastWild) {
+                    safari.forfeitBattle(src);
+                }
+            }
         }
         var aType = type1(leader);
         var crystalEffect = ball !== "master" && player.zcrystalDeadline >= now() && player.zcrystalUser === leader && chance(zCrystalData[aType].chance) ? zCrystalData[aType] : { effect: "none" };
@@ -23341,7 +23346,7 @@ function Safari() {
     function Battle(p1, p2) {
         var player1 = getAvatar(p1);
         this.cantWatch = false;
-
+        this.startTime = now();
         this.name1 = sys.name(p1);
         this.viewers = [this.name1.toLowerCase()];
         this.team1 = player1.party.concat().shuffle();
@@ -23603,6 +23608,7 @@ function Safari() {
         this.pendingPause = false;
         this.totalPauseTime = 0;
         this.pauseLimit = 600 * 3; // in seconds
+        this.startTime = now();
         this.tagBattle = false;
         this.oneOnTwo = false;
         this.fullNPC = typeof p1 == "object";
@@ -59750,9 +59756,6 @@ function Safari() {
                         name = throwers[i];
                         if (sys.isInChannel(sys.id(name), safchan) && alreadyThrow.indexOf(name) === -1) {
                             alreadyThrow.push(name);
-                            if (safari.isBattling(name) && currentPokemon) {
-                                safari.forfeitBattle(sys.id(name));
-                            }
                             if (preparationThrows[name] === "takephoto") {
                                 safari.takePhoto(sys.id(name), preparationThrows[name], false, true);
                             } else {
