@@ -1869,7 +1869,7 @@ function Safari() {
     var lastWild = 0;
     var lastWildAction = 0;
     var wildEvent = false;
-    var isBaited = false;
+    var currentBaiter = null;
     var resolvingThrows = false;
     var catchTierChance = [0.20, 0.18, 0.14, 0.10, 0.065, 0.0275];
     var tiers = ["SM LC", "SM PU", "SM NU", "SM LU", "SM UU", "SM OU", "SM Ubers"];
@@ -2903,7 +2903,7 @@ function Safari() {
         wildBallThrows = {};
         currentPokemonCount = 1;
         lastPokemonCount = 1;
-        isBaited = false;
+        currentBaiter = null;
         if (!saveContest) {
             currentTheme = null;
             currentThemeAlter = false;
@@ -8208,7 +8208,7 @@ function Safari() {
                     if (canHaveAbility(leader, abilitynum("Simple"))) {
                         abilityMessageList[onChannel[e]].push("Your {0}'s Simple intensifies type matchups!".format(poke(leader, true)));
                     }
-                    if (canHaveAbility(leader, abilitynum("Sniper")) && isBaited) {
+                    if (canHaveAbility(leader, abilitynum("Sniper")) && currentBaiter !== null && currentBaiter !== player.id) {
                         abilityMessageList[onChannel[e]].push("Your {0}'s Sniper boosts your catch rate against Pokémon baited by others!".format(poke(leader, true)));
                     }
                     if (canHaveAbility(leader, abilitynum("Speed Boost"))) {
@@ -8500,7 +8500,7 @@ function Safari() {
         contestantsCount = {};
         contestantsWild = [];
         wildEvent = false;
-        isBaited = false;
+        currentBaiter = null;
         nextRules = null;
         
         safari.createWild();
@@ -9880,7 +9880,7 @@ function Safari() {
                 }
             }
         }
-        if (isBaited && canHaveAbility(leader, abilitynum("Sniper"))) {
+        if (currentBaiter !== null && currentBaiter !== player.id && canHaveAbility(leader, abilitynum("Sniper"))) {
             abilityBoost *= 1.3;
         }
         var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff * abilityBoost + anyballbuff, 0.01) * eventChance;
@@ -10285,7 +10285,7 @@ function Safari() {
                 }
             }
             player.records.pokesCaught += 1;
-            if (isBaited) {
+            if (currentBaiter !== null && currentBaiter !== player.id) {
                 player.records.notBaitedCaught += 1;
             }
             this.addToMonthlyLeaderboards(player.id, "pokesCaught", 1);
@@ -10550,7 +10550,7 @@ function Safari() {
                 wildEvent = false;
                 wildBallThrows = {};
                 wildSpirit = false;
-                isBaited = false;
+                currentBaiter = null;
                 if (contestCount <= 0) {
                     this.runPendingActive();
                 } else if (contestCount <= 150 && (!(contestMidPoint))) {
@@ -10747,7 +10747,7 @@ function Safari() {
         currentDisplay = null;
         currentExtraBST = 0;
         currentPokemonCount = lastPokemonCount = 1;
-        isBaited = false;
+        currentBaiter = null;
         wildSpirit = false;
         wildBallThrows = {};
         spiritSpawn = false;
@@ -14704,6 +14704,7 @@ function Safari() {
                 safaribot.sendMessage(src, out, safchan);
             }
             else {
+                currentBaiter = player.id;
                 var p = player.nextSpawn;
                 if (p.pokemon.num && !deluxe) {
                     safari.createWild(p.pokemon.num, p.pokemon.shiny, p.amt, null, null, player, p.disguise);
@@ -14739,7 +14740,6 @@ function Safari() {
             if (!golden && !deluxe) {
                 lastBaitersDecay = lastBaitersDecayTime;
             }
-            isBaited = true;
             if (hasType(currentPokemon, "Water") && hasType(currentPokemon, "???")) {
                 player.records.baitWater += 1;
             }
@@ -59743,9 +59743,6 @@ function Safari() {
                         }
                     }
 
-                    //Store value to prevent first person from getting credit
-                    var temp = isBaited;
-                    isBaited = false;
                     for (i = 0; i < throwers.length; i++) {
                         if (i + 1 >= throwers.length) {
                             resolvingThrows = false;
@@ -59762,8 +59759,6 @@ function Safari() {
                                 safari.throwBall(sys.id(name), preparationThrows[name], false, true);
                             }
                         }
-                        //Now toggle it correctly again
-                        isBaited = temp;
                     }
                 }
                 preparationFirst = null;
