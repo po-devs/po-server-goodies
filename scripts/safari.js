@@ -32172,27 +32172,34 @@ function Safari() {
         };
         permObj.add("scientistQuest", JSON.stringify(scientistQuest));
 
-        var onChannel = sys.playersOfChannel(safchan);
         var player, e, amt;
         try {
-            for (e in onChannel) {
-                player = getAvatar(onChannel[e]);
-                if (!player) {
-                    continue;
+            for (e in rawPlayers.hash) {
+                if (rawPlayers.hash.hasOwnProperty(e)) {
+                    player = getAvatarOff(e);
+                    if (!player) {
+                        continue;
+                    }
+
+                    player.quests.scientist.pokemon = player.quests.scientist.photo = 0;
+                    safari.saveGame(player);
+                    if (!isPlaying(player.id)) {
+                        continue;
+                    }
+                    if (!(player.notificationData)) {
+                        continue;
+                    }
+                    if (!(player.notificationData.scientistWaiting)) {
+                        continue;
+                    }
+                    amt = countDuplicates(player.pokemon, randomNum);
+                    if (amt <= 0) {
+                        continue;
+                    }
+                    safari.notification(player, "The " + link("/quest scientist", "Scientist") + " is now looking for " + an(poke(randomNum)) + ", of which you have " + amt + "!", "Scientist");
+                    player.notificationData.scientistWaiting = false;
+                    safari.saveGame(player);
                 }
-                if (!(player.notificationData)) {
-                    continue;
-                }
-                if (!(player.notificationData.scientistWaiting)) {
-                    continue;
-                }
-                amt = countDuplicates(player.pokemon, randomNum);
-                if (amt <= 0) {
-                    continue;
-                }
-                safari.notification(player, "The " + link("/quest scientist", "Scientist") + " is now looking for " + an(poke(randomNum)) + ", of which you have " + amt + "!", "Scientist");
-                player.notificationData.scientistWaiting = false;
-                safari.saveGame(player);
             }
         }
         catch (err) {};
