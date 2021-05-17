@@ -54484,7 +54484,7 @@ function Safari() {
                 safari.viewTrials(src, commandData);
                 return true;
             }
-            if (command === "forfeit") {
+            if (command === "forfeit" || command === "ff") {
                 safari.forfeitBattle(src, commandData);
                 return true;
             }
