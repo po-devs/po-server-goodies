@@ -3256,8 +3256,30 @@ addAdminCommand(["triviamute"], function (src, commandData, channel) {
         Trivia.removePlayer(sys.id(user));
         triviabot.sendAll(user + " was removed from the game!", triviachan);
     }
-    saveData();
 }, "Trivia mute a user. Format is /triviamute user:reason:time.");
+
+addAdminCommand(["triviakick"], function(src, commandData, channel) {
+    if (commandData === undefined) {
+        triviabot.sendMessage(src, "Provide a username to kick!", channel);
+        return;
+    }
+    var tar = sys.id(commandData);
+    if (!tar) {
+        triviabot.sendMessage(src, "Couldn't find user " + commandData + ".", channel);
+        return;
+    }
+    if ((tadmin.isTAdmin(commandData) || sys.auth(tar) > 0) && !isTriviaOwner(src)) {
+        triviabot.sendMessage(src, "Can't kick other trivia admins!", channel);
+        return;
+    }
+    if (Trivia.playerPlaying(tar)) {
+        Trivia.removePlayer(tar);
+        triviabot.sendAll(commandData.toCorrectCase() + " was removed from the game!", triviachan);
+    }
+    triviabot.sendAll(commandData.toCorrectCase() + " was kicked from the channel by " + sys.name(src) + "!", triviachan);
+    sys.kick(tar, triviachan);
+    saveData();
+}, "Kick a user from the channel. Format is /triviakick user.");
 
 addAdminCommand(["triviaunmute"], function (src, commandData, channel) {
     if (commandData === undefined) {
