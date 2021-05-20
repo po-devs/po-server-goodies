@@ -13296,7 +13296,7 @@ function Safari() {
             var onOthers = rec.rocksHit + rec.rocksWalletHit + rec.rocksMissedWindow + rec.rocksItemfinderHit;
             sys.sendMessage(src, "±{0}: Threw {1} ({2} accuracy, {3}). Embarassed {4}.".format(finishName("rock"), plural(rec.rocksThrown, "rock"), percentage(onOthers, rec.rocksThrown), plural(onOthers, "hit"), plural(rec.rocksBounced, "time")), safchan);
             var onMe = rec.rocksHitBy + rec.rocksWalletHit + rec.rocksDodgedWindow + rec.rocksChargesLost;
-            sys.sendMessage(src, "±{0}: Hit by {1} ({2} evasion, {3}). Caught {4}. Scared away {5} wild Pokémon.".format(finishName("rock"), plural(onMe, "rock"), percentage(rec.rocksDodged, rec.rocksDodged + onMe), plural(rec.rocksDodged, "dodge"), plural(rec.rocksCaught, "throw"), rec.wildsScared), safchan);
+            sys.sendMessage(src, "±{0}: Hit by {1} ({2} evasion, {3}). Caught {4}. Scared away {5} wild Pokémon.".format(finishName("rock"), plural(onMe, "rock"), percentage(rec.rocksDodged, rec.rocksDodged + onMe), plural(rec.rocksDodged, "dodge"), plural(rec.rocksCaught, "throw"), addComma(rec.wildsScared)), safchan);
             sys.sendMessage(src, "±Game: {0} Consecutive Logins{1}. Won {2} Contests and {4}. Found {3} items with the Itemfinder.".format(addComma(rec.consecutiveLogins), (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : ""), addComma(rec.contestsWon), addComma(rec.itemsFound), plural(rec.medalsWon, "medal")), safchan);
             sys.sendMessage(src, "±Game: Opened {0} and used {1}. Hatched {2} and {3} with {4} being a Rare Pokémon! Gave {5} and received {6}.".format(plural(rec.packsOpened, "pack"), plural(rec.gemsUsed, "gem"), plural(rec.eggsHatched, "egg"), plural(rec.brightEggsHatched, "bright"), addComma(rec.rareHatched), plural(rec.burnGiven, "burn"), plural(rec.burnReceived, "burn")), safchan);
             sys.sendMessage(src, "±Game: Used {0} and won {1}. Ate {2} and {3}, and used {4} and {5}. Sent {6} and retouched {7}.".format(plural(rec.shadyUsed, "shady"), plural(rec.mongerAuctionsWon, "Monger Auction"), plural(rec.cookiesEaten, "cookie"), plural(rec.mushroomsEaten, "mushroom"), plural(rec.scalesUsed, "scale"), plural(rec.crystalsUsed, "crystal"), plural(rec.mailsSent, "mail"), plural(rec.photosRetouched, "Photograph")), safchan);
@@ -36925,7 +36925,6 @@ function Safari() {
             return;
         }
 
-        safari.getFortune(player, "journalbuff", 0);
         var score = getFinalPhotoScore(req, photo);
         var rewLevel = Math.floor(score/30);
         var rew;
@@ -36977,7 +36976,7 @@ function Safari() {
         
         safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Oh great, this photo is exactly what I needed! It will look great on " + (chance(0.05) ? "the cover page" : "page " + sys.rand(2, 13)) + " for tomorrow's edition!", safchan);
         safaribot.sendMessage(src, "You gave your photo of " + this.describePhoto(photo) + " to the Editor-in-chief! You " + rew + "! You also received " + plural(score, "Photo Point") + " and now have " + plural(player.records.journalPoints, "Photo Point") + "!", safchan);
-        
+        safari.getFortune(player, "journalbuff", 0);
         var added = 0;
         while (player.balls.lens < 10 && Math.floor(player.records.journalPoints/itemData.lens.threshold) >= player.balls.lens) {
             player.balls.lens += 1;
