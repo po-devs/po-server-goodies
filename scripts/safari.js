@@ -30630,10 +30630,10 @@ function Safari() {
         this.productName = translateStuff(product, true);
         
         var joinCommand = "/join " + this.hostName;
-        sendAll("", true, true);
-        sendAll(this.hostName + " is starting an auction! The product is " + this.productName + ", with bids starting at $" + addComma(starting) + " (Minimum bid raise: $" + addComma(minBid) + ")! Type " + link(joinCommand) + " to join the auction!", true);
+        safaribot.sendHtmlAll("", safchan);
+        safaribot.sendHtmlAll(this.hostName + " is starting an auction! The product is " + this.productName + ", with bids starting at $" + addComma(starting) + " (Minimum bid raise: $" + addComma(minBid) + ")! Type " + link(joinCommand) + " to join the auction!", safchan);
         safaribot.sendMessage(src, "You started an auction! The auction ends when the current bid is not matched after 3 turns or if no one makes a bid for the first 40 seconds!", safchan);
-        sendAll("", true, true);
+        safaribot.sendHtmlAll("", safchan);
     }
     Auction.prototype.nextTurn = function() {
         if (this.turn === 0) {
