@@ -3256,6 +3256,7 @@ addAdminCommand(["triviamute"], function (src, commandData, channel) {
         Trivia.removePlayer(sys.id(user));
         triviabot.sendAll(user + " was removed from the game!", triviachan);
     }
+    saveData();
 }, "Trivia mute a user. Format is /triviamute user:reason:time.");
 
 addAdminCommand(["triviakick"], function(src, commandData, channel) {

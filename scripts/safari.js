@@ -897,7 +897,8 @@ function Safari() {
             cherishOff: false,
             monoSecondary: false,
             autoForfeitThrow: true,
-            showLeadMessage: false
+            showLeadMessage: false,
+            canSellFormes: true
         }
     };
 
@@ -7754,7 +7755,7 @@ function Safari() {
         if (makeShiny) {
             shiny = true;
         }
-        
+
         var cType = {effect:"none"};
         if (player && player.zcrystalUser && !isNaN(player.zcrystalUser)) {
             cType = getCrystalEffect(player.zcrystalUser);
@@ -8017,7 +8018,7 @@ function Safari() {
             currentPokemonMoodRate = sys.rand(1, 31);
             var mood = ["Negative", "Neutral", "Positive"][Math.ceil(currentPokemonMoodRate/10)-1];
             currentPokemonMood = photoMood[mood].random();
-            if (themeOverride || leader) { // bait or shroom bait
+            if (themeOverride || leader || dexNum) { // bait, shroom bait or dbait
                 currentPokemonAction = "eating";
             }
 
@@ -12550,7 +12551,7 @@ function Safari() {
             sys.sendHtmlMessage(src, this.listPokemon(finalList, "Pokémon " + finalTitleMsg + " (" + finalList.length + ")", player.options.smallBox), safchan);
         }
         if (shopLink) {
-            safaribot.sendHtmlMessage(src, "Sell all of these Pokémon at once? (This command will not sell Shinies or Legendaries/Rare Formes)", safchan);
+            safaribot.sendHtmlMessage(src, "Sell all of these Pokémon at once? (This command will not sell Shinies, Legendaries, or Rare Formes", safchan);
             var toTurbo = [], p;
             for (var i = 0; i < finalList.length; i++) {
                 p = finalList[i];
@@ -13295,7 +13296,7 @@ function Safari() {
             var onOthers = rec.rocksHit + rec.rocksWalletHit + rec.rocksMissedWindow + rec.rocksItemfinderHit;
             sys.sendMessage(src, "±{0}: Threw {1} ({2} accuracy, {3}). Embarassed {4}.".format(finishName("rock"), plural(rec.rocksThrown, "rock"), percentage(onOthers, rec.rocksThrown), plural(onOthers, "hit"), plural(rec.rocksBounced, "time")), safchan);
             var onMe = rec.rocksHitBy + rec.rocksWalletHit + rec.rocksDodgedWindow + rec.rocksChargesLost;
-            sys.sendMessage(src, "±{0}: Hit by {1} ({2} evasion, {3}). Caught {4}.".format(finishName("rock"), plural(onMe, "rock"), percentage(rec.rocksDodged, rec.rocksDodged + onMe), plural(rec.rocksDodged, "dodge"), plural(rec.rocksCaught, "throw")), safchan);
+            sys.sendMessage(src, "±{0}: Hit by {1} ({2} evasion, {3}). Caught {4}. Scared away {5} wild Pokémon.".format(finishName("rock"), plural(onMe, "rock"), percentage(rec.rocksDodged, rec.rocksDodged + onMe), plural(rec.rocksDodged, "dodge"), plural(rec.rocksCaught, "throw"), rec.wildsScared), safchan);
             sys.sendMessage(src, "±Game: {0} Consecutive Logins{1}. Won {2} Contests and {4}. Found {3} items with the Itemfinder.".format(addComma(rec.consecutiveLogins), (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : ""), addComma(rec.contestsWon), addComma(rec.itemsFound), plural(rec.medalsWon, "medal")), safchan);
             sys.sendMessage(src, "±Game: Opened {0} and used {1}. Hatched {2} and {3} with {4} being a Rare Pokémon! Gave {5} and received {6}.".format(plural(rec.packsOpened, "pack"), plural(rec.gemsUsed, "gem"), plural(rec.eggsHatched, "egg"), plural(rec.brightEggsHatched, "bright"), addComma(rec.rareHatched), plural(rec.burnGiven, "burn"), plural(rec.burnReceived, "burn")), safchan);
             sys.sendMessage(src, "±Game: Used {0} and won {1}. Ate {2} and {3}, and used {4} and {5}. Sent {6} and retouched {7}.".format(plural(rec.shadyUsed, "shady"), plural(rec.mongerAuctionsWon, "Monger Auction"), plural(rec.cookiesEaten, "cookie"), plural(rec.mushroomsEaten, "mushroom"), plural(rec.scalesUsed, "scale"), plural(rec.crystalsUsed, "crystal"), plural(rec.mailsSent, "mail"), plural(rec.photosRetouched, "Photograph")), safchan);
@@ -17236,6 +17237,30 @@ function Safari() {
                         break;
                 }
                 break;
+            case "sellform":
+            case "sellforms":
+            case "sellforme":
+            case "sellformes":
+            case "cansellform":
+            case "cansellforms":
+            case "cansellforme":
+            case "cansellformes":
+                switch (dataInput) {
+                    case "on":
+                        player.options.canSellFormes = true;
+                        safaribot.sendMessage(src, "You enabled selling Pokémon formes to the NPC!", safchan);
+                        safari.saveGame(player);
+                        break;
+                    case "off":
+                        player.options.canSellFormes = false;
+                        safaribot.sendMessage(src, "You disabled selling Pokémon formes to the NPC!", safchan);
+                        safari.saveGame(player);
+                        break;
+                    default:
+                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b>! Use {1} to change it.".format(player.options.canSellFormes ? "allowing Pokémon forme sales to the NPC" : "blocking Pokémon forme sales to the NPC", link("/options cansellformes:" + (player.options.canSellFormes ? "off" : "on"))), safchan);
+                        break;
+                }
+                break;
             case "favorite":
             case "favourite":
             case "favoriteball":
@@ -17299,6 +17324,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Lead Ability Messages: " + link("/options abilitymessage:", player.options.leadAbilityMessages ? "Always Show" : "Do Not Show"), safchan);
                 safaribot.sendHtmlMessage(src, "Lead Display Messages: " + link("/options leadmessage:", player.options.showLeadMessage ? "Show if No Relevant Ability" : "Do Not Show"), safchan);
                 safaribot.sendHtmlMessage(src, "Auto-Forfeit Battle: " + link("/options autoforfeit:", player.options.autoForfeitThrow ? "Automatically Forfeit When Throwing on Rare Pokémon" : "Do Not Forfeit When Throwing on Rare Pokémon"), safchan);
+                safaribot.sendHtmlMessage(src, "Sell Pokémon formes to NPC: " + link("/options cansellformes:", player.options.canSellFormes ? "Allow Pokémon Forme Sales to the NPC" : "Do Not Allow Pokémon Forme Sales to the NPC"), safchan);
                 var dexOptions = ["stats", "effectiveness", "trivia"];
                 safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
                     return player.options.dexOptional.contains(e) ? link("/options hidedex:" + e, cap(e)) + " <b>[Enabled]</b>" : link("/options showdex:" + e, cap(e)) + " <b>[Disabled]</b>";
@@ -18237,6 +18263,10 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "You cannot sell " + info.name + " because it's in your Tradeblocked list. If you really wish to sell it, use /tradeblock to remove it from your tradeblock list.", safchan);
             return false;
         }
+        if (pokeInfo.forme(info.num) > 0 && !player.options.canSellFormes) {
+            safaribot.sendHtmlMessage(src, "You cannot sell " + info.name + " without enabling \"Sell Pokémon formes to NPC\" in your " + link("/options") + "!", safchan);
+            return false;
+        }
         if (!(automated)) {
             if (input.length < 2 || (input[1].toLowerCase() !== "confirm" && input[1].toLowerCase() !== "iacknowledgethatiamsellingararepokemon")) {
                 var confirmCommand = "/sell " + (shiny ? "*":"") + pokePlain(id) + ":confirm";
@@ -18433,7 +18463,7 @@ function Safari() {
             hasSilver = true;
         }
         sys.sendMessage(src, "", safchan);
-        safaribot.sendMessage(src, "You currently have $" + addComma(player.money) + " and " + plural(player.balls.silver, silverName) + ". To buy something, use " + fullCommand + "[Pokémon/Item] (e.g.: " + fullCommand + "Pikachu or " + fullCommand + "Heavy Ball)", safchan);
+        safaribot.sendMessage(src, "You currently have $" + addComma(player.money) + " and " + plural(player.balls.silver, silverName) + ". To buy something, use " + fullCommand + "[Pokémon/Item] (e.g.: " + fullCommand + "Pikachu or " + fullCommand + "Great Ball)", safchan);
     };
     this.isBelowCap = function(src, product, amount, type) {
         var player = getAvatar(src);
@@ -55014,7 +55044,7 @@ function Safari() {
                 }
                 var themes = safari.getAllThemesForPoke(info.num, true);
                 if (themes.length > 0) {
-                    safaribot.sendHtmlMessage(src, info.name + " can be found in the following " + plural(themes.length, "theme") + ": " + readable(themes.map(function(e) { return link("/themespawns " + e, e) }), "and") + ".", safchan);
+                    safaribot.sendHtmlMessage(src, info.name + " can be found in the following " + plural(themes.length, "theme") + ": " + readable(themes.map(function(e) { return link("/themespawns " + e.replace(/(\[.+\])/, "").trim(), e) }), "and") + ".", safchan);
                 } else {
                     safaribot.sendMessage(src, info.name + " cannot be found in any theme currently.", safchan);
                 }
