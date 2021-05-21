@@ -18877,7 +18877,7 @@ function Safari() {
             }
         }
         if (!fromNPC) {
-            player.cooldowns.buyFromPlayer = now() + 15 * 1000;
+            player.cooldowns.buyFromPlayer = now() + 10 * 1000;
         }
         this.saveGame(player);
     };
