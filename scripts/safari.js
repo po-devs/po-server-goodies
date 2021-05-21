@@ -686,7 +686,8 @@ function Safari() {
             price: 0,
             unsell: 0,
             daycare: 0,
-            detective: 0
+            detective: 0,
+            buyFromPlayer: 0
         },
         cherished: [],
         freebaits: 0,
@@ -898,7 +899,8 @@ function Safari() {
             monoSecondary: false,
             autoForfeitThrow: true,
             showLeadMessage: false,
-            canSellFormes: true
+            canSellFormes: true,
+            showEvoMessages: true
         }
     };
 
@@ -2645,7 +2647,7 @@ function Safari() {
                 safaribot.sendMessage(src, "No such person!", safchan);
                 return false;
             }
-            var allowShared = allowedSharedIPNames.contains(sys.name(src)) || allowedSharedIPNames.contains(sys.name(tar));
+            var allowShared = allowedSharedIPNames.contains(sys.name(src)) || allowedSharedIPNames.contains(tar.toLowerCase());
             if ((targetId == src || (sys.ip(targetId) === sys.ip(src) && !allowShared)) && selfmsg) {
                 safaribot.sendMessage(src, selfmsg, safchan);
                 return false;
@@ -15597,10 +15599,22 @@ function Safari() {
             safaribot.sendMessage(src, "Your " + info.name + " " + verb + " " + poke(evolution) + "!", safchan);
             sys.sendMessage(src, "", safchan);
         } else {
-            sendAll("", false, true, sys.name(src).toLowerCase());
-            sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true, false, sys.name(src).toLowerCase());
-            sendAll(sys.name(src) + "'s " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " " + verb + " " + poke(evolution, true) + "!", false, false, sys.name(src).toLowerCase());
-            sendAll("", false, true, sys.name(src).toLowerCase());
+            var canView = sys.playersOfChannel(safchan).filter(function(e) {
+                var p = getAvatar(e);
+                if (!p || isRare(info.num) || isRare(evolution) || p.options.showEvoMessages || e === src) {
+                    return true;
+                }
+                return false;
+            });
+            canView.forEach(function(e) {
+                if (cantBecause(e, false, ["auction", "battle", "event", "pyramid", "baking"], false, true) && e !== src) {
+                    return;
+                }
+                sys.sendMessage(e, "", safchan);
+                safaribot.sendHtmlMessage(e, pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), safchan);
+                safaribot.sendHtmlMessage(e, sys.name(src) + "'s " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " " + verb + " " + poke(evolution, true) + "!", safchan);
+                sys.sendMessage(e, "", safchan);
+            });
         }
         this.saveGame(player);
     };
@@ -17200,9 +17214,7 @@ function Safari() {
                         break;
                 }
                 break;
-            case "trade":
-            case "trades":
-            case "trading":
+            case "trade": case "trades": case "trading":
                 switch (dataInput) {
                     case "on":
                         player.options.trading = true;
@@ -17219,8 +17231,7 @@ function Safari() {
                         break;
                 }
                 break;
-            case "autoforfeit":
-            case "autoforfeitthrow":
+            case "autoforfeit": case "autoforfeitthrow":
                 switch (dataInput) {
                     case "on":
                         player.options.autoForfeitThrow = true;
@@ -17237,14 +17248,7 @@ function Safari() {
                         break;
                 }
                 break;
-            case "sellform":
-            case "sellforms":
-            case "sellforme":
-            case "sellformes":
-            case "cansellform":
-            case "cansellforms":
-            case "cansellforme":
-            case "cansellformes":
+            case "sellform": case "sellforms": case "sellforme": case "sellformes": case "cansellform": case "cansellforms": case "cansellforme": case "cansellformes":
                 switch (dataInput) {
                     case "on":
                         player.options.canSellFormes = true;
@@ -17261,30 +17265,36 @@ function Safari() {
                         break;
                 }
                 break;
-            case "favorite":
-            case "favourite":
-            case "favoriteball":
-            case "favouriteball":
+            case "showevo": case "showdevo": case "showevos": case "showdevos":
+                switch (dataInput) {
+                    case "on":
+                        player.options.showEvoMessages = true;
+                        safaribot.sendMessage(src, "You will now view all evolution/devolution messages!", safchan);
+                        safari.saveGame(player);
+                        break;
+                    case "off":
+                        player.options.showEvoMessages = false;
+                        safaribot.sendMessage(src, "You will now only see your own evolution/devolution messages!", safchan);
+                        safari.saveGame(player);
+                        break;
+                    default:
+                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b>! Use {1} to change it. Note: Rare evolutions/devolutions from other players will always be shown.".format(player.options.showEvoMessages? "viewing all evolution/devolution messages" : "only viewing your own evolution/devolution messages", link("/options showevo:" + (player.options.showEvoMessages ? "off" : "on"))), safchan);
+                        break;
+                }
+                break;
+            case "favorite": case "favourite": case "favoriteball": case "favouriteball":
                 safari.setFavoriteBall(src, dataInput);
                 break;
-            case "pokeskills":
-            case "idolskills":
+            case "pokeskills": case "idolskills":
                 safari.idolQuest(src, ["toggle"]);
                 break;
-            case "mblink":
-            case "masterballlink":
-            case "mbmacro":
-            case "masterballmacro":
+            case "mblink": case "masterballlink": case "mbmacro": case "masterballmacro":
                 safari.setEnableMasterBall(src, dataInput);
                 break;
-            case "cherishlink":
-            case "cherishballlink":
-            case "cherishmacro":
-            case "cherishballmacro":
+            case "cherishlink": case "cherishballlink": case "cherishmacro": case "cherishballmacro":
                 safari.setEnableCherishBall(src, dataInput);
                 break;
-            case "sellprompt":
-            case "sellprompts":
+            case "sellprompt": case "sellprompts":
                 safari.setEnableSellPrompt(src, dataInput);
                 break;
             case "mono":
@@ -17293,18 +17303,13 @@ function Safari() {
             case "cherishmsg":
                 safari.cherishVisible(src, dataInput);
                 break;
-            case "showdex":
-            case "hidedex":
+            case "showdex": case "hidedex":
                 safari.setDexOptional(src, data, dataInput);
                 break;
-            case "showability":
-            case "abilitymessage":
-            case "showabilitymessage":
+            case "showability": case "abilitymessage": case "showabilitymessage":
                 safari.setShowAbilityMessage(src, dataInput);
                 break;
-            case "showlead":
-            case "leadmessage":
-            case "showleadmessage":
+            case "showlead": case "leadmessage": case "showleadmessage":
                 safari.setShowLeadMessage(src, dataInput);
                 break;
             default:
@@ -17325,6 +17330,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Lead Display Messages: " + link("/options leadmessage:", player.options.showLeadMessage ? "Show if No Relevant Ability" : "Do Not Show"), safchan);
                 safaribot.sendHtmlMessage(src, "Auto-Forfeit Battle: " + link("/options autoforfeit:", player.options.autoForfeitThrow ? "Automatically Forfeit When Throwing on Rare Pokémon" : "Do Not Forfeit When Throwing on Rare Pokémon"), safchan);
                 safaribot.sendHtmlMessage(src, "Sell Pokémon formes to NPC: " + link("/options cansellformes:", player.options.canSellFormes ? "Allow Pokémon Forme Sales to the NPC" : "Do Not Allow Pokémon Forme Sales to the NPC"), safchan);
+                safaribot.sendHtmlMessage(src, "Show Evolution/Devolution Messages: " + link("/options showevo:", player.options.showEvoMessages ? "Show Everyone's Evolutions/Devolutions" : "Only Show My Own Evolutions/Devolutions"), safchan);
                 var dexOptions = ["stats", "effectiveness", "trivia"];
                 safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
                     return player.options.dexOptional.contains(e) ? link("/options hidedex:" + e, cap(e)) + " <b>[Enabled]</b>" : link("/options showdex:" + e, cap(e)) + " <b>[Disabled]</b>";
@@ -18596,7 +18602,8 @@ function Safari() {
             this.showPrices(src, shop, command, (sellerId ? sys.name(sellerId) : null));
             return;
         }
-        if (!fromNPC && (sellerName.toLowerCase() == sys.name(src).toLowerCase() || sys.ip(sellerId) === sys.ip(src))) {
+        var allowShared = allowedSharedIPNames.contains(sys.name(src)) || allowedSharedIPNames.contains(sellerName.toLowerCase());
+        if (!fromNPC && (sellerName.toLowerCase() == sys.name(src).toLowerCase() || (sys.ip(sellerId) === sys.ip(src) && !allowShared))) {
             safaribot.sendMessage(src, "You cannot buy things from your own Shop!", safchan);
             return;
         }
@@ -18739,6 +18746,10 @@ function Safari() {
                 return;
             } */
         }
+        if (!fromNPC && now() <= player.cooldowns.buyFromPlayer) {
+            safaribot.sendMessage(src, "Please wait " + timeLeftString(player.cooldowns.buyFromPlayer) + " before buying another item from a player!", safchan);
+            return;
+        }
 
         var isSilver = shop[input.input].silver || false;
         var silverName = finishName("silver");
@@ -18864,6 +18875,9 @@ function Safari() {
             if (limitChanged) {
                 this.saveShop();
             }
+        }
+        if (!fromNPC) {
+            player.cooldowns.buyFromPlayer = now() + 15 * 1000;
         }
         this.saveGame(player);
     };
@@ -23915,7 +23929,7 @@ function Safari() {
             this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party, this.idnum2);
             this.postBattle = player2.postBattle;
             this.postArgs = player2.postArgs;
-            npcDesc = player2.desc || null;
+            this.npcDesc = player2.desc || null;
 
             this.biasNPC = player2.bias;
             this.npcFavorite = player2.favorite;
@@ -24092,18 +24106,10 @@ function Safari() {
         this.finished = false;
 
         // sendAll("A battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! " + (this.cantWatch ? "" : "[" + link("/watch " + this.name1, "Watch") + "]"), true);
-        if (this.tagBattle) {
-            if (this.oneOnTwo) {
-                safaribot.sendHtmlAll("A Tag Team Rotation Battle between " + this.name1 + " and " + this.name2 + " & " + this.name4 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! " + (this.cantWatch ? "" : "[" + link("/watch " + this.name1, "Watch") + "]"), safchan);
-            }
-            else {
-                safaribot.sendHtmlAll("A Tag Team Rotation Battle between " + this.name1 + " & " + this.name3 + " and " + this.name2 + " & " + this.name4 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! " + (this.cantWatch ? "" : "[" + link("/watch " + this.name1, "Watch") + "]"), safchan);
-            }
+        if (!this.postArgs || !this.postArgs.delayAnnounce) {
+            this.announceBattle();
         }
-        else {
-            safaribot.sendHtmlAll("A Rotation Battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! " + (this.cantWatch ? "" : "[" + link("/watch " + this.name1, "Watch") + "]"), safchan);
-        }
-        
+
         var self = this;
         var teamPreview = function(name, team, opponent, ally, opponent2, size) {
             self.sendMessage(name, "Use /bat [Codes] to choose your team of " + size + " Pokémon! Example: " + toColor("/bat ADF", "blue") + " to choose Pokémon with code A, D and F. You can also use " + toColor("/bat pause", "blue") + " to pause and unpause the battle.");
@@ -24165,6 +24171,20 @@ function Safari() {
         }
         
     }
+    Battle2.prototype.announceBattle = function() {
+        var npcDesc = this.npcDesc;
+        if (this.tagBattle) {
+            if (this.oneOnTwo) {
+                safaribot.sendHtmlAll("A Tag Team Rotation Battle between " + this.name1 + " and " + this.name2 + " & " + this.name4 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! " + (this.cantWatch ? "" : "[" + link("/watch " + this.name1, "Watch") + "]"), safchan);
+            }
+            else {
+                safaribot.sendHtmlAll("A Tag Team Rotation Battle between " + this.name1 + " & " + this.name3 + " and " + this.name2 + " & " + this.name4 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! " + (this.cantWatch ? "" : "[" + link("/watch " + this.name1, "Watch") + "]"), safchan);
+            }
+        }
+        else {
+            safaribot.sendHtmlAll("A Rotation Battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! " + (this.cantWatch ? "" : "[" + link("/watch " + this.name1, "Watch") + "]"), safchan);
+        }
+    };
     Battle2.prototype.loadAbility = function() {
         this.abilityData = {
             "Overgrow": {
@@ -24470,6 +24490,9 @@ function Safari() {
                 }
                 
                 this.sendToViewers("Preparations complete, battle will start soon!");
+                if (this.postArgs && this.postArgs.delayAnnounce) {
+                    this.announceBattle();
+                }
                 this.subturn = 6;
             }
             return;
@@ -30630,10 +30653,10 @@ function Safari() {
         this.productName = translateStuff(product, true);
         
         var joinCommand = "/join " + this.hostName;
-        safaribot.sendHtmlAll("", safchan);
+        sys.sendAll("", safchan);
         safaribot.sendHtmlAll(this.hostName + " is starting an auction! The product is " + this.productName + ", with bids starting at $" + addComma(starting) + " (Minimum bid raise: $" + addComma(minBid) + ")! Type " + link(joinCommand) + " to join the auction!", safchan);
         safaribot.sendMessage(src, "You started an auction! The auction ends when the current bid is not matched after 3 turns or if no one makes a bid for the first 40 seconds!", safchan);
-        safaribot.sendHtmlAll("", safchan);
+        sys.sendAll("", safchan);
     }
     Auction.prototype.nextTurn = function() {
         if (this.turn === 0) {
@@ -35792,7 +35815,8 @@ function Safari() {
                         celebs: celebs,
                         difficulty: difficultyLevel,
                         canReward: canReward,
-                        defeated: 0
+                        defeated: 0,
+                        delayAnnounce: true
                     };
                     if (trainer.sprite) {
                         safaribot.sendHtmlMessage(id, "<img src='icon:" + trainer.sprite + "'>", safchan);
@@ -35946,7 +35970,8 @@ function Safari() {
             difficulty: difficulty,
             celebs: celebs,
             canReward: player.firstCelebrityRun || player.ticketCelebrityRun,
-            defeated: 0
+            defeated: 0,
+            delayAnnounce: true
         };
 
         if (npc.postArgs.canReward) {
