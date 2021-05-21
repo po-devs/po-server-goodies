@@ -6804,18 +6804,21 @@ function Safari() {
         }
         return false;
     }
-    function isRare(id) {
+    function isRare(id, excludeMega) {
         if (typeof id == "string") {
             return true;
         }
         if (isLegendary(id)) {
             return true;
         }
-        var base = pokeInfo.species(id), form = pokeInfo.forme(id);
-        if (form > 0 && (!(base in wildForms) || form > wildForms[base] )) {
+        if (galarFormEvos.contains(id)) {
             return true;
         }
-        if (galarFormEvos.contains(id)) {
+        var base = pokeInfo.species(id), form = pokeInfo.forme(id);
+        if (form > 0 && (!(base in wildForms) || form > wildForms[base])) {
+            if (isMega(id) && excludeMega) {
+                return false;
+            }
             return true;
         }
         return false;
@@ -12032,7 +12035,7 @@ function Safari() {
             costumed = (player.costume !== "none");
         
         var partyShown = [].concat(player.party);
-        if (currentThemeEffect == "distortion") {
+        if (currentThemeEffect == "distortion" && !contestForfeited.contains(player.idnum)) {
             partyShown = [].concat(player.party)
             partyShown.reverse();
         } else if (currentThemeEffect == "past") {
@@ -15601,7 +15604,7 @@ function Safari() {
         } else {
             var canView = sys.playersOfChannel(safchan).filter(function(e) {
                 var p = getAvatar(e);
-                if (!p || isRare(info.num) || isRare(evolution) || p.options.showEvoMessages || e === src) {
+                if (!p || isRare(info.num, true) || isRare(evolution, true) || p.options.showEvoMessages || e === src) {
                     return true;
                 }
                 return false;
@@ -52243,6 +52246,7 @@ function Safari() {
             delete pendingActiveChanges[player.id];
         }
 
+        player.altTimeline.lead = 0;
         sys.sendMessage(src, "", safchan);
         safaribot.sendAll(sys.name(src) + " withdrew from the current contest!", safchan);
         sys.sendMessage(src, "", safchan);
@@ -52612,7 +52616,7 @@ function Safari() {
     };
     this.getEffectiveLead = function(player) {
         var leader = player.party[0];
-        if (currentThemeEffect == "distortion") {
+        if (currentThemeEffect == "distortion" && !contestForfeited.contains(player.idnum)) {
             leader = player.party[player.party.length-1];
         }
         if (currentThemeEffect == "past" && player.altTimeline.lead !== 0) {
