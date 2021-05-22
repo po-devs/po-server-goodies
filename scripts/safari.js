@@ -10481,8 +10481,8 @@ function Safari() {
                     }
                 }
             }
-            if (isRare(currentPokemon) || ball === "master" || ball === "cherish") {
-                sys.appendToFile(mythLog, now() + "|||" + (clonedAmount - cloneDiscarded > 0 ? (clonedAmount - cloneDiscarded + 1) + "x " : "") + (wildSpirit ? "Spirit Realm " : "") + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
+            if (isRare(currentPokemon) || ball === "master" || ball === "cherish" || wildEvent) {
+                sys.appendToFile(mythLog, now() + "|||" + (clonedAmount - cloneDiscarded > 0 ? (clonedAmount - cloneDiscarded + 1) + "x " : "") + (wildEvent ? "Event " : "") + (wildSpirit ? "Spirit Realm " : "") + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
             }
             var active = leader;
             var activeNum = parseInt(active, 10);
@@ -18948,7 +18948,7 @@ function Safari() {
                 safaribot.sendMessage(src, "You can only set a shop after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
                 return;
             }
-            if (cantBecause(src, reason, ["contest", "auction", "battle", "event", "pyramid"])) {
+            if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid"])) {
                 return;
             }
         }
@@ -32809,7 +32809,7 @@ function Safari() {
 
         var opt = data[0].toLowerCase();
         if (opt == "help") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Wonder Trade Operator: To get a trade here you simply choose one of your Pokémon, pay a small fee and then you will receive a random Pokémon immediately!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Wonder Trade Operator: To get a trade here you simply choose one of your Pokémon with " + link("/quest wonder:", "/quest wonder:[Pokémon Name]", true) + ", pay a small fee and then you will receive a random Pokémon immediately!", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: The fee is based on your Pokémon's BST, and you will receive a Pokémon within the same BST range.", safchan);
             safaribot.sendHtmlMessage(src, "Wonder Trade Operator: The available BST ranges are " + link("/findd bst 175 249", "175~249") + " ($50 fee), " + link("/findd bst 250 319", "250~319") + " ($100), " + link("/findd bst 320 389", "320~389") + " ($150), " + link("/findd bst 390 459", "390~459") + " ($300), " + link("/findd bst 460 529", "460~529") + " ($500) and " + link("/findd bst 530 599", "530~599") + " ($750).", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: Also be aware that you CANNOT receive legendaries from Wonder Trade!", safchan);
@@ -32871,10 +32871,17 @@ function Safari() {
             return;
         }
 
-        if ((contestCount > 0 && !contestForfeited.contains(player.idnum))) {
-            safaribot.sendMessage(src, "You can't finish this quest during a contest.", safchan);
-            return;
-        }/*
+        if (safari.getEffectiveLead(player) === input.id && countDuplicates(player.pokemon, input.id) === 1) {
+            if (currentPokemon) {
+                safaribot.sendMessage(src, "You can't trade away your lead Pokémon when there's a wild Pokémon out!", safchan);
+                return;
+            }
+            else if (contestCount > 0 && !contestForfeited.contains(player.idnum)) {
+                safaribot.sendMessage(src, "You can't trade away your lead Pokémon during a contest!", safchan);
+                return;
+            }
+        }
+        /*
         if (currentPokemon) {
             safaribot.sendMessage(src, "You can't finish this quest while there's a wild Pokémon around.", safchan);
             return;
