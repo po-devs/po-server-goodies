@@ -17191,7 +17191,7 @@ function Safari() {
                         safari.saveGame(player);
                         break;
                     case "off":
-                        player.options.visible = false;
+                        player.options.flashme = false;
                         safaribot.sendMessage(src, "You will no longer be flashed when a contest or event starts!", safchan);
                         safari.saveGame(player);
                         break;
