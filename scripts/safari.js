@@ -11233,7 +11233,7 @@ function Safari() {
         player.records.photosTaken += 1;
 
         player.photos.push(photo);
-        safari.costumeEXP(player, "takephoto");
+        safari.costumeEXP(player, "takephoto", currentPokemonCount);
         if (player.photos.length >= 20) {
             safaribot.sendMessage(src, "Your camera's memory is now full! You need to free up some space to take more photos!", safchan);
         } else {
@@ -17856,7 +17856,7 @@ function Safari() {
             case "catchwater": exp = 20; break;
             case "catchlowbst": exp = 20; break;
             case "catchhighbst": exp = 20 + Math.floor((val - 540)*0.75); break;
-            case "takephoto": exp = 10; break;
+            case "takephoto": exp = 10 * val; break;
             case "clonepoke": exp = 20 * val; break;
             case "daycareplay": exp = 5; break;
             case "fighttower": exp = (2 * (5 + val + (val > 10 ? (val - 10) : 0) + (val > 15 ? (2 * (val - 15)) : 0))); break;
@@ -37004,7 +37004,7 @@ function Safari() {
         
         safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Oh great, this photo is exactly what I needed! It will look great on " + (chance(0.05) ? "the cover page" : "page " + sys.rand(2, 13)) + " for tomorrow's edition!", safchan);
         safaribot.sendMessage(src, "You gave your photo of " + this.describePhoto(photo) + " to the Editor-in-chief! You " + rew + "! You also received " + plural(score, "Photo Point") + " and now have " + plural(player.records.journalPoints, "Photo Point") + "!", safchan);
-        safari.getFortune(player, "journalbuff", 0);
+        var scoreFortune = safari.getFortune(player, "journalbuff", 0);
         var added = 0;
         while (player.balls.lens < 10 && Math.floor(player.records.journalPoints/itemData.lens.threshold) >= player.balls.lens) {
             player.balls.lens += 1;
@@ -37044,7 +37044,7 @@ function Safari() {
         if (playerTracks.hasOwnProperty(act)) {
             delete playerTracks[act];
         }
-        sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Journal|||Submitted photo of " + this.describePhoto(photo) + "|||Fulfilled request for " + this.translatePhotoRequest(req) + ", received " + rewardName + (rewards.length > 0 ? ", " + readable(rewards) : "") + " and " + plural(score, "Photo Point") + "\n");
+        sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Journal|||Submitted photo of " + this.describePhoto(photo) + "|||Fulfilled request for " + this.translatePhotoRequest(req) + " (Base Score: " + req.fscore + "), received " + rewardName + (rewards.length > 0 ? ", " + readable(rewards) : "") + " and " + plural(score, "Photo Point") + (player.costume === "journalist" ? " (using Journalist costume multiplier)" : "") + (scoreFortune > 0 ? " (using " + (1+scoreFortune) + "x Fortune multiplier)" : "") + "\n");
         this.saveGame(player);
         if (!req.done) {
             req.done = true;
