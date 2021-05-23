@@ -8223,6 +8223,9 @@ function Safari() {
                     if (canHaveAbility(leader, abilitynum("Prankster"))) {
                         abilityMessageList[onChannel[e]].push("Your {0}'s Prankster gives you a better chance of taking photos before others!".format(poke(leader, true)));
                     }
+                    if (canHaveAbility(leader, abilitynum("Infiltrator")) && currentPokemon != currentDisplay) {
+                        abilityMessageList[onChannel[e]].push("Your {0}'s Infiltrator reveals that the wild {1} {2} actually {3} in disguise!".format(poke(leader, true), poke(currentDisplay, true), is_are, poke(currentPokemon, true)));
+                    }
 
                     var ignoreRules = [12, 109]; // Oblivious, Unaware
                     if (contestCount > 0 && currentRules) {
@@ -55035,7 +55038,8 @@ function Safari() {
                 if (permObj.get("usingLangPack") == "true") {
                     info.name = poke(getInputPokemon(info.name).num, true);
                 }
-                safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + (pokeInfo.forme(info.num) > 0 ? "-" + pokeInfo.forme(info.num) : "") + (pokeInfo.species(info.num) !== info.num ? " (" + info.num + "). " : ". ") + info.name + "'s BST is " + getBST(info.num) + statsmsg, safchan);
+                var bst = getBST(info.num);
+                safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + (pokeInfo.forme(info.num) > 0 ? "-" + pokeInfo.forme(info.num) : "") + (pokeInfo.species(info.num) !== info.num ? " (" + info.num + "). " : ". ") + info.name + "'s BST is " + bst + (bst <= itemData.eviolite.threshold ? " (" + (bst + itemData.eviolite.maxRate) + " with max " + es(finishName("eviolite")) + ")" : "") + statsmsg, safchan);
                 safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Tier: " + safari.getTier(info.num) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +".", safchan);
                 safaribot.sendHtmlMessage(src, "Abilities: " + readable([0, 1, 2].map(function(e) { return getPokeAbility(info.num, e) }).filter(function(e) { return !!e }).map(abilityOff)) + ".", safchan);
                 if (opt.contains("effectiveness")) {
