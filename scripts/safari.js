@@ -1809,7 +1809,7 @@ function Safari() {
             spy: "A stealthy Pokéball that cannot be tracked. A successful snag with this ball allows for quick follow-up action, but it has low priority. " + cdSeconds("spy") + ". Obtained from Arborist and Pyramid.",
             mono: "A monochromatic Pokéball that enables your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Arborist.",
             lightning: "A Pokéball with a lightning bolt design that comes out in a flash. " + cdSeconds("lightning") + " Obtained from Arborist.",
-            heavy: "An industrial Pokéball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("heavy") + " Obtained from Arborist.",
+            heavy: "An industrial Pokéball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("heavy") + " Cooldown is decreased when throwing this Ball on heavier Pokémon. Obtained from Arborist.",
             photo: "A Pokéball riddled with memory chips capable of identifying Pokémon stored in the camera and catching them with higher likelihood. " + cdSeconds("photo") + " Obtained from Arborist.",
             mirror: "A Pokéball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. Doubly effective in Similarity Mode. " + cdSeconds("mirror") + " Obtained from Arborist.",
             love: "A Pokéball with a pink heart design that works better if the lead is in the same egg group as the target. It also increases the well-being of Pokémon in the daycare. " + cdSeconds("love") + " Obtained from Arborist.",
@@ -8135,6 +8135,7 @@ function Safari() {
                     var typeEffectiveness = 0;
                     var wild = currentDisplay;
                     var pType1 = type1(leader), pType2 = type2(leader), wType1 = type1(wild), wType2 = type2(wild);
+                    var pType3 = canHaveAbility(leader, abilitynum("Steelworker")) && !hasType(leader, "Steel") ? "Steel" : null;
                     if (currentTypeOverride) {
                         wType1 = currentTypeOverride;
                     }
@@ -8142,10 +8143,10 @@ function Safari() {
                     // use currentPokemon instead of currentDisplay for ability related stuff, since they broadcast an ability message anyway
                     var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) && !ignore, scrappy: canHaveAbility(leader, abilitynum("Scrappy")) };
                     if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
-                        typeEffectiveness = this.checkEffective([wType1, wType2], [pType1, pType2], !inverse);
+                        typeEffectiveness = this.checkEffective([wType1, wType2], [pType1, pType2, pType3], !inverse);
                     }
                     else {
-                        typeEffectiveness = this.checkEffective([pType1, pType2], [wType1, wType2], inverse, select);
+                        typeEffectiveness = this.checkEffective([pType1, pType2, pType3], [wType1, wType2], inverse, select);
                     }
                     if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard")) && !ignore && typeEffectiveness < 2) {
                         typeEffectiveness = Math.min(typeEffectiveness, immuneMultiplier);
@@ -8220,11 +8221,17 @@ function Safari() {
                     if (canHaveAbility(leader, abilitynum("Speed Boost"))) {
                         abilityMessageList[onChannel[e]].push("Your {0}'s Speed Boost gives you a better chance of throwing before others!".format(poke(leader, true)));
                     }
+                    if (canHaveAbility(leader, abilitynum("Gale Wings"))) {
+                        abilityMessageList[onChannel[e]].push("Your {0}'s Gale Wings gives you a much better chance of throwing before others!".format(poke(leader, true)));
+                    }
                     if (canHaveAbility(leader, abilitynum("Prankster"))) {
                         abilityMessageList[onChannel[e]].push("Your {0}'s Prankster gives you a better chance of taking photos before others!".format(poke(leader, true)));
                     }
                     if (canHaveAbility(leader, abilitynum("Infiltrator")) && currentPokemon != currentDisplay) {
                         abilityMessageList[onChannel[e]].push("Your {0}'s Infiltrator reveals that the wild {1} {2} actually {3} in disguise!".format(poke(leader, true), poke(currentDisplay, true), is_are, poke(currentPokemon, true)));
+                    }
+                    if (canHaveAbility(leader, abilitynum("Steelworker")) && !hasType(leader, "Steel")) {
+                        abilityMessageList[onChannel[e]].push("Your {0}'s Steelworker grants it the Steel-type!".format(poke(leader, true), poke(currentDisplay, true), is_are, poke(currentPokemon, true)));
                     }
 
                     var ignoreRules = [12, 109]; // Oblivious, Unaware
@@ -9593,6 +9600,7 @@ function Safari() {
         var wildWeight = getWeight(wild);
         var typeBonus;
         var pType1 = type1(leader), pType2 = type2(leader), wType1 = type1(wild), wType2 = type2(wild);
+        var pType3 = canHaveAbility(leader, abilitynum("Steelworker")) && !hasType(leader, "Steel") ? "Steel" : null;
         
         if (currentTypeOverride) {
             wType1 = currentTypeOverride;
@@ -9608,13 +9616,13 @@ function Safari() {
             if (ball === "mono") {
                 typeBonus = this.checkEffective([wType1, wType2], (pType2 === "???" || !player.options.monoSecondary ? [pType1] : [pType2]), !inverse);
             } else {
-                typeBonus = this.checkEffective([wType1, wType2], [pType1, pType2], !inverse);
+                typeBonus = this.checkEffective([wType1, wType2], [pType1, pType2, pType3], !inverse);
             }
         } else {
             if (ball === "mono") {
                 typeBonus = this.checkEffective((pType2 === "???" || !player.options.monoSecondary ? [pType1] : [pType2]), [wType1, wType2], inverse, select);
             } else {
-                typeBonus = this.checkEffective([pType1, pType2], [wType1, wType2], inverse, select);
+                typeBonus = this.checkEffective([pType1, pType2, pType3], [wType1, wType2], inverse, select);
             }
             if (this.hasCostumeSkill(player, "monoBallBoost")) {
                 costumeBonus *= costumeBoost(player);
@@ -9678,7 +9686,6 @@ function Safari() {
             shinyChance = 1;
             legendaryChance = 1;
             eventChance = Math.max(0.75, eventChance);
-            rulesMod = 1;
             if (isLegend || isShiny){
                 ballBonus = itemData[ball].bonusRate;
             } else {
@@ -15991,61 +15998,95 @@ function Safari() {
                 safaribot.sendMessage(src, "Your Itemfinder is already fully charged!", safchan);
                 return;
             }
-            var gemdata = itemData.gem.charges + this.getFortune(player, "extragem", 0),
-                pchars = player.balls.permfinder + gemdata;
-            if (pchars > limit) {
-                gemdata = limit - player.balls.permfinder;
-                pchars = limit;
+            var pulled;
+            if (!info.target) {
+                pulled = 1;
+            } else if (parseInt(info.target, 10) === 1) {
+                pulled = 1;
+            } else if (parseInt(info.target, 10) === 10) {
+                pulled = 10;
+            } else if (parseInt(info.target, 10) === 100) {
+                pulled = 100;
+            } else {
+                safaribot.sendMessage(src, "Type /use gem, /use gem:10, or /use gem:100, to open your " + es(finishName("gem")) + "!", safchan);
+                return;
             }
-            var tchars = chars + pchars;
 
-            safaribot.sendHtmlMessage(src, "The " + finishName("gem") + " begins to emit a soft baaing sound. Your Itemfinder then lights up and responds with a loud <b>BAA~!</b>", safchan);
-            safaribot.sendMessage(src, "Your Itemfinder gained " + gemdata + " charges. [Remaining Charges: " + tchars + " (Daily " + chars + " plus " + pchars + " bonus)].", safchan);
-            rewardCapCheck(player, "permfinder", gemdata);
-            player.balls.gem -= 1;
-            safaribot.sendMessage(src, itemsLeft(player, "gem"), safchan);
-            player.records.gemsUsed += 1;
+            while (pulled > 0 && player.balls.gem > 0 && player.balls.permfinder < limit) {
+                var gemdata = itemData.gem.charges + this.getFortune(player, "extragem", 0),
+                    pchars = player.balls.permfinder + gemdata;
+                if (pchars > limit) {
+                    gemdata = limit - player.balls.permfinder;
+                    pchars = limit;
+                }
+                var tchars = chars + pchars;
+
+                safaribot.sendHtmlMessage(src, "The " + finishName("gem") + " begins to emit a soft baaing sound. Your Itemfinder then lights up and responds with a loud <b>BAA~!</b>", safchan);
+                safaribot.sendMessage(src, "Your Itemfinder gained " + gemdata + " charges. [Remaining Charges: " + tchars + " (Daily " + chars + " plus " + pchars + " bonus)].", safchan);
+                rewardCapCheck(player, "permfinder", gemdata);
+                player.balls.gem -= 1;
+                player.records.gemsUsed += 1;
+                pulled -= 1;
+            }
             this.updateShop(player, "gem");
+            safaribot.sendMessage(src, itemsLeft(player, "gem"), safchan);
             this.saveGame(player);
             return;
         }
         if (item === "pack") {
-            var item = randomSample(packItems);
-            var reward = item;
-            var amount = 1;
-            switch (item) {
-                case "gem": amount = 3; break;
-                case "rock": amount = 50; break;
-                case "bait": amount = 10; break;
-                case "gacha": amount = 10; break;
-                case "silver": amount = 8; break;
-                case "silver2": amount = 84; reward = "silver"; break;
-                case "bluapricorn": case "grnapricorn": case "pnkapricorn": amount = 20; break;
+            var pulled;
+            if (!info.target) {
+                pulled = 1;
+            } else if (parseInt(info.target, 10) === 1) {
+                pulled = 1;
+            } else if (parseInt(info.target, 10) === 10) {
+                pulled = 10;
+            } else if (parseInt(info.target, 10) === 100) {
+                pulled = 100;
+            } else {
+                safaribot.sendMessage(src, "Type /use pack, /use pack:10, or /use pack:100, to open your " + es(finishName("pack")) + "!", safchan);
+                return;
             }
-            safaribot.sendMessage(src, "You excitedly open your " + finishName("pack") + " to reveal " + plural(amount, reward) + "!", safchan);
-            if (item === "mega") {
-                safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("mega")) + " in their " + finishName("pack") + "!</b>", safchan);
+
+            while (pulled > 0 && player.balls.pack > 0) {
+                var item = randomSample(packItems);
+                var reward = item;
+                var amount = 1;
+                switch (item) {
+                    case "gem": amount = 3; break;
+                    case "rock": amount = 50; break;
+                    case "bait": amount = 10; break;
+                    case "gacha": amount = 10; break;
+                    case "silver": amount = 8; break;
+                    case "silver2": amount = 84; reward = "silver"; break;
+                    case "bluapricorn": case "grnapricorn": case "pnkapricorn": amount = 20; break;
+                }
+                safaribot.sendMessage(src, "You excitedly open your " + finishName("pack") + " to reveal " + plural(amount, reward) + "!", safchan);
+                if (item === "mega") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("mega")) + " in their " + finishName("pack") + "!</b>", safchan);
+                }
+                if (item === "bignugget") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("bignugget")) + " in their " + finishName("pack") + "!</b>", safchan);
+                }
+                if (item === "water") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("water")) + " in their " + finishName("pack") + "!</b>", safchan);
+                }
+                if (item === "celebrityTicket") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("celebrityTicket")) + " in their " + finishName("pack") + "!</b>", safchan);
+                }
+                if (item === "spray") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("spray")) + " in their " + finishName("pack") + "!</b>", safchan);
+                }
+                if (item === "silver2") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + plural(amount, reward) + " in their " + finishName("pack") + "!</b>", safchan);
+                }
+                rewardCapCheck(player, reward, amount);
+                player.balls.pack -= 1;
+                pulled -= 1;
+                player.records.packsOpened += 1;
             }
-            if (item === "bignugget") {
-                safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("bignugget")) + " in their " + finishName("pack") + "!</b>", safchan);
-            }
-            if (item === "water") {
-                safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("water")) + " in their " + finishName("pack") + "!</b>", safchan);
-            }
-            if (item === "celebrityTicket") {
-                safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("celebrityTicket")) + " in their " + finishName("pack") + "!</b>", safchan);
-            }
-            if (item === "spray") {
-                safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("spray")) + " in their " + finishName("pack") + "!</b>", safchan);
-            }
-            if (item === "silver2") {
-                safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + plural(amount, reward) + " in their " + finishName("pack") + "!</b>", safchan);
-            }
-            rewardCapCheck(player, reward, amount);
-            player.balls.pack -= 1;
             this.updateShop(player, "pack");
             safaribot.sendMessage(src, itemsLeft(player, "pack"), safchan);
-            player.records.packsOpened += 1;
             this.saveGame(player);
             return;
         }
@@ -55039,7 +55080,7 @@ function Safari() {
                     info.name = poke(getInputPokemon(info.name).num, true);
                 }
                 var bst = getBST(info.num);
-                safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + (pokeInfo.forme(info.num) > 0 ? "-" + pokeInfo.forme(info.num) : "") + (pokeInfo.species(info.num) !== info.num ? " (" + info.num + "). " : ". ") + info.name + "'s BST is " + bst + (bst <= itemData.eviolite.threshold ? " (" + (bst + itemData.eviolite.maxRate) + " with max " + es(finishName("eviolite")) + ")" : "") + statsmsg, safchan);
+                safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + (pokeInfo.forme(info.num) > 0 ? "-" + pokeInfo.forme(info.num) : "") + (pokeInfo.species(info.num) !== info.num ? " (" + info.num + "). " : ". ") + info.name + "'s BST is " + bst + (bst <= itemData.eviolite.threshold ? " (" + (bst + itemData.eviolite.maxRate * (player.costume === "preschooler" ? costumeData["preschooler"].rate2 : 1)) + " with max " + es(finishName("eviolite")) + ")" : "") + statsmsg, safchan);
                 safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Tier: " + safari.getTier(info.num) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +".", safchan);
                 safaribot.sendHtmlMessage(src, "Abilities: " + readable([0, 1, 2].map(function(e) { return getPokeAbility(info.num, e) }).filter(function(e) { return !!e }).map(abilityOff)) + ".", safchan);
                 if (opt.contains("effectiveness")) {
@@ -59803,6 +59844,9 @@ function Safari() {
                                 if (preparationThrows[i] !== "takephoto") {
                                     if (canHaveAbility(lead, abilitynum("Speed Boost"))) {
                                         throwChances[i] += size;
+                                    }
+                                    if (canHaveAbility(lead, abilitynum("Gale Wings"))) {
+                                        throwChances[i] += size * 3;
                                     }
                                 }
                                 else {
