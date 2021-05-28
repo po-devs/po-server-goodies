@@ -15071,7 +15071,7 @@ function Safari() {
             return;
         }
 
-        var pulls = this.getFortune(player, "gachaburn", 1);
+        var pulls = Math.min(this.getFortune(player, "gachaburn", 1), player.balls.gacha);
 
         while (pulls > 0) {
             pulls -= 1;
@@ -15676,7 +15676,7 @@ function Safari() {
             return;
         }
 
-        var pulls = this.getFortune(player, "finderburn", 1);
+        var pulls = Math.min(this.getFortune(player, "finderburn", 1), totalCharges);
 
         while (pulls > 0) {
             pulls -= 1;
