@@ -15071,184 +15071,189 @@ function Safari() {
             return;
         }
 
-        player.records.gachasUsed += 1;
-        var reward = randomSample(gachaItems);
-        if (chance(this.getFortune(player, "freegacha", 0)) || freeUse) {
-            safaribot.sendHtmlMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item capsule... <i>And it didn't even consume your ticket!</i> [Remaining Tickets: " + player.balls.gacha + "]", safchan);
-        } else {
-            player.balls.gacha -= 1;
-            safaribot.sendMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item capsule. [Remaining Tickets: " + player.balls.gacha + "]", safchan);
-        }
+        var pulls = this.getFortune(player, "gachaburn", 1);
 
-        //Variable for higher quantity rewards later. Make better later maybe?
-        var amount = 1;
-        var rng = Math.random();
-        if (this.hasCostumeSkill(player, "betterGacha") && (chance(0.1) && (chance(this.getCostumeLevel(player)-5)/15))) {
-            rng = Math.min(rng, Math.random());
-        }
-        if (reward == "rock" && this.hasCostumeSkill(player, "betterGacha") && (chance(0.2) && (chance(this.getCostumeLevel(player)-5)/15))) {
-            reward = randomSample(gachaItems);
-        }
-        if (rng < 0.01) {
-            amount = 4;
-        } else if (rng < 0.05) {
-            amount = 3;
-        } else if (rng < 0.15) {
-            amount = 2;
-        }
-        if (chance(this.getFortune(player, "extragacha", 0))) {
-            amount += 1;
-        }
+        while (pulls > 0) {
+            pulls -= 1;
+            player.records.gachasUsed += 1;
+            gachaJackpot += 1;
+            var reward = randomSample(gachaItems);
+            if (chance(this.getFortune(player, "freegacha", 0)) || freeUse) {
+                safaribot.sendHtmlMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item capsule... <i>And it didn't even consume your ticket!</i> [Remaining Tickets: " + player.balls.gacha + "]", safchan);
+            } else {
+                player.balls.gacha -= 1;
+                safaribot.sendMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item capsule. [Remaining Tickets: " + player.balls.gacha + "]", safchan);
+            }
 
-        var giveReward = true;
-        if (player.truesalt > now() && chance(player.srate)) {
-            reward = ["rock", "wild", "rock", "rock", "rock", "rock", "wild", "safari"].random();
-            giveReward = false;
-        }
-        var masterCap;
-        switch (reward) {
-            case "master": {
-                if (player.balls[reward] >= getCap("master")) {
-                    /*safaribot.sendHtmlAll("<b>JACKP--</b> Wait a second... " + html_escape(sys.name(src)) + "'s " + finishName("master") + " turned out to be a simple " + finishName("safari") + " painted to look like " + an(finishName("master")) + "! What a shame!", safchan);
-                    safaribot.sendMessage(src, "You wiped the paint off of the ball and pocketed " + plural(1, "safari") + " for your troubles.", safchan);
-                    reward = "safari";
+            //Variable for higher quantity rewards later. Make better later maybe?
+            var amount = 1;
+            var rng = Math.random();
+            if (this.hasCostumeSkill(player, "betterGacha") && (chance(0.1) && (chance(this.getCostumeLevel(player)-5)/15))) {
+                rng = Math.min(rng, Math.random());
+            }
+            if (reward == "rock" && this.hasCostumeSkill(player, "betterGacha") && (chance(0.2) && (chance(this.getCostumeLevel(player)-5)/15))) {
+                reward = randomSample(gachaItems);
+            }
+            if (rng < 0.01) {
+                amount = 4;
+            } else if (rng < 0.05) {
+                amount = 3;
+            } else if (rng < 0.15) {
+                amount = 2;
+            }
+            if (chance(this.getFortune(player, "extragacha", 0))) {
+                amount += 1;
+            }
+
+            var giveReward = true;
+            if (player.truesalt > now() && chance(player.srate)) {
+                reward = ["rock", "wild", "rock", "rock", "rock", "rock", "wild", "safari"].random();
+                giveReward = false;
+            }
+            var masterCap;
+            switch (reward) {
+                case "master": {
+                    if (player.balls[reward] >= getCap("master")) {
+                        /*safaribot.sendHtmlAll("<b>JACKP--</b> Wait a second... " + html_escape(sys.name(src)) + "'s " + finishName("master") + " turned out to be a simple " + finishName("safari") + " painted to look like " + an(finishName("master")) + "! What a shame!", safchan);
+                        safaribot.sendMessage(src, "You wiped the paint off of the ball and pocketed " + plural(1, "safari") + " for your troubles.", safchan);
+                        reward = "safari";
+                        amount = 1;
+                        player.records.masterballsWon += 1;*/
+                        giveReward = false;
+                        masterCap = true;
+                    }
+                    safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won " + an(finishName("master")) + " from the Gachapon Machine!</b>", safchan);
+                    if (!masterCap) {
+                        safaribot.sendMessage(src, "You received " + an(finishName(reward)) + ".", safchan);
+                    }
                     amount = 1;
-                    player.records.masterballsWon += 1;*/
-                    giveReward = false;
-                    masterCap = true;
+                    player.records.masterballsWon += 1;
                 }
-                safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won " + an(finishName("master")) + " from the Gachapon Machine!</b>", safchan);
-                if (!masterCap) {
+                break;
+                case "bait": {
+                    safaribot.sendMessage(src, "A delicious smell wafts through the air as you open your capsule. You received " + plural(amount, reward) + ".", safchan);
+                }
+                break;
+                case "rock": {
+                    var snowball = finishName("rock") === "Snowball";
+                    safaribot.sendMessage(src, "A " + (snowball ? "wet splashing sound" : "loud clunk" ) + " comes from the machine. Some prankster put " + (snowball ? "snow" : es(finishName("rock"))) + " in the Gachapon Machine! You received  " + plural(amount, finishName(reward)) + ".", safchan);
+                }
+                break;
+                case "wild": {
+                    giveReward = false;
+                    if (currentPokemon || contestCount > 0 || contestCooldown <= 13) {
+                        giveReward = true;
+                        reward = "safari";
+                        amount = 1;
+                        safaribot.sendMessage(src, "Bummer, only " + an(finishName(reward)) + ". You received " + plural(amount, reward) + ".", safchan);
+                    } else {
+                        var spawn = true;
+                        var spawnHorde = amount > 1;
+                        var ballUsed = itemAlias(commandData, true);
+                        if (!isBall(ballUsed) || player.balls[ballUsed] === 0) {
+                            ballUsed = (player.balls[player.options.favoriteBall] > 0 ? player.options.favoriteBall : "safari");
+                        }
+                        this.trackMessage("[Track] " + sys.name(src) + " is using /gacha " + commandData, player);
+                        safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " goes to grab their item from the Gachapon Machine but the noise lured a wild Pokémon!", safchan);
+
+                        if (chance(0.15) || nextGachaSpawn > currentTime || player.cooldowns.bait > currentTime) {
+                            safaribot.sendAll("Unfortunately " + (spawnHorde ? "they" : "it") + " fled before anyone could try to catch "+ (spawnHorde ? "them" : "it") + "!", safchan);
+                            spawn = false;
+                        }
+
+                        if (spawn) {
+                            var p = player.nextSpawn;
+                            if (p.pokemon.num) {
+                                safari.createWild(p.pokemon.num, p.pokemon.shiny, p.amt, null, null, player, p.disguise);
+                                p.pokemon = p.disguise = {};
+                                p.amt = 1;
+                            } else {
+                                if (spawnHorde) {
+                                    safari.createWild(0, false, amount, 580);
+                                } else {
+                                    safari.createWild();
+                            }
+                            }
+                            safari.throwBall(src, ballUsed, true);
+                            preparationFirst = sys.name(src).toLowerCase();
+                            nextGachaSpawn = currentTime + 23 * 1000;
+                            if (baitCooldown <= 9) {
+                                baitCooldown = sys.rand(9, 13);
+                            }
+                            if (goldenBaitCooldown <= 6) {
+                                goldenBaitCooldown = sys.rand(6, 11);
+                            }
+                            if (deluxeBaitCooldown < 6) {
+                                deluxeBaitCooldown = 6;
+                            }
+                        }
+                    }
+                }
+                break;
+                case "safari": {
+                    amount = 1;
+                    safaribot.sendMessage(src, "Bummer, only " + an(finishName(reward)) + ". You received 1 " + finishName(reward) + ".", safchan);
+                }
+                break;
+                case "dust": {
+                    amount *= 5;
+                    safaribot.sendMessage(src, "You open the capsule to find " + an(finishName("rare")) + "! Unfortunately, some rude player pushes you out of the way causing you to drop it. The " + finishName("rare") + " impacts the ground, shatters, and sends dust flying everywhere. You only manage to scoop up " + plural(amount, finishName(reward)) + ".", safchan);
+                }
+                break;
+                case "gacha": {
+                    var jackpot = Math.floor(gachaJackpot/10);
+                    safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won the Gachapon Ticket Jackpot valued at " + jackpot + " tickets!</b>", safchan);
+                    amount = jackpot;
+                    player.records.jackpotsWon += 1;
+                    safaribot.sendMessage(src, "You received " + plural(jackpot, "gacha") + ". ", safchan);
+                    gachaJackpot = gachaJackpotAmount; //Reset jackpot for next player
+                }
+                break;
+                case "amulet":
+                case "soothe":
+                case "scarf":
+                case "battery": {
+                    amount = 1;
+                    //sendAll("<b>Sweet! " + sys.name(src) + " just won " + an(finishName(reward)) + " from Gachapon!</b>", true);
                     safaribot.sendMessage(src, "You received " + an(finishName(reward)) + ".", safchan);
                 }
-                amount = 1;
-                player.records.masterballsWon += 1;
-            }
-            break;
-            case "bait": {
-                safaribot.sendMessage(src, "A delicious smell wafts through the air as you open your capsule. You received " + plural(amount, reward) + ".", safchan);
-            }
-            break;
-            case "rock": {
-                var snowball = finishName("rock") === "Snowball";
-                safaribot.sendMessage(src, "A " + (snowball ? "wet splashing sound" : "loud clunk" ) + " comes from the machine. Some prankster put " + (snowball ? "snow" : es(finishName("rock"))) + " in the Gachapon Machine! You received  " + plural(amount, finishName(reward)) + ".", safchan);
-            }
-            break;
-            case "wild": {
-                giveReward = false;
-                if (currentPokemon || contestCount > 0 || contestCooldown <= 13) {
-                    giveReward = true;
-                    reward = "safari";
+                break;
+                case "gem": {
                     amount = 1;
-                    safaribot.sendMessage(src, "Bummer, only " + an(finishName(reward)) + ". You received " + plural(amount, reward) + ".", safchan);
-                } else {
-                    var spawn = true;
-                    var spawnHorde = amount > 1;
-                    var ballUsed = itemAlias(commandData, true);
-                    if (!isBall(ballUsed) || player.balls[ballUsed] === 0) {
-                        ballUsed = (player.balls[player.options.favoriteBall] > 0 ? player.options.favoriteBall : "safari");
-                    }
-                    this.trackMessage("[Track] " + sys.name(src) + " is using /gacha " + commandData, player);
-                    safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " goes to grab their item from the Gachapon Machine but the noise lured a wild Pokémon!", safchan);
-
-                    if (chance(0.15) || nextGachaSpawn > currentTime || player.cooldowns.bait > currentTime) {
-                        safaribot.sendAll("Unfortunately " + (spawnHorde ? "they" : "it") + " fled before anyone could try to catch "+ (spawnHorde ? "them" : "it") + "!", safchan);
-                        spawn = false;
-                    }
-
-                    if (spawn) {
-                        var p = player.nextSpawn;
-                        if (p.pokemon.num) {
-                            safari.createWild(p.pokemon.num, p.pokemon.shiny, p.amt, null, null, player, p.disguise);
-                            p.pokemon = p.disguise = {};
-                            p.amt = 1;
-                        } else {
-                            if (spawnHorde) {
-                                safari.createWild(0, false, amount, 580);
-                            } else {
-                                safari.createWild();
-                        }
-                        }
-                        safari.throwBall(src, ballUsed, true);
-                        preparationFirst = sys.name(src).toLowerCase();
-                        nextGachaSpawn = currentTime + 23 * 1000;
-                        if (baitCooldown <= 9) {
-                            baitCooldown = sys.rand(9, 13);
-                        }
-                        if (goldenBaitCooldown <= 6) {
-                            goldenBaitCooldown = sys.rand(6, 11);
-                        }
-                        if (deluxeBaitCooldown < 6) {
-                            deluxeBaitCooldown = 6;
-                        }
-                    }
+                    safaribot.sendMessage(src, "The Gachapon machine emits a bright flash of light as you reach for your prize. Despite being temporarily blinded, you know you just won " + an(finishName(reward)) + " due to a very faint baaing sound!", safchan);
+                    safaribot.sendMessage(src, "You received " + an(finishName(reward)) + ".", safchan);
                 }
+                break;
+                case "cometshard": {
+                    amount = 1;
+                    safaribot.sendMessage(src, "The Gachapon machine spits an old-looking capsule. After some trouble opening it, you find a mysterious " + finishName(reward) + ".", safchan);
+                }
+                break;
+                case "whtapricorn":
+                case "pearl":
+                case "stardust":
+                case "starpiece":
+                case "bigpearl":
+                case "nugget":
+                case "bignugget": {
+                    amount = 1;
+                }
+                /* falls through */
+                default:
+                    safaribot.sendMessage(src, "You received " + plural(amount, reward) + ".", safchan);
+                break;
             }
-            break;
-            case "safari": {
-                amount = 1;
-                safaribot.sendMessage(src, "Bummer, only " + an(finishName(reward)) + ". You received 1 " + finishName(reward) + ".", safchan);
+            if (giveReward) {
+                rewardCapCheck(player, reward, amount);
             }
-            break;
-            case "dust": {
-                amount *= 5;
-                safaribot.sendMessage(src, "You open the capsule to find " + an(finishName("rare")) + "! Unfortunately, some rude player pushes you out of the way causing you to drop it. The " + finishName("rare") + " impacts the ground, shatters, and sends dust flying everywhere. You only manage to scoop up " + plural(amount, finishName(reward)) + ".", safchan);
+            if (masterCap) {
+                safaribot.sendMessage(src, "You received " + an(finishName("fragment")) + ".", safchan);
+                rewardCapCheck(player, "fragment", 1);
             }
-            break;
-            case "gacha": {
-                var jackpot = Math.floor(gachaJackpot/10);
-                safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won the Gachapon Ticket Jackpot valued at " + jackpot + " tickets!</b>", safchan);
-                amount = jackpot;
-                player.records.jackpotsWon += 1;
-                safaribot.sendMessage(src, "You received " + plural(jackpot, "gacha") + ". ", safchan);
-                gachaJackpot = gachaJackpotAmount; //Reset jackpot for next player
-            }
-            break;
-            case "amulet":
-            case "soothe":
-            case "scarf":
-            case "battery": {
-                amount = 1;
-                //sendAll("<b>Sweet! " + sys.name(src) + " just won " + an(finishName(reward)) + " from Gachapon!</b>", true);
-                safaribot.sendMessage(src, "You received " + an(finishName(reward)) + ".", safchan);
-            }
-            break;
-            case "gem": {
-                amount = 1;
-                safaribot.sendMessage(src, "The Gachapon machine emits a bright flash of light as you reach for your prize. Despite being temporarily blinded, you know you just won " + an(finishName(reward)) + " due to a very faint baaing sound!", safchan);
-                safaribot.sendMessage(src, "You received " + an(finishName(reward)) + ".", safchan);
-            }
-            break;
-            case "cometshard": {
-                amount = 1;
-                safaribot.sendMessage(src, "The Gachapon machine spits an old-looking capsule. After some trouble opening it, you find a mysterious " + finishName(reward) + ".", safchan);
-            }
-            break;
-            case "whtapricorn":
-            case "pearl":
-            case "stardust":
-            case "starpiece":
-            case "bigpearl":
-            case "nugget":
-            case "bignugget": {
-                amount = 1;
-            }
-            /* falls through */
-            default:
-                safaribot.sendMessage(src, "You received " + plural(amount, reward) + ".", safchan);
-            break;
-        }
-        if (giveReward) {
-            rewardCapCheck(player, reward, amount);
-        }
-        if (masterCap) {
-            safaribot.sendMessage(src, "You received " + an(finishName("fragment")) + ".", safchan);
-            rewardCapCheck(player, "fragment", 1);
         }
 
         player.cooldowns.gacha = currentTime + itemData.gacha.cooldown;
         this.saveGame(player);
-        gachaJackpot += 1;
         SESSION.global().safariGachaJackpot = gachaJackpot;
     };
     this.getCustomWildItems = function() {
@@ -15670,295 +15675,299 @@ function Safari() {
         if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid"])) {
             return;
         }
-        
-        var freefinder = chance(this.getFortune(player, "freefinder", 0));
-        if (!freefinder) {
-            if (dailyCharges > 0 ) {
-                player.balls.itemfinder -= 1;
-                dailyCharges -= 1;
-            } else {
-                player.balls.permfinder -= 1;
-                permCharges -= 1;
-            }
-            totalCharges -= 1;
-        }
-        var freemsg = freefinder ? "<i>And no charge was consumed!</i> ": "";
 
-        var reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
-        if (reward == "nothing" && safari.hasCostumeSkill(player, "finderBasedOnLead")) {
-            var type = type1(parseInt(player.party[0], 10));
-            if (chance(0.01) && (chance((this.getCostumeLevel(player) - 2)/30))) {
-                switch (type) {
-                    case "Normal": reward = "crystal"; break;
-                    case "Grass": reward = "mushroom"; break;
-                    case "Fire": reward = "cookie"; break;
-                    case "Water": reward = "bigpearl2"; break;
-                    case "Ice": reward = "scarf"; break;
-                    case "Electric": reward = "recharge2"; break;
-                    case "Dragon": reward = "cometshard"; break;
-                    case "Fairy": reward = "rare2"; break;
-                    case "Psychic": reward = "gacha2"; break;
-                    case "Dark": reward = "gacha2"; break;
-                    case "Bug": reward = "honey"; break;
-                    case "Poison": reward = "mushroom"; break;
-                    case "Flying": reward = "rare2"; break;
-                    case "Rock": reward = "nugget"; break;
-                    case "Ground": reward = "eviolite"; break;
-                    case "Steel": reward = "crown"; break;
-                    case "Fighting": reward = "celebrityTicket"; break;
-                    case "Ghost": reward = "bait2"; break;
-                }
-            }
-        }
-        var amount = 1;
-        if (reward === "nothing" && chance((player.costume === "explorer" ? costumeData.explorer.rate : 0) + this.getFortune(player, "explorer", 0))) {
-            reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
-        }
-        if (reward === "nothing" && this.hasCostumeSkill(player, "betterFinder") && (chance(0.06)) && (chance((this.getCostumeLevel(player)-10)/10))) {
-            reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
-        }
-        if (player.costume === "explorer") {
-            if (reward === "pearl" || reward === "stardust") {
-                amount = chance(costumeData.explorer.rate2) ? 2 : 1;
-            }
-        }
+        var pulls = this.getFortune(player, "finderburn", 1);
 
-        var giveReward = true;
-        var showMsg = true;
-        var cd = itemData.itemfinder.cooldown;
-        if (player.truesalt >= now() && chance(player.srate)) {
-            reward = reward !== "nothing" ? (Math.random() < 0.4 ? "rock" : "nothing") : reward;
-        }
-        switch (reward) {
-            case "rare2": {
-                reward = "rare";
-                amount = 2;
-                safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found 2 Rare Candies behind a bigger than average bush!</b>", safchan);
-                this.costumeEXP(player, "findrare");
-            }
-            break;
-            case "rare": {
-                safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found " + an(finishName(reward)) + " behind a bush!</b>", safchan);
-                this.costumeEXP(player, "findrare");
-            }
-            break;
-            case "crystal": {
-                safaribot.sendHtmlAll("<b>Beeeeeeep! Oh my, a Crystal! " + sys.name(src) + " has found " + an(finishName(reward)) + " with their Itemfinder!</b>", safchan);
-                this.costumeEXP(player, "findrare");
-            }
-            break;
-            case "recharge2": {
-                reward = "permfinder";
-                amount = 10 + this.getFortune(player, "findershock", 0);
-                showMsg = false;
-                safaribot.sendHtmlMessage(src, "<b>Rai-ai-ai-... CHHUUUUUUUUU!</b> You were shocked by a wild Raichu while looking for items! You're too frazzled to use the Itemfinder for a while, but to put things into perspective, your Itemfinder recharged a bit recharged from the shock.", safchan);
-                safaribot.sendHtmlMessage(src, "Your Itemfinder gained " + plural(amount, "charge") + ". " + freemsg + " [Remaining charges: " + (totalCharges + amount) + " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, getCap("permfinder")) + " bonus)].", safchan);
-                safari.missionProgress(player,"getShocked",0,1,{});
-                cd *= 10;
-            }
-            break;
-            case "recharge": {
-                reward = "permfinder";
-                amount = 3 + this.getFortune(player, "findershock", 0);
-                showMsg = false;
-                safaribot.sendHtmlMessage(src, "<b>Pi-ka-CHUUU!</b> You were shocked by a wild Pikachu while looking for items! On the bright side, your Itemfinder slightly recharged due to the shock.", safchan);
-                safaribot.sendHtmlMessage(src, "Your Itemfinder gained " + plural(amount, "charge") + ". " + freemsg + " [Remaining charges: " + (totalCharges + amount) + " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, getCap("permfinder")) + " bonus)].", safchan);
-                safari.missionProgress(player,"getShocked",0,1,{});
-            }
-            break;
-            case "crown": {
-                safaribot.sendHtmlMessage(src, "<b>BEEP! BEEPBEEP! Boop!?</b> Your Itemfinder locates an old treasure chest full of ancient relics. Upon picking them up, they crumble into dust except for a single " + finishName("crown") + ".", safchan);
-                this.costumeEXP(player, "findrare");
-            }
-            break;
-            case "scarf": {
-                safaribot.sendHtmlMessage(src, "<b>BEEP! BEEPBEEP! Beeeeeeeeeep!</b> Your Itemfinder led you to a thrift store! <i>New sale: Silk Scarf (only $0)</i> it said! Nice find!", safchan);
-                this.costumeEXP(player, "findrare");
-            }
-            break;
-            case "cookie": {
-                sendAll("<b>!BEEPBEEPBEEPBEEP!</b> Oh no, " + sys.name(src) + " is on fire! Luckily, as a result of the fire, they were able to cook a nice " + finishName("cookie") + " from the surroundings!", true);
-                this.costumeEXP(player, "findrare");
-                safari.missionProgress(player,"findCookie",0,1,{});
-            }
-            break;
-            case "eviolite": {
-                safaribot.sendHtmlMessage(src, "<b>!PEEB !PEEB</b> Another trainer approaches you while you are looking for items and snickers: <i>\"You have it on backwards.\"</i> You correct the position, turn around, and find a sizeable chunk of " + finishName("eviolite") + " on the ground.", safchan);
-                this.costumeEXP(player, "findrare");
-            }
-            break;
-            case "honey": {
-                safaribot.sendHtmlMessage(src, "<b>BEE! BEE! BEE!</b> You stumbled upon a beehive while using your Itemfinder. Before running off to avoid the swarm, you managed to steal a glob of " + finishName("honey") + "!", safchan);
-                safari.missionProgress(player,"findHoney",0,1,{});
-                this.costumeEXP(player, "findrare");
-            }
-            break;
-            case "spy": {
-                safaribot.sendMessage(src, "Bep. Your Itemfinder is pointing towards a shadowy area. Within the darkness, you find a suspicious " + finishName(reward) + "!", safchan);
-            }
-            break;
-            case "gacha": {
-                safaribot.sendMessage(src, "Beeeep. You're led to a nearby garbage can by your Itemfinder. You decide to dig around anyway and find an unused " + finishName(reward) + "!", safchan);
-            }
-            break;
-            case "gacha2": {
-                reward = "gacha";
-                safaribot.sendMessage(src, "Beeeep. You're led to a nearby garbage can by your Itemfinder. You decide to dig around anyway and find a pile of unused " + finishName(reward) + "s!", safchan);
-                amount = Math.round(4 + (4 * Math.random()));
-                reward  = "gacha";
-            }
-            break;
-            case "rock": {
-                safaribot.sendMessage(src, "Beep. Your Itemfinder pointed you towards a very conspicuous " + finishName(reward) + ".", safchan);
-            }
-            break;
-            case "bluapricorn":
-            case "pnkapricorn":
-            case "redapricorn":
-            case "ylwapricorn":
-            case "grnapricorn":
-            case "blkapricorn": {
-                safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards an Apricorn Tree! You decided to pick one and put it in your bag!", safchan);
-                safari.missionProgress(player,"findApricorn",0,1,{})
-            }
-            break;
-            case "bait": {
-                safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards a berry bush! You decided to pick one and put it in your bag.", safchan);
-            }
-            break;
-            case "bait2": {
-                safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards a plenitful berry bush! You collected 5 baits from it and put them in your bag.", safchan);
-                amount = 5;
-                reward = "bait";
-            }
-            break;
-            case "mushroom": {
-                safaribot.sendMessage(src, "Bep-Bep-Bep-Bep-Bep. Your Itemfinder leads you to a badger. And another badger. And another badger. Oh, " + an(finishName(reward)) + "! And a snake!", safchan);
-                this.costumeEXP(player, "findrare");
-            }
-            break;
-            case "celebrityTicket": {
-                amount = 1;
-                safaribot.sendMessage(src, "What's this? A voucher for an extra run at the Celebrities!", safchan);
-                this.costumeEXP(player, "findrare");
-            }
-            break;
-            case "cometshard": {
-                safaribot.sendHtmlMessage(src, "<b>Beeeeeeeeeeeeeep!!</b> Your Itemfinder lets out a high pitched noise as you pass by a strange shard. After analyzing it for a while, you realize the object is not from this world and decide to pick it up.", safchan);
-                this.costumeEXP(player, "findrare");
-            }
-            break;
-            case "nugget": {
-                reward = "nugget";
-                this.costumeEXP(player, "findrare");
-            }
-            case "bigpearl2": {
-                amount = 2;
-                reward = "bigpearl";
-            }
-            case "bigpearl": {
-                if (player.costume !== "explorer") {
-                    reward = "pearl";
-                }
-            }
-            /*falls through*/
-            case "pearl":
-            case "stardust": {
-                safaribot.sendMessage(src, "Beep Beep Beep. You dig around a sandy area and unbury " + an(finishName(reward)) + "!", safchan);
-                if (amount > 1) {
-                    safaribot.sendMessage(src, "You decided to keep digging and found another " + finishName(reward) + "!", safchan);
-                }
-            }
-            break;
-            case "fragment": {
-                if (player.costume === "explorer") {
-                    safaribot.sendHtmlAll("<b>Be-Be-Be-Beeep! " + sys.name(src) + " found " + an(finishName(reward)) + "  in a patch of grass!</b>", safchan);
-                    this.costumeEXP(player, "findrare");
-                    break;
+        while (pulls > 0) {
+            pulls -= 1;
+            var freefinder = chance(this.getFortune(player, "freefinder", 0));
+            if (!freefinder) {
+                if (dailyCharges > 0 ) {
+                    player.balls.itemfinder -= 1;
+                    dailyCharges -= 1;
                 } else {
-                    reward = "luxury";
+                    player.balls.permfinder -= 1;
+                    permCharges -= 1;
                 }
+                totalCharges -= 1;
             }
-            /* falls through*/
-            case "luxury": {
-                safaribot.sendMessage(src, "Be-Beep. You comb a patch of grass that your Itemfinder pointed you towards and found " + an(finishName(reward)) + "!", safchan);
-            }
-            break;
-            default:
-                if (chance(0.08)) {
-                    var dynamicHints = safariHints.slice(0);
-                    
-                    if (chance(0.33)) {
-                        var otherPlayer, shopItem, shopItemFinish, otherPlayerName, playersWithValidShops;
-                        
-                        playersWithValidShops = sys.playersOfChannel(safchan).filter(function(id) {
-                            var p = getAvatar(id);
-                            if (!p || Object.keys(p.shop).length === 0 || p.tradeban >= now()) // no save data, or shop is empty, or is tradebanned
-                                return false;
-                            for (var item in p.shop) {
-                                if (p.shop[item].limit > 0) // shop has at least one item still in stock
-                                    return true;
-                            }
-                            return false;
-                        }).map(function(id) {
-                            return getAvatar(id);
-                        });
-                        
-                        if (playersWithValidShops.length > 0) {
-                            otherPlayer = playersWithValidShops.random();
-                            while (!shopItem) {
-                                var playerShop = otherPlayer.shop,
-                                    randItem = Object.keys(playerShop).random();
-                                shopItem = playerShop[randItem].limit > 0 ? randItem : false;
-                            }
-                            
-                            shopItemFinish = getInputPokemon(shopItem).name ? getInputPokemon(shopItem).name : finishName(shopItem.replace("@", ""));
-                            otherPlayerName = otherPlayer.id.toCorrectCase();
-                            
-                            dynamicHints = ["...Oh, it's just an ad. \"Come on over to {0}, selling {1} for only ${2}!\" it says.".format(
-                                link("/shop " + otherPlayerName, otherPlayerName + "'s shop"),
-                                an(shopItemFinish),
-                                addComma(otherPlayer.shop[shopItem].price)
-                            )];
-                        }
-                    }
-                    
-                    safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it! " + (freefinder ? "<i>Additionally, so charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
-                    sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Hint:</font></b> "  + dynamicHints.random(), safchan);
-                }
-                else {
-                    var hit = false;
-                    if (player.costume == "explorer" && chance(0.2) && safari.detectiveData.hasOwnProperty(player.idnum+"") && safari.detectiveData[player.idnum].date === getDay(now()) && !safari.detectiveData[player.idnum].solved) {
-                        for (var i = 0; i < safari.detectiveData[player.idnum+""].clues.length; i++) {
-                            if (safari.detectiveData[player.idnum+""].clues[i].unlock == "explorerfinder") {
-                                safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! " +(freefinder ? "<i>Additionally, no charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
-                                safari.detectiveClue(player.idnum, "explorerfinder", src);
-                                hit = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!(hit)) {
-                        safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. "+(freefinder ? "<i>At least no charge was used... </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
-                    }
-                }
-                giveReward = false;
-                showMsg = false;
-            break;
-        }
-        if (showMsg) {
-            safaribot.sendHtmlMessage(src, "You found " + plural(amount, reward) + " with your Itemfinder! " + freemsg + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
-        }
-        if (giveReward) {
-            player.records.itemsFound += 1;
-            rewardCapCheck(player, reward, amount);
-        }
-        if (player.costume == "flower" || player.costume == "fisherman") {
-            cd *= 1.4;
-        } else if (player.costume == "preschooler" && safari.hasCostumeSkill(player, "fasterFinder")) {
-            cd *= 0.5;
-        }
+            var freemsg = freefinder ? "<i>And no charge was consumed!</i> ": "";
 
+            var reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
+            if (reward == "nothing" && safari.hasCostumeSkill(player, "finderBasedOnLead")) {
+                var type = type1(parseInt(player.party[0], 10));
+                if (chance(0.01) && (chance((this.getCostumeLevel(player) - 2)/30))) {
+                    switch (type) {
+                        case "Normal": reward = "crystal"; break;
+                        case "Grass": reward = "mushroom"; break;
+                        case "Fire": reward = "cookie"; break;
+                        case "Water": reward = "bigpearl2"; break;
+                        case "Ice": reward = "scarf"; break;
+                        case "Electric": reward = "recharge2"; break;
+                        case "Dragon": reward = "cometshard"; break;
+                        case "Fairy": reward = "rare2"; break;
+                        case "Psychic": reward = "gacha2"; break;
+                        case "Dark": reward = "gacha2"; break;
+                        case "Bug": reward = "honey"; break;
+                        case "Poison": reward = "mushroom"; break;
+                        case "Flying": reward = "rare2"; break;
+                        case "Rock": reward = "nugget"; break;
+                        case "Ground": reward = "eviolite"; break;
+                        case "Steel": reward = "crown"; break;
+                        case "Fighting": reward = "celebrityTicket"; break;
+                        case "Ghost": reward = "bait2"; break;
+                    }
+                }
+            }
+            var amount = 1;
+            if (reward === "nothing" && chance((player.costume === "explorer" ? costumeData.explorer.rate : 0) + this.getFortune(player, "explorer", 0))) {
+                reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
+            }
+            if (reward === "nothing" && this.hasCostumeSkill(player, "betterFinder") && (chance(0.06)) && (chance((this.getCostumeLevel(player)-10)/10))) {
+                reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
+            }
+            if (player.costume === "explorer") {
+                if (reward === "pearl" || reward === "stardust") {
+                    amount = chance(costumeData.explorer.rate2) ? 2 : 1;
+                }
+            }
+
+            var giveReward = true;
+            var showMsg = true;
+            var cd = itemData.itemfinder.cooldown;
+            if (player.truesalt >= now() && chance(player.srate)) {
+                reward = reward !== "nothing" ? (Math.random() < 0.4 ? "rock" : "nothing") : reward;
+            }
+            switch (reward) {
+                case "rare2": {
+                    reward = "rare";
+                    amount = 2;
+                    safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found 2 Rare Candies behind a bigger than average bush!</b>", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "rare": {
+                    safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found " + an(finishName(reward)) + " behind a bush!</b>", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "crystal": {
+                    safaribot.sendHtmlAll("<b>Beeeeeeep! Oh my, a Crystal! " + sys.name(src) + " has found " + an(finishName(reward)) + " with their Itemfinder!</b>", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "recharge2": {
+                    reward = "permfinder";
+                    amount = 10 + this.getFortune(player, "findershock", 0);
+                    showMsg = false;
+                    safaribot.sendHtmlMessage(src, "<b>Rai-ai-ai-... CHHUUUUUUUUU!</b> You were shocked by a wild Raichu while looking for items! You're too frazzled to use the Itemfinder for a while, but to put things into perspective, your Itemfinder recharged a bit recharged from the shock.", safchan);
+                    safaribot.sendHtmlMessage(src, "Your Itemfinder gained " + plural(amount, "charge") + ". " + freemsg + " [Remaining charges: " + (totalCharges + amount) + " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, getCap("permfinder")) + " bonus)].", safchan);
+                    safari.missionProgress(player,"getShocked",0,1,{});
+                    cd *= 10;
+                }
+                break;
+                case "recharge": {
+                    reward = "permfinder";
+                    amount = 3 + this.getFortune(player, "findershock", 0);
+                    showMsg = false;
+                    safaribot.sendHtmlMessage(src, "<b>Pi-ka-CHUUU!</b> You were shocked by a wild Pikachu while looking for items! On the bright side, your Itemfinder slightly recharged due to the shock.", safchan);
+                    safaribot.sendHtmlMessage(src, "Your Itemfinder gained " + plural(amount, "charge") + ". " + freemsg + " [Remaining charges: " + (totalCharges + amount) + " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, getCap("permfinder")) + " bonus)].", safchan);
+                    safari.missionProgress(player,"getShocked",0,1,{});
+                }
+                break;
+                case "crown": {
+                    safaribot.sendHtmlMessage(src, "<b>BEEP! BEEPBEEP! Boop!?</b> Your Itemfinder locates an old treasure chest full of ancient relics. Upon picking them up, they crumble into dust except for a single " + finishName("crown") + ".", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "scarf": {
+                    safaribot.sendHtmlMessage(src, "<b>BEEP! BEEPBEEP! Beeeeeeeeeep!</b> Your Itemfinder led you to a thrift store! <i>New sale: Silk Scarf (only $0)</i> it said! Nice find!", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "cookie": {
+                    sendAll("<b>!BEEPBEEPBEEPBEEP!</b> Oh no, " + sys.name(src) + " is on fire! Luckily, as a result of the fire, they were able to cook a nice " + finishName("cookie") + " from the surroundings!", true);
+                    this.costumeEXP(player, "findrare");
+                    safari.missionProgress(player,"findCookie",0,1,{});
+                }
+                break;
+                case "eviolite": {
+                    safaribot.sendHtmlMessage(src, "<b>!PEEB !PEEB</b> Another trainer approaches you while you are looking for items and snickers: <i>\"You have it on backwards.\"</i> You correct the position, turn around, and find a sizeable chunk of " + finishName("eviolite") + " on the ground.", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "honey": {
+                    safaribot.sendHtmlMessage(src, "<b>BEE! BEE! BEE!</b> You stumbled upon a beehive while using your Itemfinder. Before running off to avoid the swarm, you managed to steal a glob of " + finishName("honey") + "!", safchan);
+                    safari.missionProgress(player,"findHoney",0,1,{});
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "spy": {
+                    safaribot.sendMessage(src, "Bep. Your Itemfinder is pointing towards a shadowy area. Within the darkness, you find a suspicious " + finishName(reward) + "!", safchan);
+                }
+                break;
+                case "gacha": {
+                    safaribot.sendMessage(src, "Beeeep. You're led to a nearby garbage can by your Itemfinder. You decide to dig around anyway and find an unused " + finishName(reward) + "!", safchan);
+                }
+                break;
+                case "gacha2": {
+                    reward = "gacha";
+                    safaribot.sendMessage(src, "Beeeep. You're led to a nearby garbage can by your Itemfinder. You decide to dig around anyway and find a pile of unused " + finishName(reward) + "s!", safchan);
+                    amount = Math.round(4 + (4 * Math.random()));
+                    reward  = "gacha";
+                }
+                break;
+                case "rock": {
+                    safaribot.sendMessage(src, "Beep. Your Itemfinder pointed you towards a very conspicuous " + finishName(reward) + ".", safchan);
+                }
+                break;
+                case "bluapricorn":
+                case "pnkapricorn":
+                case "redapricorn":
+                case "ylwapricorn":
+                case "grnapricorn":
+                case "blkapricorn": {
+                    safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards an Apricorn Tree! You decided to pick one and put it in your bag!", safchan);
+                    safari.missionProgress(player,"findApricorn",0,1,{})
+                }
+                break;
+                case "bait": {
+                    safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards a berry bush! You decided to pick one and put it in your bag.", safchan);
+                }
+                break;
+                case "bait2": {
+                    safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards a plenitful berry bush! You collected 5 baits from it and put them in your bag.", safchan);
+                    amount = 5;
+                    reward = "bait";
+                }
+                break;
+                case "mushroom": {
+                    safaribot.sendMessage(src, "Bep-Bep-Bep-Bep-Bep. Your Itemfinder leads you to a badger. And another badger. And another badger. Oh, " + an(finishName(reward)) + "! And a snake!", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "celebrityTicket": {
+                    amount = 1;
+                    safaribot.sendMessage(src, "What's this? A voucher for an extra run at the Celebrities!", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "cometshard": {
+                    safaribot.sendHtmlMessage(src, "<b>Beeeeeeeeeeeeeep!!</b> Your Itemfinder lets out a high pitched noise as you pass by a strange shard. After analyzing it for a while, you realize the object is not from this world and decide to pick it up.", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "nugget": {
+                    reward = "nugget";
+                    this.costumeEXP(player, "findrare");
+                }
+                case "bigpearl2": {
+                    amount = 2;
+                    reward = "bigpearl";
+                }
+                case "bigpearl": {
+                    if (player.costume !== "explorer") {
+                        reward = "pearl";
+                    }
+                }
+                /*falls through*/
+                case "pearl":
+                case "stardust": {
+                    safaribot.sendMessage(src, "Beep Beep Beep. You dig around a sandy area and unbury " + an(finishName(reward)) + "!", safchan);
+                    if (amount > 1) {
+                        safaribot.sendMessage(src, "You decided to keep digging and found another " + finishName(reward) + "!", safchan);
+                    }
+                }
+                break;
+                case "fragment": {
+                    if (player.costume === "explorer") {
+                        safaribot.sendHtmlAll("<b>Be-Be-Be-Beeep! " + sys.name(src) + " found " + an(finishName(reward)) + "  in a patch of grass!</b>", safchan);
+                        this.costumeEXP(player, "findrare");
+                        break;
+                    } else {
+                        reward = "luxury";
+                    }
+                }
+                /* falls through*/
+                case "luxury": {
+                    safaribot.sendMessage(src, "Be-Beep. You comb a patch of grass that your Itemfinder pointed you towards and found " + an(finishName(reward)) + "!", safchan);
+                }
+                break;
+                default:
+                    if (chance(0.08)) {
+                        var dynamicHints = safariHints.slice(0);
+                        
+                        if (chance(0.33)) {
+                            var otherPlayer, shopItem, shopItemFinish, otherPlayerName, playersWithValidShops;
+                            
+                            playersWithValidShops = sys.playersOfChannel(safchan).filter(function(id) {
+                                var p = getAvatar(id);
+                                if (!p || Object.keys(p.shop).length === 0 || p.tradeban >= now()) // no save data, or shop is empty, or is tradebanned
+                                    return false;
+                                for (var item in p.shop) {
+                                    if (p.shop[item].limit > 0) // shop has at least one item still in stock
+                                        return true;
+                                }
+                                return false;
+                            }).map(function(id) {
+                                return getAvatar(id);
+                            });
+                            
+                            if (playersWithValidShops.length > 0) {
+                                otherPlayer = playersWithValidShops.random();
+                                while (!shopItem) {
+                                    var playerShop = otherPlayer.shop,
+                                        randItem = Object.keys(playerShop).random();
+                                    shopItem = playerShop[randItem].limit > 0 ? randItem : false;
+                                }
+                                
+                                shopItemFinish = getInputPokemon(shopItem).name ? getInputPokemon(shopItem).name : finishName(shopItem.replace("@", ""));
+                                otherPlayerName = otherPlayer.id.toCorrectCase();
+                                
+                                dynamicHints = ["...Oh, it's just an ad. \"Come on over to {0}, selling {1} for only ${2}!\" it says.".format(
+                                    link("/shop " + otherPlayerName, otherPlayerName + "'s shop"),
+                                    an(shopItemFinish),
+                                    addComma(otherPlayer.shop[shopItem].price)
+                                )];
+                            }
+                        }
+                        
+                        safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it! " + (freefinder ? "<i>Additionally, so charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
+                        sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Hint:</font></b> "  + dynamicHints.random(), safchan);
+                    }
+                    else {
+                        var hit = false;
+                        if (player.costume == "explorer" && chance(0.2) && safari.detectiveData.hasOwnProperty(player.idnum+"") && safari.detectiveData[player.idnum].date === getDay(now()) && !safari.detectiveData[player.idnum].solved) {
+                            for (var i = 0; i < safari.detectiveData[player.idnum+""].clues.length; i++) {
+                                if (safari.detectiveData[player.idnum+""].clues[i].unlock == "explorerfinder") {
+                                    safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! " +(freefinder ? "<i>Additionally, no charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
+                                    safari.detectiveClue(player.idnum, "explorerfinder", src);
+                                    hit = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!(hit)) {
+                            safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. "+(freefinder ? "<i>At least no charge was used... </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
+                        }
+                    }
+                    giveReward = false;
+                    showMsg = false;
+                break;
+            }
+            if (showMsg) {
+                safaribot.sendHtmlMessage(src, "You found " + plural(amount, reward) + " with your Itemfinder! " + freemsg + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
+            }
+            if (giveReward) {
+                player.records.itemsFound += 1;
+                rewardCapCheck(player, reward, amount);
+            }
+            if (player.costume == "flower" || player.costume == "fisherman") {
+                cd *= 1.4;
+            } else if (player.costume == "preschooler" && safari.hasCostumeSkill(player, "fasterFinder")) {
+                cd *= 0.5;
+            }
+        }
         player.cooldowns.itemfinder = currentTime + cd;
         this.saveGame(player);
     };
