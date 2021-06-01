@@ -11301,7 +11301,7 @@ function Safari() {
                 if (!player) {
                     continue;
                 }
-                if (safari.hasCostumeSkill(player, "revealMood")) {
+                if (safari.hasCostumeSkill(player, "revealMood") && !cantBecause(players[id], "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
                     safaribot.sendMessage(players[id], "The wild {0} began feeling {1}!".format(poke(currentDisplay, true), currentPokemonMood), safchan);
                 }
             }
@@ -11341,7 +11341,7 @@ function Safari() {
                 if (!player) {
                     continue;
                 }
-                if (safari.hasCostumeSkill(player, "revealAction")) {
+                if (safari.hasCostumeSkill(player, "revealAction") && !cantBecause(players[id], "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
                     safaribot.sendMessage(players[id], "The wild {0} started {1}!".format(poke(currentDisplay, true), currentPokemonAction), safchan);
                 }
             }
@@ -17386,7 +17386,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Lead Display Messages: " + link("/options leadmessage:", player.options.showLeadMessage ? "Show if No Relevant Ability" : "Do Not Show"), safchan);
                 safaribot.sendHtmlMessage(src, "Auto-Forfeit Battle: " + link("/options autoforfeit:", player.options.autoForfeitThrow ? "Automatically Forfeit When Throwing on Rare Pokémon" : "Do Not Forfeit When Throwing on Rare Pokémon"), safchan);
                 safaribot.sendHtmlMessage(src, "Sell Pokémon formes to NPC: " + link("/options cansellformes:", player.options.canSellFormes ? "Allow Pokémon Forme Sales to the NPC" : "Do Not Allow Pokémon Forme Sales to the NPC"), safchan);
-                safaribot.sendHtmlMessage(src, "Show Evolution/Devolution Messages: " + link("/options showevo:", player.options.showEvoMessages ? "Show Everyone's Evolutions/Devolutions" : "Only Show My Own Evolutions/Devolutions"), safchan);
+                safaribot.sendHtmlMessage(src, "Evolution/Devolution Messages: " + link("/options showevo:", player.options.showEvoMessages ? "Show Everyone's Evolutions/Devolutions" : "Only Show My Own Evolutions/Devolutions"), safchan);
                 var dexOptions = ["stats", "effectiveness", "trivia"];
                 safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
                     return player.options.dexOptional.contains(e) ? link("/options hidedex:" + e, cap(e)) + " <b>[Enabled]</b>" : link("/options showdex:" + e, cap(e)) + " <b>[Disabled]</b>";

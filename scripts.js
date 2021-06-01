@@ -1951,9 +1951,14 @@ beforeChatMessage: function(src, message, chan) {
             return;
         }
         //Topic can be way to communicate while muted
-        if (["topic", "topicadd", "updatepart", "removepart"].contains(command) && (!poChannel.canTalk(src) || (SESSION.users(src).smute.active && sys.auth(src) < 1) || SESSION.users(src).mute.active)) {
-            command = "topic";
-            commandData = undefined;
+        if (!poChannel.canTalk(src) || (SESSION.users(src).smute.active && sys.auth(src) < 1) || SESSION.users(src).mute.active) {
+            if (["topic", "topicadd", "updatepart", "removepart"].contains(command)) {
+                command = "topic";
+                commandData = undefined;
+            }
+            if (["me", "rainbow"].contains(command)) {
+                return;
+            }
         }
         commands.handleCommand(src, command, commandData, tar, chan);
         return;
