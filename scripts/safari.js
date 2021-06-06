@@ -59619,7 +59619,9 @@ function Safari() {
                 sys.sendHtmlMessage(src, "There's a wild " + poke(currentDisplay, true) + "!", safchan);
                 ballMacro(src);
             }
-            sys.sendHtmlMessage(src, link("/dashboard", "«Dashboard»"), safchan);
+            else {
+                sys.sendHtmlMessage(src, link("/dashboard", "«Dashboard»"), safchan);
+            }
             
             for (var b in currentBattles) {
                 var battle = currentBattles[b];
