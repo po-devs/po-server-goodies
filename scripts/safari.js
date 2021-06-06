@@ -46147,6 +46147,7 @@ function Safari() {
         if (gardener !== null) {
             player.balls[berry] -= 1;
             daycarebot.sendMessage(src, "You gave " + an(berryName) + " to your " + gardener + "! Your berries should be ready to harvest in about " + timeLeftString(pokemon.berry.time) + ".", safchan);
+            pokemon.toHolding = now() + 60 * 60 * 1000 * 24 * 14; //2 weeks
             this.saveGame(player);
             safari.saveDaycare();
         } else {
@@ -59615,7 +59616,8 @@ function Safari() {
             this.showNextContest(src);
             sys.sendMessage(src, "*** ******************************************** ***", safchan);
             if (currentPokemon && (!(currentTheme && contestThemes[currentTheme].disguises))) {
-                sys.sendHtmlMessage(src, "There's a wild " + poke(currentDisplay, true) + "! Type " + link("/catch") + " to catch it!", safchan);
+                sys.sendHtmlMessage(src, "There's a wild " + poke(currentDisplay, true) + "!", safchan);
+                ballMacro(src);
             }
             sys.sendHtmlMessage(src, link("/dashboard", "«Dashboard»"), safchan);
             
