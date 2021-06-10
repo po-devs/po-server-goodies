@@ -38418,6 +38418,7 @@ function Safari() {
         }
         this.dryFlavors = [];
         this.players = players;
+        this.viewers = [];
         this.playersLower = players.map(function(x) { return x.toLowerCase(); });
         this.playersActions = {};
         for (var p in players) {
@@ -38452,6 +38453,7 @@ function Safari() {
         this.bakeTimes = {};
 
         this.msgAll("You all paid your entrance fees and now you get to enter the tent of the Great Galarian Bait-Off!");
+        safaribot.sendHtmlAll("A Kitchen quest between {0} has started! [{1}]".format(readable(this.players), link("/watchbak " + this.players[0], "Watch")), safchan);
     };
     Baking.prototype.nextTurn = function() {
         this.turn++;
@@ -39516,7 +39518,7 @@ function Safari() {
     };
     Baking.prototype.msgAll = function(msg, host, flashing, colored) {
         var e;
-        var list = removeDuplicates(this.players);
+        var list = removeDuplicates(this.players.concat(this.viewers));
         if (host) {
             msg = "Paul Politoed: " + msg;
         }
@@ -53961,6 +53963,7 @@ function Safari() {
             "/forfeit: To forfeit during a normal or rotation battle.",
             "/watch: To watch someone else's battle.",
             "/watchpyr: To watch someone else's Pyramid run",
+            "/watchbak: To watch someone else's Kitchen quest",
             "*** Utility Commands ***",
             "/party: To add or remove a Pokémon from your party, set your party's leader*, or load a previously saved party. Type /party for more details.",
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details. Use /findt for a text-only version or /finds for a text version with links to sell them.",
@@ -54507,7 +54510,7 @@ function Safari() {
                 return true;
             }
             if (command === "softwatch") {
-                safari.watchBattle(src, commandData, true);
+                //safari.watchBattle(src, commandData, true);
                 return true;
             }
             if (command === "watchpyr") {
@@ -54544,6 +54547,43 @@ function Safari() {
                         //safaribot.sendMessage(src, "You are no longer watching " + player.id + "'s Pyramid run!", safchan);
                         getPyramid.sendToViewers(sys.name(src) + " stopped watching this Pyramid run!");
                         getPyramid.viewers.splice(getPyramid.viewers.indexOf(user), 1);
+                        return true;
+                    }
+                }
+                return true;
+            }
+            if (["watchbak", "watchbake", "watchbaking"].contains(command)) {
+                if (commandData === "*") {
+                    safaribot.sendMessage(src, "Type which player's Kitchen quest to watch or unwatch with /watchbak [name]!", safchan);
+                } else {
+                    var user = sys.name(src).toLowerCase();
+                    var player = getAvatarOff(commandData);
+                    if (!(player)) {
+                        safaribot.sendMessage(src, "No player named " + commandData + " found!", safchan);
+                        return true;
+                    }
+                    var getBake = false;
+                    for (var a in currentBakings) {
+                        if (currentBakings[a].isInKitchen(player.id)) {
+                            getBake = currentBakings[a];
+                        }
+                    }
+                    if (!(getBake)) {
+                        safaribot.sendMessage(src, player.id + " is not in a Kitchen quest!", safchan);
+                        return true;
+                    }
+                    if (getBake.isInKitchen(user)) {
+                        safaribot.sendMessage(src, "You can't watch this Kitchen quest because you are in it!", safchan);
+                        return true;
+                    }
+                    if (!getBake.viewers.contains(user)) {
+                        getBake.viewers.push(user);
+                        getBake.msgAll(sys.name(src) + " is watching this Kitchen quest!");
+                        return true;
+                    }
+                    else {
+                        getBake.msgAll(sys.name(src) + " stopped watching this Kitchen quest!");
+                        getBake.viewers.splice(getBake.viewers.indexOf(user), 1);
                         return true;
                     }
                 }
