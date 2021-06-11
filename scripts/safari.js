@@ -6737,8 +6737,8 @@ function Safari() {
     function getBST(pokeNum) {
         return add(getStats(pokeNum));
     }
-    function getPrice(pokeNum, shiny, perkBonus) {
-        return Math.round(getBST(pokeNum) * (getBST(pokeNum) >= 600 ? 2 : 1) * (getBST(pokeNum) >= 660 ? 4 : 1) * (shiny ? 5 : 1) * (isLegendary(pokeNum) ? 10 : 1) * (perkBonus ? perkBonus : 1));
+    function getPrice(pokeNum, shiny, perkBonus, fortuneBonus) {
+        return Math.round(getBST(pokeNum) * (getBST(pokeNum) >= 600 ? 2 : 1) * (getBST(pokeNum) >= 660 ? 4 : 1) * (shiny ? 5 : 1) * (isLegendary(pokeNum) ? 10 : 1) * (perkBonus ? perkBonus : 1) * (fortuneBonus ? fortuneBonus : 1));
     }
     function isMega(num) {
         return megaPokemon.indexOf(parseInt(num)) !== -1;
@@ -18076,11 +18076,12 @@ function Safari() {
             }
         }
 
-        var perkBonus = 1 + getPerkBonus(player, "crown") + this.getFortune(player, "crown", 0, null, true);
+        var perkBonus = 1 + getPerkBonus(player, "crown");
+        var fortuneBonus = 1 + this.getFortune(player, "crown", 0, null, true);
         if (data === "*") {
             safaribot.sendMessage(src, "You can sell the following items:", safchan);
             for (var i = 0; i < validItems.length; i++) {
-                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + addComma(Math.floor(itemData[validItems[i]].price/2 * perkBonus)), safchan);
+                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + addComma(Math.floor(itemData[validItems[i]].price/2 * perkBonus * fortuneBonus)), safchan);
             }
             sys.sendMessage(src, "", safchan);
             var valuables = [];
@@ -18142,7 +18143,7 @@ function Safari() {
                 if (pawnAll) {
                     amount = player.balls[item];
                 }
-                cost = Math.floor(itemData[item].price/2 * perkBonus) * amount;
+                cost = Math.floor(itemData[item].price/2 * perkBonus * fortuneBonus) * amount;
                 if (player.money + cost > moneyCap) {
                     skipped.push(plural(amount, item));
                 } else {
@@ -18239,8 +18240,7 @@ function Safari() {
                 }
             }
             else { // simulate sales and output the total payment
-                var perkBonus = 1 + getPerkBonus(player, "amulet") + safari.getFortune(player, "amulet", 0, null, true);
-                totalPayment += getPrice(info.num, info.shiny, perkBonus);
+                totalPayment += getPrice(info.num, info.shiny, 1 + getPerkBonus(player, "amulet"), 1 + safari.getFortune(player, "amulet", 0, null, true));
             }
         }
         
@@ -18318,8 +18318,9 @@ function Safari() {
         var shiny = info.shiny;
         var id = info.id;
 
-        var perkBonus = 1 + getPerkBonus(player, "amulet") + this.getFortune(player, "amulet", 0, null, true);
-        var price = getPrice(info.num, info.shiny, perkBonus);
+        var perkBonus = 1 + getPerkBonus(player, "amulet");
+        var fortuneBonus = 1 + this.getFortune(player, "amulet", 0, null, true);
+        var price = getPrice(info.num, info.shiny, perkBonus, fortuneBonus);
         
         if (player.tradeBlacklist.contains(info.input)) {
             safaribot.sendHtmlMessage(src, "You cannot sell " + info.name + " because it's in your Tradeblocked list. If you really wish to sell it, use /tradeblock to remove it from your tradeblock list.", safchan);
@@ -31919,7 +31920,8 @@ function Safari() {
                         return;
                     }
                 }
-                var payout = Math.floor(quest.reward * ((player.costume === "pokefan" ? costumeData.pokefan.rate : 1) + this.getFortune(player, "pokefan", 0)));
+                var payout = Math.floor(quest.reward * (player.costume === "pokefan" ? costumeData.pokefan.rate : 1));
+                payout = Math.floor(payout * (1 + this.getFortune(player, "pokefan", 0)));
                 var costumed;
                 if (player.costume === "pokefan") {
                     costumed = true;
@@ -32218,6 +32220,7 @@ function Safari() {
                     if (this.hasCostumeSkill(player, "extraScientistSilver")) {
                         rew = Math.round(rew * (1.66 + ((this.getCostumeLevel(player)-2)/15)));
                     }
+                    rew += this.getFortune(player, "scientistreward", 0, null, true);
 
                     safari.costumeEXP(player, "scientist", (rew * 4));
                     safari.missionProgress(player, "scientist", 1, rew, {silver: rew});
@@ -54147,6 +54150,10 @@ function Safari() {
             }
             if (command === "catch" || command === "throw" || command === ccatch || command === ccatch2) {
                 safari.throwBall(src, commandData, null, null, command);
+                return true;
+            }
+            if (["cancel", "c"].contains(command)) {
+                safari.throwBall(src, "cancel", null, null, command);
                 return true;
             }
             if (["spiritduel", "spiritduels", "sduel", "sduels"].contains(command)) {
