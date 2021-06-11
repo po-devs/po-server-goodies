@@ -11227,7 +11227,7 @@ function Safari() {
         
         var period = new Date().getUTCHours();
         period = ["night", "morning", "afternoon", "evening"][Math.floor(period/6)];
-        var where = player.mushroomDeadline > 0 ? player.mushroomTheme : (contestCount > 0 && currentTheme ? currentTheme : "default");
+        var where = (contestCount > 0 && currentTheme ? currentTheme : (player.mushroomDeadline > 0 ? player.mushroomTheme : "default"));
         var photo = {
             id: target,
             amt: currentPokemonCount,
