@@ -38456,7 +38456,7 @@ function Safari() {
         this.bakeTimes = {};
 
         this.msgAll("You all paid your entrance fees and now you get to enter the tent of the Great Galarian Bait-Off!");
-        safaribot.sendHtmlAll("A Kitchen quest between {0} has started! [{1}]".format(readable(this.players), link("/watchbak " + this.players[0], "Watch")), safchan);
+        safaribot.sendHtmlAll("A Kitchen quest between {0} has started! [{1}]".format(readable(this.players.map(function(e) { return e.toCorrectCase() })), link("/watchbak " + this.players[0], "Watch")), safchan);
     };
     Baking.prototype.nextTurn = function() {
         this.turn++;
