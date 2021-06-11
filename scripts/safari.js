@@ -37830,7 +37830,8 @@ function Safari() {
         }
         line2 += "   " + link("/info", "«Info»");
         line2 += "   " + link("/buy", "«Buy»");
-        line2 += "   " + link("/quest", "«Quest»");
+        line2 += "   " + link("/quest", "«Quests»");
+        line2 += "   " + link("/options", "«Options»");
         var line3 = "<b>Recent Quests:</b>";
         var qu = this.organizeRecentQuests(player), item;
         for (var i = 0; i < qu.length; i++) {
