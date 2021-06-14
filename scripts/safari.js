@@ -1772,7 +1772,7 @@ function Safari() {
             mail: "An envelope that can be used to send a message to another player's inbox. Use it with \"/mail Name:Message\".",
             crystal: "A mysterious crystal that gives a bonus based on the active Pokémon's primary type for " + itemData.crystal.duration + " minutes. Type \"/use crystal\" for more details.",
             scale: "A mysterious scale that shines in rainbow colors. Use with \"/use scale\" to make your active Pokémon's color count as a different one for " + itemData.scale.duration + " minutes.",
-            mushroom: "A large and rare mushroom. Eating one with \"/use mushroom\" makes you think you are in a different theme, affecting your photos and baits for " + itemData.mushroom.duration + " minutes.",
+            mushroom: "A large and rare mushroom. Eating one with \"/use mushroom\" makes you think you are in a different theme for the next " + itemData.mushroom.duration + " Pokémon that you bait.",
             brush: "A soft brush ideal for editing photos. Type \"/use brush\" for more details.",
             pokeblock: "A yummy nom. Feed it to your Pokémon in daycare!",
             dew: "Can be used to make special Pokéballs. Use /quest arborist for more details.",
@@ -11227,7 +11227,10 @@ function Safari() {
         
         var period = new Date().getUTCHours();
         period = ["night", "morning", "afternoon", "evening"][Math.floor(period/6)];
-        var where = (contestCount > 0 && currentTheme ? currentTheme : (player.mushroomDeadline > 0 ? player.mushroomTheme : "default"));
+        var where = (contestCount > 0 && currentTheme ? currentTheme : (player.mushroomTheme ? player.mushroomTheme : "default"));
+        if (player.mushroomTheme && player.mushroomDeadline === 0) {
+            player.mushroomTheme = null;
+        }
         var photo = {
             id: target,
             amt: currentPokemonCount,
