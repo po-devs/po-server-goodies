@@ -11655,7 +11655,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("scale") + "'s Color:</b> " + cap(player.scaleColor) + " for the next " + timeLeftString(player.scaleDeadline) + "!", safchan);
             }
             if (player.mushroomDeadline > 0) {
-                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("mushroom") + "'s Theme:</b> " + themeName(player.mushroomTheme) + " for the next " + utilities.getTimeString(player.mushroomDeadline) + "!", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("mushroom") + "'s Theme:</b> " + themeName(player.mushroomTheme) + " for the next " + player.mushroomDeadline + " Pokémon that you bait! (Effect can be cancelled with " + link("/shroomcancel", false, true) + ")", safchan);
             }
             if (player.zcrystalDeadline >= n && player.zcrystalUser) {
                 var type = getCrystalEffect(player.zcrystalUser);
@@ -14777,7 +14777,13 @@ function Safari() {
             sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out... but nothing showed up.");
             player.records.baitNothing += 1;
         }
-        safaribot.sendMessage(src, "You have " + plural(player.balls[item], baitName) + " remaining.", safchan);
+        if (player.mushroomDeadline > 0) {
+            player.mushroomDeadline -= 1;
+            if (player.mushroomDeadline === 0) {
+                safaribot.sendHtmlMessage(src, "<b>Your {0} effect expired!</b>".format(finishName("mushroom")), safchan);
+            }
+        }
+        safaribot.sendMessage(src, "You have " + plural(player.balls[item], baitName) + " remaining." + (player.mushroomDeadline > 0 ? " ({0} remaining)".format(plural(player.mushroomDeadline, finishName("mushroom") + " spawn")) : ""), safchan);
         this.saveGame(player);
         if (hax) {
             if (currentPokemon) {
@@ -17027,14 +17033,14 @@ function Safari() {
             }
             player.balls.mushroom -= 1;
             player.mushroomTheme = possibleResults.random();
-            var dur = itemData.mushroom.duration * 60;
+            var dur = itemData.mushroom.duration;
             if (this.hasCostumeSkill(player, "extendedMushroom")) {
-                dur *= 1.25;
+                dur = Math.floor(dur * 1.25);
             }
             player.mushroomDeadline = dur;
             player.records.mushroomsEaten += 1;
             this.saveGame(player);
-            safaribot.sendMessage(src, "You ate a suspicious " + finishName("mushroom") + "! As you get dizzier and dizzier, you start thinking that you are in " + an(themeName(player.mushroomTheme)) + " environment for " + utilities.getTimeString(player.mushroomDeadline) + "!", safchan);
+            safaribot.sendHtmlMessage(src, "You ate a suspicious " + finishName("mushroom") + "! As you get dizzier and dizzier, you start thinking that you are in " + an(themeName(player.mushroomTheme)) + " environment for the next " + player.mushroomDeadline + " Pokémon that you bait! (Effect can be cancelled with " + link("/shroomcancel", false, true) + ")", safchan);
             return;
         }
         if (item === "brush") {
@@ -52283,6 +52289,20 @@ function Safari() {
         permObj.add("gyms", JSON.stringify(gyms));
         permObj.add("elite", JSON.stringify(elite));
     };
+    this.cancelShroom = function(src) {
+        var player = getAvatar(src);
+        if (!player) {
+            return;
+        }
+        if (player.mushroomDeadline <= 0) {
+            safaribot.sendMessage(src, "You don't have a {0} active!".format(finishName("mushroom")), safchan);
+            return;
+        }
+
+        player.mushroomDeadline = 0;
+        safaribot.sendMessage(src, "The effect of your {0} was cancelled!".format(finishName("mushroom")), safchan);
+        safari.saveGame(player);
+    };
     this.forfeitContest = function(src, commandData) {
         var player = getAvatar(src);
         if (!player) {
@@ -53992,6 +54012,7 @@ function Safari() {
             "/contestforfeit: Allows you to withdraw from any ongoing contest.",
             "/rockscare: Allows you to scare a wild Pokémon away. You can only scare Pokémon that haven't been interacted with for " + plural(rockScareThreshold/1000, "second") + ".",
             "/showdeluxe: View your " + finishName("deluxe") + " pools.",
+            "/shroomcancel: Cancels the effect of any " + finishName("mushroom") + " that you have active.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -54147,6 +54168,10 @@ function Safari() {
             }
             if (["contestforfeit", "contestwithdraw"].contains(command)) {
                 safari.forfeitContest(src, commandData);
+                return true;
+            }
+            if (["shroomcancel", "cancelshroom", "mushroomcancel", "cancelmushroom"].contains(command)) {
+                safari.cancelShroom(src);
                 return true;
             }
             if (command === "catch" || command === "throw" || command === ccatch || command === ccatch2) {
@@ -59781,19 +59806,6 @@ function Safari() {
                     p.zcrystalDeadline = 0;
                     needsUpdate = true;
                 }
-            }
-            if (p.mushroomDeadline > 0) {
-                if (contestCount === 0) {
-                    p.mushroomDeadline--;
-                    if (p.mushroomDeadline === 0) {
-                        safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect expired!</b>".format(finishName("mushroom")), safchan);
-                    }
-                    needsUpdate = true;
-                }
-                if (contestCooldown === 1) {
-                    safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect was paused due to the contest!</b>".format(finishName("mushroom")), safchan);
-                }
-                
             }
             if (needsUpdate) {
                 safari.saveGame(p);
