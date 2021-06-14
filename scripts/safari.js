@@ -52303,6 +52303,7 @@ function Safari() {
         }
 
         player.mushroomDeadline = 0;
+        player.mushroomTheme = null;
         safaribot.sendMessage(src, "The effect of your {0} was cancelled!".format(finishName("mushroom")), safchan);
         safari.saveGame(player);
     };
