@@ -14775,16 +14775,16 @@ function Safari() {
             if (nextGachaSpawn <= now() + 9 * 1000) {
                 nextGachaSpawn = now() + sys.rand(8, 11) * 1000;
             }
+            if (player.mushroomDeadline > 0) {
+                player.mushroomDeadline -= 1;
+                if (player.mushroomDeadline === 0) {
+                    safaribot.sendHtmlMessage(src, "<b>Your {0} effect expired!</b>".format(finishName("mushroom")), safchan);
+                }
+            }
         } else {
             player.cooldowns.bait = now() + (itemData[item].failCD + sys.rand(0,4)) * (1000 + player.costume == "backpacker" ? 500 : 0);
             sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out... but nothing showed up.");
             player.records.baitNothing += 1;
-        }
-        if (player.mushroomDeadline > 0) {
-            player.mushroomDeadline -= 1;
-            if (player.mushroomDeadline === 0) {
-                safaribot.sendHtmlMessage(src, "<b>Your {0} effect expired!</b>".format(finishName("mushroom")), safchan);
-            }
         }
         safaribot.sendMessage(src, "You have " + plural(player.balls[item], baitName) + " remaining." + (player.mushroomDeadline > 0 ? " ({0} remaining)".format(plural(player.mushroomDeadline, finishName("mushroom") + " spawn")) : ""), safchan);
         this.saveGame(player);
