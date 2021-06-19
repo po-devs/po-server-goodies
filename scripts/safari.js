@@ -18674,7 +18674,7 @@ function Safari() {
             return;
         }
 
-        var restrictions = ["contest", "auction", "battle", "event", "pyramid"];
+        var restrictions = ["contest", "auction", "event", "pyramid"];
         if (!fromNPC)
             restrictions.push("wild");
 
