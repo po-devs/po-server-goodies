@@ -26653,7 +26653,7 @@ function Safari() {
         if (this.select && this.select.thickPollen && stat == "spe" && (!((hasType(user.id, "Bug") || hasType(user.id, "Grass"))))) {
             base = 0.25 * base;
         }
-        if (((this.select && this.select.sandBoostGround) || (this.select2 && this.select2.sandBoostGround)) && (stat == "spe")) {
+        if (((this.select && this.select.sandBoostGround) || (this.select2 && this.select2.sandBoostGround)) && (stat == "spe") && hasType(user.id, "Ground")) {
             base = base * 2;
         }
         if (((this.select && this.weather == "Rain" && this.select.SwiftSwim && stat == "spe" && hasType(user.id, "Water")))) {
