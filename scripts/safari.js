@@ -17061,6 +17061,7 @@ function Safari() {
             }
             if (!info.reward) {
                 safaribot.sendMessage(src, "To modify a photo, use /use brush:PhotoNumber:WhatToModify. You can edit Amount, Period, Mood, Action, Environment or Quality.", safchan);
+                safaribot.sendMessage(src, "Note: When editing Actions, you will only receive common Actions as a result, you cannot receive any Actions that are specific to certain types.", safchan);
                 return;
             }
             var photo = player.photos[id-1];
@@ -25264,8 +25265,12 @@ function Safari() {
             if (this.tagBattle) {
                 if (!this.player3Fainted) {
                     if (this.oneOnTwo) {
-                        move3 = this.p3MoveCodes[this.player3Input];
-                        poke3 = this.team1[move3.ownerId];
+                        if (this.team1.filter(function(e) { return e.hp > 0 }).length > 1) {
+                            // ^ check that the player has at least 2 living pokemon to prevent errors in the event the player enters this tag battle with only 1 pokemon
+                            // this is only necessary for turn 1, once turn 1 is over checkWin is called below which will set player3Fainted to true for future turns
+                            move3 = this.p3MoveCodes[this.player3Input];
+                            poke3 = this.team1[move3.ownerId];
+                        }
                     }
                     else {
                         move3 = this.p3MoveCodes[this.player3Input];
@@ -31441,7 +31446,7 @@ function Safari() {
             return idnumList.get(id).toCorrectCase();
         };
         var removeBlock = function(id) {
-            return link("/playertradeblock " + id, idToName(id));
+            return link("/playertradeblock " + idToName(id), idToName(id));
         };
         list = player.playerBlacklist;
         if (data === "*") {            
