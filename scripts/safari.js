@@ -17051,6 +17051,7 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "To modify a photo, type /use brush:PhotoNumber:WhatToModify. Example: /use brush:3:period would change the period (Morning, Afternoon, Evening or Night) of the 3rd photo in your album to a random different one.", safchan);
                 safaribot.sendMessage(src, "You can modify number of Pokémon in the photo, their mood, action, environment, period or quality.", safchan);
+                safaribot.sendMessage(src, "Note: When editing Actions, you will only receive common Actions as a result, you cannot receive any Actions that are specific to certain types.", safchan);
                 sys.sendMessage(src, "", safchan);
                 return;
             }
@@ -25577,7 +25578,9 @@ function Safari() {
                     continue;
                 }
                 if (isP3 && (this.player3Fainted)) {
-                    continue;
+                    if (!this.oneOnTwo || (this.oneOnTwo && this.player1Fainted)) {
+                        continue;
+                    }
                 }
                 if (isP4 && (this.player4Fainted)) {
                     continue;
@@ -35154,7 +35157,7 @@ function Safari() {
         var coloredRewards = possibleRewards.map(function(x) { cc++; return toColor(x, colors[cc % colors.length]);});
         possibleRewards = readable(possibleRewards, "or");
 
-        var canMake = true, progress = [], asset, val, req, pokeIng = 0;
+        var canMake = true, progress = [], asset, val, req, pokeIng = 0, lacking = [];
         for (var e in rec.ingredients) {
             asset = translateAsset(e);
             if (asset.type == "item") {
@@ -35169,6 +35172,7 @@ function Safari() {
                 req = rec.ingredients[e] + " " +  asset.name;
             }
             if (val < rec.ingredients[e]) {
+                lacking.push(asset.type === "money" ? "$" + addComma(val) + "/$" + addComma(req) : val + "/" + req);
                 canMake = false;
             }
             if (asset.type === "money") {
@@ -35190,7 +35194,7 @@ function Safari() {
         }
 
         if (!canMake) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Um, that's just not enough materials... (Progress: " + progress.join(", ") + ")", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Um, that's just not enough materials... (You lack the following materials: " + lacking.join(", ") + ")", safchan);
             return;
         }
 
