@@ -25077,6 +25077,10 @@ function Safari() {
                             break;
                         }
                     }
+                    if (self.player1Fainted && self.player3Fainted && self.player2Fainted && self.player4Fainted) {
+                        self.finishBattle(sys.rand(1, 3));
+                        return true;
+                    }
                     if (self.player1Fainted && self.player3Fainted) {
                         self.finishBattle(2);
                         return true;
