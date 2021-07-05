@@ -35580,7 +35580,7 @@ function Safari() {
                 if (player.costume == "preschooler") {
                     difficulty = -1;
                 } else {
-                    safaribot.sendHtmlMessage(src, "Please choose a difficulty level between " + link("/quest celebrity:start:easy", "Easy") + ", " + link("/quest celebrity:start:normal", "Normal") + " " + link("/quest celebrity:start:hard", "Hard") + " " + link("/quest celebrity:start:expert", "Expert") + ", " + link("/quest celebrity:start:super expert", "Super Expert") + " and " + link("/quest celebrity:start:abyssal", "Abyssal") + "!", safchan);
+                    safaribot.sendHtmlMessage(src, "Please choose a difficulty level between " + link("/quest celebrity:start:easy", "Easy") + ", " + link("/quest celebrity:start:normal", "Normal") + ", " + link("/quest celebrity:start:hard", "Hard") + ", " + link("/quest celebrity:start:expert", "Expert") + ", " + link("/quest celebrity:start:super expert", "Super Expert") + " and " + link("/quest celebrity:start:abyssal", "Abyssal") + "!", safchan);
                     return;
                 }
         }
