@@ -26874,6 +26874,42 @@ function Safari() {
             tname = target.owner + "'s " + poke(target.id);
         }
         var party, oppparty;
+        if (user.ownerID === this.idnum1) {
+            party = this.team1;
+            oppparty = this.team2;
+            if (!wide) {
+                if (target.ownerID == this.idnum4) {
+                    oppparty = this.team4;
+                }
+            }
+        }
+        else if (user.ownerID === this.idnum2) {
+            party = this.team2;
+            oppparty = this.team1;
+            if (!wide) {
+                if (target.ownerID == this.idnum3) {
+                    oppparty = this.team3;
+                }
+            }
+        }
+        else if (user.ownerID === this.idnum3) {
+            party = this.team3;
+            oppparty = this.team2;
+            if (!wide) {
+                if (target.ownerID == this.idnum4) {
+                    oppparty = this.team4;
+                }
+            }
+        }
+        else if (user.ownerID === this.idnum4) {
+            party = this.team4;
+            oppparty = this.team1;
+            if (!wide) {
+                if (target.ownerID == this.idnum3) {
+                    oppparty = this.team3;
+                }
+            }
+        }
         var poke1 = this.poke1, poke2 = this.poke2, poke3 = this.poke3, poke4 = this.poke4;
         var isPlayerVsNPC = ((user.ownerID === this.idnum2 || user.ownerID === this.idnum4) && this.npcBattle);
         
