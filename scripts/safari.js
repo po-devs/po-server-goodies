@@ -10422,7 +10422,7 @@ function Safari() {
                 }
                 leader = this.getEffectiveLead(player);
                 safaribot.sendMessage(src, "Your lead Pokémon is now {0}!".format(poke(leader, true)), safchan);
-                if (player.helds[0] == 9 && player.berries.petayaCombo > 0 && oldLead !== leader) {
+                if (player.berries.petayaCombo > 0 && oldLead !== leader) {
                     safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
                     player.berries.petayaCombo = 0;
                 }
@@ -11797,7 +11797,7 @@ function Safari() {
             
             player.party.splice(index, 1);
             
-            if (isLead && player.party[0] !== before && player.helds[0] == 9 && player.berries.petayaCombo > 0) { // if the Pokemon you removed was your lead, and the new Pokemon taking its place is a different species, reset petaya
+            if (isLead && player.party[0] !== before && player.berries.petayaCombo > 0) { // if the Pokemon you removed was your lead, and the new Pokemon taking its place is a different species, reset petaya
                 safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
                 player.berries.petayaCombo = 0;
             }
@@ -11854,7 +11854,7 @@ function Safari() {
             while (player.party.length > player.helds.length) {
                 player.helds.push(-1);
             }
-            if (player.helds[0] == 9 && player.berries.petayaCombo > 0) {
+            if (player.berries.petayaCombo > 0) {
                 safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
                 player.berries.petayaCombo = 0;
             }
@@ -11951,7 +11951,7 @@ function Safari() {
                 player.helds.push(-1); // fill in the missing -1s to match new party size
             }
             
-            if (player.party[0] != toLoad.concat()[0] && player.helds[0] == 9 && player.berries.petayaCombo > 0) { // if your new active isn't the same
+            if (player.party[0] != toLoad.concat()[0] && player.berries.petayaCombo > 0) { // if your new active isn't the same
                 safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
                 player.berries.petayaCombo = 0; // you should lose your petaya combo
             }
@@ -12030,7 +12030,7 @@ function Safari() {
         
         player.party = toLoad.concat();
 
-        if (player.party[0] !== firstInParty && player.helds[0] == 9 && player.berries.petayaCombo > 0) {
+        if (player.party[0] !== firstInParty && player.berries.petayaCombo > 0) {
             safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
             player.berries.petayaCombo = 0;
         }
@@ -26873,48 +26873,8 @@ function Safari() {
             }
             tname = target.owner + "'s " + poke(target.id);
         }
-        var party, oppparty, protectUses;
+        var party, oppparty;
         var poke1 = this.poke1, poke2 = this.poke2, poke3 = this.poke3, poke4 = this.poke4;
-        if (user.ownerID === this.idnum1) {
-            party = this.team1;
-            oppparty = this.team2;
-            if (!wide) {
-                if (target.ownerID == this.idnum4) {
-                    oppparty = this.team4;
-                }
-            }
-            protectUses = this.protectCount1;
-        }
-        else if (user.ownerID === this.idnum2) {
-            party = this.team2;
-            oppparty = this.team1;
-            if (!wide) {
-                if (target.ownerID == this.idnum3) {
-                    oppparty = this.team3;
-                }
-            }
-            protectUses = this.protectCount2;
-        }
-        else if (user.ownerID === this.idnum3) {
-            party = this.team3;
-            oppparty = this.team2;
-            if (!wide) {
-                if (target.ownerID == this.idnum4) {
-                    oppparty = this.team4;
-                }
-            }
-            protectUses = this.protectCount3;
-        }
-        else if (user.ownerID === this.idnum4) {
-            party = this.team4;
-            oppparty = this.team1;
-            if (!wide) {
-                if (target.ownerID == this.idnum3) {
-                    oppparty = this.team3;
-                }
-            }
-            protectUses = this.protectCount4;
-        }
         var isPlayerVsNPC = ((user.ownerID === this.idnum2 || user.ownerID === this.idnum4) && this.npcBattle);
         
         if (move.restore) {
@@ -27110,6 +27070,42 @@ function Safari() {
                         out.push(name + "'s " + this.statName(obj.buffStat) + " " + addSign(obj.buff) + "!");
                     }
                 }
+            }
+        }
+        var protectUses = 0;
+        if (move.protect) {
+            if (user.ownerID === this.idnum1) {
+                protectUses = this.protectCount1;
+            }
+            else if (user.ownerID === this.idnum2) {
+                protectUses = this.protectCount2;
+            }
+            else if (user.ownerID === this.idnum3) {
+                protectUses = this.protectCount3;
+            }
+            else if (user.ownerID === this.idnum4) {
+                protectUses = this.protectCount4;
+            }
+            protectUses++;
+            if (chance(3/Math.pow(3, protectUses))) {
+                user.protect = true;
+                out.push(name + " protects itself!");
+            } else {
+                out.push(name + "'s protection failed!");
+                protectUses = 0;
+            }
+            if (isP1) {
+                this.protectCount1 = protectUses;
+                this.usedProtect1 = true;
+            } else if (isP2) {
+                this.protectCount2 = protectUses;
+                this.usedProtect2 = true;
+            } else if (isP3) {
+                this.protectCount3 = protectUses;
+                this.usedProtect3 = true;
+            } else if (isP4) {
+                this.protectCount4 = protectUses;
+                this.usedProtect4 = true;
             }
         }
         
@@ -28122,29 +28118,6 @@ function Safari() {
                     }
                 }
                 out = dealDamage(user, move, target, typeMultiplier, ((isP1 || isP3) ? 2 : 1), out);
-            }
-        }
-        if (move.protect) {
-            protectUses++;
-            if (chance(3/Math.pow(3, protectUses))) {
-                user.protect = true;
-                out.push(name + " protects itself!");
-            } else {
-                out.push(name + "'s protection failed!");
-                protectUses = 0;
-            }
-            if (isP1) {
-                this.protectCount1 = protectUses;
-                this.usedProtect1 = true;
-            } else if (isP2) {
-                this.protectCount2 = protectUses;
-                this.usedProtect2 = true;
-            } else if (isP3) {
-                this.protectCount3 = protectUses;
-                this.usedProtect3 = true;
-            } else if (isP4) {
-                this.protectCount4 = protectUses;
-                this.usedProtect4 = true;
             }
         }
 
