@@ -1855,6 +1855,7 @@ function Safari() {
     var currentPokemonCount = 1;
     var lastPokemonCount = 1;
     var currentDisplay = null;
+    var currentDisplayBST = 0;
     var currentPokemonAction = null;
     var currentPokemonMood = null;
     var currentPokemonMoodRate = null;
@@ -2902,6 +2903,7 @@ function Safari() {
         currentTypeOverride = null;
         currentExtraBST = 0;
         currentDisplay = null;
+        currentDisplayBST = 0;
         wildEvent = false;
         wildBallThrows = {};
         currentPokemonCount = 1;
@@ -8028,16 +8030,16 @@ function Safari() {
                 currentPokemonAction = "eating";
             }
 
-            var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
+            currentDisplayBST = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
             var term = amount >= 4 ? "horde of " : ["", "pair of ", "group of "][amount-1];
             if (spiritMon) {
                 displayId = "Spirit Realm " + displayId;
             }
             var appmsg;
             if (isPortaled) {
-                appmsg = "A wild {2}{0} came through the portal! <i>(BST: {1})</i>".format(displayId, bst, term);
+                appmsg = "A wild {2}{0} came through the portal! <i>(BST: {1})</i>".format(displayId, currentDisplayBST, term);
             } else {
-                appmsg = wildPokemonMessage.format(displayId, bst, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
+                appmsg = wildPokemonMessage.format(displayId, currentDisplayBST, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
             }
             var sprite = (cageMode ? cage : pokeInfo.sprite(currentPokemonDisplay));
 
@@ -8069,15 +8071,15 @@ function Safari() {
                         statVal = Math.round(statVal + (3 * Math.random()) - (3 * Math.random()));
                     }
                     if (chance(0.15)) {
-                        bst = Math.round(300 + (175 * Math.random()) + (175 * Math.random()) - (50 * Math.random()) - (50 * Math.random()));
+                        currentDisplayBST = Math.round(300 + (175 * Math.random()) + (175 * Math.random()) - (50 * Math.random()) - (50 * Math.random()));
                     } else if (chance(0.25)) {
-                        bst = Math.round(200 + (50 * Math.random()) + (150 * Math.random()));
+                        currentDisplayBST = Math.round(200 + (50 * Math.random()) + (150 * Math.random()));
                     } else if (chance(0.15)) {
-                        bst = Math.round(200 - (30 * Math.random()) + (150 * Math.random()));
+                        currentDisplayBST = Math.round(200 - (30 * Math.random()) + (150 * Math.random()));
                     } else if (chance(0.6)) {
-                        bst = Math.round(bst + (5 * Math.random()) - (5 * Math.random()));
+                        currentDisplayBST = Math.round(currentDisplayBST + (5 * Math.random()) - (5 * Math.random()));
                     }
-                    appmsg = wildPokemonMessage2.format(bst, term, type_1, type_2, statName, statVal);
+                    appmsg = wildPokemonMessage2.format(currentDisplayBST, term, type_1, type_2, statName, statVal);
                     sprite = "<img src='" + ghostSprite + "'>";
                 }
             }
@@ -10569,6 +10571,7 @@ function Safari() {
                 currentTypeOverride = null;
                 currentExtraBST = 0;
                 currentDisplay = null;
+                currentDisplayBST = 0;
                 wildEvent = false;
                 wildBallThrows = {};
                 wildSpirit = false;
@@ -10767,6 +10770,7 @@ function Safari() {
         currentPokemon = null;
         currentTypeOverride = null;
         currentDisplay = null;
+        currentDisplayBST = 0;
         currentExtraBST = 0;
         currentPokemonCount = lastPokemonCount = 1;
         currentBaiter = null;
@@ -59716,7 +59720,8 @@ function Safari() {
             this.showNextContest(src);
             sys.sendMessage(src, "*** ******************************************** ***", safchan);
             if (currentPokemon && (!(currentTheme && contestThemes[currentTheme].disguises))) {
-                sys.sendHtmlMessage(src, "There's a wild " + poke(currentDisplay, true) + "!", safchan);
+                sys.sendHtmlMessage(src, "There's a wild " + poke(currentDisplay, true) + "! <i>(BST: " + currentDisplayBST + ")", safchan);
+                
                 ballMacro(src);
             }
             else {
