@@ -3865,7 +3865,7 @@ function Safari() {
         "414": { "learned": [ 29, 30, 32, 33, 60, 61, 62, 186, 3, 460, 744, 745, 66281, 749, 750, 800, 66336, 197408, 131872, 65610, 65611, 65612 ] },
         "415": { "learned": [ 742, 743 ] },
         "416": { "learned": [ 147, 148, 531, 561, 743, 745, 66281, 778 ] },
-        "417": { "learned": [ 633, 634, 635, 65, 80, 94, 146, 150, 163, 164, 337, 342, 344, 434, 435, 479, 262623, 131551, 197087, 328159, 66015, 480, 481, 527, 528, 574, 575, 576, 641, 677, 678, 66214, 682, 683, 686, 687, 711 ] },
+        "417": { "learned": [ 633, 634, 635, 65, 80, 94, 150, 163, 164, 337, 342, 344, 434, 435, 479, 262623, 131551, 197087, 328159, 66015, 480, 481, 527, 528, 574, 575, 576, 641, 677, 678, 66214, 682, 683, 686, 687, 711 ] },
         "419": { "learned": [ 65563, 65564, 65574, 615 ] },
         "420": { "learned": [ 65563, 65564 ] },
         "421": { "learned": [ 563, 348 ] },
@@ -25784,6 +25784,7 @@ function Safari() {
                         this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " attacked itself in its confusion!", sColor));
                         var dmg = ((this.getStatValue(user, "atk") * 60) / this.getStatValue(user, "def"));
                         dmg = Math.min(Math.round(dmg * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15))), user.hp);
+                        dmg = Math.max(1, dmg);
                         user.hp -= dmg;
                         this.sendToViewers(name + " lost " + dmg + " HP!");
                         if (user.hp <= 0) {
@@ -25867,6 +25868,7 @@ function Safari() {
                     dmg = ((150 * 95) / this.getStatValue(poke1, "sdef"));
                     typeMultiplier = safari.checkEffective(["Fairy"], [type1(poke1.id), type2(poke1.id)]);
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.lightscreen > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
+                    dmg = Math.max(1, dmg);
                     if (dmg > poke1.hp) {
                         dmg = poke1.hp;
                     }
@@ -25881,6 +25883,7 @@ function Safari() {
                     dmg = ((150 * 95) / this.getStatValue(poke2, "sdef"));
                     typeMultiplier = safari.checkEffective(["Fairy"], [type1(poke2.id), type2(poke2.id)]);
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.lightscreen > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
+                    dmg = Math.max(1, dmg);
                     if (dmg > poke2.hp) {
                         dmg = poke2.hp;
                     }
@@ -25911,6 +25914,7 @@ function Safari() {
                     dmg = ((150 * pow) / this.getStatValue(poke1, "def"));
                     typeMultiplier = safari.checkEffective([type], [type1(poke1.id), type2(poke1.id)], this.select.inverted, this.select, this.select2);
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
+                    dmg = Math.max(1, dmg);
                     if (dmg > poke1.hp) {
                         dmg = poke1.hp;
                     }
@@ -25930,6 +25934,7 @@ function Safari() {
                     dmg = ((150 * pow) / this.getStatValue(poke2, "def"));
                     typeMultiplier = safari.checkEffective([type], [type1(poke2.id), type2(poke2.id)], this.select.inverted, this.select, this.select2);
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
+                    dmg = Math.max(1, dmg);
                     if (dmg > poke2.hp) {
                         dmg = poke2.hp;
                     }
@@ -27577,6 +27582,7 @@ function Safari() {
                         }
                     }
                 }
+                dmg = Math.max(1, dmg);
                 if (dmg > target.hp) {
                     dmg = target.hp;
                 }
