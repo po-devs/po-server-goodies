@@ -1827,7 +1827,7 @@ function Safari() {
             tamato:"An uncommon berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
             pinap:"An uncommon berry that can be used as an ingredient in bait. Allows its holder to fight better in the Battle Tower if its BST is unique on its team. Give berries with /giveitem [berry].",
             nanab:"An uncommon berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
-            watmel:"An uncommon berry that can be used as an ingredient in bait. When hatching a Pokémon that shares an egg group with its holder, it increases the chance of the hatched Pokémon to be shiny. Give berries with /giveitem [berry].",
+            watmel:"An uncommon berry that can be used as an ingredient in bait. When hatching a Pokémon that shares an egg group with its holder, it increases the chance of the hatched Pokémon to be Shiny. If multiple Pokémon in your party are holding this berry, only the first holder's berry will take effect. Give berries with /giveitem [berry].",
             petaya:"An uncommon berry that can be used as an ingredient in bait. Can help a Pokémon evolve when it assists in captures. Give berries with /giveitem [berry].",
             miracle:"A rare berry that can be used as an ingredient in bait. Allows its holder to survive a KO-ing move in rotation battles. Give berries with /giveitem [berry].",
             platinum:"A rare berry that can be used as an ingredient in bait. As an ingredient, it is unmatched, and it can cause the bait to attract rare Pokémon forms."
@@ -13571,7 +13571,7 @@ function Safari() {
             hitAny = false;
             data = p.notificationData;
             if (data.towerWaiting) {
-                if (p.quests.tower.cooldown < currentTime) {
+                if (p.quests.tower.cooldown < currentTime && !safari.isBattling(name)) {
                     data.towerWaiting = false;
                     out = "You are able to fight the " + link("/quest tower", "Battle Tower") + " again!";
                     if (data.lastTowerParty.length > 0) {
@@ -13586,7 +13586,7 @@ function Safari() {
                 }
             }
             if (data.arenaWaiting) {
-                if (p.quests.arena.cooldown < currentTime) {
+                if (p.quests.arena.cooldown < currentTime && !safari.isBattling(name)) {
                     data.arenaWaiting = false;
                     out = "Trainer " + link("/quest arena:" + data.lastArenaTrainer, capitalizeFirst(data.lastArenaTrainer)) + " is ready for a rematch in the " + link("/quest arena", "Arena") + "!";
                     if (data.lastArenaParty.length > 0) {
@@ -13601,7 +13601,7 @@ function Safari() {
                 }
             }
             if (data.leagueWaiting) {
-                if (p.quests.league.cooldown < currentTime) {
+                if (p.quests.league.cooldown < currentTime && !safari.isBattling(name)) {
                     data.leagueWaiting = false;
                     out = "You are able to fight the " + link("/quest league", "Pokémon League") + " again!";
                     if (data.lastLeagueParty.length > 0) {
@@ -16527,6 +16527,7 @@ function Safari() {
                         shinyChanceFinal *= 0.25;
                         player.helds[e] = -1;
                         safaribot.sendMessage(src, poke(player.party[e], true) + "'s Watmel Berry was consumed!", safchan);
+                        break;
                     }
                 }
             }
@@ -16587,6 +16588,7 @@ function Safari() {
                         shinyChanceFinal *= 0.25;
                         player.helds[e] = -1;
                         safaribot.sendMessage(src, poke(player.party[e], true) + "'s Watmel Berry was consumed!", safchan);
+                        break;
                     }
                 }
             }
