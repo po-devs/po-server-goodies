@@ -1827,7 +1827,7 @@ function Safari() {
             tamato:"An uncommon berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
             pinap:"An uncommon berry that can be used as an ingredient in bait. Allows its holder to fight better in the Battle Tower if its BST is unique on its team. Give berries with /giveitem [berry].",
             nanab:"An uncommon berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
-            watmel:"An uncommon berry that can be used as an ingredient in bait. When hatching a Pokémon that shares an egg group with its holder, it increases the chance of the hatched Pokémon to be Shiny. If multiple Pokémon in your party are holding this berry, only the first holder's berry will take effect. Give berries with /giveitem [berry].",
+            watmel:"An uncommon berry that can be used as an ingredient in bait. When hatching a Pokémon that shares an Egg Group with its holder, it increases the chance of the hatched Pokémon to be Shiny. If multiple Pokémon in your party are holding this berry and have the same Egg Group as the hatched Pokémon, only the first holder's berry will take effect. Give berries with /giveitem [berry].",
             petaya:"An uncommon berry that can be used as an ingredient in bait. Can help a Pokémon evolve when it assists in captures. Give berries with /giveitem [berry].",
             miracle:"A rare berry that can be used as an ingredient in bait. Allows its holder to survive a KO-ing move in rotation battles. Give berries with /giveitem [berry].",
             platinum:"A rare berry that can be used as an ingredient in bait. As an ingredient, it is unmatched, and it can cause the bait to attract rare Pokémon forms."
@@ -13545,25 +13545,9 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "You have " + (amt > 1 ? amt : "a") + " new notification" + (amt > 1 ? "s" : "") + " from " + readable(player.notificationSources, "and") + "! " + link("/notifications", "«Notifications»") + "<ping/>", safchan);
         }
     };
-    this.pendingNotifications = function() {
-        var p, data, currentTime = now(), out = "", hold, hold2, name, currentDay = getDay(now()), m, hold, hitAny = false;
-        var players = sys.playersOfChannel(safchan);
-        for (var pid in players) {
-            var player = getAvatar(players[pid]);
-            if (!(player)) {
-                continue;
-            }
-            id = player.idnum;
-            recentPlayers[id+""] = currentDay;
-        }
-        for (var s in recentPlayers) {
-            name = idnumList.get(parseInt(s, 10));
-            if (!(name) || name == undefined) {
-                continue;
-            }
-            if (typeof name !== "string") {
-                continue;
-            }
+    this.pendingNotifications = function(name) {
+        var p, data, currentTime = now(), out = "", hold, hold2, currentDay = getDay(now()), m, hold, hitAny = false;
+        var fireNotifications = function(name) {
             p = getAvatarOff(name);
             if ((!p) || (!(p.notificationData))) {
                 continue;
@@ -13581,7 +13565,7 @@ function Safari() {
                         }
                         out += " Load your last used Battle Tower party? " + link("/qload " + hold.join(","), readable(hold, "and"));
                     }
-                    this.notification(p, out, "Tower", true);
+                    safari.notification(p, out, "Tower", true);
                     hitAny = true;
                 }
             }
@@ -13596,7 +13580,7 @@ function Safari() {
                         }
                         out += " Load your last used Arena party? " + link("/qload " + hold.join(","), readable(hold, "and"));
                     }
-                    this.notification(p, out, "Arena", true);
+                    safari.notification(p, out, "Arena", true);
                     hitAny = true;
                 }
             }
@@ -13611,7 +13595,7 @@ function Safari() {
                         }
                         out += " Load your last used League party? " + link("/qload " + hold.join(","), readable(hold, "and"));
                     }
-                    this.notification(p, out, "League", true);
+                    safari.notification(p, out, "League", true);
                     hitAny = true;
                 }
             }
@@ -13619,7 +13603,7 @@ function Safari() {
                 if (p.quests.collector.cooldown < currentTime) {
                     data.collectorWaiting = false;
                     out = "The " + link("/quest collector", "Collector") + " has finished organizing his collection! He's ready to request new Pokémon!";
-                    this.notification(p, out, "Collector", true);
+                    safari.notification(p, out, "Collector", true);
                     hitAny = true;
                 }
             }
@@ -13642,7 +13626,7 @@ function Safari() {
                 } else {
                     out = "Your " + poke(data.daycarePoke) + " wants to play! Go visit the " + link("/daycare", "Daycare") + " to play with it!";
                 }
-                this.notification(p, out, "Daycare", true);
+                safari.notification(p, out, "Daycare", true);
                 hitAny = true;
             }
             if (chance(0.22) && data.missionWaiting) {
@@ -13655,15 +13639,41 @@ function Safari() {
                 }
                 if (hit > 0) {
                     out = "You can receive rewards from " + hit + " cleared " + link("/missions", "Missions") + "!";
-                    this.notification(p, out, "Missions", true);
+                    safari.notification(p, out, "Missions", true);
                     data.missionWaiting = false;
                     hitAny = true;
                 }
             }
             if (hitAny) {
-                this.notificationPing(p);
+                safari.notificationPing(p);
             }
             safari.saveGame(p);
+        };
+        if (!name) {
+            var players = sys.playersOfChannel(safchan);
+            for (var pid in players) {
+                var player = getAvatar(players[pid]);
+                if (!(player)) {
+                    continue;
+                }
+                id = player.idnum;
+                recentPlayers[id+""] = currentDay;
+            }
+            for (var s in recentPlayers) {
+                name = idnumList.get(parseInt(s, 10));
+                if (!(name) || name == undefined) {
+                    continue;
+                }
+                if (typeof name !== "string") {
+                    continue;
+                }
+                fireNotifications(name);
+            }
+        }
+        else {
+            if (typeof name === "string") {
+                fireNotifications(name);
+            }
         }
     };
     this.viewInbox = function(src) {
@@ -19546,6 +19556,7 @@ function Safari() {
         safari.toRecentQuests(player, "missions");
         player.notificationData.missionWaiting = true;
         sys.sendMessage(src, "", safchan);
+        safari.pendingNotifications(player.id);
         safari.saveGame(player);
     };
     this.renewMissions = function(player) {
@@ -32029,6 +32040,7 @@ function Safari() {
                 quest.requests = [];
                 quest.cooldown = now() + Math.round(hours(3) * (1 - safari.getFortune(player, "questcd", 0, "collector")));
                 player.notificationData.collectorWaiting = true;
+                safari.pendingNotifications(player.id);
                 quest.deadline = 0;
                 this.saveGame(player);
             break;
@@ -32227,6 +32239,7 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             this.logLostCommand(sys.name(src), "quest scientist:" + data.join(":"), "gave " + poke(id) + theft);
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Scientist|||Gave " + poke(id) + "|||Received " + plural(rew, "silver") + (theft ? ", stole " + poke(id) + " back" : "") + "\n");
+            safari.pendingNotifications(player.id);
             this.saveGame(player);
         } else if (data[0].toLowerCase() === "photo") {
             if (data[1] === undefined) {
@@ -32280,6 +32293,7 @@ function Safari() {
                     player.records.scientistEarnings += rew;
                     player.records.scientistPhotoSubmission += 1;
                     player.quests.scientist.photo = id;
+                    safari.pendingNotifications(player.id);
                     safari.saveGame(player);
                     sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Scientist|||Showed a photo of " + safari.describePhoto(player.photos[index]) + "|||Received " + plural(rew, "silver") + "\n");
                 }
@@ -32536,6 +32550,7 @@ function Safari() {
         safari.toRecentQuests(player, "arena");
         player.notificationData.lastArenaParty = [].concat(player.party);
         player.notificationData.arenaWaiting = true;
+        safari.pendingNotifications(player.id);
         safari.clearQuestNotifications(player, "Arena");
         player.notificationData.lastArenaTrainer = opt;
         this.saveGame(player);
@@ -32824,6 +32839,7 @@ function Safari() {
                 safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u, lowBST: passed});
                 safari.costumeEXP(player, "fighttower", 4 + (count * 3));
                 player.notificationData.towerWaiting = true;
+                safari.pendingNotifications(player.id);
                 safari.clearQuestNotifications(player, "Tower");
                 if (safari.events.towerTroubleEnabled && safari.events.towerTroubleData.searchText !== "") {
                     if (!(safari.events.towerTroubleData.players.hasOwnProperty(player.idnum+""))) {
@@ -33033,6 +33049,7 @@ function Safari() {
         }
         this.missionProgress(player, "wonder", receivedId, 1, {});
         sys.sendMessage(src, "", safchan);
+        safari.pendingNotifications(player.id);
         this.saveGame(player);
         this.logLostCommand(sys.name(src), "quest wonder:" + data.join(":"), "received " + (twins ? "two " : "") +poke(receivedId));
         sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Wonder Trade|||Gave " + input.name + "|||Received " + (twins ? "two " : "") +poke(receivedId) + "\n");
@@ -34490,6 +34507,7 @@ function Safari() {
                     }
                     strengthtotal = Math.floor(strengthtotal);
                     sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues totaling " + strengthtotal + " strength in " + timeString(timeTaken/1000, true) + " after " + (safari.detectiveData[uid+""].wrongGuesses) + " wrong guess(es)|||Received " + readable(grandprize) + "\n");
+                    safari.pendingNotifications(player.id);
                     safari.saveGame(player);
                     permObj.add("detectiveData", JSON.stringify(safari.detectiveData));
                 } else {
@@ -34842,11 +34860,12 @@ function Safari() {
             giveStuff(player, ingUsed, true);
             skillUnlocks[player.idnum][mon][skillKey] = { "level": level }; // we only need to store level here, rest of the skill data will be pulled directly from skillData when activating, then added into player.pokeskills
             permObj.add("skillUnlocks", JSON.stringify(skillUnlocks));
-            safari.saveGame(player);
             
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Idol|||Gave " + translateStuff(skillInfo.unlock) + "|||Unlocked " + skillName + " for " + monName + "\n");
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! Your <b>{0}</b> has permanently unlocked the <b>{1}</b> skill! Come back when you're ready to {2} it!".format(monName, skillName, link("/quest idol:charge:" + monName + ":" + skillName, "charge")), safchan);
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: I was the one who did all the work... <i>*grumble grumble*</i>", safchan);
+            safari.pendingNotifications(player.id);
+            safari.saveGame(player);
         }
         else if (d1 === "charge") {
             if (!d2) {
@@ -34957,13 +34976,14 @@ function Safari() {
 
             player.records.idolActivated += 1;
             giveStuff(player, ingUsed, true);
-            safari.saveGame(player);
             
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Idol|||Gave " + translateStuff(skillInfo.activate) + "|||Charged " + skillName + " for " + monName + ", receiving " + skillData[skillKey].uses + " uses for a total of " + player.pokeskills[mon][skillKey].uses + "\n");
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Success! You now have <b>{0}</b> remaining uses for <b>{1}'s {2}</b>. With this skill by your side, you and your Pokémon will be shining stars! I guarantee it, or my name isn't \"Idol\"!".format(player.pokeskills[mon][skillKey].uses, monName, skillName), safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: W-wait, my name isn't really \"Idol\" is it? What IS my name? I-I... Oh no...", safchan);
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: There she goes again{0}.. She'll be alright, this always happens... Just give her some time.".format(link("/quest idol:youfounditcongratsicantbelievethis", ".")), safchan);
+            safari.pendingNotifications(player.id);
+            safari.saveGame(player);
         }
         else if (d1 === "youfounditcongratsicantbelievethis") {
             safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Think you're clever eh? The thing is, unlike my cousin, I'm very much aware that I'm a nameless fictional character in a chat-based game. Do you think you're safe there, in the real world? " + link("/quest idol:thisisthefinalstep", "«Next...?»"), safchan);
@@ -35131,6 +35151,7 @@ function Safari() {
         }
         safari.toRecentQuests(player, "arborist");
         sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arborist|||Gave " + translateStuff(rec.ingredients) + "|||Received " + readable(rew.gained) + "\n");
+        safari.pendingNotifications(player.id);
         this.saveGame(player);
     };
     this.alchemyQuest = function(src, data) {
@@ -35329,7 +35350,7 @@ function Safari() {
                 player.quests.alchemist.cooldown = Math.max(
                     player.quests.alchemist.cooldown,
                     now() + Math.round(hours(rec.cooldown) * (1 - safari.getFortune(player, "questcd", 0, "alchemist")))
-                ); 
+                );
             }
             if (rec.records) {
                 for (e in rec.records) {
@@ -35348,6 +35369,7 @@ function Safari() {
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Alchemist|||Gave " + translateStuff(rec.ingredients) + "|||Received " + readable(rew.gained) + "\n");
         }
         safari.toRecentQuests(player, "alchemist");
+        safari.pendingNotifications(player.id);
         this.saveGame(player);
     };
     this.philosopherQuest = function(src, data) {
@@ -35871,7 +35893,7 @@ function Safari() {
                     if (isPlaying(sys.name(id))) {
                         safari.revertMega(id, true);
                     }
-
+                    safari.pendingNotifications(player.id);
                     safari.saveGame(player);
                     return;
                 }
@@ -36045,7 +36067,7 @@ function Safari() {
                 if (isPlaying(sys.name(id))) {
                     safari.revertMega(id, true);
                 }
-
+                safari.pendingNotifications(player.id);
                 safari.saveGame(player);
             }
         };
@@ -36648,7 +36670,7 @@ function Safari() {
                     if (isPlaying(name)) {
                         safari.revertMega(id, true);
                     }
-
+                    safari.pendingNotifications(player.id);
                     safari.saveGame(player);
                 } else {
                     var npc = JSON.parse(JSON.stringify(gym.trainers[next]));
@@ -36696,6 +36718,7 @@ function Safari() {
                 }
                 player.records.gymsLost += 1;
                 player.quests.league.cooldown = now() + Math.round(hours(2) * (1 - safari.getFortune(player, "questcd", 0, "league")));
+                safari.pendingNotifications(player.id);
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||League|||Challenged " + args.gym.name + " Gym with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
 
                 if (isPlaying(name)) {
@@ -37152,6 +37175,7 @@ function Safari() {
             delete playerTracks[act];
         }
         sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Journal|||Submitted photo of " + this.describePhoto(photo) + "|||Fulfilled request for " + this.translatePhotoRequest(req) + " (Base Score: " + req.fscore + "), received " + rewardName + (rewards.length > 0 ? ", " + readable(rewards) : "") + " and " + plural(score, "Photo Point") + (player.costume === "journalist" ? " (using Journalist costume multiplier)" : "") + (scoreFortune > 0 ? " (using " + (1+scoreFortune) + "x Fortune multiplier)" : "") + "\n");
+        safari.pendingNotifications(player.id);
         this.saveGame(player);
         if (!req.done) {
             req.done = true;
@@ -37827,6 +37851,7 @@ function Safari() {
             safaribot.sendAll("No valid offers have been made for the Monger Auction of " + obj.rewardName + "!", safchan);
             sys.sendAll("", safchan);
         }
+        safari.pendingNotifications();
     };
 
     /* Dashboard functions */
@@ -39532,7 +39557,6 @@ function Safari() {
                 player.deluxeBait.inedible = 0;
             }
             g = giveStuff(player, toStuffObj(amtGiven + "@deluxe"));
-            safari.saveGame(player);
 
             this.msg(player.id, "You " + g + "!");
             this.msg(player.id, "<b>Bait Data:</b>");
@@ -39542,6 +39566,8 @@ function Safari() {
             if (player.deluxeBait.inedible > 0) {
                 this.msg(player.id, "- Somewhat inedible (" + toFixed(player.deluxeBait.inedible * 100, 5) + "%)");
             }
+            safari.pendingNotifications(player.id);
+            safari.saveGame(player);
         }
         this.finished = true;
         this.msgAll("");
@@ -40037,6 +40063,7 @@ function Safari() {
             if (isPlaying(name)) {
                 safari.revertMega(sys.id(name), true);
             }
+            safari.pendingNotifications(player.id);
             safari.saveGame(player);
         }
 
