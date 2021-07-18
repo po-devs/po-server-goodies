@@ -14769,14 +14769,7 @@ function Safari() {
                     var showTheme = player.mushroomDeadline > 0 && ballUsed !== "spy" ? " from the " + themeName(player.mushroomTheme) + " theme" : "";
                     safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left {0} out. The {1} attracted a wild Pokémon".format(plural(used, baitName), used > 1 ? es(baitName) : baitName) + showTheme + "!", safchan);
                 }
-                if (golden) {
-                    goldenBaitCooldown = itemData[item].successCD + sys.rand(0,9);
-                } else if (deluxe) {
-                    deluxeBaitCooldown = itemData[item].successCD + sys.rand(0,3);
-                } else {
-                    baitCooldown = successfulBaitCount = itemData[item].successCD + sys.rand(0,9);
-                    //player.cooldowns.bait = now() + (itemData[item].failCD + sys.rand(0,4)) * 1000;
-                }
+
                 player.records.baitAttracted += 1;
 
                 if (!golden && !deluxe) {
@@ -14823,6 +14816,14 @@ function Safari() {
                         } else {
                             var where = player.mushroomDeadline > 0 ? player.mushroomTheme : null;
                             safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where);
+                        }
+                        if (golden) {
+                            goldenBaitCooldown = itemData[item].successCD + sys.rand(0,9);
+                        } else if (deluxe) {
+                            deluxeBaitCooldown = itemData[item].successCD + sys.rand(0,3);
+                        } else {
+                            baitCooldown = successfulBaitCount = itemData[item].successCD + sys.rand(0,9);
+                            //player.cooldowns.bait = now() + (itemData[item].failCD + sys.rand(0,4)) * 1000;
                         }
                     }
                 }
