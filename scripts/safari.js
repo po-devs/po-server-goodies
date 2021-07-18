@@ -13550,7 +13550,7 @@ function Safari() {
         var fireNotifications = function(name) {
             p = getAvatarOff(name);
             if ((!p) || (!(p.notificationData))) {
-                continue;
+                return;
             }
             hitAny = false;
             data = p.notificationData;
