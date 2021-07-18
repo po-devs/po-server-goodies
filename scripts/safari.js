@@ -855,7 +855,12 @@ function Safari() {
             arenaWaiting: false,
             lastArenaTrainer: "",
             lastArenaParty: [],
-            scientistWaiting: false
+            scientistWaiting: false,
+            wonderWaiting: false,
+            pyramidWaiting: false,
+            alchemistWaiting: false,
+            journalWaiting: false,
+            detectiveWaiting: false
         },
         inbox: [],
         unreadInbox: [],
@@ -900,7 +905,9 @@ function Safari() {
             autoForfeitThrow: true,
             showLeadMessage: false,
             canSellFormes: true,
-            showEvoMessages: true
+            showEvoMessages: true,
+            questNotifications: true,
+            persistentBait: false
         }
     };
 
@@ -1381,7 +1388,7 @@ function Safari() {
         backpacker: {
             icon: 372, name: "backpacker", fullName: "Backpacker", aliases: ["backpacker", "back packer"], acqReq: 36, record: "wonderStarter", rate: 1.2,
             effect: "A master in traveling. Can easily fit more Honey, Silk Scarves and Cell Batteries into the bag to benefit more from its effects!",
-            effect2: "Unsuccessful bait cooldown increased since cooking takes longer in the woods.",
+            effect2: "Carrying a heavy backpack makes you throw Poké Balls slower.",
             noAcq: "Obtain {0} more starters from Wonder Trade",
             expTypes: ["journal", "catchhighbst", "wincontest", "catch"],
             expItem: "crown",
@@ -10715,6 +10722,7 @@ function Safari() {
         }
 
         lastWildAction = now();
+        safari.pendingNotifications(player.id);
         this.saveGame(player);
     };
     this.pokemonFlee = function(customFlee) {
@@ -13504,13 +13512,18 @@ function Safari() {
         }
     };
     this.notification = function(player, message, fromWhere, mute) {
-        var d = new Date().toUTCString();
         if (!player.hasOwnProperty("notifications")) {
             player.notifications = [];
         }
         if (!player.hasOwnProperty("notificationSources")) {
             player.notificationSources = [];
         }
+        var questSources = ["tower", "arena", "league", "collector", "scientist", "journal", "wonder", "pyramid", "alchemist", "detective"];
+        if (!player.options.questNotifications && questSources.contains(fromWhere.toLowerCase())) {
+            return;
+        }
+
+        var d = new Date().toUTCString();
         try {
             player.notifications.push(
                 {
@@ -13604,6 +13617,38 @@ function Safari() {
                     data.collectorWaiting = false;
                     out = "The " + link("/quest collector", "Collector") + " has finished organizing his collection! He's ready to request new Pokémon!";
                     safari.notification(p, out, "Collector", true);
+                    hitAny = true;
+                }
+            }
+            if (data.wonderWaiting) {
+                if (p.quests.wonder.cooldown < currentTime) {
+                    data.wonderWaiting = false;
+                    out = "Ready to try your luck once more? " + link("/quest wonder", "Wonder Trade") + " is ready!";
+                    safari.notification(p, out, "Wonder", true);
+                    hitAny = true;
+                }
+            }
+            if (data.pyramidWaiting) {
+                if (p.quests.pyramid.cooldown < currentTime) {
+                    data.pyramidWaiting = false;
+                    out = "You can now lead your next " + link("/quest pyramid", "Pyramid") + " expedition!";
+                    safari.notification(p, out, "Pyramid", true);
+                    hitAny = true;
+                }
+            }
+            if (data.alchemistWaiting) {
+                if (p.quests.alchemist.cooldown < currentTime) {
+                    data.alchemistWaiting = false;
+                    out = "The " + link("/quest alchemist", "Alchemist") + " is ready to make more items!";
+                    safari.notification(p, out, "Alchemist", true);
+                    hitAny = true;
+                }
+            }
+            if (data.journalWaiting) {
+                if (p.quests.journal.cooldown < currentTime) {
+                    data.journalWaiting = false;
+                    out = "The " + link("/quest journal", "Journalist") + " is ready for your next photo submission!";
+                    safari.notification(p, out, "Journal", true);
                     hitAny = true;
                 }
             }
@@ -14588,8 +14633,10 @@ function Safari() {
             return;
         }
         var isPreparing = preparationPhase > 0 && (!preparationFirst || sys.name(src).toLowerCase() !== preparationFirst);
+        var persist = player.options.persistentBait;
 
-        var mess = "[Track] " + sys.name(src) + " is using /"+(golden ? "g" : "")+"bait " + commandData;
+        var messBait = deluxe ? "dbait" : (golden ? "gbait" : "bait");
+        var mess = "[Track] " + sys.name(src) + " is using /" + messBait + " " + commandData + (persist ? " [Persist]" : "");
         if (!isPreparing) {
             this.trackMessage(mess, player);
         }
@@ -14692,13 +14739,6 @@ function Safari() {
             }
         }
 
-        player.balls[item] -= 1;
-        if (deluxe) {
-            player.records.deluxeBaitUsed += 1;
-        } else {
-            player.records[golden ? "goldenBaitUsed" : "baitUsed"] += 1;
-        }
-
         var perkBonus = getPerkBonus(player, "honey");
         var finalChance = itemData[item].successRate + perkBonus + this.getFortune(player, "honey", 0);
         
@@ -14712,96 +14752,115 @@ function Safari() {
                 finalChance *= 0.95
             }
         }
-        if (chance(finalChance)) {
-            if (!(deluxe)) {
-                var showTheme = player.mushroomDeadline > 0 && ballUsed !== "spy" ? " from the " + themeName(player.mushroomTheme) + " theme" : "";
-                safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon" + showTheme + "!", safchan);
-            }
-            if (golden) {
-                goldenBaitCooldown = itemData[item].successCD + sys.rand(0,9);
-            } else if (deluxe) {
-                deluxeBaitCooldown = itemData[item].successCD + sys.rand(0,3);
+        var rollCap = persist ? 100 : 1;
+        var used = 0;
+        while (!currentPokemon && rollCap > 0 && player.balls[item] > 0) {
+            rollCap -= 1;
+            used += 1;
+            player.balls[item] -= 1;
+            if (deluxe) {
+                player.records.deluxeBaitUsed += 1;
             } else {
-                baitCooldown = successfulBaitCount = itemData[item].successCD + sys.rand(0,9);
-                player.cooldowns.bait = now() + (itemData[item].failCD + sys.rand(0,4)) * 1000;
-            }
-            player.records.baitAttracted += 1;
-
-            if (!golden && !deluxe) {
-                if (lastBaiters.length >= lastBaitersAmount) {
-                    lastBaiters.shift();
-                }
-                lastBaiters.push(sys.name(src).toLowerCase());
+                player.records[golden ? "goldenBaitUsed" : "baitUsed"] += 1;
             }
 
-            if (iterations) {
-                var out = "Spawned: ";
-                for (x = 0; x < 300; x++) {
-                    var where = player.mushroomDeadline > 0 ? player.mushroomTheme : null;
-                    out += safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where, true);
+            if (chance(finalChance)) {
+                if (!(deluxe)) {
+                    var showTheme = player.mushroomDeadline > 0 && ballUsed !== "spy" ? " from the " + themeName(player.mushroomTheme) + " theme" : "";
+                    safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left {0} out. The {1} attracted a wild Pokémon".format(plural(used, baitName), used > 1 ? es(baitName) : baitName) + showTheme + "!", safchan);
                 }
-                safaribot.sendMessage(src, out, safchan);
-            }
-            else {
-                currentBaiter = player.id;
-                var p = player.nextSpawn;
-                if (p.pokemon.num && !deluxe) {
-                    safari.createWild(p.pokemon.num, p.pokemon.shiny, p.amt, null, null, player, p.disguise);
-                    p.pokemon = p.disguise = {};
-                    p.amt = 1;
+                if (golden) {
+                    goldenBaitCooldown = itemData[item].successCD + sys.rand(0,9);
+                } else if (deluxe) {
+                    deluxeBaitCooldown = itemData[item].successCD + sys.rand(0,3);
                 } else {
-                    if (deluxe) {
-                        var mon = 0, val = (100 * Math.random());
-                        if (player.deluxeBait.inedible > 0) {
-                            if (chance(player.deluxeBait.inedible)) {
-                                safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out... but nothing showed up.", safchan);
-                                safaribot.sendMessage(src, "You have " + plural(player.balls[item], baitName) + " remaining.", safchan);
-                                return;
-                            }
-                        }
-                        safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon!", safchan);
-                        if (val < (player.deluxeBait.rares.rate)) {
-                            mon = player.deluxeBait.rares.list.random();
-                        } else if (val < (player.deluxeBait.uncommons.rate + player.deluxeBait.rares.rate)) {
-                            mon = player.deluxeBait.uncommons.list.random();
-                        } else {
-                            mon = player.deluxeBait.commons.list.random();
-                        }
-                        safari.createWild(mon, null, 1, null, null, player, null, false, null);
-                    } else {
+                    baitCooldown = successfulBaitCount = itemData[item].successCD + sys.rand(0,9);
+                    //player.cooldowns.bait = now() + (itemData[item].failCD + sys.rand(0,4)) * 1000;
+                }
+                player.records.baitAttracted += 1;
+
+                if (!golden && !deluxe) {
+                    if (lastBaiters.length >= lastBaitersAmount) {
+                        lastBaiters.shift();
+                    }
+                    lastBaiters.push(sys.name(src).toLowerCase());
+                }
+
+                if (iterations) {
+                    var out = "Spawned: ";
+                    for (x = 0; x < 300; x++) {
                         var where = player.mushroomDeadline > 0 ? player.mushroomTheme : null;
-                        safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where);
+                        out += safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where, true);
+                    }
+                    safaribot.sendMessage(src, out, safchan);
+                }
+                else {
+                    currentBaiter = player.id;
+                    var p = player.nextSpawn;
+                    if (p.pokemon.num && !deluxe) {
+                        safari.createWild(p.pokemon.num, p.pokemon.shiny, p.amt, null, null, player, p.disguise);
+                        p.pokemon = p.disguise = {};
+                        p.amt = 1;
+                    } else {
+                        if (deluxe) {
+                            var mon = 0, val = (100 * Math.random());
+                            if (player.deluxeBait.inedible > 0) {
+                                if (chance(player.deluxeBait.inedible)) {
+                                    if (rollCap === 0 || player.balls[item] === 0)
+                                        safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left {0} out... but nothing showed up.".format(plural(used, baitName), used > 1 ? es(baitName) : baitName), safchan);
+                                    continue;
+                                }
+                            }
+                            safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left {0} out. The {1} attracted a wild Pokémon!".format(plural(used, baitName), used > 1 ? es(baitName) : baitName), safchan);
+                            if (val < (player.deluxeBait.rares.rate)) {
+                                mon = player.deluxeBait.rares.list.random();
+                            } else if (val < (player.deluxeBait.uncommons.rate + player.deluxeBait.rares.rate)) {
+                                mon = player.deluxeBait.uncommons.list.random();
+                            } else {
+                                mon = player.deluxeBait.commons.list.random();
+                            }
+                            safari.createWild(mon, null, 1, null, null, player, null, false, null);
+                        } else {
+                            var where = player.mushroomDeadline > 0 ? player.mushroomTheme : null;
+                            safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where);
+                        }
                     }
                 }
-            }
-            safari.throwBall(src, commandData, true);
-            preparationFirst = sys.name(src).toLowerCase();
-            if (!golden && !deluxe) {
-                lastBaitersDecay = lastBaitersDecayTime;
-            }
-            if (hasType(currentPokemon, "Water") && hasType(currentPokemon, "???")) {
-                player.records.baitWater += 1;
-            }
-            var botd = safari.validDailyBoost(player);
-            this.costumeEXP(player, "bait");
-            this.missionProgress(player, "bait", currentPokemon, 1, { botd: botd, bait: (golden ? "golden" : "bait") });
-
-
-            if (nextGachaSpawn <= now() + 9 * 1000) {
-                nextGachaSpawn = now() + sys.rand(8, 11) * 1000;
-            }
-            if (player.mushroomDeadline > 0) {
-                player.mushroomDeadline -= 1;
-                if (player.mushroomDeadline === 0) {
-                    safaribot.sendHtmlMessage(src, "<b>Your {0} effect expired!</b>".format(finishName("mushroom")), safchan);
+                safari.throwBall(src, commandData, true);
+                preparationFirst = sys.name(src).toLowerCase();
+                if (!golden && !deluxe) {
+                    lastBaitersDecay = lastBaitersDecayTime;
                 }
+                if (hasType(currentPokemon, "Water") && hasType(currentPokemon, "???")) {
+                    player.records.baitWater += 1;
+                }
+                var botd = safari.validDailyBoost(player);
+                this.costumeEXP(player, "bait");
+                this.missionProgress(player, "bait", currentPokemon, 1, { botd: botd, bait: (golden ? "golden" : "bait") });
+
+
+                if (nextGachaSpawn <= now() + 9 * 1000) {
+                    nextGachaSpawn = now() + sys.rand(8, 11) * 1000;
+                }
+                if (player.mushroomDeadline > 0) {
+                    player.mushroomDeadline -= 1;
+                    if (player.mushroomDeadline === 0) {
+                        safaribot.sendHtmlMessage(src, "<b>Your {0} effect expired!</b>".format(finishName("mushroom")), safchan);
+                    }
+                }
+            } else {
+                //player.cooldowns.bait = now() + (itemData[item].failCD + sys.rand(0,4)) * (1000 + player.costume == "backpacker" ? 500 : 0);
+                if (rollCap === 0 || player.balls[item] === 0)
+                    sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left {0} out... but nothing showed up.".format(plural(used, baitName), used > 1 ? es(baitName) : baitName));
+                player.records.baitNothing += 1;
             }
-        } else {
-            player.cooldowns.bait = now() + (itemData[item].failCD + sys.rand(0,4)) * (1000 + player.costume == "backpacker" ? 500 : 0);
-            sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out... but nothing showed up.");
-            player.records.baitNothing += 1;
         }
-        safaribot.sendMessage(src, "You have " + plural(player.balls[item], baitName) + " remaining." + (player.mushroomDeadline > 0 ? " ({0} remaining)".format(plural(player.mushroomDeadline, finishName("mushroom") + " spawn")) : ""), safchan);
+        if (deluxe) {
+            safaribot.sendMessage(src, "You have " + plural(player.balls[item], baitName) + " remaining.", safchan);
+        }
+        else {
+            safaribot.sendMessage(src, "You have " + plural(player.balls[item], baitName) + " remaining." + (player.mushroomDeadline > 0 ? " ({0} remaining)".format(plural(player.mushroomDeadline, finishName("mushroom") + " spawn")) : ""), safchan);
+        }
         this.saveGame(player);
         if (hax) {
             if (currentPokemon) {
@@ -16034,14 +16093,11 @@ function Safari() {
             var pulled;
             if (!info.target) {
                 pulled = 1;
-            } else if (parseInt(info.target, 10) === 1) {
-                pulled = 1;
-            } else if (parseInt(info.target, 10) === 10) {
-                pulled = 10;
-            } else if (parseInt(info.target, 10) === 100) {
-                pulled = 100;
-            } else {
-                safaribot.sendMessage(src, "Type /use gem, /use gem:10, or /use gem:100, to open your " + es(finishName("gem")) + "!", safchan);
+            } else if (!isNaN(info.target)) {
+                pulled = Math.min(100, Math.max(1, parseInt(info.target)));
+            }
+            else {
+                safaribot.sendMessage(src, "Type /use gem or /use gem:[amount] (e.g. /use gem:10), to use your " + es(finishName("gem")) + "!", safchan);
                 return;
             }
 
@@ -16070,14 +16126,10 @@ function Safari() {
             var pulled;
             if (!info.target) {
                 pulled = 1;
-            } else if (parseInt(info.target, 10) === 1) {
-                pulled = 1;
-            } else if (parseInt(info.target, 10) === 10) {
-                pulled = 10;
-            } else if (parseInt(info.target, 10) === 100) {
-                pulled = 100;
+            } else if (!isNaN(info.target)) {
+                pulled = Math.min(100, Math.max(1, parseInt(info.target)));
             } else {
-                safaribot.sendMessage(src, "Type /use pack, /use pack:10, or /use pack:100, to open your " + es(finishName("pack")) + "!", safchan);
+                safaribot.sendMessage(src, "Type /use pack or /use pack:[amount] (e.g. /use pack:10), to open your " + es(finishName("pack")) + "!", safchan);
                 return;
             }
 
@@ -16517,120 +16569,146 @@ function Safari() {
             return;
         }
         if (item === "egg") {
-            if (player.pokemon.length >= getPerkBonus(player, "box")) {
-                safaribot.sendMessage(src, "You can't hatch " + an(finishName("egg")) + " because all your boxes are full! Please buy a new box with /buy.", safchan);
+            var pulled;
+            if (!info.target) {
+                pulled = 1;
+            } else if (!isNaN(info.target)) {
+                pulled = Math.min(100, Math.max(1, parseInt(info.target)));
+            }
+            else {
+                safaribot.sendMessage(src, "Type /use egg or /use egg:[amount] (e.g. /use egg:10), to hatch your " + es(finishName("gem")) + "!", safchan);
                 return;
             }
-            var shinyChanceFinal = shinyChance;
-            var id;
-
-            do {
-                id = sys.rand(1, highestDexNum);
-            } while (isRare(id));
-
-            for (var e = 0; e < player.party.length; e++) {
-                if (e >= player.helds.length) {
+            while (pulled > 0 && player.balls.egg > 0) {
+                if (player.pokemon.length >= getPerkBonus(player, "box")) {
+                    safaribot.sendMessage(src, "You can't hatch " + an(finishName("egg")) + " because all your boxes are full! Please buy a new box with /buy.", safchan);
                     break;
                 }
-                if (player.helds[e] == 10) {
-                    if (hasCommonEggGroup(id, parseInt(player.party[e], 10))) {
-                        shinyChanceFinal *= 0.25;
-                        player.helds[e] = -1;
-                        safaribot.sendMessage(src, poke(player.party[e], true) + "'s Watmel Berry was consumed!", safchan);
+                var shinyChanceFinal = shinyChance;
+                var id;
+
+                do {
+                    id = sys.rand(1, highestDexNum);
+                } while (isRare(id));
+
+                for (var e = 0; e < player.party.length; e++) {
+                    if (e >= player.helds.length) {
                         break;
                     }
+                    if (player.helds[e] == 10) {
+                        if (hasCommonEggGroup(id, parseInt(player.party[e], 10))) {
+                            shinyChanceFinal *= 0.25;
+                            player.helds[e] = -1;
+                            safaribot.sendMessage(src, poke(player.party[e], true) + "'s Watmel Berry was consumed!", safchan);
+                            break;
+                        }
+                    }
                 }
-            }
-            var shiny = sys.rand(0, shinyChanceFinal) < 1;
+                var shiny = sys.rand(0, shinyChanceFinal) < 1;
 
-            if (shiny) {
-                id = id + "";
-            }
-            sys.sendMessage(src, "", safchan);
-            player.pokemon.push(id);
-            
-            var twins = false;
-            if (this.getFortune(player, "eggtwins", 0)) {
-                twins = true;
-                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2}{2} Two {1} hatched from the {0}! Nice twins!".format(finishName("egg"), (shiny ? toColor(poke(id, true), "DarkOrchid") : poke(id, true)), pokeInfo.icon(id, shiny)), safchan);
+                if (shiny) {
+                    id = id + "";
+                }
+                sys.sendMessage(src, "", safchan);
                 player.pokemon.push(id);
-            } else {
-                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(finishName("egg"), (shiny ? toColor(poke(id, true), "DarkOrchid") : poke(id, true)), pokeInfo.icon(id, shiny)), safchan);
-            }
+                
+                var twins = false;
+                if (this.getFortune(player, "eggtwins", 0)) {
+                    twins = true;
+                    safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2}{2} Two {1} hatched from the {0}! Nice twins!".format(finishName("egg"), (shiny ? toColor(poke(id, true), "DarkOrchid") : poke(id, true)), pokeInfo.icon(id, shiny)), safchan);
+                    player.pokemon.push(id);
+                } else {
+                    safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(finishName("egg"), (shiny ? toColor(poke(id, true), "DarkOrchid") : poke(id, true)), pokeInfo.icon(id, shiny)), safchan);
+                }
 
-            player.balls.egg -= 1;
-            this.updateShop(player, "egg");
-            safaribot.sendMessage(src, itemsLeft(player, "egg"), safchan);
-            sys.sendMessage(src, "", safchan);
-            player.records.eggsHatched += 1;
-            this.missionProgress(player, "hatch", id, 1 + (twins ? 1 : 0), {});
-            if (isRare(id)) {
-                sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::hatched from Egg"+(twins ? " (Twins)" : "")+"::" + sys.name(src) + "\n");
-                player.records.rareHatched +=1;
-                sys.sendAll("", safchan);
-                safaribot.sendHtmlAll("<b>Wow!</b> {0} hatched <b>{1}</b> from {2}!".format(sys.name(src), pokeInfo.icon(id, shiny) + " " + poke(id, true) + (twins ? " TWINS" : ""), an(finishName("egg"))), safchan);
-                sys.sendAll("", safchan);
+                player.balls.egg -= 1;
+                pulled -= 1;
+                this.updateShop(player, "egg");
+                sys.sendMessage(src, "", safchan);
+                player.records.eggsHatched += 1;
+                this.missionProgress(player, "hatch", id, 1 + (twins ? 1 : 0), {});
+                if (isRare(id)) {
+                    sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::hatched from Egg"+(twins ? " (Twins)" : "")+"::" + sys.name(src) + "\n");
+                    player.records.rareHatched +=1;
+                    sys.sendAll("", safchan);
+                    safaribot.sendHtmlAll("<b>Wow!</b> {0} hatched <b>{1}</b> from {2}!".format(sys.name(src), pokeInfo.icon(id, shiny) + " " + poke(id, true) + (twins ? " TWINS" : ""), an(finishName("egg"))), safchan);
+                    sys.sendAll("", safchan);
+                }
+                this.saveGame(player);
             }
-            this.saveGame(player);
+            safaribot.sendMessage(src, itemsLeft(player, "egg"), safchan);
             return;
         }
         if (item === "bright") {
-            if (player.pokemon.length >= getPerkBonus(player, "box")) {
-                safaribot.sendMessage(src, "You can't hatch " + an(finishName("bright")) + " because all your boxes are full! Please buy a new box with /buy.", safchan);
+            var pulled;
+            if (!info.target) {
+                pulled = 1;
+            } else if (!isNaN(info.target)) {
+                pulled = Math.min(100, Math.max(1, parseInt(info.target)));
+            }
+            else {
+                safaribot.sendMessage(src, "Type /use bright or /use bright:[amount] (e.g. /use bright:10), to hatch your " + es(finishName("bright")) + "!", safchan);
                 return;
             }
-            var id, shinyChanceFinal = shinyChance;
-            if (sys.rand(0, itemData.bright.legendaryChance) < 1) {
-                do {
-                    id = legendaries.random();
-                } while (getBST(id) > 600 || [892, 898].contains(id));
-            } else {
-                do {
-                    id = sys.rand(1, highestDexNum);
-                } while (isLegendary(id));
-            }
-            for (var e = 0; e < player.party.length; e++) {
-                if (e >= player.helds.length) {
+            while (pulled > 0 && player.balls.bright > 0) {
+                if (player.pokemon.length >= getPerkBonus(player, "box")) {
+                    safaribot.sendMessage(src, "You can't hatch " + an(finishName("bright")) + " because all your boxes are full! Please buy a new box with /buy.", safchan);
                     break;
                 }
-                if (player.helds[e] == 10) {
-                    if (hasCommonEggGroup(id, parseInt(player.party[e], 10))) {
-                        shinyChanceFinal *= 0.25;
-                        player.helds[e] = -1;
-                        safaribot.sendMessage(src, poke(player.party[e], true) + "'s Watmel Berry was consumed!", safchan);
+                var id, shinyChanceFinal = shinyChance;
+                if (sys.rand(0, itemData.bright.legendaryChance) < 1) {
+                    do {
+                        id = legendaries.random();
+                    } while (getBST(id) > 600 || [892, 898].contains(id));
+                } else {
+                    do {
+                        id = sys.rand(1, highestDexNum);
+                    } while (isLegendary(id));
+                }
+                for (var e = 0; e < player.party.length; e++) {
+                    if (e >= player.helds.length) {
                         break;
                     }
+                    if (player.helds[e] == 10) {
+                        if (hasCommonEggGroup(id, parseInt(player.party[e], 10))) {
+                            shinyChanceFinal *= 0.25;
+                            player.helds[e] = -1;
+                            safaribot.sendMessage(src, poke(player.party[e], true) + "'s Watmel Berry was consumed!", safchan);
+                            break;
+                        }
+                    }
                 }
-            }
-            shiny = sys.rand(0, shinyChanceFinal) < itemData.bright.shinyChance;
-            if (legendaries.contains(id)) {
-                shiny = false;
-            }
+                shiny = sys.rand(0, shinyChanceFinal) < itemData.bright.shinyChance;
+                if (legendaries.contains(id)) {
+                    shiny = false;
+                }
 
-            if (shiny) {
-                id = id + "";
+                if (shiny) {
+                    id = id + "";
+                }
+                sys.sendMessage(src, "", safchan);
+                if (isLegendary(id)) {
+                    safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} <b>OH MY GOD! {1} HATCHED FROM THE {3}!!</b>".format(finishName("bright"), an(poke(id, true)).toUpperCase(), pokeInfo.icon(id, shiny), finishName("bright").toUpperCase()), safchan);
+                } else {
+                    safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(finishName("bright"), (shiny ? toColor(poke(id, true), "DarkOrchid") : poke(id, true)), pokeInfo.icon(id, shiny)), safchan);
+                }
+                player.pokemon.push(id);
+                player.balls.bright -= 1;
+                pulled -= 1;
+                this.updateShop(player, "bright");
+                sys.sendMessage(src, "", safchan);
+                player.records.brightEggsHatched += 1;
+                this.missionProgress(player, "hatch", id, 1, {});
+                if (isRare(id)) {
+                    sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::hatched from Bright Egg::" + sys.name(src) + "\n");
+                    player.records.rareHatched +=1;
+                    sys.sendAll("", safchan);
+                    safaribot.sendHtmlAll("<b>Wow!</b> {0} hatched <b>{1}</b> from {2}!".format(sys.name(src), pokeInfo.icon(id, shiny) + " " + poke(id, true), an(finishName("bright"))), safchan);
+                    sys.sendAll("", safchan);
+                }
+                this.saveGame(player);
             }
-            sys.sendMessage(src, "", safchan);
-            if (isLegendary(id)) {
-                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} <b>OH MY GOD! {1} HATCHED FROM THE {3}!!</b>".format(finishName("bright"), an(poke(id, true)).toUpperCase(), pokeInfo.icon(id, shiny), finishName("bright").toUpperCase()), safchan);
-            } else {
-                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(finishName("bright"), (shiny ? toColor(poke(id, true), "DarkOrchid") : poke(id, true)), pokeInfo.icon(id, shiny)), safchan);
-            }
-            player.pokemon.push(id);
-            player.balls.bright -= 1;
-            this.updateShop(player, "bright");
             safaribot.sendMessage(src, itemsLeft(player, "bright"), safchan);
-            sys.sendMessage(src, "", safchan);
-            player.records.brightEggsHatched += 1;
-            this.missionProgress(player, "hatch", id, 1, {});
-            if (isRare(id)) {
-                sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::hatched from Bright Egg::" + sys.name(src) + "\n");
-                player.records.rareHatched +=1;
-                sys.sendAll("", safchan);
-                safaribot.sendHtmlAll("<b>Wow!</b> {0} hatched <b>{1}</b> from {2}!".format(sys.name(src), pokeInfo.icon(id, shiny) + " " + poke(id, true), an(finishName("bright"))), safchan);
-                sys.sendAll("", safchan);
-            }
-            this.saveGame(player);
             return;
         }
         if (item === "water") {
@@ -17362,7 +17440,41 @@ function Safari() {
                         safari.saveGame(player);
                         break;
                     default:
-                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b>! Use {1} to change it. Note: Rare evolutions/devolutions from other players will always be shown.".format(player.options.showEvoMessages? "viewing all evolution/devolution messages" : "only viewing your own evolution/devolution messages", link("/options showevo:" + (player.options.showEvoMessages ? "off" : "on"))), safchan);
+                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b>! Use {1} to change it. Note: Rare evolutions/devolutions from other players will always be shown.".format(player.options.showEvoMessages ? "viewing all evolution/devolution messages" : "only viewing your own evolution/devolution messages", link("/options showevo:" + (player.options.showEvoMessages ? "off" : "on"))), safchan);
+                        break;
+                }
+                break;
+            case "questnotif": case "questnotifs": case "questnotification": case "questnotifications":
+                switch (dataInput) {
+                    case "on":
+                        player.options.questNotifications = true;
+                        safaribot.sendMessage(src, "You will now receive quest notifications!", safchan);
+                        safari.saveGame(player);
+                        break;
+                    case "off":
+                        player.options.questNotifications = false;
+                        safaribot.sendMessage(src, "You will no longer receive quest notifications!", safchan);
+                        safari.saveGame(player);
+                        break;
+                    default:
+                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b>! Use {1} to change it.".format(player.options.questNotifications ? "receiving quest notifications" : "not receiving quest notifications", link("/options questnotifs:" + (player.options.questNotifications ? "off" : "on"))), safchan);
+                        break;
+                }
+                break;
+                case "persistentbait": case "persistbait": case "baitpersist": case "baitpersistent":
+                switch (dataInput) {
+                    case "on":
+                        player.options.persistentBait = true;
+                        safaribot.sendMessage(src, "When baiting, your bait will now be used continuously until you attract a wild Pokémon!", safchan);
+                        safari.saveGame(player);
+                        break;
+                    case "off":
+                        player.options.persistentBait = false;
+                        safaribot.sendMessage(src, "When baiting, you will now only use 1 bait at a time!", safchan);
+                        safari.saveGame(player);
+                        break;
+                    default:
+                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b>! Use {1} to change it.".format(player.options.persistentBait ? "continuously using bait" : "using 1 bait at a time", link("/options persistbait:" + (player.options.persistentBait ? "off" : "on"))), safchan);
                         break;
                 }
                 break;
@@ -17415,6 +17527,8 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Auto-Forfeit Battle: " + link("/options autoforfeit:", player.options.autoForfeitThrow ? "Automatically Forfeit When Throwing on Rare Pokémon" : "Do Not Forfeit When Throwing on Rare Pokémon"), safchan);
                 safaribot.sendHtmlMessage(src, "Sell Pokémon formes to NPC: " + link("/options cansellformes:", player.options.canSellFormes ? "Allow Pokémon Forme Sales to the NPC" : "Do Not Allow Pokémon Forme Sales to the NPC"), safchan);
                 safaribot.sendHtmlMessage(src, "Evolution/Devolution Messages: " + link("/options showevo:", player.options.showEvoMessages ? "Show Everyone's Evolutions/Devolutions" : "Only Show My Own Evolutions/Devolutions"), safchan);
+                safaribot.sendHtmlMessage(src, "Quest Notifications: " + link("/options questnotifs:", player.options.questNotifications ? "Receiving Quest Notifications" : "Not Receiving Quest Notifications"), safchan);
+                safaribot.sendHtmlMessage(src, "Persistent Bait: " + link("/options persistbait:", player.options.persistentBait ? "Continuously Bait until Successful" : "Only Use 1 Bait at a Time"), safchan);
                 var dexOptions = ["stats", "effectiveness", "trivia"];
                 safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
                     return player.options.dexOptional.contains(e) ? link("/options hidedex:" + e, cap(e)) + " <b>[Enabled]</b>" : link("/options showdex:" + e, cap(e)) + " <b>[Disabled]</b>";
@@ -33038,6 +33152,7 @@ function Safari() {
         player.records.wonderTrades += 1;
 
         quest.cooldown = now() + Math.round(hours(cooldown) * (1 - safari.getFortune(player, "questcd", 0, "wonder")));
+        player.notificationData.wonderWaiting = true;
         
         var twins = false;
         if (this.getFortune(player, "wondertwins", 0)) {
@@ -34507,6 +34622,7 @@ function Safari() {
                     }
                     strengthtotal = Math.floor(strengthtotal);
                     sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues totaling " + strengthtotal + " strength in " + timeString(timeTaken/1000, true) + " after " + (safari.detectiveData[uid+""].wrongGuesses) + " wrong guess(es)|||Received " + readable(grandprize) + "\n");
+                    player.notificationData.detectiveWaiting = true;
                     safari.pendingNotifications(player.id);
                     safari.saveGame(player);
                     permObj.add("detectiveData", JSON.stringify(safari.detectiveData));
@@ -35351,6 +35467,7 @@ function Safari() {
                     player.quests.alchemist.cooldown,
                     now() + Math.round(hours(rec.cooldown) * (1 - safari.getFortune(player, "questcd", 0, "alchemist")))
                 );
+                player.notificationData.alchemistWaiting = true;
             }
             if (rec.records) {
                 for (e in rec.records) {
@@ -37122,6 +37239,7 @@ function Safari() {
         var rewardName = translateStuff(rew);
         rew = giveStuff(player, toStuffObj(rew));
         player.quests.journal.cooldown = n + Math.round(hours(0.5) * (1 - safari.getFortune(player, "questcd", 0, "journal")));
+        player.notificationData.journalWaiting = true;
         player.records.journalSubmitted += 1;
         var oldPoints = player.records.journalPoints;
         player.records.journalPoints += score;
@@ -40017,6 +40135,7 @@ function Safari() {
             player = getAvatarOff(name);
             if (name === this.leader) {
                 player.quests.pyramid.cooldown = now() + Math.round(((this.usingVoucher ? 15 : 45)*60*1000) * (1 - safari.getFortune(player, "questcd", 0, "pyramid")));
+                player.notificationData.pyramidWaiting = true;
                 if (this.points > player.records.pyramidLeaderScore) {
                     player.records.pyramidLeaderScore = this.points;
                 }
@@ -54527,7 +54646,7 @@ function Safari() {
                 return true;
             }
             if (command === "gbait" || command === "golden") {
-                safari.throwBait(src, commandData, true);
+                safari.throwBait(src, commandData, true, false, false, false);
                 return true;
             }
             if (["showdbait", "showdeluxe", "showdeluxebait", "viewdeluxe", "viewdeluxebait", "viewdbait"].contains(command)) {
@@ -59483,7 +59602,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Renewed photo requests for Journal quest!", safchan);
                 return true;
             }
-            if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "steve" || sys.ip(src) == sys.dbIp("fuzzysqurl") || sys.ip(src) == sys.dbIp("professor oak") || sys.ip(src) == sys.dbIp("strudels") || sys.ip(src) == sys.dbIp("blinky")) {
+            if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "steve" || sys.ip(src) == sys.dbIp("fuzzysqurl") || sys.ip(src) == sys.dbIp("professor oak") || sys.ip(src) == sys.dbIp("strudels") || sys.ip(src) == sys.dbIp("ripper roo") || sys.ip(src) == sys.dbIp("blinky")) {
                 if (command === "safarieval") {
                     if (commandData === undefined) {
                         safaribot.sendMessage(src, "Define code to execute. Proceed with caution as you can break stuff.", safchan);
@@ -59987,6 +60106,9 @@ function Safari() {
                                     }
                                     if (canHaveAbility(lead, abilitynum("Gale Wings"))) {
                                         throwChances[i] += size * 3;
+                                    }
+                                    if (p.costume === "backpacker") {
+                                        throwChances *= 0.75;
                                     }
                                 }
                                 else {
