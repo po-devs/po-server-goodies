@@ -39688,10 +39688,10 @@ function Safari() {
             safari.saveGame(player);
         }
         for (var v in this.viewers) {
-            this.msg(v, "<b>Bait Data:</b>");
-            this.msg(v, "- Commons: " + out.commons.list.map(function(x) { return poke(x); }).join(", "));
-            this.msg(v, "- Uncommons: " + out.uncommons.list.map(function(x) { return poke(x); }).join(", "));
-            this.msg(v, "- Rares: " + out.rares.list.map(function(x) { return poke(x); }).join(", "));
+            this.msg(this.viewers[v], "<b>Bait Data:</b>");
+            this.msg(this.viewers[v], "- Commons: " + out.commons.list.map(function(x) { return poke(x); }).join(", "));
+            this.msg(this.viewers[v], "- Uncommons: " + out.uncommons.list.map(function(x) { return poke(x); }).join(", "));
+            this.msg(this.viewers[v], "- Rares: " + out.rares.list.map(function(x) { return poke(x); }).join(", "));
         }
         this.finished = true;
         this.msgAll("");
