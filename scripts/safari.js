@@ -39687,6 +39687,12 @@ function Safari() {
             safari.pendingNotifications(player.id);
             safari.saveGame(player);
         }
+        for (var v in this.viewers) {
+            this.msg(v, "<b>Bait Data:</b>");
+            this.msg(v, "- Commons: " + out.commons.list.map(function(x) { return poke(x); }).join(", "));
+            this.msg(v, "- Uncommons: " + out.uncommons.list.map(function(x) { return poke(x); }).join(", "));
+            this.msg(v, "- Rares: " + out.rares.list.map(function(x) { return poke(x); }).join(", "));
+        }
         this.finished = true;
         this.msgAll("");
         this.msgAll("Thank you for participating in the Great Galarian Bait-Off! We hope you made some satisfactory baits today and learned something!", true);
