@@ -54477,7 +54477,7 @@ function Safari() {
                 safari.configurePlayerOptions(src, commandData);
                 return true;
             }
-            if (["viewers", "showviewers", "currentviewers"].contains(command)) {
+            if (["viewers", "showviewers", "currentviewers", "watchers", "showwatchers", "currentwatchers"].contains(command)) {
                 safari.showCurrentViewers(src);
                 return true;
             }
