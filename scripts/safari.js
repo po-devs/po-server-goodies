@@ -906,6 +906,7 @@ function Safari() {
             showLeadMessage: false,
             canSellFormes: true,
             showEvoMessages: true,
+            anyNotifications: true,
             questNotifications: true,
             persistentBait: false
         }
@@ -13517,6 +13518,10 @@ function Safari() {
         if (!player.hasOwnProperty("notificationSources")) {
             player.notificationSources = [];
         }
+
+        if (!player.options.anyNotifications) {
+            return;
+        }
         var questSources = ["tower", "arena", "league", "collector", "scientist", "journal", "wonder", "pyramid", "alchemist", "detective"];
         if (!player.options.questNotifications && questSources.contains(fromWhere.toLowerCase())) {
             return;
@@ -13664,14 +13669,14 @@ function Safari() {
             }
             if (data.daycarePlay && chance(0.25)) {
                 data.daycarePlay = false;
-                if (data.daycareHungry) {
+                /*if (data.daycareHungry) {
                     out = "Your " + poke(data.daycarePoke) + " is hungry! Go visit the " + link("/daycare", "Daycare") + " to feed it!";
                     data.daycareHungry = false;
                 } else {
                     out = "Your " + poke(data.daycarePoke) + " wants to play! Go visit the " + link("/daycare", "Daycare") + " to play with it!";
                 }
                 safari.notification(p, out, "Daycare", true);
-                hitAny = true;
+                hitAny = true;*/
             }
             if (chance(0.22) && data.missionWaiting) {
                 hit = 0;
@@ -17314,6 +17319,48 @@ function Safari() {
         this.saveGame(player);
         this.saveGame(targetPlayer);
     };
+    this.showCurrentViewers = function(src) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+
+        var player = getAvatar(src);
+        var printViewers = function(arr) {
+            var ret = arr.map(function(e) {
+                return e.toCorrectCase();
+            }).filter(function(e) {
+                return e.toLowerCase() !== player.id;
+            });
+            return ret.length > 0 ? ret : "<None>";
+        };
+
+        var hit = false;
+        for (var b in currentBattles) { // could use safari.isBattling but we need to loop through currentBattles anyway since we need the Battle/Battle2 object and not just a boolean
+            if (currentBattles[b].isInBattle(player.id)) {
+                safaribot.sendMessage(src, "Currently watching your battle: " + printViewers(currentBattles[b].viewers), safchan);
+                hit = true;
+                break;
+            }
+        }
+        for (var p in currentPyramids) {
+            if (currentPyramids[p].isInPyramid(player.id)) {
+                safaribot.sendMessage(src, "Currently watching your Pyramid run: " + printViewers(currentPyramids[p].viewers), safchan);
+                hit = true;
+                break;
+            }
+        }
+        for (b in currentBakings) {
+            if (currentBakings[b].isInKitchen(player.id)) {
+                safaribot.sendMessage(src, "Currently watching your Kitchen quest: " + printViewers(currentBakings[b].players.concat(currentBakings[b].viewers)), safchan);
+                hit = true;
+                break;
+            }
+        }
+
+        if (!hit) {
+            safaribot.sendMessage(src, "You are not in any battle/Pyramid run/Kitchen quest!", safchan);
+        }
+    };
     this.configurePlayerOptions = function(src, data) {
         if (!validPlayers("self", src)) {
             return;
@@ -17444,7 +17491,29 @@ function Safari() {
                         break;
                 }
                 break;
+            case "notifs": case "notifications": case "anynotifs": case "anynotifications":
+                switch (dataInput) {
+                    case "on":
+                        player.options.anyNotifications = true;
+                        safaribot.sendMessage(src, "You will now receive notifications!", safchan);
+                        safari.saveGame(player);
+                        break;
+                    case "off":
+                        player.options.anyNotifications = false;
+                        player.options.questNotifications = false;
+                        safaribot.sendMessage(src, "You will no longer receive any notifications!", safchan);
+                        safari.saveGame(player);
+                        break;
+                    default:
+                        safaribot.sendHtmlMessage(src, "You are currently <b>{0}</b>! Use {1} to change it.".format(player.options.anyNotifications ? "receiving notifications" : "not receiving notifications", link("/options notifs:" + (player.options.anyNotifications ? "off" : "on"))), safchan);
+                        break;
+                }
+                break;
             case "questnotif": case "questnotifs": case "questnotification": case "questnotifications":
+                if (!player.options.anyNotifications) {
+                    safaribot.sendHtmlMessage(src, "You currently have notifications disabled, please {0} before trying to enable quest notifications.".format(link("/options notifs:on","turn notifications on")), safchan);
+                    break;
+                }
                 switch (dataInput) {
                     case "on":
                         player.options.questNotifications = true;
@@ -17527,6 +17596,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Auto-Forfeit Battle: " + link("/options autoforfeit:", player.options.autoForfeitThrow ? "Automatically Forfeit When Throwing on Rare Pokémon" : "Do Not Forfeit When Throwing on Rare Pokémon"), safchan);
                 safaribot.sendHtmlMessage(src, "Sell Pokémon formes to NPC: " + link("/options cansellformes:", player.options.canSellFormes ? "Allow Pokémon Forme Sales to the NPC" : "Do Not Allow Pokémon Forme Sales to the NPC"), safchan);
                 safaribot.sendHtmlMessage(src, "Evolution/Devolution Messages: " + link("/options showevo:", player.options.showEvoMessages ? "Show Everyone's Evolutions/Devolutions" : "Only Show My Own Evolutions/Devolutions"), safchan);
+                safaribot.sendHtmlMessage(src, "Notifications: " + link("/options notifs:", player.options.anyNotifications ? "Receiving Notifications" : "Not Receiving Notifications"), safchan);
                 safaribot.sendHtmlMessage(src, "Quest Notifications: " + link("/options questnotifs:", player.options.questNotifications ? "Receiving Quest Notifications" : "Not Receiving Quest Notifications"), safchan);
                 safaribot.sendHtmlMessage(src, "Persistent Bait: " + link("/options persistbait:", player.options.persistentBait ? "Continuously Bait until Successful" : "Only Use 1 Bait at a Time"), safchan);
                 var dexOptions = ["stats", "effectiveness", "trivia"];
@@ -54204,6 +54274,7 @@ function Safari() {
             "/rockscare: Allows you to scare a wild Pokémon away. You can only scare Pokémon that haven't been interacted with for " + plural(rockScareThreshold/1000, "second") + ".",
             "/showdeluxe: View your " + finishName("deluxe") + " pools.",
             "/shroomcancel: Cancels the effect of any " + finishName("mushroom") + " that you have active.",
+            "/viewers: Shows which users are currently spectating your battle/Pyramid run/Kitchen quest.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -54404,6 +54475,10 @@ function Safari() {
             }
             if (["options", "settings"].contains(command)) {
                 safari.configurePlayerOptions(src, commandData);
+                return true;
+            }
+            if (["viewers", "showviewers", "currentviewers"].contains(command)) {
+                safari.showCurrentViewers(src);
                 return true;
             }
             if (command === "sell") {
