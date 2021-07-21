@@ -17500,7 +17500,6 @@ function Safari() {
                         break;
                     case "off":
                         player.options.anyNotifications = false;
-                        player.options.questNotifications = false;
                         safaribot.sendMessage(src, "You will no longer receive any notifications!", safchan);
                         safari.saveGame(player);
                         break;
