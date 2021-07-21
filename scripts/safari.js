@@ -17597,7 +17597,9 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Sell Pokémon formes to NPC: " + link("/options cansellformes:", player.options.canSellFormes ? "Allow Pokémon Forme Sales to the NPC" : "Do Not Allow Pokémon Forme Sales to the NPC"), safchan);
                 safaribot.sendHtmlMessage(src, "Evolution/Devolution Messages: " + link("/options showevo:", player.options.showEvoMessages ? "Show Everyone's Evolutions/Devolutions" : "Only Show My Own Evolutions/Devolutions"), safchan);
                 safaribot.sendHtmlMessage(src, "Notifications: " + link("/options notifs:", player.options.anyNotifications ? "Receiving Notifications" : "Not Receiving Notifications"), safchan);
-                safaribot.sendHtmlMessage(src, "Quest Notifications: " + link("/options questnotifs:", player.options.questNotifications ? "Receiving Quest Notifications" : "Not Receiving Quest Notifications"), safchan);
+                if (player.options.anyNotifications) {
+                    safaribot.sendHtmlMessage(src, "Quest Notifications: " + link("/options questnotifs:", player.options.questNotifications ? "Receiving Quest Notifications" : "Not Receiving Quest Notifications"), safchan);
+                }
                 safaribot.sendHtmlMessage(src, "Persistent Bait: " + link("/options persistbait:", player.options.persistentBait ? "Continuously Bait until Successful" : "Only Use 1 Bait at a Time"), safchan);
                 var dexOptions = ["stats", "effectiveness", "trivia"];
                 safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
