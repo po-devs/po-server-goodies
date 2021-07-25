@@ -25578,20 +25578,6 @@ function Safari() {
             this.sendToViewers(toColor("<b>TURN " + this.turn+"</b>", "red"));
             if (this.npcBattle) {
                 if (this.npcItems && (!this.player2Fainted)) {
-                    if (this.npcItems.hyper > 0 && ((this.poke2.maxhp - this.poke2.hp > 200) || this.poke2.hp < (50 + (50 * Math.random())))) {
-                        this.sendToViewers(toColor(this.name2 + " used a Hyper Potion!", "purple"));
-                        this.sendToViewers(poke(this.poke2.id) + " restored 200 HP!");
-                        this.poke2.hp = (Math.min(this.poke2.hp + 200, this.poke2.maxhp));
-                        this.npcItems.hyper--;
-                    } 
-                    if (this.npcItems.full > 0 && (((this.poke2.maxhp / this.poke2.hp > 1.75) && this.poke2.condition !== "none") || this.poke2.maxhp / this.poke2.hp > 2.5)) {
-                        this.sendToViewers(toColor(this.name2 + " used a Full Restore!", "purple"));
-                        this.sendToViewers(poke(this.poke2.id) + " restored its HP and condition!");
-                        this.poke2.hp = this.poke2.maxhp;
-                        this.poke2.condition = "none";
-                        this.poke2.badlyPoisoned = 0;
-                        this.npcItems.full--;
-                    }
                     if (this.npcItems.revive > 0) {
                         var foeMons = this.team2.concat(this.team4), mon;
                         for (var i = 0; i < foeMons.length; i++) {
@@ -25608,6 +25594,20 @@ function Safari() {
                                 break;
                             }
                         }
+                    }
+                    else if (this.npcItems.full > 0 && (((this.poke2.maxhp / this.poke2.hp > 1.75) && this.poke2.condition !== "none") || this.poke2.maxhp / this.poke2.hp > 2.5)) {
+                        this.sendToViewers(toColor(this.name2 + " used a Full Restore!", "purple"));
+                        this.sendToViewers(poke(this.poke2.id) + " restored its HP and condition!");
+                        this.poke2.hp = this.poke2.maxhp;
+                        this.poke2.condition = "none";
+                        this.poke2.badlyPoisoned = 0;
+                        this.npcItems.full--;
+                    }
+                    else if (this.npcItems.hyper > 0 && ((this.poke2.maxhp - this.poke2.hp > 200) || this.poke2.hp < (50 + (50 * Math.random())))) {
+                        this.sendToViewers(toColor(this.name2 + " used a Hyper Potion!", "purple"));
+                        this.sendToViewers(poke(this.poke2.id) + " restored 200 HP!");
+                        this.poke2.hp = (Math.min(this.poke2.hp + 200, this.poke2.maxhp));
+                        this.npcItems.hyper--;
                     }
                 }
                 if (this.npcItems2 && (!this.player4Fainted)) {
