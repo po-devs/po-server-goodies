@@ -13470,7 +13470,7 @@ function Safari() {
         safaribot.sendMessage(src, "You changed your favorite ball to " + finishName(ball) + "! This ball will be thrown automatically if you do not specify a ball when throwing.", safchan);
         this.saveGame(player);
     };
-    this.viewNotifs = function(src) {
+    this.viewNotifs = function(src, onlyUnread) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -13484,6 +13484,9 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, "<b>Your Notifications: </b>", safchan);
         for (var e = 0; e < box.length; e++) {
+            if (onlyUnread && box[e].seen) {
+                continue;
+            }
             safaribot.sendHtmlMessage(src, ((!(box[e].seen)) ? toColor(box[e].msg, "#fc8403") : box[e].msg), safchan);
             box[e].seen = true;
         }
@@ -13559,7 +13562,7 @@ function Safari() {
         }
         var amt = this.countUnseenNotifications(player);
         if (amt > 0) {
-            safaribot.sendHtmlMessage(src, "You have " + (amt > 1 ? amt : "a") + " new notification" + (amt > 1 ? "s" : "") + " from " + readable(player.notificationSources, "and") + "! " + link("/notifications", "«Notifications»") + "<ping/>", safchan);
+            safaribot.sendHtmlMessage(src, "You have " + (amt > 1 ? amt : "a") + " new notification" + (amt > 1 ? "s" : "") + " from " + readable(player.notificationSources, "and") + "! " + link("/notifications unread", "«Notifications»") + "<ping/>", safchan);
         }
     };
     this.pendingNotifications = function(name) {
@@ -55272,8 +55275,8 @@ function Safari() {
                 safari.deleteInbox(src, commandData);
                 return true;
             }
-            if (["notifications", "notification", "notifs", "notif"].contains(command)) {
-                safari.viewNotifs(src);
+            if (["notifications", "notification", "notifs", "notif", "n"].contains(command)) {
+                safari.viewNotifs(src, ["unseen", "unread", "new", "u"].contains(commandData));
                 return true;
             }
             if (command === "safarirules") {
