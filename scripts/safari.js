@@ -8243,7 +8243,9 @@ function Safari() {
                     if (canHaveAbility(leader, abilitynum("Steelworker")) && !hasType(leader, "Steel")) {
                         abilityMessageList[onChannel[e]].push("Your {0}'s Steelworker grants it the Steel-type!".format(poke(leader, true), poke(currentDisplay, true), is_are, poke(currentPokemon, true)));
                     }
-
+                    if (canHaveAbility(leader, abilitynum("Imposter")) && !canHaveAbility(currentDisplay, abilitynum("Imposter"))) {
+                        abilityMessageList[onChannel[e]].push("Your {0}'s Imposter transformed it into {1}!".format(poke(leader, true), an(poke(currentDisplay, true))));
+                    }
                     var ignoreRules = [12, 109]; // Oblivious, Unaware
                     if (contestCount > 0 && currentRules) {
                         for (var i = 0; i < ignoreRules.length; i++) {
@@ -9496,6 +9498,9 @@ function Safari() {
 
         var usingPokemon = target ? target : currentPokemon
 
+        if (canHaveAbility(leader, abilitynum("Imposter")) && !canHaveAbility(currentDisplay, abilitynum("Imposter"))) {
+            leader = currentDisplay;
+        }
         if (player.story.inStory && player.story.state == "Catching") {
             isShiny = false;
             wild = parseInt(player.story.currentPokemon.id, 10);
@@ -9972,6 +9977,9 @@ function Safari() {
             }
         }
 
+        if (canHaveAbility(leader, abilitynum("Imposter")) && !canHaveAbility(currentDisplay, abilitynum("Imposter"))) {
+            leader = currentDisplay;
+        }
         var name = sys.name(src);
         if (!suppress && !bypass) {
             var mess = "[Track] " + name + " is using /" + (command || "catch") + " " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)";
@@ -10627,7 +10635,7 @@ function Safari() {
             if (currentTheme && contestThemes[currentTheme].disguises && contestThemes[currentTheme].notDisguised && (!(contestThemes[currentTheme].notDisguised.contains(currentDisplay)))) {
                 pokeName = "Trick-or-treater";
             }
-            safaribot.sendHtmlMessage(src, "You threw a  " + ballName + " at " + pokeName +"! " + (keep ? "<i>A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it!</i> " : "") + itemsLeft(player, ball), safchan);
+            safaribot.sendHtmlMessage(src, "You threw " + an(ballName) + " at " + pokeName +"! " + (keep ? "<i>A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it!</i> " : "") + itemsLeft(player, ball), safchan);
             if (rng < finalChance + 0.1) {
                 safaribot.sendHtmlMessage(src, "<b>Gah! It was so close, too!</b>", safchan);
             } else if (rng < finalChance + 0.2) {
@@ -12062,10 +12070,8 @@ function Safari() {
         
         var partyShown = [].concat(player.party);
         if (currentThemeEffect == "distortion" && !contestForfeited.contains(player.idnum)) {
-            partyShown = [].concat(player.party)
             partyShown.reverse();
         } else if (currentThemeEffect == "past") {
-            partyShown = [].concat(player.party);
             if (player.altTimeline.lead !== 0) {
                 partyShown[0] = player.altTimeline.lead;
             }
@@ -12124,6 +12130,9 @@ function Safari() {
             out += "</td>";
         }
         for (var e in party) {
+            if (e == 0 && currentPokemon && canHaveAbility(partyShown[e], abilitynum("Imposter")) && !canHaveAbility(currentDisplay, abilitynum("Imposter"))) {
+                party[e] = pokeInfo.sprite(currentDisplay);
+            }
             out += "<td align='center' style='vertical-align: middle;'>" + party[e] + "</td>";
         }
         out += "</tr><tr>";
@@ -13483,12 +13492,17 @@ function Safari() {
         
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, "<b>Your Notifications: </b>", safchan);
+        var hitAny = false;
         for (var e = 0; e < box.length; e++) {
             if (onlyUnread && box[e].seen) {
                 continue;
             }
             safaribot.sendHtmlMessage(src, ((!(box[e].seen)) ? toColor(box[e].msg, "#fc8403") : box[e].msg), safchan);
+            hitAny = true;
             box[e].seen = true;
+        }
+        if (!hitAny) {
+            safaribot.sendHtmlMessage(src, "No unread notifications!", safchan);
         }
         player.notificationData.daycareWaiting = true;
         sys.sendMessage(src, "", safchan);
@@ -54277,6 +54291,7 @@ function Safari() {
             "/contestforfeit: Allows you to withdraw from any ongoing contest.",
             "/rockscare: Allows you to scare a wild Pokémon away. You can only scare Pokémon that haven't been interacted with for " + plural(rockScareThreshold/1000, "second") + ".",
             "/showdeluxe: View your " + finishName("deluxe") + " pools.",
+            "/selldeluxe: Sell off all your remaining " + finishName("deluxe") + ".",
             "/shroomcancel: Cancels the effect of any " + finishName("mushroom") + " that you have active.",
             "/viewers: Shows which users are currently spectating your battle/Pyramid run/Kitchen quest.",
             //seasonal change
@@ -54432,7 +54447,7 @@ function Safari() {
                 safari.startGame(src, commandData);
                 return true;
             }
-            if (["contestforfeit", "contestwithdraw"].contains(command)) {
+            if (["contestforfeit", "contestwithdraw", "conff", "contestff"].contains(command)) {
                 safari.forfeitContest(src, commandData);
                 return true;
             }
