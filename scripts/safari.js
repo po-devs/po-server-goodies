@@ -9962,6 +9962,7 @@ function Safari() {
         var player = getAvatar(src);
         var reason = "catch Pokémon";
         var leader = this.getEffectiveLead(player);
+        var leadDisplay = leader;
         if (player.tutorial.inTutorial) {
             if (player.tutorial.privateWildPokemon) {
                 safari.tutorialCatch(src, data);
@@ -10160,13 +10161,13 @@ function Safari() {
                     team = "Unemployed"
                 }
                 var title = player.spiritDuels.rankName;
-                safaribot.sendHtmlAll(team + " " + title + " " + name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their "  + ch + poke(catchingMon, true) + "!", safchan);
+                safaribot.sendHtmlAll(team + " " + title + " " + name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their "  + ch + poke(leadDisplay, true) + "!", safchan);
             } else if ((ball === "mono") || (player.scaleDeadline >= now())) {
                 var stype = ball === "mono" && type2(catchingMon) !== "???" ? "pure " + (!player.options.monoSecondary ? type1(catchingMon) : type2(catchingMon)) + " " : "";
                 var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
-                safaribot.sendHtmlAll(name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their " + ch + stype + scolor + poke(catchingMon, true) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendHtmlAll(name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their " + ch + stype + scolor + poke(leadDisplay, true) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             } else {
-                safaribot.sendHtmlAll(name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their " + ch + poke(catchingMon, true) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendHtmlAll(name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their " + ch + poke(leadDisplay, true) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
             
