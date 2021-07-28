@@ -9629,9 +9629,9 @@ function Safari() {
         };
         if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
             if (ball === "mono") {
-                typeBonus = this.checkEffective([wType1, wType2], (pType2 === "???" || !player.options.monoSecondary ? [pType1] : [pType2]), !inverse);
+                typeBonus = this.checkEffective([wType1, wType2], (pType2 === "???" || !player.options.monoSecondary ? [pType1] : [pType2]), !inverse, select);
             } else {
-                typeBonus = this.checkEffective([wType1, wType2], [pType1, pType2, pType3], !inverse);
+                typeBonus = this.checkEffective([wType1, wType2], [pType1, pType2, pType3], !inverse, select);
             }
         } else {
             if (ball === "mono") {
