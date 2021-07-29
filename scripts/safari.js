@@ -9800,11 +9800,11 @@ function Safari() {
         }
         if (ball === "mirror" || (currentRules && currentRules.similarityMode)) {
             typeBonus = 1;
-            ballBonus = this.checkSimilarity(leader, wild, scaleColor);
+            ballBonus = Math.min(itemData[ball].maxBonus, this.checkSimilarity(leader, wild, scaleColor));
 
             if (ball == "mirror") {
                 legendaryChance = 1;
-                eventChance = Math.max(0.75, legendaryChance);
+                eventChance = Math.max(0.75, eventChance);
 
                 if (this.hasCostumeSkill(player, "mirrorBallBoost")) {
                     costumeBonus *= costumeBoost(player);
@@ -10833,9 +10833,6 @@ function Safari() {
             if (Math.abs(getStatsNamed(poke1)[st] - getStatsNamed(poke2))[st] <= 1) {
                 out *= 1.2;
             }
-        }
-        if (out > 16) {
-            out = 16;
         }
         return out;
     };
@@ -60209,7 +60206,7 @@ function Safari() {
                                         throwChances[i] += size * 3;
                                     }
                                     if (p.costume === "backpacker") {
-                                        throwChances *= 0.75;
+                                        throwChances[i] *= 0.75;
                                     }
                                 }
                                 else {
