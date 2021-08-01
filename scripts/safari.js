@@ -10180,7 +10180,7 @@ function Safari() {
                     team = "Unemployed"
                 }
                 var title = player.spiritDuels.rankName;
-                safaribot.sendHtmlAll(team + " " + title + " " + playerDisplayName + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their "  + playerDisplayMon + "!", safchan);
+                safaribot.sendHtmlAll(team + " " + title + " " + name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their "  + poke(leadDisplay, true) + "!", safchan);
             } else {
                 safaribot.sendHtmlAll(playerDisplayName + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their " + playerDisplayMon + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }    
@@ -10201,7 +10201,7 @@ function Safari() {
             }
             if (currentTheme && contestThemes[currentTheme] && contestThemes[currentTheme].eventFlags && contestThemes[currentTheme].eventFlags.contains(parseInt(currentPokemon, 10))) {
                 player.eventFlags[currentPokemon+""] = now() + (72 * 60 * 60 * 1000); //flag set for 72 hours
-                sendAll("The captured " + pokeName + " was a mirage! " + name + " is one step closer to unlocking the Legendary Pokémon!");
+                sendAll("The captured " + pokeName + " was a mirage! " + playerDisplayName + " is one step closer to unlocking the Legendary Pokémon!");
                 this.missionProgress(player, "catchMirage", 0, 1);
             } else if (currentTheme && contestThemes[currentTheme] && contestThemes[currentTheme].catchRewards && Object.keys(contestThemes[currentTheme].catchRewards).contains(currentPokemon+"")) {
                 var g = giveStuff(player, contestThemes[currentTheme].catchRewards[currentPokemon+""], true);
@@ -10215,7 +10215,7 @@ function Safari() {
                     var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
                     player.pokemon.push(evolved);
                     sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
-                    sendAll("The " + pokeName + " that " + name + " just caught instantly evolved into " + poke(evolved, true) + "!");
+                    sendAll("The " + pokeName + " instantly evolved into " + poke(evolved, true) + "!");
                 } else {
                     player.pokemon.push(currentPokemon);
                 }
@@ -10270,10 +10270,10 @@ function Safari() {
                     sendAll("The {0} took away {1}!".format(pokeName, readable(lost)));
                 }
                 if (discarded.length > 0) {
-                    if (ball === "spy" || safari.hasCostumeSkill(player, "permanentStealthThrow"))
-                        safaribot.sendMessage(src, "Unfortunately, you had to discard {0} as your bag was full!".format(readable(discarded)), safchan);
-                    else
-                        sendAll("Unfortunately, {0} had to discard {1} as their bag was full!".format(name, readable(discarded)));
+                    //if (ball === "spy" || safari.hasCostumeSkill(player, "permanentStealthThrow"))
+                    safaribot.sendMessage(src, "Unfortunately, you had to discard {0} as your bag was full!".format(readable(discarded)), safchan);
+                    //else
+                       // sendAll("Unfortunately, {0} had to discard {1} as their bag was full!".format(name, readable(discarded)));
                 }
             }
             if (safari.validDailyBoost(player)) {
@@ -10292,10 +10292,10 @@ function Safari() {
                     }
                 }
                 if (drop.length > 0 && (gained.length > 0 || discarded.length > 0)) {
-                    if (ball === "spy")
+                    if (ball === "spy" || safari.hasCostumeSkill(player, "permanentStealthThrow"))
                         safaribot.sendMessage(src, "The power of your {0} made {1} stealthily appear out of thin air!".format(poke(leader, true), readable(drop)), safchan);
                     else
-                        sendAll("The power of {0}'s {1} made {2} appear out of thin air!".format(name, poke(leader, true), readable(drop)));
+                        sendAll("The power of {0}'s {1} made {2} appear out of thin air!".format(playerDisplayName, poke(leader, true), readable(drop)));
                 }
                 if (discarded.length > 0) {
                     //if (ball === "spy")
@@ -10402,22 +10402,22 @@ function Safari() {
                 }
                 if (triple) {
                     //TWO CLONES
-                    safaribot.sendAll("But wait! The " + pokeName + " was cloned by the " + ballName + "! " + name + " received another " + pokeName + "!", safchan);
-                    safaribot.sendHtmlAll("<b>Hold on!</b> The " + pokeName + " was actually cloned TWICE by the " + ballName + "! " + html_escape(name) + " received yet another " + pokeName + "!", safchan);
+                    safaribot.sendAll("But wait! The " + pokeName + " was cloned by the " + ballName + "! " + playerDisplayName + " received another " + pokeName + "!", safchan);
+                    safaribot.sendHtmlAll("<b>Hold on!</b> The " + pokeName + " was actually cloned TWICE by the " + ballName + "! " + html_escape(playerDisplayName) + " received yet another " + pokeName + "!", safchan);
                     safari.costumeEXP(player, "clonepoke", 4);
                     clonedAmount = 2;
                 } else if (!costumed && (isLegend || isShiny)) {
                     //NO CLONE
-                    safaribot.sendAll("But wait! The " + pokeName + " was cloned by the " + ballName + ".. or so " + name + " thought! Unfortunately, due to the complex genetic sequence of " + pokeName + ", the cloning process failed!", safchan);
+                    safaribot.sendAll("Unfortunately, due to the complex genetic sequence of " + pokeName + ", the cloning process failed!", safchan);
                 } else {
                     // ONE CLONE
-                    safaribot.sendAll("But wait! The " + pokeName + " was cloned by the " + ballName + "! " + name + " received another " + pokeName + "!", safchan);
+                    safaribot.sendAll("But wait! The " + pokeName + " was cloned by the " + ballName + "! " + playerDisplayName + " received another " + pokeName + "!", safchan);
                     clonedAmount = 1;
                     safari.costumeEXP(player, "clonepoke", 1);
                 }
                 if (ball === "clone" && crystalEffect.effect === "clone") {
                     clonedAmount *= 2;
-                    safaribot.sendAll("What is this?! The " + pokeName + " was further cloned by some mysterious power! In the end, " + name + " received " + plural(clonedAmount+1, pokeName) + "!", safchan);
+                    safaribot.sendAll("What is this?! The " + pokeName + " was further cloned by some mysterious power! " + playerDisplayName + " received a total of " + plural(clonedAmount+1, pokeName) + "!", safchan);
                 }
                 if (clonedAmount > 0) {
                     var boxLimit = getPerkBonus(player, "box"), cloneDiscarded = 0;
@@ -10439,7 +10439,7 @@ function Safari() {
             if (ball == "luxury") {
                 var perkBonus = 1 + getPerkBonus(player, "scarf") + this.getFortune(player, "scarf", 0);
                 var luxuryAmount = Math.floor(wildStats/2 * perkBonus);
-                safaribot.sendAll((player.balls.scarf > 0 ? "The Fashionable " : "") + name + " found $" + addComma(luxuryAmount) + " on the ground after catching " + pokeName + "!" , safchan);
+                safaribot.sendAll((player.balls.scarf > 0 && !safari.hasCostumeSkill(player, "permanentStealthThrow") ? "The Fashionable " : "") + playerDisplayName + " found $" + addComma(luxuryAmount) + " on the ground after catching " + pokeName + "!" , safchan);
                 player.money += luxuryAmount;
                 if (player.money > moneyCap) {
                     player.money = moneyCap;
@@ -10448,7 +10448,7 @@ function Safari() {
                 player.records.catchLuxury += 1;
             }
             if (ball == "uturn" && player.party.length > 1) {
-                safaribot.sendAll(name + "'s " + poke(leader, true) + " switched out after catching the " + pokeName + "!" , safchan);
+                safaribot.sendAll(playerDisplayName + "'s " + playerDisplayMon + " switched out after catching the " + pokeName + "!" , safchan);
                 var oldLead = leader;
                 player.party = player.party.slice(1).concat([leader]);
                 if (currentThemeEffect == "past") {
@@ -10497,7 +10497,7 @@ function Safari() {
                 if (player.balls.silver > getCap("silver")) {
                     player.balls.silver = getCap("silver");
                 }
-                safaribot.sendAll(name + " found " + plural(gained, "silver") + " on the ground after catching " + pokeName + "!" , safchan);
+                safaribot.sendAll(playerDisplayName + " found " + plural(gained, "silver") + " on the ground after catching " + pokeName + "!" , safchan);
             }
 
             this.fullBoxWarning(src);
@@ -11142,8 +11142,12 @@ function Safari() {
         lastWildAction = now();
         this.saveGame(player);
 
+        var playerDisplayName = sys.name(src);
+        if (safari.hasCostumeSkill(player, "permanentStealthThrow")) {
+            playerDisplayName = "Some stealthy ninja";
+        }
         var boosted = safari.hasCostumeSkill(player, "pokeblockBoost");
-        safaribot.sendHtmlAll(toColor(sys.name(src) + " is feeding the " + poke(currentDisplay, true) + " a " + (boosted ? "strong " : "") + "Pokéblock!", "#438ed9"), safchan);
+        safaribot.sendHtmlAll(toColor(playerDisplayName + " is feeding the " + poke(currentDisplay, true) + " a " + (boosted ? "strong " : "") + "Pokéblock!", "#438ed9"), safchan);
         currentThrows = getMaxThrows(currentPokemon, currentPokemonCount, (typeof currentPokemon == "string" ? true : false), throwAttempts, boosted);
     };
 
@@ -11284,7 +11288,11 @@ function Safari() {
             mood: currentPokemonMood,
             score: parseInt(quality, 10)
         };
-        sendAll(sys.name(src) + " is taking a photo of the " + pokeName + "!");
+        var playerDisplayName = sys.name(src);
+        if (safari.hasCostumeSkill(player, "permanentStealthThrow")) {
+            playerDisplayName = "Some stealthy ninja";
+        }
+        sendAll(playerDisplayName + " is taking a photo of the " + pokeName + "!");
         safaribot.sendHtmlMessage(src, toColor("You took a photo of " + this.describePhoto(photo) + "! [", "#DD4411") + link("/album delete:" + (player.photos.length+1), "Delete", true) + toColor("]", "#DD4411"), safchan);
         
         player.records.photosTaken += 1;
@@ -17979,7 +17987,7 @@ function Safari() {
         revealMood: "Instantly reveals a wild Pokémon's current mood",
         scientistPhotoGuarantee: "Any photos you take of the Scientist's current research subject are guaranteed to be at least Great quality",
         ninjaSniper: "Increased catch rate when catching Pokémon baited by other people",
-        permanentStealthThrow: "All your baiting and throwing actions are stealthy",
+        permanentStealthThrow: "All your baiting, throwing, and catching actions are stealthy",
         ninjaDoubleThrow: "Create a copy of yourself to throw 2 Poké Balls at once (does not work with " + readable(["master", "cherish", "spirit"].map(finishName).map(es), "or") + ")"
     };
     this.showCostumeInfo = function(src, commandData) {
