@@ -11092,8 +11092,12 @@ function Safari() {
 
         player.balls.rock -= 1;
         player.records.wildsScared += 1;
-        safari.pokemonFlee("{0} threw {1} at the wild {2}, causing {3} to flee!".format(name, an(finishName("rock")), poke(currentPokemon, true), currentPokemonCount > 1 ? "them" : "it"));
-        safaribot.sendMessage(src, "You have " + plural(player.balls.rock, finishName("rock")) + " remaining.", safchan);
+        var playerDisplayName = sys.name(src);
+        if (safari.hasCostumeSkill(player, "permanentStealthThrow")) {
+            playerDisplayName = "Some stealthy ninja";
+        }
+        safari.pokemonFlee("{0} threw {1} at the wild {2}, causing {3} to flee!".format(playerDisplayName, an(finishName("rock")), poke(currentPokemon, true), currentPokemonCount > 1 ? "them" : "it"));
+        safaribot.sendMessage(src, itemsLeft(player, "rock"), safchan);
         this.saveGame(player);
     };
     this.throwPokeblock = function(src) {
@@ -33990,11 +33994,16 @@ function Safari() {
             if (safari.detectiveData[uid+""].solved || safari.detectiveData[uid+""].date !== getDay(now())) {
                 return;
             }
+            var hit = false;
             for (var i = 0; i < safari.detectiveData[uid+""].clues.length; i++) {
                 if (safari.detectiveData[uid+""].clues[i].unlock == type) {
                     safari.detectiveData[uid+""].clues[i].unlock = "free";
+                    hit = true;
                     safaribot.sendHtmlMessage(src, toColor("You unlocked a clue!", "red") + " You should share your findings with the " + link("/quest detective", "Detective") + "!", safchan);
                 }
+            }
+            if (hit) {
+                permObj.add("detectiveData", JSON.stringify(safari.detectiveData));
             }
         }
         return;
