@@ -821,7 +821,7 @@ function getEventTour(datestring, both) {
         return false;
     }
     for (var x in events) {
-        if (x !== datestring) {
+        if (x != datestring) {
             continue;
         }
         var eventdata = events[x];
