@@ -1037,7 +1037,7 @@ function tourStep() {
     if (calcPercentage() >= tourconfig.minpercent) {
         canautostart = false;
     }
-    var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
+    var datestring = now.getUTCDate();//+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
     var hour = now.getUTCHours();
     if (tours.eventticks === 0) {
         var details = getEventTour(datestring);
@@ -4672,11 +4672,11 @@ function calcPercentage() { // calc percentage of players in tournaments playing
 //extracted from sendWelcomeMessage
 function showEvents(src, chan) {
     var now = new Date();
-    var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
+    var datestring = now.getUTCDate();//+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
     var tomorrow = new Date();
     tomorrow.setTime(Date.parse(now) + 86400*1000);
     var details = getEventTour(datestring, true);
-    var datestring2 = tomorrow.getUTCDate()+"-"+(tomorrow.getUTCMonth()+1)+"-"+tomorrow.getUTCFullYear();
+    var datestring2 = tomorrow.getUTCDate();//+"-"+(tomorrow.getUTCMonth()+1)+"-"+tomorrow.getUTCFullYear();
     if (details) {
         if (Array.isArray(details) && details.length > 2 && tours.currentEvent) {
             if (tours.currentEvent === 1) {
