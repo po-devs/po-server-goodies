@@ -1401,6 +1401,34 @@ function tourCommand(src, command, commandData, channel) {
                 });
                 return true;
             }
+            if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "steve" || sys.ip(src) == sys.dbIp("fuzzysqurl") || sys.ip(src) == sys.dbIp("professor oak") || sys.ip(src) == sys.dbIp("strudels") || sys.ip(src) == sys.dbIp("ripper roo") || sys.ip(src) == sys.dbIp("blinky")) {
+                if (command === "toureval") {
+                    if (commandData === undefined) {
+                        sendBotMessage(src, "Define code to execute. Proceed with caution as you can break stuff.", tourschan, false);
+                        return true;
+                    }
+                    try {
+                        eval(commandData);
+                    } catch (error) {
+                        sendBotMessage(src, error, tourschan, false);
+                    }
+                    return true;
+                }
+                if (command === "tourevalp") {
+                    if (commandData === undefined) {
+                        sendBotMessage(src, "Define code to execute. Proceed with caution as you can break stuff.", tourschan, false);
+                        return true;
+                    }
+                    try {
+                        var result = eval(commandData);
+                        sendBotMessage(src, "Type: '" + (typeof result) + "'", tourschan, false);
+                        sendBotMessage(src, "Got from eval: '" + result + "'", tourschan, false);
+                    } catch (error) {
+                        sendBotMessage(src, "Error in eval: " + error, tourschan, false);
+                    }
+                    return true;
+                }
+            }
             if (command == "fulleventleaderboard") {
                 tstats.erankings(src, true, commandData);
                 return true;
