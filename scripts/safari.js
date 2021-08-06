@@ -741,6 +741,9 @@ function Safari() {
             journal: {
                 cooldown: 0,
                 trackedRequests: {}
+            },
+            arborist: {
+                cooldown: 0
             }
         },
         altTimeline: {
@@ -860,7 +863,8 @@ function Safari() {
             pyramidWaiting: false,
             alchemistWaiting: false,
             journalWaiting: false,
-            detectiveWaiting: false
+            detectiveWaiting: false,
+            arboristWaiting: false
         },
         inbox: [],
         unreadInbox: [],
@@ -13698,6 +13702,14 @@ function Safari() {
                     data.alchemistWaiting = false;
                     out = "The " + link("/quest alchemist", "Alchemist") + " is ready to make more items!";
                     safari.notification(p, out, "Alchemist", true);
+                    hitAny = true;
+                }
+            }
+            if (data.arboristWaiting) {
+                if (p.quests.arborist.cooldown < currentTime) {
+                    data.arboristWaiting = false;
+                    out = "The " + link("/quest arborist", "Arborist") + " is ready to trade more Apricorns!";
+                    safari.notification(p, out, "Arborist", true);
                     hitAny = true;
                 }
             }
@@ -35242,153 +35254,215 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Ah, I'm mighty tired. Maybe come back anot'er time, will ya?", safchan);
             return;
         }
+
         var recipes = apricornToBallData;
         var validItems = Object.keys(recipes);
         if (!data[0] || data[0].toLowerCase() === "help") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: I can use these here apricorns to make some neat stuff, alright? (Use /quest arborist:[recipe name] to view the required materials)", safchan);
-            safaribot.sendHtmlMessage(src, "Available Recipes: " + validItems.map(function(x) {
+            safaribot.sendHtmlMessage(src, "Available Recipes:" + validItems.map(function(x) {
                 return " " + link("/quest arborist:" + x, cap(x, true) + " Ball");
             }), safchan);
+            safaribot.sendHtmlMessage(src, "I've always got lotsa Apricorns myself, so lemme know if you're interested in {0}!".format(link("/quest arborist:trade", "trading")), safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
 
         var item = data[0].toLowerCase();
-        if (!validItems.contains(item)) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Aww, shucks. That ain't sumthin' I know how to make, you see? (To view available recipes use " + link("/quest arborist:help") + ")", safchan);
+
+        if (item === "trade") {
+            var validTrades = ["blkapricorn", "whtapricorn", "redapricorn", "bluapricorn", "ylwapricorn", "grnapricorn", "pnkapricorn"];
+            var tradeCooldown = 2; // hours
+            var exchangeCap = 100,
+                tradeRatio = 3;
+            if (player.quests.arborist.cooldown >= now()) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Ooh hold up a moment, I'm still sortin' out all those Apricorns ya gave me! Come back in {0} if ya wanna trade somemore okay? But I can still make some Poké Balls for ya if ya want!".format(timeLeftString(player.quests.arborist.cooldown)), safchan);
+                return;
+            }
+
+            var offer = itemAlias(data[1] || "");
+            if (!data[1] || !validTrades.contains(offer)) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Up for trading then? If you've got too many Apricorns to spare, let's swap! (Cooldown: {0})".format(plural(tradeCooldown, "hour")), safchan);
+                safaribot.sendHtmlMessage(src, "Available Trades:" + validTrades.map(function(e) {
+                    return " " + link("/quest arborist:trade:" + e, finishName(e));
+                }), safchan);
+                safaribot.sendHtmlMessage(src, "I'll exchange every {0} of the Apricorn yer offerin' for a random 1 of mine! Don't worry, I'm not gonna end up givin' back the exact same type ya gave me though. {1}".format(tradeRatio, toColor("But if ya don't have enough space for the Apricorns I give in return, no take-backsies!", "red")), safchan);
+                return;
+            }
+
+            var amt = data[2];
+            if (!amt || isNaN(amt)) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Wanna trade me your {0}? Type {1} to do so! Remember to offer in multiples of {2}! Also, I can only accept a max of {3} Apricorns at once. (You have {4})".format(es(finishName(offer)), link("/quest arborist:trade:" + offer + ":", "/quest arborist:trade:" + offer + ":[Amount to Trade]", true), tradeRatio, tradeRatio * exchangeCap, plural(player.balls[offer], finishName(offer))), safchan);
+                return;
+            }
+
+            amt = parseInt(amt);
+            if (amt <= 0 || amt % tradeRatio !== 0) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: That's not a valid amount! I need a multiple of {0}! Try again would ya?".format(tradeRatio), safchan);
+                return;
+            }
+            if (amt > (tradeRatio * exchangeCap)) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Oops, that's way too many! I can only accept a max of {0} Apricorns at once. Try again would ya?".format(tradeRatio * exchangeCap), safchan);
+                return;
+            }
+            if (player.balls[offer] < amt) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Hey hey, ya don't have that many {0}!".format(es(finishName(offer))), safchan);
+                return;
+            }
+
+            var newApricorn;
+            var receivedAmt = amt / tradeRatio;
+
+            do {
+                newApricorn = validTrades.random();
+            }
+            while (newApricorn === offer);
+
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Alright, in exchange for your {0}, I'm gonna give ya {1}! Here ya go!".format(plural(amt, finishName(offer)), plural(receivedAmt, finishName(newApricorn))), safchan);
+            safaribot.sendMessage(src, "You " + giveStuff(player, toStuffObj(receivedAmt + "@" + newApricorn)) + ".", safchan);
+            safari.toRecentQuests(player, "arborist");
+            player.quests.arborist.cooldown = now() + hours(tradeCooldown);
+            player.notificationData.arboristWaiting = true;
+            sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arborist|||Gave " + plural(amt, finishName(offer)) + "|||Received " + plural(receivedAmt, finishName(newApricorn)) + "\n");
+            safari.pendingNotifications(player.id);
+            this.saveGame(player);
             return;
         }
-        var rec = recipes[item];
-
-        var recipeString = translateStuff(rec.ingredients, true);
-        var colors = ["#FF6347", "#0000FF", "#006400", "#9932CC"];
-        var cc = 0;
-        var possibleRewards = Array.isArray(rec.reward) ? rec.reward.map(function(x){ return translateStuff(x, true); }) : [translateStuff(rec.reward, true)];
-        var coloredRewards = possibleRewards.map(function(x) { cc++; return toColor(x, colors[cc % colors.length]);});
-        possibleRewards = readable(possibleRewards, "or");
-
-        var canMake = true, progress = [], asset, val, req, pokeIng = 0;
-        for (var e in rec.ingredients) {
-            asset = translateAsset(e);
-            if (asset.type == "item") {
-                val = player.balls[asset.id];
-                req = plural(rec.ingredients[e], asset.input);
-            } else if (asset.type == "money") {
-                val = player.money;
-                req = addComma(rec.ingredients[e]);
-            } else {
-                val = countRepeated(player.pokemon, asset.id);
-                pokeIng += val;
-                req = rec.ingredients[e] + " " +  asset.name;
+        else {
+            if (!validItems.contains(item)) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Aww, shucks. That ain't sumthin' I know how to make, ya see? (To view available recipes use " + link("/quest arborist:help") + ")", safchan);
+                return;
             }
-            if (val < rec.ingredients[e]) {
-                canMake = false;
-            }
-            if (asset.type === "money") {
-                progress.push("$" + addComma(val) + "/$" + addComma(req));
-            } else {
-                progress.push(val + "/" + req);
-            }
-        }
-        if (!data[1] || data[1].toLowerCase() !== "finish") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: See them apricorns? Bring 'em here so I can make y'all the sweetest catching materials around, 'kay? (If you have the required materials you can use " + link("/quest arborist:" + item + ":finish") + " to create an item)", safchan);
-            safaribot.sendHtmlMessage(src, "<b>" + cap(item, true) + "</b> Recipe: " + toColor(recipeString, "red") + " --> " + readable(coloredRewards, "or"), safchan);
-            safaribot.sendHtmlMessage(src, "Progress: " + progress.join(", "), safchan);
-            sys.sendMessage(src, "", safchan);
-            return;
-        }
+            var rec = recipes[item];
+            var recipeString = translateStuff(rec.ingredients, true);
+            var colors = ["#FF6347", "#0000FF", "#006400", "#9932CC"];
+            var cc = 0;
+            var possibleRewards = Array.isArray(rec.reward) ? rec.reward.map(function(x){ return translateStuff(x, true); }) : [translateStuff(rec.reward, true)];
+            var coloredRewards = possibleRewards.map(function(x) { cc++; return toColor(x, colors[cc % colors.length]);});
+            possibleRewards = readable(possibleRewards, "or");
 
-        if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
-            return;
-        }
-
-        if (!canMake) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Wait-a-secon'. That ain't enough materials! (Progress: " + progress.join(", ") + ")", safchan);
-            return;
-        }
-
-        for (e in rec.ingredients) {
-            asset = translateAsset(e);
-            if (asset.type == "poke") {
-                if (!canLosePokemon(src, asset.input, "give", false, rec.ingredients[e])) {
-                    return;
+            var canMake = true, progress = [], asset, val, req, pokeIng = 0;
+            for (var e in rec.ingredients) {
+                asset = translateAsset(e);
+                if (asset.type == "item") {
+                    val = player.balls[asset.id];
+                    req = plural(rec.ingredients[e], asset.input);
+                } else if (asset.type == "money") {
+                    val = player.money;
+                    req = addComma(rec.ingredients[e]);
+                } else {
+                    val = countRepeated(player.pokemon, asset.id);
+                    pokeIng += val;
+                    req = rec.ingredients[e] + " " +  asset.name;
+                }
+                if (val < rec.ingredients[e]) {
+                    canMake = false;
+                }
+                if (asset.type === "money") {
+                    progress.push("$" + addComma(val) + "/$" + addComma(req));
+                } else {
+                    progress.push(val + "/" + req);
                 }
             }
-        }
-        var hasRaffle = false;
-        var cantHold = [], pokeRew = 0, ing, reward = Array.isArray(rec.reward) ? rec.reward.random() : rec.reward;
-        
-        for (e in reward) {
-            asset = translateAsset(e);
-            ing = rec.ingredients[e] || 0;
-            if (asset.type == "item") {
-                if (player.balls[asset.id] - ing + reward[e] > getCap(asset.id)) {
-                    cantHold.push(asset.name);
-                }
-                if (asset.id === "entry") {
-                    hasRaffle = true;
-                }
-            } else if (asset.type == "money") {
-                if (player.money - ing + reward[e] > moneyCap) {
-                    cantHold.push("money");
-                }
-            } else {
-                pokeRew += reward[e];
+            if (!data[1] || data[1].toLowerCase() !== "finish") {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: See them apricorns? Bring 'em here so I can make y'all the sweetest catching materials around, 'kay? (If you have the required materials you can use " + link("/quest arborist:" + item + ":finish") + " to create an item)", safchan);
+                safaribot.sendHtmlMessage(src, "<b>" + cap(item, true) + "</b> Recipe: " + toColor(recipeString, "red") + " --> " + readable(coloredRewards, "or"), safchan);
+                safaribot.sendHtmlMessage(src, "Progress: " + progress.join(", "), safchan);
+                sys.sendMessage(src, "", safchan);
+                return;
             }
-        }
-        if (pokeRew > 0 && player.pokemon.length - pokeIng + pokeRew > getPerkBonus(player, "box")) {
-            cantHold.push("Pokémon");
-        }
-        if (cantHold.length > 0) {
-            safaribot.sendHtmlMessage(src, trainerSprite + readable(cantHold) + " mus' be your favorite thing" + (cantHold.length > 1 ? "s" : "") + " or sumthin' cuz y'already plum full of " + (cantHold.length > 1 ? "those" : "that") + "!", safchan);
-            return;
-        }
-        if (hasRaffle && !rafflePrizeObj) {
-            safaribot.sendMessage(src, "There is no raffle going on right now so any entry that you obtain now would be invalid!", safchan);
-            return;
-        }
 
-        safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Alright, y'all. Let's help " + player.id.toCorrectCase() + " by making some darn good Pokéballs!!", safchan);
-        var lostPoke = false, lostRare = [];
-        var ingUsed = {};
-        for (var e in rec.ingredients) {
-            ingUsed[e] = -rec.ingredients[e];
-            asset = translateAsset(e);
-            if (asset.type === "poke") {
-                lostPoke = true;
-                if (isRare(asset.id)) {
-                    lostRare.push(poke(asset.id));
+            if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
+                return;
+            }
+
+            if (!canMake) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Wait-a-secon'. That ain't enough materials! (Progress: " + progress.join(", ") + ")", safchan);
+                return;
+            }
+
+            for (e in rec.ingredients) {
+                asset = translateAsset(e);
+                if (asset.type == "poke") {
+                    if (!canLosePokemon(src, asset.input, "give", false, rec.ingredients[e])) {
+                        return;
+                    }
                 }
             }
-        }
-        for (e in reward) {
-            asset = translateAsset(e);
-            if (asset.type === "poke" && reward[e] < 0) {
-                lostPoke = true;
-                if (isRare(asset.id)) {
-                    lostRare.push(poke(asset.id));
+            var hasRaffle = false;
+            var cantHold = [], pokeRew = 0, ing, reward = Array.isArray(rec.reward) ? rec.reward.random() : rec.reward;
+            
+            for (e in reward) {
+                asset = translateAsset(e);
+                ing = rec.ingredients[e] || 0;
+                if (asset.type == "item") {
+                    if (player.balls[asset.id] - ing + reward[e] > getCap(asset.id)) {
+                        cantHold.push(asset.name);
+                    }
+                    if (asset.id === "entry") {
+                        hasRaffle = true;
+                    }
+                } else if (asset.type == "money") {
+                    if (player.money - ing + reward[e] > moneyCap) {
+                        cantHold.push("money");
+                    }
+                } else {
+                    pokeRew += reward[e];
                 }
             }
-        }
-        giveStuff(player, ingUsed, true);
-        var rew = giveStuff(player, toStuffObj(reward), true);
-        safaribot.sendMessage(src, "The arborist works in a flurry, and before you know it, you have " + readable(rew.gained) + " in your hands!", safchan);
-        safaribot.sendMessage(src, "You received " + readable(rew.gained) + ".", safchan);
-        if (rec.records) {
-            for (e in rec.records) {
-                player.records[e] += rec.records[e];
+            if (pokeRew > 0 && player.pokemon.length - pokeIng + pokeRew > getPerkBonus(player, "box")) {
+                cantHold.push("Pokémon");
             }
-        }
-        if (lostPoke) {
-            this.logLostCommand(sys.name(src), "quest arborist:" + data.join(":"), "gave " + translateStuff(rec.ingredients));
-            if (lostRare.length > 0) {
-                sys.appendToFile(mythLog, now() + "|||" + readable(lostRare) + "::have been given to the Arborist by " + sys.name(src) + "::\n");
+            if (cantHold.length > 0) {
+                safaribot.sendHtmlMessage(src, trainerSprite + readable(cantHold) + " mus' be your favorite thing" + (cantHold.length > 1 ? "s" : "") + " or sumthin' cuz y'already plum full of " + (cantHold.length > 1 ? "those" : "that") + "!", safchan);
+                return;
             }
+            if (hasRaffle && !rafflePrizeObj) {
+                safaribot.sendMessage(src, "There is no raffle going on right now so any entry that you obtain now would be invalid!", safchan);
+                return;
+            }
+
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Alright, y'all. Let's help " + player.id.toCorrectCase() + " by making some darn good Pokéballs!!", safchan);
+            var lostPoke = false, lostRare = [];
+            var ingUsed = {};
+            for (var e in rec.ingredients) {
+                ingUsed[e] = -rec.ingredients[e];
+                asset = translateAsset(e);
+                if (asset.type === "poke") {
+                    lostPoke = true;
+                    if (isRare(asset.id)) {
+                        lostRare.push(poke(asset.id));
+                    }
+                }
+            }
+            for (e in reward) {
+                asset = translateAsset(e);
+                if (asset.type === "poke" && reward[e] < 0) {
+                    lostPoke = true;
+                    if (isRare(asset.id)) {
+                        lostRare.push(poke(asset.id));
+                    }
+                }
+            }
+            giveStuff(player, ingUsed, true);
+            var rew = giveStuff(player, toStuffObj(reward), true);
+            safaribot.sendMessage(src, "The arborist works in a flurry, and before you know it, you have " + readable(rew.gained) + " in your hands!", safchan);
+            safaribot.sendMessage(src, "You received " + readable(rew.gained) + ".", safchan);
+            if (rec.records) {
+                for (e in rec.records) {
+                    player.records[e] += rec.records[e];
+                }
+            }
+            if (lostPoke) {
+                this.logLostCommand(sys.name(src), "quest arborist:" + data.join(":"), "gave " + translateStuff(rec.ingredients));
+                if (lostRare.length > 0) {
+                    sys.appendToFile(mythLog, now() + "|||" + readable(lostRare) + "::have been given to the Arborist by " + sys.name(src) + "::\n");
+                }
+            }
+            safari.toRecentQuests(player, "arborist");
+            sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arborist|||Gave " + translateStuff(rec.ingredients) + "|||Received " + readable(rew.gained) + "\n");
+            safari.pendingNotifications(player.id);
+            this.saveGame(player);
         }
-        safari.toRecentQuests(player, "arborist");
-        sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arborist|||Gave " + translateStuff(rec.ingredients) + "|||Received " + readable(rew.gained) + "\n");
-        safari.pendingNotifications(player.id);
-        this.saveGame(player);
     };
     this.alchemyQuest = function(src, data) {
         var player = getAvatar(src);
@@ -57821,7 +57895,7 @@ function Safari() {
                 var cmd = commandData.split(":");
                 if (cmd.length < 2) {
                     safaribot.sendMessage(src, "Wrong format! Use /clearcd Player:Type!", safchan);
-                    safaribot.sendMessage(src, "Types can be ball, bait, auction, stick, costume, rock, gacha, itemfinder, baseView, unown, burn, price, collector, scientist, arena, tower, pyramid, wonder, alchemist, league or decor!", safchan);
+                    safaribot.sendMessage(src, "Types can be ball, bait, auction, stick, costume, rock, gacha, itemfinder, baseView, unown, burn, price, collector, scientist, arena, tower, pyramid, wonder, alchemist, league, decor or arborist!", safchan);
                     return true;
                 }
                 var target = cmd[0];
@@ -57843,6 +57917,7 @@ function Safari() {
                     case "decor":
                     case "league":
                     case "journal":
+                    case "arborist":
                         player.quests[type].cooldown = 0;
                     break;
                     case "ball":
