@@ -35275,7 +35275,7 @@ function Safari() {
             var exchangeCap = 100,
                 tradeRatio = 3;
             if (player.quests.arborist.cooldown >= now()) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Ooh hold up a moment, I'm still sortin' out all those Apricorns ya gave me! Come back in {0} if ya wanna trade somemore okay? But I can still make some Poké Balls for ya if ya want!".format(timeLeftString(player.quests.arborist.cooldown)), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Ooh hold up a moment, I'm still sortin' out all those Apricorns ya gave me! Come back in {0} if ya wanna trade somemore okay? But I can still make some Poké Balls if ya want!".format(timeLeftString(player.quests.arborist.cooldown)), safchan);
                 return;
             }
 
@@ -35902,20 +35902,22 @@ function Safari() {
     this.celebrityMatch = function(src, data) {
         var player = getAvatar(src);
         var reason = "start a battle";
+        var trainerSprite = '<img src="' + base64trainers.celebrity + '">';
         if (cantBecause(src, reason, ["tutorial"])) {
             return;
         }
         if (safari.isBattling(sys.name(src))) {
-            safaribot.sendMessage(src, "Announcer: Please finish your current battle first!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Please finish your current battle first!", safchan);
             return;
         }
         var opt = data.length > 0 ? data[0].toLowerCase() : "*";
         var opt2 = data.length > 1 ? data[1].toLowerCase() : "*";
         var opt3 = data.length > 2 ? data[2].toLowerCase() : "*";
+        var opt4 = data.length > 3 ? data[3].toLowerCase() : "*";
         
         if (opt !== "start") {
             sys.sendMessage(src, "", safchan);
-            safaribot.sendHtmlMessage(src, "Announcer: Welcome to Celebrity Battles! I am your host, the Announcer!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Welcome to Celebrity Battles! I am your host, the Announcer!", safchan);
             safaribot.sendMessage(src, "Announcer: Fight famous trainers from across the " + cap(player.celebrityRegion) + " region! Win prizes on your first attempt daily!", safchan);
             safaribot.sendMessage(src, "Announcer: You must fight all  of the trainers in succession. No backing out once you're in!", safchan);
             safaribot.sendHtmlMessage(src, "Type " + link("/quest celebrity:start") + " to begin your challenge!", safchan);
@@ -35937,39 +35939,39 @@ function Safari() {
                 if (player.costume == "preschooler") {
                     difficulty = -1;
                 } else {
-                    safaribot.sendHtmlMessage(src, "Please choose a difficulty level between " + link("/quest celebrity:start:easy", "Easy") + ", " + link("/quest celebrity:start:normal", "Normal") + ", " + link("/quest celebrity:start:hard", "Hard") + ", " + link("/quest celebrity:start:expert", "Expert") + ", " + link("/quest celebrity:start:super expert", "Super Expert") + " and " + link("/quest celebrity:start:abyssal", "Abyssal") + "!", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Please choose a difficulty level between " + link("/quest celebrity:start:easy", "Easy") + ", " + link("/quest celebrity:start:normal", "Normal") + ", " + link("/quest celebrity:start:hard", "Hard") + ", " + link("/quest celebrity:start:expert", "Expert") + ", " + link("/quest celebrity:start:super expert", "Super Expert") + " and " + link("/quest celebrity:start:abyssal", "Abyssal") + "!", safchan);
                     return;
                 }
         }
         
         if (stopQuests.celebrity) {
-            safaribot.sendHtmlMessage(src, "Announcer: Sorry, all the celebrities are out playing golf right now. Try coming back later!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Sorry, all the celebrities are out playing golf right now. Try coming back later!", safchan);
             return;
         }
         if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid", "baking"])) {
             return;
         }
         if (player.party.length < 6) {
-            safaribot.sendMessage(src, "Announcer: You need at least 6 Pokémon in your party to challenge Celebrities!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: You need at least 6 Pokémon in your party to challenge Celebrities!", safchan);
             return;
         }
 
-        if (opt3 !== "bypass" || !SESSION.channels(safchan).isChannelOwner(src)) {
+        if (opt4 !== "bypass" || !SESSION.channels(safchan).isChannelOwner(src)) {
             if (difficulty < 0) {
                 for (var i in player.party) {
                     if (getBST(player.party[i]) > 480) {
-                        safaribot.sendMessage(src, "Announcer: For Easy level difficulty, you cannot use Pokémon with a Base Stat Total above 480!", safchan);
+                        safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: For Easy level difficulty, you cannot use Pokémon with a Base Stat Total above 480!", safchan);
                         return;
                     }
                 }
-                if (player.costume !== "preschooler") {
+                /*if (player.costume !== "preschooler") {
                     safaribot.sendMessage(src, "Announcer: Sorry! Only Preschoolers can do Easy level difficulty!", safchan);
-                }
+                }*/
             }
             if (difficulty < 2) {
                 for (var i in player.party) {
                     if (getBST(player.party[i]) > 640) {
-                        safaribot.sendMessage(src, "Announcer: For Normal and Hard level difficulties, you cannot use Pokémon with a Base Stat Total above 640!", safchan);
+                        safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: For Normal and Hard level difficulties, you cannot use Pokémon with a Base Stat Total above 640!", safchan);
                         return;
                     }
                 }
@@ -36384,19 +36386,57 @@ function Safari() {
             }
         };
 
+        var canReward = player.firstCelebrityRun || player.ticketCelebrityRun;
         var celebs = safari.getCelebrities(JSON.parse(JSON.stringify(safari.celebrityData[player.celebrityRegion])), difficulty);
-        var j = 0;
-        while (celebs.gym[0].party2) {
-            celebs.gym.shuffle();
-            j++;
-            if (j > 1000) {
-                break;
+
+        var npc;
+
+        if (!canReward) {
+            if (opt3 === "*") {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: For non-reward runs, you may choose which celebrity to face first!", safchan);
+                safaribot.sendHtmlMessage(src, "Announcer: " + readable(celebs.gym.filter(function(e) {
+                    return !e.party2;
+                }).map(function(e) {
+                    return link("/quest celebrity:start:" + opt2 + ":" + e.name, e.name, true);
+                })), safchan);
+                return;
+            }
+            else {
+                var celebIndex;
+                for (var i = 0; i < celebs.gym.length; i++) {
+                    if (celebs.gym[i].name.toLowerCase() === opt3) {
+                        celebIndex = i;
+                        break;
+                    }
+                }
+
+                if (celebIndex === undefined) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: We don't have a celebrity Gym Leader by that name in the " + cap(player.celebrityRegion) + " region!", safchan);
+                    return;
+                }
+                if (celebs.gym[celebIndex].party2) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Sorry, you can't pick a Tag Battle for your first battle! Try picking someone else.", safchan);
+                    return;
+                }
+
+                var selected = celebs.gym.splice(celebIndex, 1)[0];
+                celebs.gym.shuffle();
+                celebs.gym.unshift(selected);
             }
         }
+        else {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: The first celebrity will be chosen at random for reward runs!", safchan);
+            var j = 0;
+            do {
+                celebs.gym.shuffle();
+                j++;
+            } while (celebs.gym[0].party2 && j <= 1000);
+        }
 
-        var npc = celebs.gym[0];
+        npc = celebs.gym[0];
         npc.postBattle = postBattle;
 
+        //sys.sendAll(celebs.gym.map(function(e) { return e.name }).join(", "));
         var heal, desc;
         switch (difficulty) {
             case -1: heal = 0.25; desc = "Easy"; break;
@@ -36413,23 +36453,23 @@ function Safari() {
             index: 0,
             difficulty: difficulty,
             celebs: celebs,
-            canReward: player.firstCelebrityRun || player.ticketCelebrityRun,
+            canReward: canReward,
             defeated: 0,
             delayAnnounce: true
         };
 
+        npc.desc = desc + " Celebrity NPC";
+        safaribot.sendHtmlMessage(src, "Announcer: Looking for fame, are you? Please enjoy your first battle against " + npc.name + "!", safchan);
         if (npc.postArgs.canReward) {
             if (player.firstCelebrityRun) {
                 player.firstCelebrityRun = false;
-                safaribot.sendMessage(src, "You activated your free Celebrity reward run!", safchan);
+                safaribot.sendHtmlMessage(src, "You have activated your free Celebrity reward run!", safchan);
             }
             else {
                 player.ticketCelebrityRun = false;
-                safaribot.sendMessage(src, "You activated your " + finishName("celebrityTicket") + " reward run!", safchan);
+                safaribot.sendHtmlMessage(src, "You have activated your " + finishName("celebrityTicket") + " reward run!", safchan);
             }
         }
-        npc.desc = desc + " Celebrity NPC";
-        safaribot.sendHtmlMessage(src, "Announcer: Looking for fame, are you? Please enjoy your first battle against " + npc.name + "!!", safchan);
         var battle = new Battle2(src, npc, {
             cantWatch: false
         }, null, null, npc.select);
@@ -36468,7 +36508,7 @@ function Safari() {
             "gym": [],
             "elite": []
         };
-        data = data.shuffle();
+        //data = data.shuffle();
         for (var i = 0; i < data.length; i++) {
             currentTrainer = {};
             trainer = data[i];
