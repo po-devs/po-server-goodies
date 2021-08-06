@@ -1322,7 +1322,7 @@ function Safari() {
         },
         ninja: {
             icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 0.1, thresh: 499,
-            effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.",
+            effect: "A master in ninjutsu. Able to lurk amongst the shadows and create diversions to sneak past a small number of Trainers in the Battle Tower.",
             effect2: "Is less adept at catching with a legendary Pokémon as a lead.",
             noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon with &lt;500 BST (without using Battle Girl costume)",
             expTypes: ["fighttower", "wincontest", "catch", "winmafia", "catchlowbst"],
@@ -7318,6 +7318,7 @@ function Safari() {
         }
     }
     function rewardCapCheck(player, reward, amount, withName, suppress) {
+        reward = itemAlias(reward);
         var cap = getCap(reward);
         var master = reward === "master";
         if (player.balls[reward] + amount > cap) {
@@ -17970,7 +17971,7 @@ function Safari() {
         extendedMushroom: "Mushroom effects last longer",
         berryCatcher:"Wild Pokémon hold Berries more often",
         fasterArena:"Lower cooldown after battling in the Arena",
-        bakingDiscount:"Lower admission fee when participating in the Baking quest",
+        bakingDiscount:"Lower admission fee when participating in Kitchen quests",
         battleBoost: "Increased move power in autobattles against NPCs",
         reducedCatchFailCD: "Decreased cooldown after a failed Pokémon capture",
         lowUltraCD: "Decreased cooldown after a failed Pokémon capture when using " + es(finishName("ultra")),
@@ -30678,10 +30679,10 @@ function Safari() {
             extraArgs.winMsg = this.winMsg;
             if (this.tagBattle) {
                 var npcSurviving = this.team2.filter(function(e) { return e.hp > 0 }).length + this.team4.filter(function(e) { return e.hp > 0 }).length;
-                this.postArgs.defeated = (5 - npcSurviving) * (3/5);
+                this.postArgs.defeated = Math.max(0, (5 - npcSurviving) * (3/5));
             }
             else {
-                this.postArgs.defeated = 3 - this.team2.filter(function(e) { return e.hp > 0 }).length;
+                this.postArgs.defeated = Math.max(0, 3 - this.team2.filter(function(e) { return e.hp > 0 }).length);
             }
 
             this.postBattle(this.name1, winnerID === this.idnum1, this.getHpPercent(this.idnum1), this.postArgs, this.viewers, extraArgs);
@@ -30739,10 +30740,10 @@ function Safari() {
             };
             if (this.tagBattle) {
                 var npcSurviving = this.team2.filter(function(e) { return e.hp > 0 }).length + this.team4.filter(function(e) { return e.hp > 0 }).length;
-                this.postArgs.defeated = (5 - npcSurviving) * (3/5);
+                this.postArgs.defeated = Math.max(0, (5 - npcSurviving) * (3/5));
             }
             else {
-                this.postArgs.defeated = 3 - this.team2.filter(function(e) { return e.hp > 0 }).length;
+                this.postArgs.defeated = Math.max(0, 3 - this.team2.filter(function(e) { return e.hp > 0 }).length);
             }
             this.postBattle(this.name1, winnerID === this.idnum1, this.getHpPercent(this.idnum1), this.postArgs, this.viewers, extraArgs);
         }
@@ -34677,7 +34678,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Thank you for solving this mystery! The answer was " + readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(parseInt(x, 10))})) + "! Come back tomorrow to see if I have another case for you.", safchan);
                 } else {
                     var timeTaken = now() - safari.detectiveData[uid+""].started;
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: When you think you know which four Pokémon are, you can guess the combination with " + link("/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", false, true) + ". (Elapsed Time: " + timeString(timeTaken / 1000, true) + ")", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: When you think you know which four Pokémon are, you can guess the combination with " + link("/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", false, true) + ". (Elapsed Time: " + (timeString(timeTaken / 1000, true) || "0 seconds") + ")", safchan);
                 }
             } else {
                 //if they supply a guess, make sure it's 4 valid guesses and then see if it's correct
@@ -35985,7 +35986,7 @@ function Safari() {
                         ["nugget", 2],
                         [["pack", 20], ["miracle", 4]],
                         ["bignugget", 2],
-                        ["megastone", 3],
+                        ["mega", 3],
                         ["bright", 2],
                         ["ldew", 4],
                         ["ldew", 12],
@@ -36249,7 +36250,6 @@ function Safari() {
                     safaribot.sendHtmlAll("<b> Hahahaha! " + player.id.toCorrectCase() + " just lost to " + args.name + " on Easy! Everyone make fun of them with " + link("/rock " + player.id) + "!</b>", safchan);
                     sys.sendAll("", safchan);
                 }*/
-
 
                 switch (args.difficulty) {
                     case -1:
