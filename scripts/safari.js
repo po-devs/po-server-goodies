@@ -35317,12 +35317,14 @@ function Safari() {
             }
             while (newApricorn === offer);
 
+            var rew = giveStuff(player, toStuffObj(receivedAmt + "@" + newApricorn));
             safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Alright, in exchange for your {0}, I'm gonna give ya {1}! Here ya go!".format(plural(amt, finishName(offer)), plural(receivedAmt, finishName(newApricorn))), safchan);
-            safaribot.sendMessage(src, "You " + giveStuff(player, toStuffObj(receivedAmt + "@" + newApricorn)) + ".", safchan);
+            player.balls[offer] -= amt;
+            safaribot.sendMessage(src, "You " + rew + ".", safchan);
             safari.toRecentQuests(player, "arborist");
             player.quests.arborist.cooldown = now() + hours(tradeCooldown);
             player.notificationData.arboristWaiting = true;
-            sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arborist|||Gave " + plural(amt, finishName(offer)) + "|||Received " + plural(receivedAmt, finishName(newApricorn)) + "\n");
+            sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arborist|||Gave " + plural(amt, finishName(offer)) + "|||" + cap(rew) + "\n");
             safari.pendingNotifications(player.id);
             this.saveGame(player);
             return;
