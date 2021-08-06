@@ -10536,7 +10536,7 @@ function Safari() {
             var active = leader;
             var activeNum = parseInt(active, 10);
             var activeSpecies = evolutions.hasOwnProperty(activeNum+"") ? activeNum : pokeInfo.species(activeNum);
-            if (evolutions.hasOwnProperty(activeSpecies) && evolutions[activeSpecies].evo !== -1) {
+            if (evolutions.hasOwnProperty(activeSpecies) && evolutions[activeSpecies].evo !== -1 && leader === leadDisplay) { // check against leadDisplay to determine if transformed
                 if (player.helds[0] == 9) {
                     player.berries.petayaCombo++;
                     var activeShiny = pokeInfo.shiny(active);
@@ -35258,7 +35258,7 @@ function Safari() {
         var recipes = apricornToBallData;
         var validItems = Object.keys(recipes);
         if (!data[0] || data[0].toLowerCase() === "help") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: I can use these here apricorns to make some neat stuff, alright? (Use /quest arborist:[recipe name] to view the required materials)", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: I can use these here Apricorns to make some neat stuff, alright? (Use " + link("/quest arborist:", "/quest arborist:[recipe name]", true) + " to view the required materials)", safchan);
             safaribot.sendHtmlMessage(src, "Available Recipes:" + validItems.map(function(x) {
                 return " " + link("/quest arborist:" + x, cap(x, true) + " Ball");
             }), safchan);
@@ -35327,7 +35327,6 @@ function Safari() {
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arborist|||Gave " + plural(amt, finishName(offer)) + "|||" + cap(rew) + "\n");
             safari.pendingNotifications(player.id);
             this.saveGame(player);
-            return;
         }
         else {
             if (!validItems.contains(item)) {
@@ -35342,7 +35341,7 @@ function Safari() {
             var coloredRewards = possibleRewards.map(function(x) { cc++; return toColor(x, colors[cc % colors.length]);});
             possibleRewards = readable(possibleRewards, "or");
 
-            var canMake = true, progress = [], asset, val, req, pokeIng = 0;
+            var canMake = true, progress = [], asset, val, req, pokeIng = 0, lacking = [];
             for (var e in rec.ingredients) {
                 asset = translateAsset(e);
                 if (asset.type == "item") {
@@ -35357,6 +35356,7 @@ function Safari() {
                     req = rec.ingredients[e] + " " +  asset.name;
                 }
                 if (val < rec.ingredients[e]) {
+                    lacking.push(asset.type === "money" ? "$" + addComma(val) + "/$" + addComma(req) : val + "/" + req);
                     canMake = false;
                 }
                 if (asset.type === "money") {
@@ -35378,7 +35378,7 @@ function Safari() {
             }
 
             if (!canMake) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Wait-a-secon'. That ain't enough materials! (Progress: " + progress.join(", ") + ")", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Wait-a-secon'. That ain't enough materials! (You lack the following materials: " + lacking.join(", ") + ")", safchan);
                 return;
             }
 
