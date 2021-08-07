@@ -15706,24 +15706,26 @@ function Safari() {
         }
 
         var megaIndex;
+        var num = info.num + (info.shiny ? "" : 0);
         for (var i = 0; i < player.megaTimers.length; i++) {
-            if (player.megaTimers[i].id === info.num) {
+            sys.sendAll(JSON.stringify(num) + " && " + JSON.stringify(player.megaTimers[i].id));
+            if (player.megaTimers[i].id === num) {
                 megaIndex = i;
                 break;
             }
         }
 
-        if (!megaIndex) {
-            safaribot.sendMessage(src, "You don't have a " + poke(info.num, true) + " to revert!", safchan);
+        if (megaIndex === undefined) {
+            safaribot.sendMessage(src, "You don't have a " + poke(num, true) + " to revert!", safchan);
             return;
         }
         if (!confirm) {
-            safaribot.sendHtmlMessage(src, "You are about to revert your {0}. Type {1} to confirm.".format(poke(info.num, true), link("/cancelmega " + poke(info.num, true) + ":confirm", false, true)), safchan);
+            safaribot.sendHtmlMessage(src, "You are about to revert your {0}. Type {1} to confirm.".format(poke(num, true), link("/cancelmega " + poke(num, true) + ":confirm", false, true)), safchan);
             return;
         }
 
         player.megaTimers[megaIndex].expires = 0;
-        safari.revertMega(src, false, info.num);
+        safari.revertMega(src, false, num);
         safari.saveGame(player);
     };
     this.useMegaStone = function(src, commandData) {
