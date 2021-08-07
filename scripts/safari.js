@@ -13455,7 +13455,7 @@ function Safari() {
             }
         }
     };
-    this.revertMega = function(src, forced) { // pass forced when intending to revert after battles/pyr, because those battles aren't spliced from currentBattles/currentPyramids immediately
+    this.revertMega = function(src, forced, pokeNum) { // pass forced when intending to revert after battles/pyr, because those battles aren't spliced from currentBattles/currentPyramids immediately
         var player = getAvatar(src);
         if (!player) {
             return;
@@ -13472,10 +13472,17 @@ function Safari() {
         for (var e = player.megaTimers.length - 1; e >= 0; e--) {
             info = player.megaTimers[e];
             if (info.expires <= currentTime) {
+                if (pokeNum && info.id !== pokeNum) {
+                    continue;
+                }
                 if (player.pokemon.indexOf(info.id) !== -1) {
                     this.evolvePokemon(src, getInputPokemon(info.id + (typeof info.id == "string" ? "*" : "")), info.to, "reverted to", true);
                 }
                 player.megaTimers.splice(e, 1);
+
+                if (pokeNum) { // if passing a pokenum, we're probably only wanting to revert 1 so break out right here
+                    break;
+                }
             }
         }
     };
@@ -15674,6 +15681,50 @@ function Safari() {
         rewardCapCheck(player, "dust", dustRegained);
         this.saveGame(player);
 
+    };
+    this.cancelMega = function(src, commandData) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        if (cantBecause(src, "cancel Mega Evolution", ["wild", "contest", "auction", "battle", "event", "tutorial", "pyramid"])) {
+            return;
+        }
+
+        commandData = commandData.split(":");
+        var pokeInput = typeNull(commandData[0]);
+        var confirm = commandData[1] && commandData[1] === "confirm";
+        var info = getInputPokemon(pokeInput);
+
+        if (!info.num) {
+            safaribot.sendMessage(src, "That's not a valid Pokémon!", safchan);
+            return;
+        }
+        if (!isMega(info.num)) {
+            safaribot.sendMessage(src, "This Pokémon is not a Mega Evolution!", safchan);
+            return;
+        }
+
+        var megaIndex;
+        for (var i = 0; i < player.megaTimers.length; i++) {
+            if (player.megaTimers[i].id === info.num) {
+                megaIndex = i;
+                break;
+            }
+        }
+
+        if (!megaIndex) {
+            safaribot.sendMessage(src, "You don't have a " + poke(info.num, true) + " to revert!", safchan);
+            return;
+        }
+        if (!confirm) {
+            safaribot.sendHtmlMessage(src, "You are about to revert your {0}. Type {1} to confirm.".format(poke(info.num, true), link("/cancelmega " + poke(info.num, true) + ":confirm", false, true)), safchan);
+            return;
+        }
+
+        player.megaTimers[megaIndex].expires = 0;
+        safari.revertMega(src, false, info.num);
+        safari.saveGame(player);
     };
     this.useMegaStone = function(src, commandData) {
         if (!validPlayers("self", src)) {
@@ -35262,7 +35313,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Available Recipes:" + validItems.map(function(x) {
                 return " " + link("/quest arborist:" + x, cap(x, true) + " Ball");
             }), safchan);
-            safaribot.sendHtmlMessage(src, "I've always got lotsa Apricorns myself, so lemme know if you're interested in {0}!".format(link("/quest arborist:trade", "trading")), safchan);
+            safaribot.sendHtmlMessage(src, "Arborist: I've always got lotsa Apricorns myself, so lemme know if you're interested in {0}!".format(link("/quest arborist:trade", "trading")), safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -35270,12 +35321,12 @@ function Safari() {
         var item = data[0].toLowerCase();
 
         if (item === "trade") {
-            var validTrades = ["blkapricorn", "whtapricorn", "redapricorn", "bluapricorn", "ylwapricorn", "grnapricorn", "pnkapricorn"];
+            var validTrades = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn"];
             var tradeCooldown = 2; // hours
             var exchangeCap = 100,
                 tradeRatio = 3;
             if (player.quests.arborist.cooldown >= now()) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Ooh hold up a moment, I'm still sortin' out all those Apricorns ya gave me! Come back in {0} if ya wanna trade somemore okay? But I can still make some Poké Balls if ya want!".format(timeLeftString(player.quests.arborist.cooldown)), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Ooh hold up a moment, I'm still sortin' out all those Apricorns ya gave me! Come back in {0} if ya wanna trade somemore okay? But I can still make some Poké Balls if ya want!".format(timeLeftString(player.quests.arborist.cooldown)), safchan);
                 return;
             }
 
@@ -35285,7 +35336,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Available Trades:" + validTrades.map(function(e) {
                     return " " + link("/quest arborist:trade:" + e, finishName(e));
                 }), safchan);
-                safaribot.sendHtmlMessage(src, "I'll exchange every {0} of the Apricorn yer offerin' for a random 1 of mine! Don't worry, I'm not gonna end up givin' back the exact same type ya gave me though. {1}".format(tradeRatio, toColor("But if ya don't have enough space for the Apricorns I give in return, no take-backsies!", "red")), safchan);
+                safaribot.sendHtmlMessage(src, "Arborist: I'll exchange every {0} of the Apricorn yer offerin' for a random 1 of mine! Don't worry, I'm not gonna end up givin' back the exact same type ya gave me though, and I'll try to pick a color that ya have enough space to hold. {1}".format(tradeRatio, toColor("But if ya end up having to discard some of 'em anyway, no take-backsies!", "red")), safchan);
                 return;
             }
 
@@ -35311,11 +35362,24 @@ function Safari() {
 
             var newApricorn;
             var receivedAmt = amt / tradeRatio;
+            
+            var remainingApricorns = validTrades.filter(function(e) {
+                return e !== offer;
+            });
 
-            do {
-                newApricorn = validTrades.random();
+            var optimalApricorns = remainingApricorns.filter(function(e) { // prioritise giving apricorn colours where the player won't exceed the cap
+                return player.balls[e] + receivedAmt <= getCap(e);
+            });
+            if (optimalApricorns.length === 0) { // if player has so many apricorns of each colour that they all exceed cap if receivedAmt is added
+                optimalApricorns = remainingApricorns.filter(function(e) { // prioritise giving any apricorn colours that aren't at cap yet
+                    return player.balls[e] < getCap(e);
+                });
             }
-            while (newApricorn === offer);
+            if (optimalApricorns.length === 0) { // if optimalApricorns is somehow still empty i.e. player has max of every single apricorn (except the one offered)
+                optimalApricorns = remainingApricorns.slice(0) // just pick one randomly out of the remaining list tbh, it'd be kind of pointless but it's a way to just outright delete apricorns if a player desires
+            }
+
+            newApricorn = optimalApricorns.random();
 
             var rew = giveStuff(player, toStuffObj(receivedAmt + "@" + newApricorn));
             safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Alright, in exchange for your {0}, I'm gonna give ya {1}! Here ya go!".format(plural(amt, finishName(offer)), plural(receivedAmt, finishName(newApricorn))), safchan);
@@ -36393,7 +36457,7 @@ function Safari() {
 
         if (!canReward) {
             if (opt3 === "*") {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: For non-reward runs, you may choose which celebrity to face first!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: For non-reward runs, you may choose which Celebrity to face first!", safchan);
                 safaribot.sendHtmlMessage(src, "Announcer: " + readable(celebs.gym.filter(function(e) {
                     return !e.party2;
                 }).map(function(e) {
@@ -36411,7 +36475,7 @@ function Safari() {
                 }
 
                 if (celebIndex === undefined) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: We don't have a celebrity Gym Leader by that name in the " + cap(player.celebrityRegion) + " region!", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: We don't have a Celebrity Gym Leader by that name in the " + cap(player.celebrityRegion) + " region!", safchan);
                     return;
                 }
                 if (celebs.gym[celebIndex].party2) {
@@ -36419,13 +36483,13 @@ function Safari() {
                     return;
                 }
 
-                var selected = celebs.gym.splice(celebIndex, 1)[0];
-                celebs.gym.shuffle();
-                celebs.gym.unshift(selected);
+                var selected = celebs.gym.splice(celebIndex, 1)[0]; // take selected celeb out
+                celebs.gym.shuffle(); // randomise the rest
+                celebs.gym.unshift(selected); // put selected in front
             }
         }
         else {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: The first celebrity will be chosen at random for reward runs!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: The first Celebrity will be chosen at random for reward runs!", safchan);
             var j = 0;
             do {
                 celebs.gym.shuffle();
@@ -36433,10 +36497,40 @@ function Safari() {
             } while (celebs.gym[0].party2 && j <= 1000);
         }
 
+        var champion = celebs.elite.splice(celebs.elite.length - 1, 1)[0]; // take the champion out
+        celebs.elite.shuffle(); // randomise the rest
+        celebs.elite.push(champion); // force champion as last battle
+
+        var pack1 = false, pack2 = false;
+        for (var t = 0; t < celebs.gym.length; t++) {
+            var trainer = celebs.gym[t];
+            if (trainer.pack1) { // ensure celebs part of the same pack e.g. Chili/Cilan/Cress will not appear in a set together
+                if (pack1) {
+                    celebs.gym.splice(t, 1);
+                    t--;
+                    continue;
+                } else {
+                    pack1 = true;
+                }
+            }
+            if (trainer.pack2) { // ensure celebs part of the same pack e.g. Gordie/Melony will not appear in a set together
+                if (pack2) {
+                    celebs.gym.splice(t, 1);
+                    t--;
+                    continue;
+                } else {
+                    pack2 = true;
+                }
+            }
+        }
+        if (celebs.gym.length > 8) { // if you somehow end up with > 8 gym leaders even after pack filtering above
+            celebs.gym = celebs.gym.slice(0, 8); // slice it down
+        }
         npc = celebs.gym[0];
         npc.postBattle = postBattle;
 
         //sys.sendAll(celebs.gym.map(function(e) { return e.name }).join(", "));
+        //sys.sendAll(celebs.elite.map(function(e) { return e.name }).join(", "));
         var heal, desc;
         switch (difficulty) {
             case -1: heal = 0.25; desc = "Easy"; break;
@@ -36475,6 +36569,7 @@ function Safari() {
         }, null, null, npc.select);
         currentBattles.push(battle);
         safari.toRecentQuests(player, "celebrity");
+        safari.saveGame(player);
     };
     this.addToCelebrityLeaderboard = function(leader, region, difficulty, won) {
         if (!celebrityPKs.hasOwnProperty(region)) {
@@ -36513,7 +36608,7 @@ function Safari() {
             currentTrainer = {};
             trainer = data[i];
 
-            if (trainer.pack1) {
+            /*if (trainer.pack1) {
                 if (pack1) {
                     continue;
                 } else {
@@ -36526,13 +36621,15 @@ function Safari() {
                 } else {
                     pack2 = true;
                 }
-            }
+            }*/
 
             currentTrainer.name = trainer.name;
             currentTrainer.winMsg = (trainer.winMsg ? trainer.winMsg.random() : null);
             currentTrainer.loseMsg = (trainer.loseMsg ? trainer.loseMsg.random() : null);
             currentTrainer.startMsg = (trainer.startMsg ? trainer.startMsg.random() : null);
             currentTrainer.sprite = (trainer.sprite ? trainer.sprite + trainer.sprite2 : null);
+            currentTrainer.pack1 = trainer.pack1;
+            currentTrainer.pack2 = trainer.pack2;
             if (trainer.sprite3) {
                 currentTrainer.sprite += trainer.sprite3;
             }
@@ -54410,6 +54507,7 @@ function Safari() {
             "/evolve: Use a Rare Candy (or candies) to evolve a Pokémon, which will give you Candy Dusts depending on the amount of Rare Candies used*.",
             "/spray: Use a Devolution Spray to devolve a Pokémon*.",
             "/mega [Pokémon*]: Use a Mega Stone to Mega Evolve a Pokémon. Use /mega [Pokémon*]:[X or Y] to choose between Mega Evolutions for species that have multiple.",
+            "/cancelmega [Pokémon*]: Cancel a Mega Evolution instantly.",
             "/gacha: Use a ticket to win a prize!",
             "/finder: Use your item finder to look for items.",
             "/giveitem [Berry Name]:[Party Slot]: Gives a berry to the Pokémon in the specified party slot (1 to 6). Party slot defaults to 1.",
@@ -54948,6 +55046,10 @@ function Safari() {
             }
             if (command === "mega" || command === "megastone") {
                 safari.useMegaStone(src, commandData);
+                return true;
+            }
+            if (["cancelmega", "megacancel", "demega"].contains(command)) {
+                safari.cancelMega(src, commandData);
                 return true;
             }
             if (command === "challenge" || command === "challenge2") {
