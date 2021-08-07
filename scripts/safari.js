@@ -15708,7 +15708,6 @@ function Safari() {
         var megaIndex;
         var num = info.num + (info.shiny ? "" : 0);
         for (var i = 0; i < player.megaTimers.length; i++) {
-            sys.sendAll(JSON.stringify(num) + " && " + JSON.stringify(player.megaTimers[i].id));
             if (player.megaTimers[i].id === num) {
                 megaIndex = i;
                 break;
