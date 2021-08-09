@@ -26556,6 +26556,9 @@ function Safari() {
                 var id = getAvatarOff(user.owner);
                 if (id) {
                     id.helds[user.index] = -1;
+                    if (!this.npcBattle && id.balls.oran < getCap("oran")) {
+                        id.balls.oran += 1;
+                    }
                     safari.saveGame(id);
                 }
             }
@@ -26605,7 +26608,7 @@ function Safari() {
                 this.paused = false;
             }
 
-            this.sendToViewers(toColor("<b>The battle has been " + (this.paused ? "paused! Note: The battle will automatically be unpaused after {0}.".format(timeString(this.pauseLimit - this.totalPauseTime)) : "unpaused!") + "</b>", "crimson"));
+            this.sendToViewers(toColor("<b>The battle has been " + (this.paused ? "paused! Note: The battle will automatically be unpaused after {0}." : "unpaused! (Remaining pause time: {0})").format(timeString(this.pauseLimit - this.totalPauseTime)) + "</b>", "crimson"));
             return;
         }
         if (this.phase === "preview") {
@@ -27915,6 +27918,9 @@ function Safari() {
                         var id = getAvatarOff(target.owner);
                         if (id) {
                             id.helds[target.index] = -1;
+                            if (!self.npcBattle && id.balls.miracle < getCap("miracle")) {
+                                id.balls.miracle += 1;
+                            }
                             safari.saveGame(id);
                         }
                     }
