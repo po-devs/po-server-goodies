@@ -19,8 +19,8 @@ function YouTube() {
                 sys.webCall("https://www.googleapis.com/youtube/v3/videos?id=" + videoId + "&key=" + ytApi + "&part=snippet,statistics,status,contentDetails", function (response) {
                     var x = JSON.parse(response).items[0],
                         title = x.snippet.localized.title,
-                        length = x.contentDetails.duration
-                            .toLowerCase().substr(2).replace("h", "h ").replace("m", "m "),
+                        length = x.contentDetails.duration == "P0D" ? "Live" : x.contentDetails.duration // P0D indicates livestream
+                            .toLowerCase().substr(2).replace("h", "h ").replace("m", "m ").trim(),
                         uploader = x.snippet.channelTitle,
                         likes = parseInt(x.statistics.likeCount, 10),
                         dislikes = parseInt(x.statistics.dislikeCount, 10),

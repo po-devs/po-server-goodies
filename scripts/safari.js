@@ -913,7 +913,8 @@ function Safari() {
             anyNotifications: true,
             questNotifications: true,
             persistentBait: false,
-            receiveWeeklyMedals: true
+            receiveWeeklyMedals: true,
+            showContestCaptures: true
         }
     };
 
@@ -1061,7 +1062,20 @@ function Safari() {
         );
     }
     var gymData = {};
-
+    var heldCodes = {
+        "1": "oran",
+        "2": "pecha",
+        "3": "razz",
+        "4": "bluk",
+        "5": "leppa",
+        "6": "tamato",
+        "7": "pinap",
+        "8": "nanab",
+        "9": "petaya",
+        "10": "watmel",
+        "11": "miracle",
+        "12": "platinum"
+    };
     var updateItemData = function() {
         itemData = {
             //Balls
@@ -1159,15 +1173,15 @@ function Safari() {
             pnkapricorn: {name: "pnkapricorn", fullName: "Pink Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["pnkapricorn", "pink apricorn", "pinkapricorn"], tradable: true},
 
             //Berries
-            oran: {name: "oran", fullName: "Oran Berry", type: "berry", icon: 8007, price: 1000, aliases:["oran", "oran berry", "oranberry"], tradable: true},
-            pecha: {name: "pecha", fullName: "Pecha Berry", type: "berry", icon: 8003, price: 1000, aliases:["pecha", "pecha berry", "pechaberry"], tradable: true},
+            oran: {name: "oran", fullName: "Oran Berry", type: "berry", icon: 8007, price: 1000, aliases:["oran", "oran berry", "oranberry"], rate: 0.25, rate2: 50, tradable: true},
+            pecha: {name: "pecha", fullName: "Pecha Berry", type: "berry", icon: 8003, price: 1000, aliases:["pecha", "pecha berry", "pechaberry"], rate: 1.5, tradable: true},
             razz: {name: "razz", fullName: "Razz Berry", type: "berry", icon: 8016, price: 1000, aliases:["razz", "razz berry", "razzberry"], tradable: true},
             bluk: {name: "bluk", fullName: "Bluk Berry", type: "berry", icon: 8017, price: 1000, aliases:["bluk", "bluk berry", "blukberry"], tradable: true},
             leppa: {name: "leppa", fullName: "Leppa Berry", type: "berry", icon: 8006, price: 1000, aliases:["leppa", "leppa berry", "leppaberry"], tradable: true},
             tamato: {name: "tamato", fullName: "Tamato Berry", type: "berry", icon: 8026, price: 1000, aliases:["tamato", "tamato berry", "tamatoberry"], tradable: true},
-            pinap: {name: "pinap", fullName: "Pinap Berry", type: "berry", icon: 8020, price: 1000, aliases:["pinap", "pinap berry", "pinapberry"], tradable: true},
+            pinap: {name: "pinap", fullName: "Pinap Berry", type: "berry", icon: 8020, price: 1000, aliases:["pinap", "pinap berry", "pinapberry"], tradable: true, rate: 18},
             nanab: {name: "nanab", fullName: "Nanab Berry", type: "berry", icon: 8018, price: 1000, aliases:["nanab", "nanab berry", "nanabberry"], tradable: true},
-            watmel: {name: "watmel", fullName: "Watmel Berry", type: "berry", icon: 8033, price: 1000, aliases:["watmel", "watmel berry", "watmelberry"], tradable: true},
+            watmel: {name: "watmel", fullName: "Watmel Berry", type: "berry", icon: 8033, price: 1000, aliases:["watmel", "watmel berry", "watmelberry"], tradable: true, rate: 0.25},
             petaya: {name: "petaya", fullName: "Petaya Berry", type: "berry", icon: 8056, price: 1000, aliases:["petaya", "petaya berry", "petayaberry"], tradable: true},
             miracle: {name: "miracle", fullName: "Miracle Berry", type: "berry", icon: 59, price: 1000, aliases:["miracle", "miracle berry", "miracleberry"], tradable: true},
             platinum: {name: "platinum", fullName: "Platinum Berry", type: "berry", icon: 59, price: 1000, aliases:["platinum", "platinum berry", "platinumberry"], tradable: true},
@@ -2849,7 +2863,7 @@ function Safari() {
             for (var p in currentBakings) {
                 if (currentBakings[p].isInKitchen(sys.name(src))) {
                     if (!silent)
-                        safaribot.sendMessage(src, "You can't " + action + " while inside the Kitchen!", safchan);
+                        safaribot.sendMessage(src, "You can't " + action + " while Baking!", safchan);
                     return true;
                 }
             }
@@ -3252,7 +3266,7 @@ function Safari() {
     }
     function ignoresWildAbilities(player) {
         var abilities = [104, 163, 164, 256]; // Mold Breaker, Turboblaze, Teravolt, Neutralizing Gas
-        var leader = safari.getEffectiveLead(player);
+        var leader = safari.getEffectiveLead(player, true);
         for (var a in abilities) {
             if (canHaveAbility(leader, abilities[a])) {
                 return abilities[a];
@@ -8150,7 +8164,7 @@ function Safari() {
                 if (!miscMessageList.hasOwnProperty(onChannel[e])) {
                     miscMessageList[onChannel[e]] = [];
                 }
-                var leader = this.getEffectiveLead(player);
+                var leader = this.getEffectiveLead(player, true);
                 var ignore = ignoresWildAbilities(player);
                 if (this.hasCostumeSkill(player, "typeMatchupHelper")) {
                     var typeEffectiveness = 0;
@@ -8182,6 +8196,7 @@ function Safari() {
                         var ball = allBalls[i];
                         if (isBallAvailable(player, ball) && !["master", "spirit", "uturn"].contains(ball)) {
                             var ballRate = safari.computeCatchRate(onChannel[e], ball, currentDisplay, true);
+                            //sys.sendMessage(sys.id("ripper roo"), ball + ": " + ballRate, safchan);
                             if (ballRate >= bestRate) {
                                 if (ballRate > bestRate) {
                                     bestRate = ballRate;
@@ -8303,7 +8318,7 @@ function Safari() {
                 }
                 if (abilityMessageList[user].length === 0 || !player.options.leadAbilityMessages) {
                     if (player.options.showLeadMessage && (mandatoryDisplay || !cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true))) {
-                        safaribot.sendMessage(user, "Your {0} prepares to fight!".format(poke(safari.getEffectiveLead(player), true)), safchan);
+                        safaribot.sendMessage(user, "Your {0} prepares to fight!".format(poke(safari.getEffectiveLead(player, true), true)), safchan);
                     }
                     continue;
                 }
@@ -9509,9 +9524,6 @@ function Safari() {
 
         var usingPokemon = target ? target : currentPokemon
 
-        if (canHaveAbility(leader, abilitynum("Imposter")) && !canHaveAbility(currentDisplay, abilitynum("Imposter"))) {
-            leader = currentDisplay;
-        }
         if (player.story.inStory && player.story.state == "Catching") {
             isShiny = false;
             wild = parseInt(player.story.currentPokemon.id, 10);
@@ -9939,7 +9951,7 @@ function Safari() {
                 safaribot.sendMessage(sys.id(player.id), "Your " + poke(leader, true) + " ate its Pecha Berry and weakened the nerf!", safchan);
             }
 
-            finalChance = Math.min(RULES_NERF_CAP * (player.berries.pecha ? 1.5 : 1), finalChance);
+            finalChance = Math.min(RULES_NERF_CAP * (player.berries.pecha ? itemData.pecha.rate : 1), finalChance);
         }
         if (ball == "clone") {
             var maxCloneRate = itemData.clone.bonusRate + (player.costume === "scientist" ? costumeData.scientist.rate : 0) + this.getFortune(player, "scientist", 0);
@@ -9978,7 +9990,7 @@ function Safari() {
         var player = getAvatar(src);
         var reason = "catch Pokémon";
         var leader = this.getEffectiveLead(player);
-        var leadDisplay = leader;
+        var leadDisplay = this.getEffectiveLead(player, true);
         if (player.tutorial.inTutorial) {
             if (player.tutorial.privateWildPokemon) {
                 safari.tutorialCatch(src, data);
@@ -9994,9 +10006,6 @@ function Safari() {
             }
         }
 
-        if (canHaveAbility(leader, abilitynum("Imposter")) && !canHaveAbility(currentDisplay, abilitynum("Imposter"))) {
-            leader = currentDisplay;
-        }
         var name = sys.name(src);
         if (!suppress && !bypass) {
             var mess = "[Track] " + name + " is using /" + (command || "catch") + " " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)";
@@ -10459,7 +10468,7 @@ function Safari() {
                 if (currentThemeEffect == "past") {
                     player.altTimeline.lead = 0;
                 }
-                leader = this.getEffectiveLead(player);
+                leader = this.getEffectiveLead(player, true);
                 safaribot.sendMessage(src, "Your lead Pokémon is now {0}!".format(poke(leader, true)), safchan);
                 if (player.berries.petayaCombo > 0 && oldLead !== leader) {
                     safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
@@ -10518,18 +10527,6 @@ function Safari() {
                 cooldown += 500;
             }
             cooldown *= penalty;
-            if (contestCount > 0) {
-                var nameLower = name.toLowerCase();
-                if (!(nameLower in contestCatchers)) {
-                    contestCatchers[nameLower] = [];
-                }
-                contestCatchers[nameLower].push(currentPokemon);
-                if (ball == "clone") {
-                    for (var i = 0; i < clonedAmount; i++) {
-                        contestCatchers[nameLower].push(currentPokemon);
-                    }
-                }
-            }
             if (isRare(currentPokemon) || ball === "master" || ball === "cherish" || wildEvent) {
                 sys.appendToFile(mythLog, now() + "|||" + (clonedAmount - cloneDiscarded > 0 ? (clonedAmount - cloneDiscarded + 1) + "x " : "") + (wildEvent ? "Event " : "") + (wildSpirit ? "Spirit Realm " : "") + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
             }
@@ -10600,6 +10597,21 @@ function Safari() {
             }
             if (player.options.sellPrompt && !isRare(currentPokemon)) {
                 safaribot.sendHtmlMessage(src, "«{0}» ({1})".format(link("/sell " + poke(currentPokemon, true) + ":confirm", "Click here to sell the " + poke(currentPokemon, true) + " you just caught"), "You now have " + countRepeated(player.pokemon, currentPokemon) + " " + poke(currentPokemon, true)), safchan);
+            }
+            if (contestCount > 0) {
+                var nameLower = name.toLowerCase();
+                if (!(nameLower in contestCatchers)) {
+                    contestCatchers[nameLower] = [];
+                }
+                contestCatchers[nameLower].push(currentPokemon);
+                if (ball == "clone") {
+                    for (var i = 0; i < clonedAmount; i++) {
+                        contestCatchers[nameLower].push(currentPokemon);
+                    }
+                }
+                if (player.options.showContestCaptures) {
+                    sys.sendHtmlMessage(src, toColor("<timestamp/><b>±Contest:</b> ", "#3daa68") + "(Caught {0}, BST {1})".format(contestCatchers[nameLower].length, add(contestCatchers[nameLower].map(getBST))), safchan);
+                }
             }
             if (amt < 1) {
                 sendAll("", true, true);
@@ -11260,7 +11272,7 @@ function Safari() {
             10: Math.min(1 + p, 11)
         };
 
-        var leader = safari.getEffectiveLead(player);
+        var leader = safari.getEffectiveLead(player, true);
         if (canHaveAbility(leader, abilitynum("Keen Eye"))) {
             for (var i = -5, q = 0; i <= 5; i++, q++) {
                 qualityOdds[q] += i;
@@ -11574,20 +11586,6 @@ function Safari() {
         var player = getAvatar(src);
         var isAndroid = (sys.os(src) === "android");
         sys.sendHtmlMessage(src, this.showCherished(player, isAndroid, textOnly), safchan);
-    };
-    heldCodes = {
-        "1": "oran",
-        "2": "pecha",
-        "3": "razz",
-        "4": "bluk",
-        "5": "leppa",
-        "6": "tamato",
-        "7": "pinap",
-        "8": "nanab",
-        "9": "petaya",
-        "10": "watmel",
-        "11": "miracle",
-        "12": "platinum"
     };
     this.giveItem = function(src, item, slot) {
         var player = getAvatar(src);
@@ -15029,7 +15027,7 @@ function Safari() {
                     player.records.rocksMissed += 1;
                     target.records.rocksDodged += 1;
                 } else {
-                    safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! " + targetName + " evaded, but their " + poke(safari.getEffectiveLead(target), true) + " got hit and " + verb + "!", safchan);
+                    safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! " + targetName + " evaded, but their " + poke(safari.getEffectiveLead(target, true), true) + " got hit and " + verb + "!", safchan);
                     //target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + Math.floor(itemData.rock.targetCD/2) : currentTime + Math.floor(itemData.rock.targetCD/2);
                     player.records.rocksHit += 1;
                     target.records.rocksHitBy += 1;
@@ -16734,7 +16732,7 @@ function Safari() {
                     }
                     if (player.helds[e] == 10) {
                         if (hasCommonEggGroup(id, parseInt(player.party[e], 10))) {
-                            shinyChanceFinal *= 0.25;
+                            shinyChanceFinal *= itemData.watmel.rate;
                             player.helds[e] = -1;
                             safaribot.sendMessage(src, poke(player.party[e], true) + "'s Watmel Berry was consumed!", safchan);
                             break;
@@ -16808,7 +16806,7 @@ function Safari() {
                     }
                     if (player.helds[e] == 10) {
                         if (hasCommonEggGroup(id, parseInt(player.party[e], 10))) {
-                            shinyChanceFinal *= 0.25;
+                            shinyChanceFinal *= itemData.watmel.rate;
                             player.helds[e] = -1;
                             safaribot.sendMessage(src, poke(player.party[e], true) + "'s Watmel Berry was consumed!", safchan);
                             break;
@@ -17490,14 +17488,14 @@ function Safari() {
         }
         for (b in currentBakings) {
             if (currentBakings[b].isInKitchen(player.id)) {
-                safaribot.sendMessage(src, "Currently watching your Kitchen quest: " + printViewers(currentBakings[b].players.concat(currentBakings[b].viewers)), safchan);
+                safaribot.sendMessage(src, "Currently watching your Baking quest: " + printViewers(currentBakings[b].players.concat(currentBakings[b].viewers)), safchan);
                 hit = true;
                 break;
             }
         }
 
         if (!hit) {
-            safaribot.sendMessage(src, "You are not in any battle/Pyramid run/Kitchen quest!", safchan);
+            safaribot.sendMessage(src, "You are not in any battle/Pyramid run/Baking quest!", safchan);
         }
     };
     this.configurePlayerOptions = function(src, data) {
@@ -17627,6 +17625,14 @@ function Safari() {
                     data
                 ]);
                 break;
+            case "showcontestcaptures": case "contestcaptures": case "viewcontestcaptures":
+                changeOption(dataInput, "showContestCaptures", [
+                    "You will now see your contest capture count and BST tally during contests!",
+                    "You will no longer see your contest capture count and BST tally during contests!",
+                    ["not seeing your contest capture count and BST tally during contests", "seeing your contest capture count and BST tally during contests"],
+                    data
+                ]);
+                break;
             case "favorite": case "favourite": case "favoriteball": case "favouriteball":
                 safari.setFavoriteBall(src, dataInput);
                 break;
@@ -17682,6 +17688,7 @@ function Safari() {
                 }
                 safaribot.sendHtmlMessage(src, "Weekly Leaderboard Medals: " + link("/options weeklymedals:", player.options.receiveWeeklyMedals ? "Receiving Weekly Medals" : "Not Receiving Weekly Medals"), safchan);
                 safaribot.sendHtmlMessage(src, "Persistent Bait: " + link("/options persistbait:", player.options.persistentBait ? "Continuously Bait until Successful" : "Only Use 1 Bait at a Time"), safchan);
+                safaribot.sendHtmlMessage(src, "View Contest Captures: " + link("/options viewcontestcaptures:", player.options.showContestCaptures ? "View My Contest Captures & BST Tally During Contests" : "Do Not View My Contest Captures & BST Tally During Contests"), safchan);
                 var dexOptions = ["stats", "effectiveness", "trivia"];
                 safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
                     return player.options.dexOptional.contains(e) ? link("/options hidedex:" + e, cap(e)) + " <b>[Enabled]</b>" : link("/options showdex:" + e, cap(e)) + " <b>[Disabled]</b>";
@@ -17841,7 +17848,7 @@ function Safari() {
             return;
         }
 
-        var active = this.getEffectiveLead(player);
+        var active = this.getEffectiveLead(player, true);
         var t = type1(active);
         data = data.toLowerCase();
         
@@ -18030,12 +18037,12 @@ function Safari() {
         pyrStaminaBoost: "Gain 10 bonus stamina when starting a Pyramid quest",
         kiai: "Increased chance of surviving KO moves in Rotation Battles against NPCs",
         superChef: "Increased chance of baiting Pokémon with a type disadvantage against your lead",
-        higherBakingYield: "Increases the number of Deluxe Baits produced during Kitchen quests",
-        moreEdibleDeluxe: "Reduces the inedibility of Deluxe Baits produced during Kitchen quests",
+        higherBakingYield: "Increases the number of Deluxe Baits produced during Baking quests",
+        moreEdibleDeluxe: "Reduces the inedibility of Deluxe Baits produced during Baking quests",
         extendedMushroom: "Mushroom effects last longer",
         berryCatcher:"Wild Pokémon hold Berries more often",
         fasterArena:"Lower cooldown after battling in the Arena",
-        bakingDiscount:"Lower admission fee when participating in Kitchen quests",
+        bakingDiscount:"Lower admission fee when participating in Baking quests",
         battleBoost: "Increased move power in autobattles against NPCs",
         reducedCatchFailCD: "Decreased cooldown after a failed Pokémon capture",
         lowUltraCD: "Decreased cooldown after a failed Pokémon capture when using " + es(finishName("ultra")),
@@ -23857,7 +23864,7 @@ function Safari() {
         }
 
         if ((this.pinap.contains(p1Poke))) {
-            p1Power += 18;
+            p1Power += itemData.pinap.rate;
         }
 
         if (p1Power > p2Power) {
@@ -26548,9 +26555,9 @@ function Safari() {
             this.sendToViewers(name + " grew from its seeds!");
         }
         if (user.berry == "oran") {
-            if (user.hp <= (user.maxhp * 0.25)) {
+            if (user.hp <= (user.maxhp * itemData.oran.rate)) {
                 user.berry = "";
-                user.hp += 50;
+                user.hp += itemData.oran.rate2;
                 user.hp = Math.min(user.hp, user.maxhp);
                 this.sendToViewers(name + " ate its Oran Berry and recovered 50 HP!");
                 var id = getAvatarOff(user.owner);
@@ -33284,7 +33291,7 @@ function Safari() {
             return;
         }
 
-        if (safari.getEffectiveLead(player) === input.id && countDuplicates(player.pokemon, input.id) === 1) {
+        if (safari.getEffectiveLead(player, true) === input.id && countDuplicates(player.pokemon, input.id) === 1) {
             if (currentPokemon) {
                 safaribot.sendMessage(src, "You can't trade away your lead Pokémon when there's a wild Pokémon out!", safchan);
                 return;
@@ -33391,11 +33398,11 @@ function Safari() {
                 }
                 cost = Math.round(cost * (1 - (safari.hasCostumeSkill(player, "bakingDiscount") ? 0.5 : 0)));
                 if (player.money < cost) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Baking Administrator: You need $" + addComma(cost) + " to enter the Kitchen!", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Baking Administrator: You need $" + addComma(cost) + " to enter the kitchen!", safchan);
                     return;
                 }
                 if (stopQuests.baking) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Baking Administrator: Sorry, but we're putting out a fire in the Kitchen right now!", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Baking Administrator: Sorry, but we're putting out a fire in the kitchen right now!", safchan);
                     return;
                 }
                 if (cantBecause(src, "start a Baking quest", ["auction", "battle", "event", "pyramid", "baking"])) {
@@ -33421,12 +33428,12 @@ function Safari() {
                     id1 = sys.id(players[p]);
                     p1 = getAvatar(id1);
                     if (!p1) {
-                        safaribot.sendMessage(src, "There's no player with the name '" + players[p] + "' around to join you in the Kitchen!", safchan);
+                        safaribot.sendMessage(src, "There's no player with the name '" + players[p] + "' around to join you in the kitchen!", safchan);
                         return;
                     }
                     n1 = p1.id.toLowerCase();
                     if (n1 == player.id.toLowerCase()) {
-                        safaribot.sendMessage(src, "You cannot invite yourself to the Kitchen!", safchan);
+                        safaribot.sendMessage(src, "You cannot invite yourself to the kitchen!", safchan);
                         return;
                     }
                     if (taking.contains(n1)) {
@@ -33440,11 +33447,11 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "You can only invite up to 4 friends! Use " + link("/quest baking:start:Name1,Name2,Name3,Name4", null, true) + ".", safchan);
                     return;
                 }
-                safaribot.sendHtmlMessage(src, "You invited " + takingPretty.join(", ") + " to join you in the Kitchen to bake some baits!", safchan);
+                safaribot.sendHtmlMessage(src, "You invited " + takingPretty.join(", ") + " to join you in the kitchen to bake some baits!", safchan);
                 safaribot.sendMessage(src, "The quest will start if they accept your invitation within 1 minute!", safchan);
 
                 for (var p in taking) {
-                    safaribot.sendHtmlMessage(sys.id(taking[p]), name + " is inviting " + takingPretty.join(", ") + " to join their party in the Kitchen quest! To accept it, type " + link("/quest baking:join:"+name) + " within the next minute!", safchan);
+                    safaribot.sendHtmlMessage(sys.id(taking[p]), name + " is inviting " + takingPretty.join(", ") + " to join their party in the Baking quest! To accept it, type " + link("/quest baking:join:"+name) + " within the next minute!", safchan);
                 }
 
                 bakingRequests[player.id.toLowerCase()] = {
@@ -33455,7 +33462,7 @@ function Safari() {
             break;
             case "join":
                 if (player.records.pokesCaught < 4) {
-                    safaribot.sendMessage(src, "You can only enter the Kitchen after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
+                    safaribot.sendMessage(src, "You can only enter the kitchen after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
                     return;
                 }
                 if (cantBecause(src, "join a Baking quest", ["auction", "battle", "event", "pyramid", "baking"])) {
@@ -33468,19 +33475,19 @@ function Safari() {
                     }
                 }
                 if (data.length < 2) {
-                    safaribot.sendMessage(src, "Please specify whose Kitchen Crew you are joining! Use /quest baking:join:Name for that!", safchan);
+                    safaribot.sendMessage(src, "Please specify whose Baking crew you are joining! Use /quest baking:join:Name for that!", safchan);
                     if (invites.length > 0) {
                         safaribot.sendHtmlMessage(src, "You have pending invites from the following players: " + invites.map(function(x){ return link("/quest baking:join:" + x, x.toCorrectCase()); }), safchan);
                     }
                     return;
                 }
                 if (bakingRequests.hasOwnProperty(player.id.toLowerCase())) {
-                    safaribot.sendMessage(src, "You can't accept an invitation to the Kitchen because you are already preparing to start your own Baking quest!", safchan);
+                    safaribot.sendMessage(src, "You can't accept an invitation to the kitchen because you are already preparing to start your own Baking quest!", safchan);
                     return;
                 }
                 for (e in bakingRequests) {
                     if (bakingRequests[e].accepted.contains(player.id.toLowerCase()) && now() <= bakingRequests[e].deadline) {
-                        safaribot.sendMessage(src, "You already accepted an invitation to a Kitchen quest!", safchan);
+                        safaribot.sendMessage(src, "You already accepted an invitation to a Baking quest!", safchan);
                         return;
                     }
                 }
@@ -33569,7 +33576,7 @@ function Safari() {
                         p.money -= cost;
                         safari.updateEconomyData(-cost, "questFee");
                         p.quests.baking.cooldown = now() + Math.round(hours(0.5));
-                        safaribot.sendHtmlMessage(sys.id(p.id), "Baking Administrator: You paid $" + addComma(cost) + " to enter the Kitchen!", safchan);
+                        safaribot.sendHtmlMessage(sys.id(p.id), "Baking Administrator: You paid $" + addComma(cost) + " to enter the kitchen!", safchan);
                         safari.toRecentQuests(p, "baking");
                         this.saveGame(p);
                     }
@@ -38984,7 +38991,7 @@ function Safari() {
         this.bakeTimes = {};
 
         this.msgAll("You all paid your entrance fees and now you get to enter the tent of the Great Galarian Bait-Off!");
-        safaribot.sendHtmlAll("A Kitchen quest between {0} has started! [{1}]".format(readable(this.players.map(function(e) { return e.toCorrectCase() })), link("/watchbak " + this.players[0], "Watch")), safchan);
+        safaribot.sendHtmlAll("A Baking quest between {0} has started! [{1}]".format(readable(this.players.map(function(e) { return e.toCorrectCase() })), link("/watchbak " + this.players[0], "Watch")), safchan);
     };
     Baking.prototype.nextTurn = function() {
         this.turn++;
@@ -53243,15 +53250,21 @@ function Safari() {
         var species = pokeInfo.species(leader);
         return dailyBoost.pokemon == species && !isMega(leader) && !noDailyBonusForms.contains(parseInt(leader));
     };
-    this.getEffectiveLead = function(player) {
+    this.getEffectiveLead = function(player, trueSpecies) {
         var leader = player.party[0];
+
+        // handle any party position manipulation here
         if (currentThemeEffect == "distortion" && !contestForfeited.contains(player.idnum)) {
             leader = player.party[player.party.length-1];
         }
         if (currentThemeEffect == "past" && player.altTimeline.lead !== 0) {
             leader = player.altTimeline.lead;
         }
-        
+        if (!trueSpecies) { // after position manipulation, anything that makes leader count as something else while still internally being the original leader species should go here
+            if (canHaveAbility(leader, abilitynum("Imposter")) && currentDisplay && !canHaveAbility(currentDisplay, abilitynum("Imposter"))) {
+                leader = currentDisplay;
+            }
+        }
         return leader;
     };
     this.changeAlt = function(src, data) {
@@ -54517,10 +54530,10 @@ function Safari() {
             "/cancelmega [Pokémon*]: Cancel a Mega Evolution instantly.",
             "/gacha: Use a ticket to win a prize!",
             "/finder: Use your item finder to look for items.",
-            "/giveitem [Berry Name]:[Party Slot]: Gives a berry to the Pokémon in the specified party slot (1 to 6). Party slot defaults to 1.",
-            "/takeitem [Party Slot]: Takes the held berry from the Pokémon in the specified party slot (1 to 6). Defaults to 1.",
-            "/giveitemall [Berry Name]: Gives a berry to your entire party at once.",
-            "/takeitemall: Takes the held berries from your entire party at once.",
+            "/give [Berry Name]:[Party Slot]: Gives a berry to the Pokémon in the specified party slot (1 to 6). Party slot defaults to 1.",
+            "/take [Party Slot]: Takes the held berry from the Pokémon in the specified party slot (1 to 6). Defaults to 1.",
+            "/giveall [Berry Name]: Gives a berry to your entire party at once.",
+            "/takeall: Takes the held berries from your entire party at once.",
             "/buy: To buy items or Pokémon from an NPC.",
             "/shop: To buy items or Pokémon from a another player.",
             "/shopadd: To add items or Pokémon to your personal shop. Use /shopremove to something from your shop, /shopclose to remove all items at once or /shopclean to remove all items out of stock.",
@@ -54530,7 +54543,7 @@ function Safari() {
             "/forfeit: To forfeit during a normal or rotation battle.",
             "/watch: To watch someone else's battle.",
             "/watchpyr: To watch someone else's Pyramid run",
-            "/watchbak: To watch someone else's Kitchen quest",
+            "/watchbak: To watch someone else's Baking quest",
             "*** Utility Commands ***",
             "/party: To add or remove a Pokémon from your party, set your party's leader*, or load a previously saved party. Type /party for more details.",
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details. Use /findt for a text-only version or /finds for a text version with links to sell them.",
@@ -54557,7 +54570,7 @@ function Safari() {
             "/showdeluxe: View your " + finishName("deluxe") + " pools.",
             "/selldeluxe: Sell off all your remaining " + finishName("deluxe") + ".",
             "/shroomcancel: Cancels the effect of any " + finishName("mushroom") + " that you have active.",
-            "/viewers: Shows which users are currently spectating your battle/Pyramid run/Kitchen quest.",
+            "/viewers: Shows which users are currently spectating your battle/Pyramid run/Baking quest.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -54929,7 +54942,7 @@ function Safari() {
                 safari.quickLoadParty(src, commandData);
                 return true;
             }
-            if (command === "giveitem" || command === "giveberry") {
+            if (["giveitem", "give", "giveberry"].contains(command)) {
                 var berry, slot;
                 berry = commandData.split(":")[0];
                 slot = commandData.split(":")[1] || 0;
@@ -54937,18 +54950,18 @@ function Safari() {
                 safari.giveItem(src, berry, slot);
                 return true;
             }
-            if (command === "giveitemall" || command === "giveberryall") {
+            if (["giveitemall", "giveall", "giveberryall"].contains(command)) {
                 var player = getAvatar(src);
                 for (var i = 0; i < player.party.length; i++) {
                     safari.giveItem(src, commandData, i+1);
                 }
                 return true;
             }
-            if (command === "takeitem" || command === "takeberry") {
+            if (["takeitem", "take", "takeberry"].contains(command)) {
                 safari.takeItem(src, commandData);
                 return true;
             }
-            if (command === "takeitemall" || command === "takeberryall") {
+            if (["takeitemall", "takeall", "takeberryall"].contains(command)) {
                 var player = getAvatar(src);
                 for (var i = 0; i < player.helds.length; i++) {
                     safari.takeItem(src, i+1);
@@ -55155,7 +55168,7 @@ function Safari() {
             }
             if (["watchbak", "watchbake", "watchbaking"].contains(command)) {
                 if (commandData === "*") {
-                    safaribot.sendMessage(src, "Type which player's Kitchen quest to watch or unwatch with /watchbak [name]!", safchan);
+                    safaribot.sendMessage(src, "Type which player's Baking quest to watch or unwatch with /watchbak [name]!", safchan);
                 } else {
                     var user = sys.name(src).toLowerCase();
                     var player = getAvatarOff(commandData);
@@ -55175,17 +55188,17 @@ function Safari() {
                         }
                     }
                     if (!(getBake)) {
-                        safaribot.sendMessage(src, player.id + " is not in a Kitchen quest!", safchan);
+                        safaribot.sendMessage(src, player.id + " is not in a Baking quest!", safchan);
                         return true;
                     }
                     if (getBake.isInKitchen(user)) {
-                        safaribot.sendMessage(src, "You can't watch this Kitchen quest because you are in it!", safchan);
+                        safaribot.sendMessage(src, "You can't watch this Baking quest because you are in it!", safchan);
                         return true;
                     }
                     if (!getBake.viewers.contains(user)) {
                         if (self.idnum in getBake.watchCounts) {
                             if (getBake.watchCounts[self.idnum] >= watchCountMax) {
-                                safaribot.sendMessage(src, "You can only watch this Kitchen quest {0}!".format(plural(watchCountMax, "time")), safchan);
+                                safaribot.sendMessage(src, "You can only watch this Baking quest {0}!".format(plural(watchCountMax, "time")), safchan);
                                 return true;
                             }
                             getBake.watchCounts[self.idnum] += 1;
@@ -55194,11 +55207,11 @@ function Safari() {
                             getBake.watchCounts[self.idnum] = 1;
                         }
                         getBake.viewers.push(user);
-                        getBake.msgAll(sys.name(src) + " is watching this Kitchen quest!");
+                        getBake.msgAll(sys.name(src) + " is watching this Baking quest!");
                         return true;
                     }
                     else {
-                        getBake.msgAll(sys.name(src) + " stopped watching this Kitchen quest!");
+                        getBake.msgAll(sys.name(src) + " stopped watching this Baking quest!");
                         getBake.viewers.splice(getBake.viewers.indexOf(user), 1);
                         return true;
                     }
@@ -60490,7 +60503,7 @@ function Safari() {
                         if (p && p.truesalt >= n && chance(p.srate)) {
                             throwChances[i] = 0.1;
                         } else {
-                            var lead = safari.getEffectiveLead(p);
+                            var lead = safari.getEffectiveLead(p, true);
                             aType = type1(lead);
                             crystalEffect = !["master", "takephoto"].contains(preparationThrows[i]) && p.zcrystalDeadline >= now() && p.zcrystalUser === lead && chance(zCrystalData[aType].chance) ? zCrystalData[aType] : { effect: "none" };
                             
@@ -60691,11 +60704,10 @@ function Safari() {
                                         maxCaught = contestCatchers[e].length;
                                     }
                                     winners.push(e);
-                                    pokeWinners.push(poke(safari.getEffectiveLead(player), true));
-                                    fullWinners.push(e.toCorrectCase() + " (using " + poke(safari.getEffectiveLead(player), true) + ")");
+                                    pokeWinners.push(poke(safari.getEffectiveLead(player, true), true));
+                                    fullWinners.push(e.toCorrectCase() + " (using " + poke(safari.getEffectiveLead(player, true), true) + ")");
                                 }
                             }
-                            safari.missionProgress(player, "contest", "caught", 1, { caught: contestCatchers[e].length });
                         }
                     }
                     var tieBreaker = [], bst, name, top = winners.length, catchersBST = {}, allContestants = [];
@@ -60725,8 +60737,8 @@ function Safari() {
                                         maxBST = bst;
                                     }
                                     tieBreaker.push(name);
-                                    pokeWinners.push(poke(safari.getEffectiveLead(player), true));
-                                    fullWinners.push(name.toCorrectCase() + " (using " + poke(safari.getEffectiveLead(player), true) + ")");
+                                    pokeWinners.push(poke(safari.getEffectiveLead(player, true), true));
+                                    fullWinners.push(name.toCorrectCase() + " (using " + poke(safari.getEffectiveLead(player, true), true) + ")");
                                 }
                             }
                         }
@@ -60795,6 +60807,10 @@ function Safari() {
                                 amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * basis), 1);
                                 if (playerId) {
                                     if (e in contestCatchers) {
+                                        safari.missionProgress(player, "contest", "caught", 1, { caught: contestCatchers[e].length });
+                                        if (player.options.showContestCaptures) {
+                                            safaribot.sendMessage(playerId, "You caught the following Pokémon in this contest: {0}".format(readable(contestCatchers[e].map(poke, true))), safchan);
+                                        }
                                         safaribot.sendMessage(playerId, "You finished in " + getOrdinal(winners.contains(e) ? 1 : allContestants.indexOf(e) + 1) + " place " + playerScore(e), safchan);
                                     }
                                     safaribot.sendMessage(playerId, "You received " + plural(amt, "bait") + " for participating in the contest!", safchan);
