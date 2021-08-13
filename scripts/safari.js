@@ -13364,7 +13364,7 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
         }
         else if (commandData === "*" || commandData === "1") {
-            sys.sendMessage(src, "*** Player Records | Page 1***", safchan);
+            sys.sendMessage(src, "*** Player Records | Page 1 ***", safchan);
             sys.sendMessage(src, "±Pokémon: {0} Pokémon caught in {1} attempts ({2}). Performed {3}, {4}, and {5}. Used {7} and regained {8}. Stole {6} Pokémon from NPCs.".format(addComma(rec.pokesCaught), addComma(rec.pokesCaught+rec.pokesNotCaught), percentage(rec.pokesCaught, rec.pokesCaught+rec.pokesNotCaught), plural(rec.pokesEvolved, "Evolution"), plural(rec.megaEvolutions, "Mega Evolution"), plural(rec.pokesCloned, "Cloning"), addComma(rec.pokesStolen), plural(rec.devolutions, "spray"), plural(rec.devolutionDust, "dust")), safchan);
             sys.sendMessage(src, "±Bait: Used {0} and {6} with {1} ({2}) and {3} ({4}). Used {7}. Snagged {5} Pokémon away from other Players.".format(plural(rec.baitUsed, "bait"), plural(rec.baitAttracted, "success"), percentage(rec.baitAttracted, rec.baitUsed + rec.goldenBaitUsed), plural(rec.baitNothing, "failure"), percentage(rec.baitNothing, rec.baitUsed + rec.goldenBaitUsed), rec.notBaitedCaught, plural(rec.goldenBaitUsed, "golden"), plural(rec.deluxeBaitUsed, "deluxe")), safchan);
             var earnings = rec.pokeSoldEarnings + rec.luxuryEarnings + rec.pawnEarnings + rec.collectorEarnings + rec.rocksWalletEarned + rec.rocksWindowEarned - rec.rocksWindowLost - rec.rocksWalletLost + rec.pokeRaceEarnings + rec.pyramidMoney + rec.towerEarnings;
@@ -13382,7 +13382,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, link("/records 2","«Next Page»"),safchan);
         }
         else if (commandData === "2") {
-            sys.sendMessage(src, "*** Player Records | Page 2***", safchan);
+            sys.sendMessage(src, "*** Player Records | Page 2 ***", safchan);
             
             var captures = "Caught {0} Pokémon in {1}, {2} in {3}, {4} in {5}, {6} in {7}, {8} in {9}, {10} in {11}, {12} in {13}, {14} in {15}, {16} in {17}, {18} in {19}, {20} in {21}, {22} in {23}, {24} in {25}, {26} in {27}, {28} in {29}, and {30} in {31}. Took {32}.".format(
                 addComma(rec.catchQuick),
@@ -34862,7 +34862,7 @@ function Safari() {
             var skillDescription = safari.getSkillDescription(key);
             if (skillDescription) {
                 var skill = skillData[key];
-                return (label ? "<b>" + (safari.isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "</b> " : "") + "<b>" + link("/quest idol:" + action + ":" + pokeId + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Uses per Charge: " + skill.uses + "]";
+                return (label ? "<b>" + (safari.isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "</b> " : "") + "<b>" + link("/quest idol:" + action + ":" + poke(pokeId) + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Uses per Charge: " + skill.uses + "]";
             }
             else {
                 return "";
@@ -35063,7 +35063,7 @@ function Safari() {
             }
             
             var input = getInputPokemon(d2);
-            var mon = input.num,
+            var mon = input.id,
                 monName = input.name;
             
             if (!mon) {
@@ -35148,6 +35148,7 @@ function Safari() {
             if (cantBecause(src, "finish this quest", ["battle"])) {
                 return;
             }
+
             if (!player.pokemon.contains(mon)) {
                 safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... You don't seem to have that Pokémon? Maybe it ran away from you or somethin'.", safchan);
                 return;
@@ -35187,7 +35188,7 @@ function Safari() {
             }
             
             var input = getInputPokemon(d2);
-            var mon = input.num,
+            var mon = input.id,
                 monName = input.name;
             
             if (!mon) {
