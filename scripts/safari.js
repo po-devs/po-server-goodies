@@ -1704,7 +1704,7 @@ function Safari() {
         "...Oh, it's just an ad. \"Test your verbosity in " + link("/cjoin Hangman", "#Hangman") + "!\" it says.",
         "Every day you play, you can bait 5 times without experiencing the full cooldown! Isn't that neat?",  
         "Logging in 31 days in a row gives you a Master Ball!",
-        "You can read about the latest Safari updates in the <a href='http://pokemon-online.eu/threads/38977/'>Safari Changelog</a>!",
+        "You can read about the latest Safari updates in the <a href='https://discord.gg/xN3wfGJq7k'>Official Safari Discord</a>!",
         "Having trouble finding asleep? Try " + link("/findd Mareep") + "!"
     ];
     var packItems = {
@@ -12736,8 +12736,9 @@ function Safari() {
             if (val === TYPE_NULL_NAME.toLowerCase()) {
                 val = sys.pokemon(772).toLowerCase();
             }
+            val = val.replace(/flabebe|flabébe|flabebé/gi, "flabébé");
             current.forEach(function(x){
-                if (pokePlain(x).toLowerCase().replace(/é/g, "e").indexOf(val) !== -1) {
+                if (pokePlain(x).toLowerCase().indexOf(val) !== -1) {
                     list.push(x);
                 }
             });
