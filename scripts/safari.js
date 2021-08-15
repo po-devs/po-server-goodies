@@ -12736,9 +12736,8 @@ function Safari() {
             if (val === TYPE_NULL_NAME.toLowerCase()) {
                 val = sys.pokemon(772).toLowerCase();
             }
-            val = val.replace(/flabebe|flabébe|flabebé/gi, "flabébé");
             current.forEach(function(x){
-                if (pokePlain(x).toLowerCase().indexOf(val) !== -1) {
+                if (pokePlain(x).toLowerCase().replace(/é/g, "e").indexOf(val.replace(/é/g, "e")) !== -1) {
                     list.push(x);
                 }
             });
