@@ -15506,7 +15506,7 @@ function Safari() {
         var evoData = evolutions[species];
         var candiesRequired = Math.floor((evoData.candies || 300) * (info.shiny ? 1.25 : 1));
         var costumed = player.costume === "breeder";
-        var prev = this.candyCostConversion(player, candiesRequired);
+        var prev = this.candyCostConversion(false, candiesRequired);
         var discountRate = (costumed ? costumeData.breeder.rate : 1);
         candiesRequired = Math.floor(candiesRequired * discountRate);
         candiesRequired = this.candyCostConversion(player, candiesRequired);
