@@ -17413,9 +17413,9 @@ function Safari() {
             //safaribot.sendHtmlMessage(src, changemsg + qualityLost, safchan);
             safaribot.sendHtmlMessage(src, "Your photo of " + toColor(oldDesc, "red") + " was edited and is now a photo of " + toColor(this.describePhoto(photo), "blue") + "!", safchan);
             this.updateShop(player, "brush");
-            safaribot.sendMessage(src, itemsLeft(player, "brush"), safchan);
             player.records.photosRetouched += 1;
             player.balls.brush -= 1;
+            safaribot.sendMessage(src, itemsLeft(player, "brush"), safchan);
             this.saveGame(player);
             return;
         }
