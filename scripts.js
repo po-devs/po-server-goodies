@@ -378,7 +378,7 @@ step: function() {
     }
 
     if (date.getUTCHours() % 3 === 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
-        sendNotice();
+        //sendNotice();
     }
     if (date.getUTCHours() % 1 === 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
         print("CURRENT SERVER TIME: " + date.toUTCString()); //helps when looking through logs
