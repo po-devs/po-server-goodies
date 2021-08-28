@@ -1517,7 +1517,7 @@ cookieBanned: function(src) {
             name = cookie.substr(cookie.indexOf(" ")+1);
         }
         kickbot.sendAll(nonFlashing(sys.name(src)) + " was banned by cookie" + (name ? " [Original Name: " + nonFlashing(name) + "]." : "."), watchchannel);
-        normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
+        normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, contact staff here: https://discord.gg/4SMnsZaPNf");
         sys.kick(src);
         return true;
     } else if (cookie === "muted" || cookie.substr(0, 5) === "muted") {
@@ -1543,7 +1543,7 @@ cookieBanned: function(src) {
             SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, nonFlashing(name) + " (ID)", true);
             return;
         } else {
-            normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
+            normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, contact staff here: https://discord.gg/4SMnsZaPNf");
             sys.kick(src);
             return true;
         }
@@ -1557,15 +1557,15 @@ afterLogIn : function(src) {
     }
     if (sys.os(src) !== "webclient") {
         if (sys.os(src) !== "android" && sys.version(src) < 2600) {
-            sys.sendMessage(src, "Your client version is no longer compatible with the current server version. Please download the most recent update at http://pokemon-online.eu/pages/download/ in order to connect and battle properly!");
-            sys.sendMessage(src, "Tu versión del programa ya no es compatible con la versión actual del servidor. Por favor descarga la versión más reciente en http://pokemon-online.eu/pages/download/ para poder conectarte y tener tus combates!");
+            sys.sendMessage(src, "Your client version is no longer compatible with the current server version. Please download the most recent update at https://github.com/po-devs/pokemon-online/releases in order to connect and battle properly!");
+            sys.sendMessage(src, "Tu versión del programa ya no es compatible con la versión actual del servidor. Por favor descarga la versión más reciente en https://github.com/po-devs/pokemon-online/releases para poder conectarte y tener tus combates!");
             sys.sendMessage(src, "你所使用的版本过旧，已无法与服务器兼容，请下载最新版本 http://tieba.baidu.com/p/4942538103");
             sys.kick(src);
             return;
         }
         if (sys.os(src) === "android" && sys.version(src) < 50) {
-            sys.sendMessage(src, "Your client version is no longer compatible with the current server version. Please download the update at http://pokemon-online.eu/pages/download/ in order to connect and battle properly!");
-            sys.sendMessage(src, "Tu versión del programa ya no es compatible con la versión actual del servidor. Por favor descarga la versión más reciente en http://pokemon-online.eu/pages/download/ para poder conectarte y tener tus combates!");
+            sys.sendMessage(src, "Your client version is no longer compatible with the current server version. Please download the update at https://github.com/po-devs/android-client/releases in order to connect and battle properly!");
+            sys.sendMessage(src, "Tu versión del programa ya no es compatible con la versión actual del servidor. Por favor descarga la versión más reciente en https://github.com/po-devs/android-client/releases para poder conectarte y tener tus combates!");
             sys.sendMessage(src, "你所使用的版本过旧，已无法与服务器兼容，请下载最新版本 http://tieba.baidu.com/p/4942538103");
             sys.kick(src);
             return;
