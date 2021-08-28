@@ -9353,7 +9353,7 @@ function Mafia(mafiachan) {
             var json = sys.getFileContent("scriptdata/mafiathemes/theme_" + name);
             var fileName = sys.time() + "-" + name + ".json";
             sys.writeToFile("usage_stats/formatted/team/" + fileName, json);
-            normalbot.sendMessage(src, "The raw theme can be found here: http://server.pokemon-online.eu/team/" + fileName, channel);
+            //normalbot.sendMessage(src, "The raw theme can be found here: http://server.pokemon-online.eu/team/" + fileName, channel);
             return;
         }
         if (command === "push") {

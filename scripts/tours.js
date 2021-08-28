@@ -2551,7 +2551,7 @@ function tourCommand(src, command, commandData, channel) {
             }
             var notLatestGen = (sys.os(src) === "android" && sys.version(src) < 53) || (sys.os(src) === "windows" && sys.version(src) < 2700);
             if (notLatestGen && (ccbfFound || sys.generationOfTier(tours.tour[key].tourtype) === 7)) {
-                sendBotMessage(src, "Your client does not support the latest generation! Please update your client at http://pokemon-online.eu/pages/download/ before participating in this tier.", tourschan, false);
+                sendBotMessage(src, "Your client does not support the latest generation! Please update your client at https://github.com/po-devs/pokemon-online/releases or https://github.com/po-devs/android-client/releases before participating in this tier.", tourschan, false);
                 return true;
             }
             if (sys.os(src) === "android") {
