@@ -611,7 +611,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             if (online) ipcheck = SESSION.users(tar).ipinfo === undefined;
             if (command === "whereis" && ipcheck) {
                 var ipApi = sys.getFileContent(Config.dataDir+'ipApi.txt');
-                sys.webCall('http://api.ipinfodb.com/v3/ip-city/?key=' + ipApi + '&ip='+ ip + '&format=json', whois);
+                sys.webCall('https://api.ipinfodb.com/v3/ip-city/?key=' + ipApi + '&ip='+ ip + '&format=json', whois);
             } else {
                 whois();
             }
