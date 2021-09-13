@@ -4456,7 +4456,8 @@ function Safari() {
         457: [299, 476],
         512: [59],
         571: [401],
-        608: [133, 134, 135, 136, 196, 197, 470, 471, 700]
+        608: [133, 134, 135, 136, 196, 197, 470, 471, 700],
+        610: [133, 134, 135, 136, 196, 197, 470, 471, 700]
     };
     function movenum(name) {
         if (name.toLowerCase() === "vise grip") {
@@ -60642,7 +60643,7 @@ function Safari() {
                 }
             }
         }
-        if (contestCooldown === 0) {
+        if (contestCooldown <= 0) {
             safari.startContest("*");
         }
         if (lastBaitersDecay === 0) {
