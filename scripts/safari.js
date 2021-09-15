@@ -31410,8 +31410,8 @@ function Safari() {
         }
         var allowShared = allowedSharedIPNames.contains(targetName) || allowedSharedIPNames.contains(userName);
         if (info[0].toLowerCase() == userName || (sys.ip(targetId) === sys.ip(src) && !allowShared)) {
-            safaribot.sendMessage(src, "You can't trade with yourself!", safchan);
-            return;
+            //safaribot.sendMessage(src, "You can't trade with yourself!", safchan);
+            //return;
         }
         if (target.records.pokesCaught < 4) {
             safaribot.sendMessage(src, "This person cannot trade yet!", safchan);
