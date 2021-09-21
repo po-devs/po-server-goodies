@@ -53278,7 +53278,7 @@ function Safari() {
             safaribot.sendMessage(src, "No such person!", safchan);
             return;
         }
-        if (sys.ip(targetId) !== sys.ip(src)) {
+        if (sys.ip(targetId) !== sys.ip(src) || sys.ip(src) === "::1%0") {
             safaribot.sendMessage(src, "Both accounts must be on the same IP to switch!", safchan);
             return true;
         }
