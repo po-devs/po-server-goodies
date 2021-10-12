@@ -210,6 +210,7 @@ function Safari() {
         "999": base64Ribbons.legendRibbon
     };
     var playerTemplate = {
+        dailyPumpkins: 0,
         id: "",
         casedName: "",
         nameColor: "",
@@ -1082,7 +1083,7 @@ function Safari() {
             safari: {name: "safari", fullName: "Safari Ball", type: "ball", icon: 309, price: 30, ballBonus: 1, cooldown: 6000, aliases:["safariball", "safari", "safari ball"], tradable: false},
             great: {name: "great", fullName: "Great Ball", type: "ball", icon: 306, price: 75, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"], tradable: false},
             ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 180, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], tradable: false},
-            master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 10000, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], tradable: true, cap: 1},
+            master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 10000, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], tradable: true, cap: 1, special: true},
 
             myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 368, price: 500, ballBonus: 1, bonusRate: 2.25, cooldown: 15000, aliases:["mythball", "myth", "myth ball"], tradable: true},
             level: {name: "level", fullName: "Level Ball", type: "ball", icon: 310, price: 500, ballBonus: 1, bonusRate: 0.4, maxBonus: 3, cooldown: 10000, aliases:["levelball", "level", "level ball"], tradable: true},
@@ -1094,7 +1095,7 @@ function Safari() {
             mono: {name: "mono", fullName: "Mono Ball", type: "ball", icon: 327, price: 321, ballBonus: 1, bonusRate: 2, cooldown: 9000, aliases:["monoball", "mono", "mono ball"], tradable: true},
             love: {name: "love", fullName: "Love Ball", type: "ball", icon: 314, price: 500, ballBonus: 1, bonusRate: 2.5, maxBonus: 2.5, cooldown: 10000, aliases:["loveball", "love", "love ball"], tradable: true},
             
-            spirit: {name: "spirit", fullName: "Spirit Ball", type: "ball", icon: 327, price: 321, ballBonus: 1.5, bonusRate: 0.5, cooldown: 6000, aliases:["spiritball", "spirit", "spirit ball"], tradable: false, cap: 10},
+            spirit: {name: "spirit", fullName: "Spirit Ball", type: "ball", icon: 327, price: 321, ballBonus: 1.5, bonusRate: 0.5, cooldown: 6000, aliases:["spiritball", "spirit", "spirit ball"], tradable: false, cap: 10, special: true},
 
             lightning: {name: "lightning", fullName: "Lightning Ball", type: "ball", icon: 319, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 12000, aliases:["lightningball", "lightning", "lightning ball"], tradable: true},
             heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 10000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
@@ -1102,7 +1103,7 @@ function Safari() {
             mirror: {name: "mirror", fullName: "Mirror Ball", type: "ball", icon: 323, price: 500, ballBonus: 1, bonusRate: 1, maxBonus: 16, cooldown: 12000, aliases:["mirrorball", "mirror", "mirror ball"], tradable: true},
             uturn: {name: "uturn", fullName: "Switch Ball", type: "ball", icon: 311, price: 500, ballBonus: 1, bonusRate: 2, maxBonus: 2, cooldown: 16000, aliases:["switchball", "switch", "uturn", "switch ball"], tradable: true},
             inver: {name: "inver", fullName: "Inver Ball", type: "ball", icon: 322, price: 500, ballBonus: 1.5, bonusRate: 1, cooldown: 12000, aliases:["inverball", "inver", "invert", "inver ball"], tradable: true},
-            cherish: {name: "cherish", fullName: "Cherish Ball", type: "ball", icon: 328, price: 500, ballBonus: 3, bonusRate: 1, cooldown: 18000, aliases:["cherishball", "cherish", "cherish ball"], tradable: false},
+            cherish: {name: "cherish", fullName: "Cherish Ball", type: "ball", icon: 328, price: 500, ballBonus: 3, bonusRate: 1, cooldown: 18000, aliases:["cherishball", "cherish", "cherish ball"], tradable: false, special: true},
             
             //Other Items
             //Seasonal change. Rock icon is 206, Snowball is 334
@@ -1390,11 +1391,11 @@ function Safari() {
                 extraApricornsFromContest: [10, 11],
                 catchSing: [12, 15],
                 extendedMushroom: [16, 18],
-                flowerPack: [20, 20],
+                flowerPack: [20, 20]
             }
         },
         fisherman: {
-            icon: 359, name: "fisherman", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], acqReq: 80, record: "baitWater", rate: 0.2,
+            icon: 359, name: "fisherman", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], acqReq: 80, record: "baitWater", rate: 0.3,
             effect: "A master in angling. Superb technique at handling fishing rods allows them to reel back Poké Balls that failed to catch a Pokémon!",
             effect2: "Has higher cooldown using the Itemfinder.",
             noAcq: "Bait {0} more pure Water-type Pokémon",
@@ -1406,7 +1407,8 @@ function Safari() {
                 reducedCatchFailCD: [6, 8],
                 catchSplash: [10, 11],
                 extraDust: [13, 16],
-                fisherPack: [20, 20],
+                fisherPack: [18, 18],
+                reelOtherPokeballs: [20, 20]
             }
         },
         backpacker: {
@@ -1893,6 +1895,7 @@ function Safari() {
     var wildAbilityBoost = 5;
     var wildAbilityBoostLimit = wildAbilityBoost * 5;
     var wildBallThrows = {};
+    var currentThrowers = [];
     var maxThrows = 10;
     var pokeblockThrows = 0;
     var currentThrows;
@@ -2937,6 +2940,7 @@ function Safari() {
         currentDisplayBST = 0;
         wildEvent = false;
         wildBallThrows = {};
+        currentThrowers = [];
         currentPokemonCount = 1;
         lastPokemonCount = 1;
         currentBaiter = null;
@@ -8273,6 +8277,9 @@ function Safari() {
                     if (canHaveAbility(leader, abilitynum("Imposter")) && !canHaveAbility(currentDisplay, abilitynum("Imposter"))) {
                         abilityMessageList[onChannel[e]].push("Your {0}'s Imposter transformed it into {1}!".format(poke(leader, true), an(poke(currentDisplay, true))));
                     }
+                    if (canHaveAbility(leader, abilitynum("Ball Fetch"))) {
+                        abilityMessageList[onChannel[e]].push("Your {0}'s Ball Fetch can recover your Poké Balls for you!".format(poke(leader, true)));
+                    }
                     var ignoreRules = [12, 109]; // Oblivious, Unaware
                     if (contestCount > 0 && currentRules) {
                         for (var i = 0; i < ignoreRules.length; i++) {
@@ -8372,6 +8379,7 @@ function Safari() {
         currentTypeOverride = null;
         currentExtraBST = 0;
         wildBallThrows = {};
+        currentThrowers = [];
         this.runPendingActive();
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
@@ -9991,7 +9999,7 @@ function Safari() {
         var player = getAvatar(src);
         var reason = "catch Pokémon";
         var leader = this.getEffectiveLead(player);
-        var leadDisplay = this.getEffectiveLead(player, true);
+        var trueLeader = this.getEffectiveLead(player, true);
         if (player.tutorial.inTutorial) {
             if (player.tutorial.privateWildPokemon) {
                 safari.tutorialCatch(src, data);
@@ -10140,11 +10148,13 @@ function Safari() {
 
         var rng = Math.random();
         var flee;
+        var caughtAny = false;
         if (crystalEffect.effect === "photo" && player.photos.length < 20) {
             this.takePhoto(src, "*", true, true);
         }
 
         if (rng < finalChance || ballBonus == 255) {
+            caughtAny = true;
             currentPokemonCount--;
             var amt = currentPokemonCount;
             var remaining = " There " + (amt > 1 ? "are" : "is") + " still " + currentPokemonCount + " " + pokeName + " left to catch!";
@@ -10179,7 +10189,7 @@ function Safari() {
             var stype = ball === "mono" && type2(catchingMon) !== "???" ? "pure " + (!player.options.monoSecondary ? type1(catchingMon) : type2(catchingMon)) + " " : "";
             var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
             var playerDisplayName = name;
-            var playerDisplayMon = ch + stype + scolor + poke(leadDisplay, true);
+            var playerDisplayMon = ch + stype + scolor + poke(trueLeader, true);
             if (safari.hasCostumeSkill(player, "permanentStealthThrow")) {
                 playerDisplayName = "Some stealthy ninja";
                 playerDisplayMon = "well-trained ninja Pokémon";
@@ -10195,13 +10205,13 @@ function Safari() {
                     team = "Unemployed"
                 }
                 var title = player.spiritDuels.rankName;
-                safaribot.sendHtmlAll(team + " " + title + " " + name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their "  + poke(leadDisplay, true) + "!", safchan);
+                safaribot.sendHtmlAll(team + " " + title + " " + name + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their "  + poke(trueLeader, true) + "!", safchan);
             } else {
                 safaribot.sendHtmlAll(playerDisplayName + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their " + playerDisplayMon + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
             
-            if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !ignoresWildAbilities(player) && !["cherish", "master", "spirit"].contains(ball) && player.balls[ball] > 1 && chance(0.3)) {
+            if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !ignoresWildAbilities(player) && !allBalls.filter(function(e) { return itemData[e].special }).contains(ball) && player.balls[ball] > 1 && chance(0.3)) {
                 safaribot.sendAll("The wild {0}'s Pressure used up an extra {1}...".format(poke(currentPokemon, true), finishName(ball)), safchan);
                 player.balls[ball] -= 1;
             }
@@ -10289,6 +10299,15 @@ function Safari() {
                     safaribot.sendMessage(src, "Unfortunately, you had to discard {0} as your bag was full!".format(readable(discarded)), safchan);
                     //else
                        // sendAll("Unfortunately, {0} had to discard {1} as their bag was full!".format(name, readable(discarded)));
+                }
+            }
+            var today = getDay(now());
+            if ([710, 711].contains(pokeInfo.species(currentPokemon)) && today >= 18917 && today <= 18930) { // TIME GATE
+                if (player.dailyPumpkins < 3 && player.balls.entry < getCap("entry")) {
+                    player.balls.entry++;
+                    player.dailyPumpkins++;
+                    safaribot.sendMessage(src, "The wild " + poke(currentPokemon) + " dropped a spooky " + finishName("entry") + "! You can find " + (3 - player.dailyPumpkins) + " more today from wild Pumpkaboo and Gourgeist.", safchan);
+                    safari.saveGame(player);
                 }
             }
             if (safari.validDailyBoost(player)) {
@@ -10534,7 +10553,7 @@ function Safari() {
             var active = leader;
             var activeNum = parseInt(active, 10);
             var activeSpecies = evolutions.hasOwnProperty(activeNum+"") ? activeNum : pokeInfo.species(activeNum);
-            if (evolutions.hasOwnProperty(activeSpecies) && evolutions[activeSpecies].evo !== -1 && leader === leadDisplay) { // check against leadDisplay to determine if transformed
+            if (evolutions.hasOwnProperty(activeSpecies) && evolutions[activeSpecies].evo !== -1 && leader === trueLeader) { // check against trueLeader to determine if transformed
                 if (player.helds[0] == 9) {
                     player.berries.petayaCombo++;
                     var activeShiny = pokeInfo.shiny(active);
@@ -10614,6 +10633,30 @@ function Safari() {
                     sys.sendHtmlMessage(src, toColor("<timestamp/><b>±Contest:</b> ", "#3daa68") + "(Caught {0}, BST {1})".format(contestCatchers[nameLower].length, add(contestCatchers[nameLower].map(getBST))), safchan);
                 }
             }
+            if (player.costume === "fisherman" && safari.hasCostumeSkill(player, "reelOtherPokeballs") && chance(0.5)) {
+                var validReels = Object.keys(wildBallThrows).filter(function(e) { return !itemData[e].special });
+                var finalSample = {};
+                for (var b in wildBallThrows) {
+                    if (!validReels.contains(b)) {
+                        continue;
+                    }
+                    var otherThrows = wildBallThrows[b].filter(function(e) { return e !== player.id }).length;
+                    if (otherThrows > 0) {
+                        finalSample[b] = otherThrows;
+                    }
+                }
+                if (Object.keys(finalSample).length > 0) {
+                    var finalReel = randomSample(finalSample);
+                    if (player.balls[finalReel] >= getCap(finalReel)) {
+                        safaribot.sendMessage(src, "You reeled in someone's unsuccessful " + finishName(finalReel) + "! Unfortunately, you can't carry any more...", safchan);
+                    }
+                    else {
+                        player.balls[finalReel] += 1;
+                        safaribot.sendMessage(src, "You reeled in someone's unsuccessful " + finishName(finalReel) + "! You now have " + plural(player.balls[finalReel], finishName(finalReel)) + ".", safchan);
+                        safari.saveGame(player);
+                    }
+                }
+            }
             if (amt < 1) {
                 sendAll("", true, true);
                 currentPokemon = null;
@@ -10623,6 +10666,7 @@ function Safari() {
                 currentDisplayBST = 0;
                 wildEvent = false;
                 wildBallThrows = {};
+                currentThrowers = [];
                 wildSpirit = false;
                 currentBaiter = null;
                 if (contestCount <= 0) {
@@ -10647,10 +10691,12 @@ function Safari() {
             }
         } else {
             if (!wildBallThrows.hasOwnProperty(ball)) {
-                wildBallThrows[ball] = 0;
+                wildBallThrows[ball] = [];
             }
 
-            wildBallThrows[ball]++;
+            var keep = false;
+            var keepMsg = "";
+            wildBallThrows[ball].push(player.id);
             cooldown = cooldown * (1 - this.getFortune(player, "soothe", 0));
             if (ball == "ultra" && this.hasCostumeSkill(player, "lowUltraCD")) {
                 cooldown *= 0.5;
@@ -10658,18 +10704,27 @@ function Safari() {
             if ((ball === "spirit") || (ball === "cherish")) {
                 player.balls[ball] += 1;
             }
-            else {
-                var keep = false;
-                if (!freeThrow && (crystalEffect.effect === "fisherman" || chance((player.costume === "fisherman" ? costumeData.fisherman.rate : 0) + this.getFortune(player, "fisherman", 0)))) {
+            else if (!freeThrow) {
+                var chanceKeep = chance((player.costume === "fisherman" ? costumeData.fisherman.rate : 0) + this.getFortune(player, "fisherman", 0));
+                if (crystalEffect.effect === "fisherman" || chanceKeep || canHaveAbility(trueLeader, abilitynum("Ball Fetch"))) {
                     keep = true;
                     player.balls[ball] += 1;
+                    if (crystalEffect.effect === "fisherman") {
+                        keepMsg = "The power of your {0} instantly replaced your lost {1}!".format(finishName("crystal"), finishName(ball));
+                    }
+                    else if (chanceKeep) {
+                        keepMsg = "A quick jerk of your fishing rod snags the {0} you just threw, allowing you to recover it!".format(finishName(ball));
+                    }
+                    else if (canHaveAbility(trueLeader, abilitynum("Ball Fetch"))) {
+                        keepMsg = "Your {0}'s Ball Fetch retrieved the {1} for you!".format(poke(trueLeader, true), finishName(ball));
+                    }
                 }
             }
             pokeName = poke(currentDisplay, true);
             if (currentTheme && contestThemes[currentTheme].disguises && contestThemes[currentTheme].notDisguised && (!(contestThemes[currentTheme].notDisguised.contains(currentDisplay)))) {
                 pokeName = "Trick-or-treater";
             }
-            safaribot.sendHtmlMessage(src, "You threw " + an(ballName) + " at " + pokeName +"! " + (keep ? "<i>A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it!</i> " : "") + itemsLeft(player, ball), safchan);
+            safaribot.sendHtmlMessage(src, "You threw " + an(ballName) + " at " + pokeName +"! " + itemsLeft(player, ball), safchan);
             if (rng < finalChance + 0.1) {
                 safaribot.sendHtmlMessage(src, "<b>Gah! It was so close, too!</b>", safchan);
             } else if (rng < finalChance + 0.2) {
@@ -10686,7 +10741,11 @@ function Safari() {
             if (ball == "spy") {
                 playerDisplayName = "an anonymous person";
             }
+
             sendAll(pokeName + " broke out of " + playerDisplayName + "'s " + ballName + "!");
+            if (keep) {
+                safaribot.sendMessage(src, keepMsg, safchan);
+            }
             
             if (canHaveAbility(currentPokemon, abilitynum("Color Change")) && !ignoresWildAbilities(player)) {
                 if (type2(leader) !== "???") { // If has 2 types
@@ -10749,8 +10808,8 @@ function Safari() {
         } else {
             this.changeWildMood(leader);
             this.changeWildAction("catch")
-            if (!freeThrow && !["spirit", "cherish", "master"].contains(ball)) {
-                if (crystalEffect.effect === "double" || safari.hasCostumeSkill(player, "ninjaDoubleThrow")) {
+            if (!freeThrow && !allBalls.filter(function(e) { return itemData[e].special }).contains(ball)) {
+                if (crystalEffect.effect === "double" || (safari.hasCostumeSkill(player, "ninjaDoubleThrow") && chance(0.5) && currentPokemonCount === 1 && !caughtAny)) {
                     this.throwBall(src, ball, true, true, command, false, true);
                 }
             }
@@ -10774,6 +10833,9 @@ function Safari() {
 
         lastWildAction = now();
         safari.pendingNotifications(player.id);
+        if (currentPokemonCount > 0 && !currentThrowers.contains(player.id)) {
+            currentThrowers.push(player.id);
+        }
         this.saveGame(player);
     };
     this.pokemonFlee = function(customFlee) {
@@ -10835,6 +10897,7 @@ function Safari() {
         currentBaiter = null;
         wildSpirit = false;
         wildBallThrows = {};
+        currentThrowers = [];
         spiritSpawn = false;
         if (contestCount <= 0) {
             this.runPendingActive();
@@ -18065,7 +18128,8 @@ function Safari() {
         scientistPhotoGuarantee: "Any photos you take of the Scientist's current research subject are guaranteed to be at least Great quality",
         ninjaSniper: "Increased catch rate when catching Pokémon baited by other people",
         permanentStealthThrow: "All your baiting, throwing, and catching actions are stealthy",
-        ninjaDoubleThrow: "Create a copy of yourself to throw 2 Poké Balls at once (does not work with " + readable(["master", "cherish", "spirit"].map(finishName).map(es), "or") + ")"
+        ninjaDoubleThrow: "Create a copy of yourself to throw 2 Poké Balls at once at a 50% chance (does not work with " + readable(allBalls.filter(function(e) { return itemData[e].special }).map(finishName).map(es), "or") + "). Cannot double throw if there is more than 1 wild Pokémon.",
+        reelOtherPokeballs: "Grants a 50% chance to reel in a failed Poké Ball thrown by other players whenever you catch a Pokémon (cannot reel in " + readable(allBalls.filter(function(e) { return itemData[e].special }).map(finishName).map(es), "or") + ")."
     };
     this.showCostumeInfo = function(src, commandData) {
         var player = getAvatar(src);
@@ -18584,7 +18648,7 @@ function Safari() {
         
         var list = split[0].split(","), trySell, p, out = [], cashout = 0;
         for (var i = 0; i < list.length; i++) {
-            p = getInputPokemon(list[i]).id;
+            p = getInputPokemon(list[i].trim()).id;
             
             if (!p) {
                 safaribot.sendMessage(src, list[i] + " is not a valid Pokémon!", safchan);
@@ -19524,6 +19588,7 @@ function Safari() {
                 safari.notification(player, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", "Login");
             }
             player.firstCelebrityRun = true;
+            player.dailyPumpkins = 0;
             
             safari.trialsLogin(player);
             safari.bonusLogin(player);
@@ -19851,13 +19916,16 @@ function Safari() {
             do {
                 m = this.generateMission(e);
             } while (this.checkMissionConflicts(m, player.missions, today));
-            
             m.count = 0;
             m.day = today;
             m.finished = false;
             player.missions.push(m);
         }
-        
+        if (today >= 18917 && today <= 18930) { // TIME GATE
+            player.missions.push(
+                {"objective":"catchPoke","type":"type","target":"Ghost","goal":10,"points":0,"desc":"[Bonus] Catch 10 Ghost-type Pokémon","reward":"1@entry","count":0,"day":today,"finished":false}
+            );
+        }
         this.saveGame(player);
     };
     this.generateMission = function(level) {
@@ -38399,7 +38467,7 @@ function Safari() {
             line5 += " (" + amt + ")";
         }
         line5 += "»";
-        line5 = link("/notifications", line5);
+        line5 = link("/notifications" + (amt > 0 ? " unread" : ""), line5);
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, line1, safchan);
         safaribot.sendHtmlMessage(src, line2, safchan);
