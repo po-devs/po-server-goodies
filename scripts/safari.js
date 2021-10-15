@@ -2511,8 +2511,7 @@ function Safari() {
     var lastContests = [];
     var gachaJackpotAmount = 200; //Jackpot for gacha tickets. Number gets divided by 10 later.
     var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
-    var allTrackers = (SESSION.global() && SESSION.global().allTrackers ? SESSION.global().allTrackers : [""]);
-    var allTrackers = (SESSION.global() && SESSION.global().allTrackers ? SESSION.global().allTrackers : []);
+    var allTrackers = (SESSION.global() && SESSION.global().allTrackers ? SESSION.global().allTrackers : ["blinky"]);
     var dailyBoost;
     var scientistQuest;
     var photographQuest;
@@ -6929,7 +6928,7 @@ function Safari() {
         return [65555, 65556, 65562, 65563, 65564, 65573, 65574, 65586, 65587, 65588, 65589, 65610, 65611, 65612, 65624, 65625, 65639, 65641].contains(parseInt(pokeNum, 10));
     }
     function isGalarianForm(pokeNum) {
-        return [131124, 65613, 65614, 65646, 65658, 65758, 65799, 65800, 66090, 131627, 197163, 66098, 66154, 65680, 65681, 65682, 65615, 131152, 65735].contains(parseInt(pokeNum, 10));;
+        return [131124, 65613, 65614, 65619, 65646, 65658, 65758, 65799, 65800, 66090, 131627, 197163, 66098, 66154, 65680, 65681, 65682, 65615, 131152, 65735].contains(parseInt(pokeNum, 10));;
     }
     function getPokeColor(pokeNum) {
         var c, id = parseInt(pokeNum, 10);
@@ -53842,6 +53841,7 @@ function Safari() {
         sys.write(saveBackupFile3, sys.getFileContent(saveBackupFile2));
         sys.write(saveBackupFile2, sys.getFileContent(saveBackupFile1));
         sys.write(saveBackupFile1, sys.getFileContent(rawPlayers.fname));
+        sys.write(permFile + "-backup", sys.getFileContent(permObj));
 
         backupPlayers1 = new MemoryHash(saveBackupFile1);
         backupPlayers2 = new MemoryHash(saveBackupFile2);
