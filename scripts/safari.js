@@ -6928,7 +6928,7 @@ function Safari() {
         return [65555, 65556, 65562, 65563, 65564, 65573, 65574, 65586, 65587, 65588, 65589, 65610, 65611, 65612, 65624, 65625, 65639, 65641].contains(parseInt(pokeNum, 10));
     }
     function isGalarianForm(pokeNum) {
-        return [131124, 65613, 65614, 65619, 65646, 65658, 65758, 65799, 65800, 66090, 131627, 197163, 66098, 66154, 65680, 65681, 65682, 65615, 131152, 65735].contains(parseInt(pokeNum, 10));;
+        return [131124, 65613, 65614, 65619, 65646, 65658, 65758, 65799, 65800, 66090, 131627, 197163, 66098, 66154, 65680, 65681, 65682, 65615, 131152, 65735].contains(parseInt(pokeNum, 10));
     }
     function getPokeColor(pokeNum) {
         var c, id = parseInt(pokeNum, 10);
@@ -34930,7 +34930,7 @@ function Safari() {
             var skillDescription = safari.getSkillDescription(key);
             if (skillDescription) {
                 var skill = skillData[key];
-                return (label ? "<b>" + (safari.isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "</b> " : "") + "<b>" + link("/quest idol:" + action + ":" + poke(pokeId) + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Uses per Charge: " + skill.uses + "]";
+                return (label ? "<b>" + (safari.isBasicSkill(key) ? "[Basic]" : toColor("[Special]", "DarkOrchid")) + "</b> " : "") + "<b>" + link("/quest idol:" + action + ":" + (pokeId ? poke(pokeId) : "[Pokémon Name]") + ":" + skill.name, skill.name, setmsg) + "</b> [" + skillDescription + ". Uses per Charge: " + skill.uses + "]";
             }
             else {
                 return "";
@@ -35068,7 +35068,7 @@ function Safari() {
             
             for (var i = 0; i < Object.keys(skillData).length; i++) {
                 if (safari.isBasicSkill(Object.keys(skillData)[i])) {
-                    safaribot.sendHtmlMessage(src, "-<b>" + Object.keys(skillData)[i].slice(5) + "-type's</b> " + retSkillData("[Pokémon Name]", Object.keys(skillData)[i], "unlock", false, true), safchan);
+                    safaribot.sendHtmlMessage(src, "-<b>" + Object.keys(skillData)[i].slice(5) + "-type's</b> " + retSkillData(false, Object.keys(skillData)[i], "unlock", false, true), safchan);
                 }
             }
         }
@@ -35099,7 +35099,7 @@ function Safari() {
                 lastPage = pageNum * displayLimit + displayLimit >= monList.length;
             
             for (i = 0; i < monListSlice.length; i++) {
-                safaribot.sendHtmlMessage(src, "-<b>" + poke(parseInt(monListSlice[i])) + "'s</b> " + retSkillData(poke(monListSlice[i]), specialSkillsSlice[i], "unlock"), safchan);
+                safaribot.sendHtmlMessage(src, "-<b>" + poke(parseInt(monListSlice[i])) + "'s</b> " + retSkillData(monListSlice[i], specialSkillsSlice[i], "unlock"), safchan);
                 if (i === monListSlice.length-1) {
                     var pageControls = (firstPage ? "" : link("/quest idol:showallspecial:" + (pageNum-1), "«Previous Page»")) + (lastPage ? "" : " " + link("/quest idol:showallspecial:" + (pageNum+1), "«Next Page»"));
                     if (pageControls) {
@@ -35952,8 +35952,8 @@ function Safari() {
                     result = result + "";
                 }
                 
-                safari.toRecentQuests(player, "celebrity");
-                safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Alright, you brought the " + info.name + " and the " + plural(cost, "philosopher") + ", so let's start this!", safchan);
+                //safari.toRecentQuests(player, "celebrity");
+                safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Alright, you brought the " + info.name + " and the " + plural(cost, (usePebble ? "philosopherpebble" : "philosopher")) + ", so let's start this!", safchan);
                 if (usePebble) {
                     player.balls.philosopherpebble -= cost;
                     this.updateShop(player, "philosopherpebble");
