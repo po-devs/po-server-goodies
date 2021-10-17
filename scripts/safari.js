@@ -941,14 +941,16 @@ function Safari() {
                     "blkapricorn": 10,
                     "pnkapricorn": 20,
                     "ylwapricorn": 10
-                }
+                },
+                "showAmt": "luxury"
             },
             "mono": {
                 "reward": "20@mono",
                 "ingredients": {
                     "blkapricorn": 20,
                     "whtapricorn": 20
-                }
+                },
+                "showAmt": "mono"
             },
             "myth": {
                 "reward": "20@myth",
@@ -956,14 +958,16 @@ function Safari() {
                     "redapricorn": 5,
                     "pnkapricorn": 20,
                     "grnapricorn": 15
-                }
+                },
+                "showAmt": "myth"
             },
             "quick": {
                 "reward": "20@quick",
                 "ingredients": {
                     "bluapricorn": 20,
                     "ylwapricorn": 20
-                }
+                },
+                "showAmt": "quick"
             },
             "clone": {
                 "reward": "20@clone",
@@ -972,7 +976,8 @@ function Safari() {
                     "blkapricorn": 10,
                     "grnapricorn": 10,
                     "redapricorn": 10
-                }
+                },
+                "showAmt": "clone"
             },
             "level": {
                 "reward": "20@level",
@@ -980,7 +985,8 @@ function Safari() {
                     "whtapricorn": 15,
                     "grnapricorn": 15,
                     "pnkapricorn": 10
-                }
+                },
+                "showAmt": "level"
             },
             "spy": {
                 "reward": "20@spy",
@@ -988,7 +994,8 @@ function Safari() {
                     "whtapricorn": 5,
                     "bluapricorn": 20,
                     "blkapricorn": 15
-                }
+                },
+                "showAmt": "spy"
             },
             "love": {
                 "reward": "20@love",
@@ -996,7 +1003,8 @@ function Safari() {
                     "pnkapricorn": 20,
                     "bluapricorn": 10,
                     "blkapricorn": 10
-                }
+                },
+                "showAmt": "love"
             },
             "lightning": {
                 "reward": "20@lightning",
@@ -1004,7 +1012,8 @@ function Safari() {
                     "ylwapricorn": 20,
                     "whtapricorn": 20,
                     "dew": 25
-                }
+                },
+                "showAmt": "lightning"
             },
             "heavy": {
                 "reward": "20@heavy",
@@ -1013,7 +1022,8 @@ function Safari() {
                     "bluapricorn": 10,
                     "redapricorn": 10,
                     "dew": 15
-                }
+                },
+                "showAmt": "heavy"
             },
             "photo": {
                 "reward": "20@photo",
@@ -1022,7 +1032,8 @@ function Safari() {
                     "whtapricorn": 10,
                     "blkapricorn": 10,
                     "hdew": 10
-                }
+                },
+                "showAmt": "photo"
             },
             "mirror": {
                 "reward": "20@mirror",
@@ -1031,7 +1042,8 @@ function Safari() {
                     "ylwapricorn": 10,
                     "pnkapricorn": 10,
                     "dew": 20
-                }
+                },
+                "showAmt": "mirror"
             },
             "switch": {
                 "reward": "20@uturn",
@@ -1041,7 +1053,8 @@ function Safari() {
                     "whtapricorn": 10,
                     "bluapricorn": 5,
                     "hdew": 20
-                }
+                },
+                "showAmt": "switch"
             },
             "inver": {
                 "reward": "20@inver",
@@ -1050,14 +1063,16 @@ function Safari() {
                     "redapricorn": 20,
                     "dew": 40,
                     "hdew": 40
-                }
+                },
+                "showAmt": "inver"
             },
             "cherish": {
                 "reward": "2@cherish",
                 "ingredients": {
                     "pnkapricorn": 40,
                     "ldew": 10
-                }
+                },
+                "showAmt": "cherish"
             }
         }
         );
@@ -10305,6 +10320,7 @@ function Safari() {
                 if (player.dailyPumpkins < 3 && player.balls.entry < getCap("entry")) {
                     player.balls.entry++;
                     player.dailyPumpkins++;
+                    rafflePlayers.add(player.id, player.balls.entry);
                     safaribot.sendMessage(src, "The wild " + poke(currentPokemon) + " dropped a spooky " + finishName("entry") + "! You can find " + (3 - player.dailyPumpkins) + " more today from wild Pumpkaboo and Gourgeist.", safchan);
                     safari.saveGame(player);
                 }
@@ -35476,11 +35492,11 @@ function Safari() {
             this.saveGame(player);
         }
         else {
-            if (!validItems.contains(item)) {
+            if (!validItems.contains(itemAlias(item))) {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Aww, shucks. That ain't sumthin' I know how to make, ya see? (To view available recipes use " + link("/quest arborist:help") + ")", safchan);
                 return;
             }
-            var rec = recipes[item];
+            var rec = recipes[itemAlias(item)];
             var recipeString = translateStuff(rec.ingredients, true);
             var colors = ["#FF6347", "#0000FF", "#006400", "#9932CC"];
             var cc = 0;
@@ -35594,8 +35610,8 @@ function Safari() {
             }
             giveStuff(player, ingUsed, true);
             var rew = giveStuff(player, toStuffObj(reward), true);
-            safaribot.sendMessage(src, "The arborist works in a flurry, and before you know it, you have " + readable(rew.gained) + " in your hands!", safchan);
-            safaribot.sendMessage(src, "You received " + readable(rew.gained) + ".", safchan);
+            safaribot.sendMessage(src, "The arborist works in a flurry, and before you know it, you received " + readable(rew.gained) + "!", safchan);
+            safaribot.sendMessage(src, "You now have " + plural(player.balls[rec.showAmt], rec.showAmt) + ".", safchan);
             if (rec.records) {
                 for (e in rec.records) {
                     player.records[e] += rec.records[e];
