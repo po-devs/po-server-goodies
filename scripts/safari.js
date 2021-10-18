@@ -1045,7 +1045,7 @@ function Safari() {
                 },
                 "showAmt": "mirror"
             },
-            "switch": {
+            "uturn": {
                 "reward": "20@uturn",
                 "ingredients": {
                     "redapricorn": 5,
@@ -1054,7 +1054,7 @@ function Safari() {
                     "bluapricorn": 5,
                     "hdew": 20
                 },
-                "showAmt": "switch"
+                "showAmt": "uturn"
             },
             "inver": {
                 "reward": "20@inver",
@@ -35410,7 +35410,7 @@ function Safari() {
         if (!data[0] || data[0].toLowerCase() === "help") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: I can use these here Apricorns to make some neat stuff, alright? (Use " + link("/quest arborist:", "/quest arborist:[recipe name]", true) + " to view the required materials)", safchan);
             safaribot.sendHtmlMessage(src, "Available Recipes:" + validItems.map(function(x) {
-                return " " + link("/quest arborist:" + x, cap(x, true) + " Ball");
+                return " " + link("/quest arborist:" + x, finishName(x));
             }), safchan);
             safaribot.sendHtmlMessage(src, "Arborist: I've always got lotsa Apricorns myself, so lemme know if you're interested in {0}!".format(link("/quest arborist:trade", "trading")), safchan);
             sys.sendMessage(src, "", safchan);
@@ -35530,7 +35530,7 @@ function Safari() {
             }
             if (!data[1] || data[1].toLowerCase() !== "finish") {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: See them apricorns? Bring 'em here so I can make y'all the sweetest catching materials around, 'kay? (If you have the required materials you can use " + link("/quest arborist:" + item + ":finish") + " to create an item)", safchan);
-                safaribot.sendHtmlMessage(src, "<b>" + cap(item, true) + "</b> Recipe: " + toColor(recipeString, "red") + " --> " + readable(coloredRewards, "or"), safchan);
+                safaribot.sendHtmlMessage(src, "<b>" + finishName(item) + "</b> Recipe: " + toColor(recipeString, "red") + " --> " + readable(coloredRewards, "or"), safchan);
                 safaribot.sendHtmlMessage(src, "Progress: " + progress.join(", "), safchan);
                 sys.sendMessage(src, "", safchan);
                 return;
