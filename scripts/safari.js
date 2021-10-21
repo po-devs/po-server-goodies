@@ -114,6 +114,7 @@ function Safari() {
         "winningRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABg1BMVEUAAABISFBISFBISFBHR1BISFBISFBISFBERE1ISFBISFBISFBFRU1HR1BHR1BDQ05ISFBISFBISFBISFBISFBISFBISFBISFBISFBISFBHR1BISFBGSE5GR01HSE5ISFBGR01ISFBISFBISFBISFBISFBISFBFRU1DQ0txcXmLi5NLS1VxcXje3qv19ZudnV1JSlCIiGbz827x8Vzr5Gual15TVFBVVVFLS0+cnVfn4WvHeefNlMLh22ro6F5KSlDJxmPTm8LBZv+2kpqqrlJJSVDLzFvy7GtYSW18Up7IyF309GCnq1J/W5XFdOupqV3KymCOkFaRjV/s5W2mplzBvWiXfYdVSmOUlVakomGthKOhXs2MjlakoGWmbbyrgqPAu2jExGCTk1u/umi/vGTAwV/AwGBOTlGVllrDw2BRUVF4eFZJSFJMR1lZTWiXXryYXr1eTm6sY9qtY9xiT3XAaPjBaPliT3TCaPu5Zu5kT3e2ZeqkYdFaTWlyU4tHSE////+9/yFBAAAAJ3RSTlMAAAOK1iMGf/zDIhXvxJXtD8UgwGNnajvdPOACx8fHr8BiEAEwQCFRUvzDAAAAAWJLR0SAZb2eaAAAAAd0SU1FB+UCAQwwHf17t9oAAAFkSURBVCjPY2BgYGRkYlbXYGFlBAJWFg11ZiZGRgYQYGRj59DU0ubkYmTk4tTW0uRgZ4NKcPPo6OrpG/Dy8fEa6Ovp6vBwwyT4DY2MTUzNzM3NTE2MjQz5YRICghaWVtY2tnZ2tjbWVpYWggJQCUYhYXsHRydnFxdnJ0cHe2EhqOVAGRFXN3dnD09PD2d3N1cRmDhQRtTVy9vH18/P18fby1UULg6S8A8IDAoODgoM8EeTCAkNC4+ICA8LDUGTiIyKDouJCYuOikSTiI2LT0hMTIiPi0WREHNNSk5JTUtLTUlOchVDkhCXSM/IBIOMdAlxJAlGSamsbDDIkpJEeAMkI5iTCwY5gsjiDAzSMnn5BUCQnycjzYAiIVtYVAwERYWy6BIlpWVAUFqCIVFeWlFZWVFajiFRVV1TUlJTXYUuIVdbVy8vX19XK4cmIVivoKikpKhQL4gqoayiqgZKPmqqKsoQEQDhh1GbWc+A3wAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wMi0wMVQxMjo0ODoyNSswMDowMI8o2sMAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDItMDFUMTI6NDg6MjUrMDA6MDD+dWJ/AAAAAElFTkSuQmCC",
         "victoryRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAB3VBMVEUAAABISFBISFBISFBHR1BISFBISFBISFBERE1ISFBISFBISFBFRU1HR1BHR1BDQ05ISFBISFBISFBISFBISFBISFBFRVBGRlBISFBGRlBISFBISFBISFBFSE9FR05ISFBISFBISFBISFBISFBJSFBISFBISFBISFBISFBISFBISFBISFBISFBISFBISFBFRU1DQ0txcXmLi5NLS1VxcXje3qv19ZudnV1JSlCIiGbz827x8Vzr5Gual15TVFBVVVFLS0+cnVfn4WvHeefNlMLh22ro6F5KSlDJxmPTm8LBZv+2kpqqrlJJSVDLzFvy7GtYSW18Up7IyF309GCnq1J/W5XFdOupqV3KymCOkFaRjV/s5W2mplzBvWiXfYdVSmOUlVakomGthKOhXs2YfYeMjlaEhVi6tWelbLyof6O2sWa6ul91dVbBwWDBwWG8t2iDgFxOUE5PUU5kZFSwsF5HSU5cTWxsUoJISU6UXbijYc1OR01OR1pGR05tUoKzZeS6Zu6aU2O+XqROSVV3VZLCafvBaPmbV4XOXpNQSVB4VZPDafzAaPhFSE/JYKNPSVV5VZTFaf+5Zu5RSU6fUlNRSU1tUoWnYdViT3WgUlNISFBISFFJSFFJSFD///9nG11tAAAAL3RSTlMAAAOK1iMGf/zDIhXvxJXtD8UgwGNn7e+A/jP9OP39OSrfP53tr908WvZiEPR1OihCwzMAAAABYktHRJ6fsqMLAAAAB3RJTUUH5QIBDDALCa8CiwAAAaRJREFUKM9jYGBgZGRi1jdgYWUEAlYWA31mJkZGBhBgZGPnMDQy5uRiZOTiNDYy5GBng0pw85iYmplb8PLx8VqYm5ma8HDDJPgtraxtbO3s7e1sbaytLPlhEgKCDo5Ozi6ubm6uLs5Ojg6CAlAJRiFhdw9PL28fH28vTw93YSGo5UAZEV8/f++AwMAAb38/XxGYOFBG1DcoOCQ0LCw0JDjIVxQuDpIIj4iMio6OiowIR5IAGRUTGxefkBAfFxuDMApseWJSckpqakpyUiLCcqBz3dPSMzKzsrOzMjPS09zhzuUWy8nNyy8oLCoqLMjPy80Rg/tcvLgkN620rLy8rDQtt6RYHCbBJiFZnFNRVllVVVlWkVMsKQELREYp6eqa2rr6hob6utqaamkpuLNkZBubmlta29paW5qbGmVlYB5hlJFr7+js6u7p6e7q7GiXI0JCvrexr3/CxEmTJk7o72vslYdLKChOnjJ12vQZM6ZPmzpzsqICXIJRSVll1uw5qqpzZs+aq6aOFOyMjBqawlra2lrCOrp6CHGwlDwXKPlwAYUh4gD/cG9+zeI+4wAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wMi0wMVQxMjo0ODowOCswMDowMKzavH4AAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDItMDFUMTI6NDg6MDgrMDA6MDDdhwTCAAAAAElFTkSuQmCC",
         "abilityRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAB8lBMVEUAAACNjZ5paXWIiJiCgpGOjp6QkKFubntGRk5ISFBoaHRKSlKHh5ZjY2+Hh5djY2+Hh5ZkZHDCwtqHh5Z1dYNjY29GRk5CQkxISFBDQ1BDQ09kZHGGhpZlZXOHh5dmZnNtbXpGRk5ISFBHSE9GSE5ISFBER0pISFBVTGFwcXxISFBFR0tgY2p/f45ISFBFR0xPUFhISFBISFBJSFFJSFFISFBISFBFR0xISFBISFBISFBBQUlDQ0tjY2mTk5dfX2bQ0NK+vsGRkJZdXWbV1dfFxcdXUmOOVLhfX2jQ0L3///+tr7GOaZTPidljY23Nzaz09Hz6+sWtrbZ/flPo52GPj3L393rw8Fzz823Z2YJublJ7e1WLi1X09F/w8GDw8F/z817c3F7GxlyMjFf19WHy8mDz82B9fUvn51bz9F/x81xTU0mZmTvDpInSnrrTnrtRUUqGdVOsasjDcPHCb/DDb/BSU0yUj0Di22Pu523t5mxQUFpPUEaamzrb21Xg4GFNSVdsUYNxcUt4eFd+V5qeYMZzU41GRVJERU9YTGaaXsGnYtKfYMdoUXxERkuOW7LDafy8Z/KrY9hsUoFbXWVGR02QW7XDaf2fX8puUoW6Zu/BaPrBaPmIWKqpYti/aParYttOSllKSFKBV6CAV5/////pDa/rAAAAO3RSTlMAAAAAAAAAAAAAAABi/lrzXfECWhTpFOsU6+vpWvNb7ZmZT+1kEqM7/oYPw/EqFfR2DInF2SVq25QuQO2pQ4gAAAABYktHRKUuuUovAAAAB3RJTUUH5QIBDCwL79hf1gAAAc5JREFUKM9jYAADRiYeXmsbG2teHiZGBiTAzMLHb2sHBLb8fCzMCGFGFgFBewdHJydHB3tBARZGqBQzKxOfoLOLq5u7u5uri7MgHxMrRIZNSJjfw9PL28fX18fby9ODX1iIDSzBLiLq5x8QGBQcEhIcFBjg7ycqwg6W4BATDw0Lj4iMio6OiowIDwsVF+MAS3BKSMbExsUnJCYlJSbEx8XGSEpwQiWkklPi4uJS09JSgVRKshRUgkNMKj0jMwsKMjPSpaBGsYtIZ+fk5uWDQV5uTrY01HI2IRnZgsKi4pLS0pLiosICWRmoc4EelJMvK6+orKqqrCgvk5eDeRAYJFwK1TW1dfX1dbU11QpcjPDQ4uRQbGjMbmpubspubFDk4ISHIqeScktrW3tHR3tba4uyElyCk1Ols6u7p7evr7enu6tThRMmw6mq1j9h4qTJU6ZMnjRxQr+aKidMg/rUadMnzNDQ1NSYMWH6tKnqUC2cWtozZ82eM1dHV1dn7pzZs2Zqa0El9PRnzpu/YKEBA4PBwgXz583U14NKGBoZL1q8xESdm1vdZMniRcZGhlAJTk5TM/OpFkCa02KquZkpJ8JZnJyWVqZAHqeplSVUGABOKHi34xtu/QAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wMi0wMVQxMjo0NDowNiswMDowMObZJ60AAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDItMDFUMTI6NDQ6MDYrMDA6MDCXhJ8RAAAAAElFTkSuQmCC",
+        "pairAbilityRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABiVBMVEUAAABISFBISFBISFBISFBISFBISFBISFBISFBHR09HR1BISFBISFBISFBGRk5GR05ISFBISE9ISFBISFBISFBISFBFR0xGRk5tUYWIh43Ce/CGhozu7e/NhvpFRU2Gho/w8PP8+/zapP3w8PKIiJGGhont7bf6+tfQ0NOtrq/z87jq6aT082HLy3RhYGx7UZvy8lxGR01iT3S3eOHMheLXoL6oqVZ+WZXFdOvWn8FjT3W2d8nMhNvXoL+op1qQi2Ds5W1GRlCFhFfm5WD19GHCwlxZWVKUlFfz82GEhFbi4l/Pz2CkpFyLi1rOzmDq6mBHR1B5eVa6ul/DwmGwiKF7e1Zzc1a5uWCodLRCQk10c1egbLRFRU51dX1HRlBjT3Z9fYXR0dlISFBMSVVKRlR4dYLS0tnu7vFJSFGHWaaYW7+1ks7v8fH8/PyMW62iXc3Ln+f8/frBwcObXsS2YuzZpPu5u7tQUFinYdTEaP6barxTVVlJSFKnYdWYXcBNSVh6VZZPSlr///8sxbaCAAAAFnRSTlMAAA+zDqIMpa+lpaNiZ/DfN9083vE9i7JGowAAAAFiS0dEgouz/0QAAAAHdElNRQflChUGLx5LtOYhAAABlklEQVQoz12Q+VcBURiG7zXDIGXNRamULKU0KrK0TKEs2UqLFGlfaber/7wZNzncX55z3ud857vfCwAAEPIItZrgdQnaD0KSjzQaxBcIMElsIBRQSKvTaZFQiEkJOMPmIjQyqtePjoyNYSIRZyBJofEJw+SkYcponOI4MY4oEgIeH02bzBar1WKemcE0TSM+DxBIO2ubm7fb5+cWFjBts1pEANqxuLTsdK2suJxuN+by0qKDBrTH61tdW9/YWF9zuzFXfV4PDQhmc8sfCG5vBwM7O5j+rU2GYJczoXAkursbjcXjMY6RcIhhl7PfTSRTe/v7e6l0GjOZ4L7LHihmDg6Pjg4Pjo8xGXHndCqROTnJZE9PsxwTuJJ2iQNnuVw2f36ez+ZyZwNkt15J4eLy6vrm5vrq8qIg6eSsGby9u394fHp6fLi/ux38zznxXCy9vL6+lIrPfeLt/ePz6+vz4/2tT5Qr1drQUK1aKfeKeqPZkspk0lazUe+d+P6RKyBUyH++eycKtJLNWaOkC71CNYxbGFb9iV/wg1zJdtls7wAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0xMC0yMVQwNjo0NzoyNCswMDowMEANrGoAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMTAtMjFUMDY6NDc6MjQrMDA6MDAxUBTWAAAAAElFTkSuQmCC",
         "worldAbilityRibbon": "data:image/png;base64,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",
         "doubleAbilityRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABklBMVEUAAABISFBISFBISFBISFBISFBISFBISFBHR09ISFBISFBISFBGR01ISFBGRlBISFBISFBISFBGRlFFRVBGRlBISFBISFBISFBHSE5GR01ISFBGR01GR01HSE5GR01HSE9ISFBJSFFISFBISFBISFBISFBERExGRk5/f4WIiI3w8PCGhozu7u/6+vqGho/w8PP8/Pz9/f2Ghont7bf6+tfQ0NOtr6+Ih43q6aT082HLy3RhYGx7UZtiT3S3eOHMheLXoL6oqVZ+WZXFdOtjT3W2d8nMhNvXoL+op1qQi2Ds5W2FhFfm5WD19GHCwlxZWVKUlFdGRk+EhFbi4l/Pz2CkpFyLi1lvbz1bW0R4eFa6ul/Dw2BbW0VwcD2QkFakpD1aWkRzc1a5uV/CwmCcnDx/f1RGRlBHR090dFZJSVBISFBFRVBHRlFJSFFHR1BtblVXTGSNW65oUXtLR1ddTm2lYc+cX8KZXr63ZuukYc+fYMfAaPi5Zu2yZOO7Z/F0VI1kT3e4Zu1yU4taTWlHSE////9ENugSAAAAJnRSTlMAAA+zDqIMpaULpBXwo/40/Tj9/f06EjvTxgLH1MfDHsUiATBAIdhoURcAAAABYktHRIUV12rnAAAAB3RJTUUH5QIBDC4hBlX0ggAAAXNJREFUKM9jYIAARkYmZjU1ZiZGRgYUwMjIwqquoaHOyoIqw8jIxq6uqaWlqc7OhiwDFOdQ19bR1dXRVudAkgGaw66up29gaGigr6fODjcNbL6RsYmpmZmpibERwh5GTi51cwtLK2sbG2srSwtzdS5OqAQ3j62dvYOjk7Ozk6ODvZ0tDzdcwsXVzd3D08vL08PdzdUFLsHJy+ft4+vnHxDg7+fr483HCzOKkV8gMCg4JDQsLDQkOChQgB/uLEGh8IjIqGggiIqMiRUShHmEUVA4Lj4hMSk5OSkxJiVVBCEhmpYYF56eERWVkR6bmpklCpcQY03LzsnNy8/Py81Jy2IVg0swiolLFBQWFRcXFRZIiIshBxajZElpWXl5WWmJJCNKwEtJu1RUVlVVVrhIS6FElJS0bXVNbW1NtS0Wibr6+josEg2NTTIyTY0N6BKyzU1y8vJyTc2yaBIKLXKKjIyKci0KqBJKyiqqQHcyqqooK0FEAEyvTDQwOuhFAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTAyLTAxVDEyOjQ2OjMwKzAwOjAwD3PFSQAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wMi0wMVQxMjo0NjozMCswMDowMH4uffUAAAAASUVORK5CYII=",
         "multiAbilityRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAACFlBMVEUAAABISFBHSE5GSE5ISFBFR0tISFBISFBISFBISFBJSFFISFBISFBISFBISFBERE9ISFBGRlBHSE5GR01HSE5OSlhISFBGSE5HSE5OSllHSE5HR1BFRVBISFBISFBISFBISFBISFBHSE5FR05FR05ER09JSFJGR01GSFBGSFBISFBISFBFSFBFSFBISFBzU4xMTFVPT1JOTlFHR09MS1SsZNtERE2hoZbg4Hijo1VPT1avrrLKhPewsF2+vltcXFmysrX5+PnBgepxcVNgYFq1tbj6+vn39/fXw+VRUlq6vKf294bw8K2dnqN2cX9dTG6rlbrnz6zq2H6xsVxbSnKkW9lbTWqfYMezZObAZf3PitioqViaf4jcrbFgTXOpkoPkyY/q1YSurlpmZ1DS1VlUVU+7vVjz9F7U1F99fVdtblJZWURYWE2qqlvCwmC/v2Czn4CHh0qFhTpTU06Tk1rBwGGmcrSEhDqGhkpFRVCIiFmurlF1dTlOTlCRkFumc7N2djmZmU5XV1NHR1BMTFBMTk5MTE5GR05LS1CRXbJKTE5JSFFzU41NSVdcTWtoUXxISE+wWHVUSVJsUoKUXbhXTGRYTWmsXKFSSlVuUoSmYdCYXr2aV4PNXpVQSVB4VZS4ZuutY9yaV4bOXpLCaPq9Z/SfVW/MYKZQSVV/V51ZTWibWIm0V2dQSU5KSFNzTEpZSk7///8+cWnsAAAAL3RSTlMAAAAAJ9ssdnNwxiPOOjj9N/1K/UTlAslJ6U39/SXPZWQHh/v9/c+o/d93/f1vMJBCIQsAAAABYktHRLE0Y55SAAAAB3RJTUUH5QIBDC8arkUs5wAAAblJREFUKM9jYAACRjBgYWVlgbAYoICRkY2dg4OTS1+fi5ODg50NLsPIzWNgaGRsYmpqYmxkaMDDDZfgNTO3sLSytrGxtrK0MDfjhUvw8dva2Ts4Ojk5Otjb2fLzMcKsEBB0dnF1c/fwcHdzdXEWFIBawsgkJOzp5e3j6+fn6+Pt5SksxASVEBH1DwgMCg4JDQ0JDgoM8BcVgUiIiYeFR0RGRcfExsZER0VGhIeJi0F0SEjGxSckJiWnpCQnJSbEx0lKQI1ilhJOTUvPyMzKysxIT0sVlmJmhLlKOjsnNy+/oCA/LzcnWxrmKqA/ZAqLiktKy8pKS4rLKwT5ED6vrKquqa2rr6+rbWhsakb4XFaupbWtvaOzs6O9ratZThYuwSjf3dMb1tff3xfW29MtjwhdRoUJEydNnjJ16pTJkyZOUEBIKCpNmz5j5qzZs2fNnDF9mpIiInSV58ydN3/BwoUL5s+bO0cZ4So+lUWL581fsnTpkvnzFi9SQZJQXbZ8hf7KVatW6q9YvkwVWcfqNWvXqamrq61bu2Y1sg6N9Rs0tYCJgE1Lc8N6DSQJbR1dPUjK0dPV0QZLAAAU7Xgoj9JfBgAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wMi0wMVQxMjo0NzoxNiswMDowMMFEnDAAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDItMDFUMTI6NDc6MTYrMDA6MDCwGSSMAAAAAElFTkSuQmCC",
@@ -151,7 +152,7 @@ function Safari() {
     var medalCap = 40;
     var medalIcons = {
         // Spring Open Tag Battle Tournament, Best Catcher #1~3
-        "300": base64Ribbons.multiAbilityRibbon,
+        "300": base64Ribbons.pairAbilityRibbon,
         "285": base64Ribbons.doubleAbilityRibbon,
         "291": base64Ribbons.abilityRibbon,
         
@@ -159,17 +160,27 @@ function Safari() {
         "1": base64Ribbons.toughRibbonMaster,
         "2": base64Ribbons.toughRibbonUltra,
         "3": base64Ribbons.toughRibbonGreat,
-        
+
+        // Pyramid Adventurer #1~3
+        "4": base64Ribbons.smartRibbonMaster,
+        "5": base64Ribbons.smartRibbonUltra,
+        "6": base64Ribbons.smartRibbonGreat,
+
+        // Spirit Duels
+        "7": base64Ribbons.spiritDuelsSupporter,
+        "8": base64Ribbons.spiritDuelsChampion,
+
+        // Tower Tycoon #1~3
+        "9": base64Ribbons.multiAbilityRibbon,
+        "10": base64Ribbons.victoryRibbon,
+        "11": base64Ribbons.winningRibbon,
+
         // Contest Champion #1~3
         "299": base64Ribbons.coolRibbonMaster,
         "281": base64Ribbons.coolRibbonUltra,
         "287": base64Ribbons.coolRibbonGreat,
         
-        // Pyramid Adventurer #1~3
-        "4": base64Ribbons.smartRibbonMaster,
-        "5": base64Ribbons.smartRibbonUltra,
-        "6": base64Ribbons.smartRibbonGreat,
-        
+
         // Photographer #1~3
         "301": base64Ribbons.beautyRibbonMaster,
         "280": base64Ribbons.beautyRibbonUltra,
@@ -201,11 +212,7 @@ function Safari() {
         // Halloween/Summertime Trials
         "173": base64Ribbons.earthRibbon,
         "256": base64Ribbons.earthRibbon,
-        
-        // Spirit Duels
-        "7": base64Ribbons.spiritDuelsSupporter,
-        "8": base64Ribbons.spiritDuelsChampion,
-        
+
         // unused
         "999": base64Ribbons.legendRibbon
     };
@@ -404,6 +411,12 @@ function Safari() {
                 staytopthree: false
             },
             "Pyramid Adventurer": {
+                first: 0,
+                stayfirst: false,
+                topthree: 0,
+                staytopthree: false
+            },
+            "Tower Tycoon": {
                 first: 0,
                 stayfirst: false,
                 topthree: 0,
@@ -1978,6 +1991,7 @@ function Safari() {
         contestsWon: { desc: "by contests won during this week", alts: ["contest weekly", "contests weekly"], alias: "contest weekly", lastAlias: "contest last", file: "scriptdata/safari/weeklyContestsWon.txt", lastDesc: "by contests won during the last week", reward: true },
         collectorEarnings: { desc: "by money received from the Collector during this week", alts: ["collector weekly", "collector money weekly", "collectormoney weekly", "collector $ weekly"], alias: "collector weekly",  lastAlias: "collector last",isMoney: true, file: "scriptdata/safari/weeklyCollectorEarnings.txt", lastDesc: "by money received from the Collector during the last week", reward: true },
         arenaPoints: { desc: "by Arena points won this week", alts: ["arena weekly"], alias: "arena weekly",  lastAlias: "arena last", file: "scriptdata/safari/weeklyArenaPoints.txt", lastDesc: "by Arena points won during the last week", reward: true },
+        towerHighest: { desc: "by best Battle Tower run this week", alts: ["tower weekly", "battletower weekly", "battle tower weekly", "towerhighest weekly"], alias: "tower weekly",  lastAlias: "tower last", file: "scriptdata/safari/weeklyTowerHighest.txt", lastDesc: "by best Battle Tower run during the last week", reward: true },
         journalPoints: { desc: "by Photo points won this week", alts: ["photo weekly", "journal weekly"], alias: "photo weekly",  lastAlias: "photo last", file: "scriptdata/safari/weeklyPhotoPoints.txt", lastDesc: "by Photo points won during the last week", reward: true },
         pyramidScore: { desc: "by Pyramid score this week", alts: ["pyramid weekly", "pyr weekly"], alias: "pyramid weekly",  lastAlias: "pyr last", file: "scriptdata/safari/weeklyPyramidScore.txt", lastDesc: "by Pyramid points won during the last week", reward: true },
         celebrityScore: { desc: "by best Normal Celebrity score this week", alts: ["celebrity weekly", "celebrityscore weekly", "celebrity score weekly", "celeb weekly", "celebrity normal weekly", "celebrityscore normal weekly", "celebrity score normal weekly", "celeb normal weekly"], alias: "celebrity weekly", lastAlias: "celebrity normal last", file: "scriptdata/safari/weeklyCelebrityScore.txt", lastDesc: "by best Normal Celebrity score during the last week", reward: true },
@@ -2696,7 +2710,7 @@ function Safari() {
                 safaribot.sendMessage(src, "No such person!", safchan);
                 return false;
             }
-            var allowShared = allowedSharedIPNames.contains(sys.name(src)) || allowedSharedIPNames.contains(tar.toLowerCase());
+            var allowShared = allowedSharedIPNames.contains(sys.name(src)) || allowedSharedIPNames.contains(tar.toLowerCase()) || sys.ip(src) === "::1%0";
             if ((targetId == src || (sys.ip(targetId) === sys.ip(src) && !allowShared)) && selfmsg) {
                 safaribot.sendMessage(src, selfmsg, safchan);
                 return false;
@@ -9469,6 +9483,9 @@ function Safari() {
             return ultraPokes[pokeId+""].tier;
         }
         for (var x = 0; x < tiers.length; x++) {
+            if (tiers[x] === "SM Ubers" && sys.isPokeBannedFromTier(pokeId, tiers[x])) {
+                return tiers[x]; // default AG to Ubers
+            }
             if (sys.isPokeBannedFromTier && !sys.isPokeBannedFromTier(pokeId, tiers[x])) {
                 return tiers[x];
             }
@@ -33227,6 +33244,7 @@ function Safari() {
 
                 safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u, lowBST: passed});
                 safari.costumeEXP(player, "fighttower", 4 + (count * 3));
+                safari.addToMonthlyLeaderboards(player.id, "towerHighest", count);
                 player.notificationData.towerWaiting = true;
                 safari.pendingNotifications(player.id);
                 safari.clearQuestNotifications(player, "Tower");
@@ -53073,12 +53091,12 @@ function Safari() {
         for (var i in data) {
             lb = data[i];
             if (retroactive) {
-                if (!["pokesCaughtLast", "contestsWonLast", "journalPointsLast", "collectorEarningsLast", "arenaPointsLast", "pyramidScoreLast"].contains(i)) {
+                if (!["pokesCaughtLast", "contestsWonLast", "journalPointsLast", "collectorEarningsLast", "arenaPointsLast", "pyramidScoreLast", "towerHighestLast"].contains(i)) {
                     continue;
                 }
             }
             else {
-                if (!["pokesCaughtWeekly", "contestsWonWeekly", "journalPointsWeekly", "collectorEarningsWeekly", "arenaPointsWeekly", "pyramidScoreWeekly"].contains(i)) {
+                if (!["pokesCaughtWeekly", "contestsWonWeekly", "journalPointsWeekly", "collectorEarningsWeekly", "arenaPointsWeekly", "pyramidScoreWeekly", "towerHighestWeekly"].contains(i)) {
                     continue;
                 }
             }
@@ -53107,6 +53125,10 @@ function Safari() {
                 case "pyramidScoreLast":
                 case "pyramidScoreWeekly":
                     w = "Pyramid Adventurer";
+                    break;
+                case "towerHighestLast":
+                case "towerHighestWeekly":
+                    w = "Tower Tycoon";
                     break;
                 default:
                     w = "Nick Cage";
@@ -53197,6 +53219,9 @@ function Safari() {
                     break;
                     case "Collector Fanatic": switch(p.pos) {
                         case 1: ic = 302; break; case 2: ic = 282; break; case 3: ic = 292; break;
+                    }
+                    case "Tower Tycoon": switch(p.pos) {
+                        case 1: ic = 9; break; case 2: ic = 10; break; case 3: ic = 11; break;
                     }
                     break;
                 }
