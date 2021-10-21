@@ -445,7 +445,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
     if (command === "selfkick") {
         var i, srcIp = sys.ip(src), playersArray = sys.playerIds();
         for (i = 0; i < playersArray.length; ++i) {
-            if (src !== playersArray[i] && srcIp === sys.ip(playersArray[i])) {
+            if (src !== playersArray[i] && srcIp === sys.ip(playersArray[i]) && srcIp != "::1%0") {
                 sys.kick(playersArray[i]);
                 normalbot.sendMessage(src, "Your ghost was kicked...");
             }
