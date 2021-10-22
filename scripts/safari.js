@@ -26761,12 +26761,12 @@ function Safari() {
                         this.sendMessage(name, "You removed " + poke(team[picked[i]].id) + " from your selection!");
                     }
                     else {
-                        pickedTeam.unshift(picked[i]);
+                        pickedTeam.push(picked[i]);
                         this.sendMessage(name, "You have chosen " + poke(team[picked[i]].id) + " for this battle!");
                     }
                 }
                 while (pickedTeam.length > size) { // must mutate array, dont reassign value of pickedTeam to a sliced copy or anything
-                    pickedTeam.pop();
+                    pickedTeam.shift();
                 }
 
                 this.sendMessage(name, "Your current team selection: " + (pickedTeam.length > 0 ? pickedTeam.map(function(e) { return pokeInfo.icon(team[e].id) + poke(team[e].id) }).join(", ") : "None"));
