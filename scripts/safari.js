@@ -26745,33 +26745,28 @@ function Safari() {
                 }
             }
             if (picked.length > 0) {
+                var pickedTeam;
                 if (isP1) {
-                    this.p1PickedTeam = this.p1PickedTeam.concat(picked);
-                    if (this.p1PickedTeam.length > size) {
-                        this.p1PickedTeam = this.p1PickedTeam.slice(this.p1PickedTeam.length - size);
-                    }
-                    this.p1PickedTeam = removeDuplicates(this.p1PickedTeam);
+                    pickedTeam = this.p1PickedTeam;
                 } else if (isP2) {
-                    this.p2PickedTeam = this.p2PickedTeam.concat(picked);
-                    if (this.p2PickedTeam.length > size) {
-                        this.p2PickedTeam = this.p2PickedTeam.slice(this.p2PickedTeam.length - size);
-                    }
-                    this.p2PickedTeam = removeDuplicates(this.p2PickedTeam);
+                    pickedTeam = this.p2PickedTeam;
                 } else if (isP3) {
-                    this.p3PickedTeam = (this.p3PickedTeam.concat(picked));
-                    if (this.p3PickedTeam.length > size) {
-                        this.p3PickedTeam = this.p3PickedTeam.slice(this.p3PickedTeam.length - size);
-                    }
-                    this.p3PickedTeam = removeDuplicates(this.p3PickedTeam);
+                    pickedTeam = this.p3PickedTeam;
                 } else if (isP4) {
-                    this.p4PickedTeam = (this.p4PickedTeam.concat(picked));
-                    if (this.p4PickedTeam.length > size) {
-                        this.p4PickedTeam = this.p4PickedTeam.slice(this.p4PickedTeam.length - size);
-                    }
-                    this.p4PickedTeam = removeDuplicates(this.p4PickedTeam);
+                    pickedTeam = this.p4PickedTeam;
                 }
-                this.sendMessage(name, "You have chosen " + readable(picked.map(function(x) { return poke(team[x].id); })) + " for this battle!");
-                
+                for (i = 0; i < picked.length; i++) {
+                    if (pickedTeam.contains(picked[i])) {
+                        pickedTeam.splice(pickedTeam.indexOf(picked[i]), 1);
+                        this.sendMessage(name, "You removed " + poke(team[picked[i]].id) + " from your selection!");
+                    }
+                    else {
+                        pickedTeam.push(picked[i]);
+                        this.sendMessage(name, "You have chosen " + poke(team[picked[i]].id) + " for this battle!");
+                    }
+                }
+                this.sendMessage(name, "Your current team selection: " + pickedTeam.map(function(e) { return pokeInfo.icon(team[e].id) + poke(team[e].id) }).join(", "));
+
                 if (this.tagBattle && this.oneOnTwo) {
                     if (this.p1PickedTeam.length === 4 && (this.npcBattle || (this.p2PickedTeam.length === 2 && this.p4PickedTeam.length === 2)) && this.subturn < 6) {
                         this.sendToViewers(toColor("All players picked their Pokémon!", "crimson"));
@@ -33244,7 +33239,10 @@ function Safari() {
 
                 safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u, lowBST: passed});
                 safari.costumeEXP(player, "fighttower", 4 + (count * 3));
-                safari.addToMonthlyLeaderboards(player.id, "towerHighest", count);
+                var currentLB = monthlyLeaderboards["towerHighest"].get(player.id) || 0;
+                if (currentLB < count) {
+                    safari.addToMonthlyLeaderboards(player.id, "towerHighest", count, true);
+                }
                 player.notificationData.towerWaiting = true;
                 safari.pendingNotifications(player.id);
                 safari.clearQuestNotifications(player, "Tower");
@@ -53882,7 +53880,7 @@ function Safari() {
         sys.write(saveBackupFile3, sys.getFileContent(saveBackupFile2));
         sys.write(saveBackupFile2, sys.getFileContent(saveBackupFile1));
         sys.write(saveBackupFile1, sys.getFileContent(rawPlayers.fname));
-        sys.write(permFile + "-backup", sys.getFileContent(permObj));
+        sys.write("backup-" + permFile, sys.getFileContent(permObj));
 
         backupPlayers1 = new MemoryHash(saveBackupFile1);
         backupPlayers2 = new MemoryHash(saveBackupFile2);
