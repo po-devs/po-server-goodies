@@ -26765,9 +26765,11 @@ function Safari() {
                         this.sendMessage(name, "You have chosen " + poke(team[picked[i]].id) + " for this battle!");
                     }
                 }
-                pickedTeam = pickedTeam.slice(pickedTeam.length - size);
-                pickedTeam = removeDuplicates(pickedTeam);
-                this.sendMessage(name, "Your current team selection: " + pickedTeam.map(function(e) { return pokeInfo.icon(team[e].id) + poke(team[e].id) }).join(", "));
+                while (pickedTeam.length > size) { // must mutate array, dont reassign value of pickedTeam to a sliced copy or anything
+                    pickedTeam.pop();
+                }
+
+                this.sendMessage(name, "Your current team selection: " + (pickedTeam.length > 0 ? pickedTeam.map(function(e) { return pokeInfo.icon(team[e].id) + poke(team[e].id) }).join(", ") : "None"));
 
                 if (this.tagBattle && this.oneOnTwo) {
                     if (this.p1PickedTeam.length === 4 && (this.npcBattle || (this.p2PickedTeam.length === 2 && this.p4PickedTeam.length === 2)) && this.subturn < 6) {
