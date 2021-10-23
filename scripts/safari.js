@@ -26755,15 +26755,23 @@ function Safari() {
                 } else if (isP4) {
                     pickedTeam = this.p4PickedTeam;
                 }
-                for (i = 0; i < picked.length; i++) {
-                    if (pickedTeam.contains(picked[i])) {
-                        pickedTeam.splice(pickedTeam.indexOf(picked[i]), 1);
-                        this.sendMessage(name, "You removed " + poke(team[picked[i]].id) + " from your selection!");
+                if (picked.length !== size) {
+                    for (i = 0; i < picked.length; i++) {
+                        if (pickedTeam.contains(picked[i])) {
+                            pickedTeam.splice(pickedTeam.indexOf(picked[i]), 1);
+                            this.sendMessage(name, "You removed " + poke(team[picked[i]].id) + " from your selection!");
+                        }
+                        else {
+                            pickedTeam.push(picked[i]);
+                            this.sendMessage(name, "You have chosen " + poke(team[picked[i]].id) + " for this battle!");
+                        }
                     }
-                    else {
+                }
+                else {
+                    for (i = 0; i < picked.length; i++) {
                         pickedTeam.push(picked[i]);
-                        this.sendMessage(name, "You have chosen " + poke(team[picked[i]].id) + " for this battle!");
                     }
+                    this.sendMessage(name, "You chose a full team of " + readable(picked.map(function(e) { return poke(team[e].id) })) + " for this battle!");
                 }
                 while (pickedTeam.length > size) { // must mutate array, dont reassign value of pickedTeam to a sliced copy or anything
                     pickedTeam.shift();
