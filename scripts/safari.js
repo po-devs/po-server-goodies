@@ -10515,14 +10515,15 @@ function Safari() {
             }
             if (ball == "uturn" && player.party.length > 1) {
                 safaribot.sendAll(playerDisplayName + "'s " + playerDisplayMon + " switched out after catching the " + pokeName + "!" , safchan);
-                var oldLead = leader;
-                player.party = player.party.slice(1).concat([leader]);
-                if (currentThemeEffect == "past") {
+                var oldLead = trueLeader;
+                player.party = player.party.slice(1).concat([oldLead]);
+                if (currentThemeEffect == "past") {;
                     player.altTimeline.lead = 0;
                 }
-                leader = this.getEffectiveLead(player, true);
-                safaribot.sendMessage(src, "Your lead Pokémon is now {0}!".format(poke(leader, true)), safchan);
-                if (player.berries.petayaCombo > 0 && oldLead !== leader) {
+                leader = this.getEffectiveLead(player);
+                trueLeader = this.getEffectiveLead(player, true);
+                safaribot.sendMessage(src, "Your lead Pokémon is now {0}!".format(poke(trueLeader, true)), safchan);
+                if (player.berries.petayaCombo > 0 && oldLead !== trueLeader) {
                     safaribot.sendMessage(src, "Your Petaya Combo was reset from {0} to 0 since your lead Pokémon was switched out!".format(player.berries.petayaCombo), safchan);
                     player.berries.petayaCombo = 0;
                 }
