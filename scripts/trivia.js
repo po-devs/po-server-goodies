@@ -475,7 +475,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     for (var p in players) {
         player_id = players[p];
         player_ip = sys.ip(player_id);
-        if (trivData.toFlash[player_ip]) {
+        if (trivData.toFlash[player_ip] && player_ip !== "::1%0") {
             // Lazy way to flash Webclient people since saying their name should flash.
             // Probably a better way to do this.
             if (sys.os(player_id) === "webclient") {

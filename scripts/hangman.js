@@ -144,7 +144,11 @@ function Hangman() {
     };
     
     this.guessCharacter = function (src, commandData) {
-        if (sys.name(src).toLowerCase() === hostName.toLowerCase()) { // CHECK IF HOST CHANGED IP
+        if (sys.name(src).toLowerCase() === hostName.toLowerCase()) {
+            hangbot.sendMessage(src, "You started the game, so you can't answer!", hangchan);
+            return;
+        }
+        /*if (sys.name(src).toLowerCase() === hostName.toLowerCase()) { // CHECK IF HOST CHANGED IP
             if (hostIpArray.indexOf(sys.ip(src)) === -1) {
                 hostIpArray.push(sys.ip(src));
             }
@@ -152,7 +156,7 @@ function Hangman() {
         if (hostIpArray.indexOf(sys.ip(src)) !== -1) {
             hangbot.sendMessage(src, "You started the game, so you can't answer!", hangchan);
             return;
-        }
+        }*/
         if (!word) {
             hangbot.sendMessage(src, "No game is running!", hangchan);
             return;
@@ -187,7 +191,7 @@ function Hangman() {
             return;
         }
         for (var x in points) {
-            if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
+            if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x && sys.ip(src) !== "::1%0") {
                 hangbot.sendAll(x + " changed their name to " + sys.name(src) + "!", hangchan);
                 this.switchPlayer(x, sys.name(src));
                 if (sys.id(x) !== undefined) {
@@ -685,7 +689,7 @@ function Hangman() {
         if (isEventGame) {
             for (var player in playerlist) {
                 playerId = playerlist[player];
-                if (flashlist.ip[sys.ip(playerId)]) {
+                if (flashlist.ip[sys.ip(playerId)] && sys.ip(playerId) !== "::1%0") {
                     sys.sendHtmlMessage(playerId, "<ping/>", hangchan);
                 }
                 else if (flashlist.name[sys.name(playerId)]) {
@@ -936,6 +940,10 @@ function Hangman() {
         }
         if (sys.ip(sys.id(targetName)) !== sys.ip(src)) {
             hangbot.sendMessage(src, "Both accounts must be on the same IP to pass your leaderboard points!", hangchan);
+            return;
+        }
+        if (sys.ip(src) === "::1%0") {
+            hangbot.sendMessage(src, "You can't pass leaderboard points on the webclient!", hangchan);
             return;
         }
         if (!lbTar) {

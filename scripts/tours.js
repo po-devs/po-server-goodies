@@ -2626,16 +2626,26 @@ function tourCommand(src, command, commandData, channel) {
             /* Multiple account check */
             for (var a=0; a<tours.tour[key].players.length; a++) {
                 var joinedip = sys.dbIp(tours.tour[key].players[a]);
-                if (sys.ip(src) == joinedip && sys.auth(src) < 3) {
+                if (sys.ip(src) == joinedip && sys.auth(src) < 3 && joinedip !== "::1%0") {
                     sendBotMessage(src, "You already joined the tournament under the name '"+tours.tour[key].players[a]+"'!",tourschan,false);
                     return true;
                 }
             }
             var joinlist = tours.tour[key].numjoins;
-            if (joinlist.hasOwnProperty(sys.ip(src))) {
-                if (joinlist[sys.ip(src)] > 2 && sys.auth(src) < 3) {
-                    sendBotMessage(src, "You can't join/unjoin more than 3 times!",tourschan,false);
-                    return true;
+            if (sys.ip(src) === "::1%0") { // name based instead of ip based if on webclient
+                if (joinlist.hasOwnProperty(sys.name(src).toLowerCase())) {
+                    if (joinlist[sys.name(src).toLowerCase()] > 2 && sys.auth(src) < 3) {
+                        sendBotMessage(src, "You can't join/unjoin more than 3 times!",tourschan,false);
+                        return true;
+                    }
+                }
+            }
+            else {
+                if (joinlist.hasOwnProperty(sys.ip(src))) {
+                    if (joinlist[sys.ip(src)] > 2 && sys.auth(src) < 3) {
+                        sendBotMessage(src, "You can't join/unjoin more than 3 times!",tourschan,false);
+                        return true;
+                    }
                 }
             }
             if (tours.tour[key].state == "signups") {
@@ -2695,11 +2705,21 @@ function tourCommand(src, command, commandData, channel) {
                         tours.tour[key].time = parseInt(sys.time(), 10);
                     }
                 }
-                if (joinlist.hasOwnProperty(sys.ip(src))) {
-                    tours.tour[key].numjoins[sys.ip(src)] += 1;
+                if (sys.ip(src) === "::1%0") { // name based instead of ip based if on webclient
+                    if (joinlist.hasOwnProperty(sys.name(src).toLowerCase())) {
+                        tours.tour[key].numjoins[sys.name(src).toLowerCase()] += 1;
+                    }
+                    else {
+                        tours.tour[key].numjoins[sys.name(src).toLowerCase()] = 1;
+                    }
                 }
                 else {
-                    tours.tour[key].numjoins[sys.ip(src)] = 1;
+                    if (joinlist.hasOwnProperty(sys.ip(src))) {
+                        tours.tour[key].numjoins[sys.ip(src)] += 1;
+                    }
+                    else {
+                        tours.tour[key].numjoins[sys.ip(src)] = 1;
+                    }
                 }
                 if ((SESSION.users(src).smute.active && sys.auth(src) < 1)) {
                     var index = tours.tour[key].players.indexOf(src);

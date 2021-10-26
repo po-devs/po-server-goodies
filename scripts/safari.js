@@ -10517,7 +10517,7 @@ function Safari() {
                 safaribot.sendAll(playerDisplayName + "'s " + playerDisplayMon + " switched out after catching the " + pokeName + "!" , safchan);
                 var oldLead = trueLeader;
                 player.party = player.party.slice(1).concat([oldLead]);
-                if (currentThemeEffect == "past") {;
+                if (currentThemeEffect == "past") {
                     player.altTimeline.lead = 0;
                 }
                 leader = this.getEffectiveLead(player);
@@ -12206,7 +12206,7 @@ function Safari() {
         var partyShown = [].concat(player.party);
         if (currentThemeEffect == "distortion" && !contestForfeited.contains(player.idnum)) {
             partyShown.reverse();
-        } else if (currentThemeEffect == "past") {
+        } else if (currentThemeEffect == "past" && !contestForfeited.contains(player.idnum)) {
             if (player.altTimeline.lead !== 0) {
                 partyShown[0] = player.altTimeline.lead;
             }
@@ -52454,6 +52454,12 @@ function Safari() {
             var unread = countRepeated(player.unreadInbox, true);
             if (unread > 0) {
                 safaribot.sendHtmlMessage(src, toFlashing(addFlashTag(sys.name(src)) + ", you have " + plural(unread, "unread message") + ". To read them, type " + link("/inbox") + ". ", sys.name(src)), safchan);
+            }
+            if (contestCount > 0 && currentThemeEffect === "past") {
+                if (now() > player.altTimeline.cooldown) {
+                    player.altTimeline.lead = 0;
+                    player.altTimeline.buff = 1;
+                }
             }
             safari.saveGame(player);
         } else if (getAvatar(src)) {

@@ -2121,11 +2121,21 @@ function Mafia(mafiachan) {
 
             this.signups.push(name);
             this.ips.push(sys.ip(src));
-            if (this.numjoins.hasOwnProperty(sys.ip(src))) {
-                this.numjoins[sys.ip(src)] += 1;
+            if (sys.ip(src) === "::1%0") { // name based instead of ip based if on webclient
+                if (this.numjoins.hasOwnProperty(name.toLowerCase())) {
+                    this.numjoins[name.toLowerCase()] += 1;
+                }
+                else {
+                    this.numjoins[name.toLowerCase()] = 1;
+                }
             }
             else {
-                this.numjoins[sys.ip(src)] = 1;
+                if (this.numjoins.hasOwnProperty(sys.ip(src))) {
+                    this.numjoins[sys.ip(src)] += 1;
+                }
+                else {
+                    this.numjoins[sys.ip(src)] = 1;
+                }
             }
             if (SESSION.users(src).smute.active && sys.auth(src) < 1) {
                 gamemsg(srcname, name + " joined the game!");
@@ -7491,9 +7501,17 @@ function Mafia(mafiachan) {
             gamemsg(user, "This IP is already in list. You cannot register two times!");
             return false;
         }
-        if (this.numjoins[ip] >= 2) {
-            gamemsg(user, "You can't join/unjoin more than 3 times!");
-            return false;
+        if (ip === "::1%0") {
+            if (this.numjoins[user.toLowerCase()] >= 2) {
+                gamemsg(user, "You can't join/unjoin more than 3 times!");
+                return false;
+            }
+        }
+        else {
+            if (this.numjoins[ip] >= 2) {
+                gamemsg(user, "You can't join/unjoin more than 3 times!");
+                return false;
+            }
         }
         if (SESSION.users(src).mute.active) {
             gamemsg(user, "You are muted!");
@@ -7932,11 +7950,21 @@ function Mafia(mafiachan) {
 
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
-                if (this.numjoins.hasOwnProperty(sys.ip(src))) {
-                    this.numjoins[sys.ip(src)] += 1;
+                if (sys.ip(src) === "::1%0") { // name based instead of ip based if on webclient
+                    if (this.numjoins.hasOwnProperty(name.toLowerCase())) {
+                        this.numjoins[name.toLowerCase()] += 1;
+                    }
+                    else {
+                        this.numjoins[name.toLowerCase()] = 1;
+                    }
                 }
                 else {
-                    this.numjoins[sys.ip(src)] = 1;
+                    if (this.numjoins.hasOwnProperty(sys.ip(src))) {
+                        this.numjoins[sys.ip(src)] += 1;
+                    }
+                    else {
+                        this.numjoins[sys.ip(src)] = 1;
+                    }
                 }
                 if (SESSION.users(src).smute.active && sys.auth(src) < 1) {
                     gamemsg(srcname, name + " joined the game!");
