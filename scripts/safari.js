@@ -55888,7 +55888,7 @@ function Safari() {
                 }
                 var bst = getBST(info.num);
                 safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + (pokeInfo.forme(info.num) > 0 ? "-" + pokeInfo.forme(info.num) : "") + (pokeInfo.species(info.num) !== info.num ? " (" + info.num + "). " : ". ") + info.name + "'s BST is " + bst + (bst <= itemData.eviolite.threshold ? " (" + (bst + itemData.eviolite.maxRate * (player.costume === "preschooler" ? costumeData["preschooler"].rate2 : 1)) + " with max " + es(finishName("eviolite")) + ")" : "") + statsmsg, safchan);
-                safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Tier: " + safari.getTier(info.num) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +".", safchan);
+                safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Tier: " + safari.getTier(info.num) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) + ", Height: " + getHeight(info.num) + " m, Weight: " + getWeight(info.num) + " kg.", safchan);
                 safaribot.sendHtmlMessage(src, "Abilities: " + readable([0, 1, 2].map(function(e) { return getPokeAbility(info.num, e) }).filter(function(e) { return !!e }).map(abilityOff)) + ".", safchan);
                 if (opt.contains("effectiveness")) {
                     safaribot.sendHtmlMessage(src, efmsg.join(", "), safchan);
