@@ -7884,19 +7884,7 @@ function Safari() {
                     if ((!(goldenBonus) && (contestCount <= 0))) {
                         canLegend = false;
                     }
-                    var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.22;
-                    for (i = 1; i < highestDexNum; i++) {
-                        bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
-                        extrabstChance = 1;
-                        if (bst >= 600) {
-                            extrabst = (bst - 600);
-                            bst = 599;
-                            extrabstChance = ((((125 - extrabst) * (180 - extrabst)) / (240 - extrabst)) * 0.01 * extrabstChanceModifier);
-                        }
-                        if (this.validForTheme(i, cTheme) && bst <= statCap && chance(extrabstChance) && (bst < 600 || canLegend || (!(isLegendary(i))))) {
-                            list.push(i);
-                        }
-                    }
+                    var list = [], bst, extrabst = 0, truebst, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.22;
                     var hitEvent = false;
                     var includeContestVariations = themeOverride && theme.variations;
                     var include = theme.include;
@@ -7908,27 +7896,30 @@ function Safari() {
                             include = include.concat(theme.variations[variation]);
                         }
                     }
+                    if (currentThemeAlter && theme.alter) { // alter pool overrides everything
+                        include = theme.alter;
+                    }
                     for (h in include) {
                         id = include[h];
-                        bst = "editBST" in theme && id in theme.editBST ? theme.editBST[id] : getBST(id);
+                        truebst = bst = "editBST" in theme && id in theme.editBST ? theme.editBST[id] : getBST(id);
                         extrabstChance = 1;
                         if (bst > 600) {
                             extrabst = (bst - 600);
                             bst = 599;
                             extrabstChance = ((((125 - extrabst) * (180 - extrabst)) / (240 - extrabst)) * 0.01 * extrabstChanceModifier);
                         }
-                        if ((this.validForTheme(id, cTheme) || includeContestVariations) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
+                        if ((this.validForTheme(id, cTheme) || includeContestVariations) && bst <= statCap && chance(extrabstChance)) {
                             list.push(id);
-                            if (isLegendary(id) && bst >= 670 && !goldenBonus) {
+                            if (isLegendary(id) && truebst >= 670 && !goldenBonus) {
                                 for (i = 5; i--; ) {
                                     list.push(id);
                                 }
                             }
-                            if (isLegendary(id) && bst >= 660 && !goldenBonus) {
+                            if (isLegendary(id) && truebst >= 660 && !goldenBonus) {
                                 for (i = 5; i--; ) {
                                     list.push(id);
                                 }
-                            } else if (isLegendary(id) && bst >= 600 && !goldenBonus) {
+                            } else if (isLegendary(id) && truebst >= 600 && !goldenBonus) {
                                 for (i = 3; i--; ) {
                                     list.push(id);
                                 }
@@ -7952,6 +7943,21 @@ function Safari() {
                         }
                         if (hitEvent) {
                             break;
+                        }
+                    }
+                    for (i = 1; i < highestDexNum; i++) {
+                        if (isRare(i)) { // rares should only be added to the list in the theme.include check above
+                            continue;
+                        }
+                        truebst = bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
+                        extrabstChance = 1;
+                        if (bst >= 600) {
+                            extrabst = (bst - 600);
+                            bst = 599;
+                            extrabstChance = ((((125 - extrabst) * (180 - extrabst)) / (240 - extrabst)) * 0.01 * extrabstChanceModifier);
+                        }
+                        if (this.validForTheme(i, cTheme) && bst <= statCap && chance(extrabstChance) && !list.contains(id)) {
+                            list.push(i);
                         }
                     }
                 }
@@ -8161,219 +8167,9 @@ function Safari() {
             } else {
                 sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + (wildEvent ? "<br/><b>All ball cooldowns were reset!</b>" : "") + "</center><hr>", true, true, false, mandatoryDisplay);
             }
-            var onChannel = sys.playersOfChannel(safchan);
-            var abilityMessageList = {};
-            var miscMessageList = {};
-            var wildAbilityMessageList = [];
-            
-            var is_are = amount > 1 ? "are" : "is"
-            if (canHaveAbility(currentPokemon, abilitynum("Contrary"))) {
-                wildAbilityMessageList.push("The wild {0} {1} inverting type matchups with Contrary!".format(poke(currentDisplay, true), is_are));
-            }
-            if (canHaveAbility(currentPokemon, abilitynum("Levitate"))) {
-                wildAbilityMessageList.push("The wild {0} {1} airborne due to Levitate!".format(poke(currentDisplay, true), is_are));
-            }
-            if (canHaveAbility(currentPokemon, abilitynum("Pressure"))) {
-                wildAbilityMessageList.push("The wild {0} {1} exerting {2} Pressure!".format(poke(currentDisplay, true), is_are, amt > 1 ? "their" : "its"));
-            }
-            if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard"))) {
-                wildAbilityMessageList.push("The wild {0} {1} protected by Wonder Guard!".format(poke(currentDisplay, true), is_are));
-            }
 
-            for (var e in onChannel) {
-                ballMacro(onChannel[e]);
-                
-                var player = getAvatar(onChannel[e]);
-                if (!player) {
-                    continue;
-                }
-                if (wildEvent) { // if an Event spawns, reset ball cooldown so everyone can attempt a throw
-                    player.cooldowns.ball = 0;
-                }
+            safari.afterSpawnDisplay(false, mandatoryDisplay);
 
-                if (!abilityMessageList.hasOwnProperty(onChannel[e])) {
-                    abilityMessageList[onChannel[e]] = [];
-                }
-                if (!miscMessageList.hasOwnProperty(onChannel[e])) {
-                    miscMessageList[onChannel[e]] = [];
-                }
-                var leader = this.getEffectiveLead(player, true);
-                var ignore = ignoresWildAbilities(player);
-                if (this.hasCostumeSkill(player, "typeMatchupHelper")) {
-                    var typeEffectiveness = 0;
-                    var wild = currentDisplay;
-                    var pType1 = type1(leader), pType2 = type2(leader), wType1 = type1(wild), wType2 = type2(wild);
-                    var pType3 = canHaveAbility(leader, abilitynum("Steelworker")) && !hasType(leader, "Steel") ? "Steel" : null;
-                    if (currentTypeOverride) {
-                        wType1 = currentTypeOverride;
-                    }
-                    var inverse = (player.costume === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(currentPokemon, abilitynum("Contrary")) && !ignore);
-                    // use currentPokemon instead of currentDisplay for ability related stuff, since they broadcast an ability message anyway
-                    var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) && !ignore, scrappy: canHaveAbility(leader, abilitynum("Scrappy")) };
-                    if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
-                        typeEffectiveness = this.checkEffective([wType1, wType2], [pType1, pType2, pType3], !inverse);
-                    }
-                    else {
-                        typeEffectiveness = this.checkEffective([pType1, pType2, pType3], [wType1, wType2], inverse, select);
-                    }
-                    if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard")) && !ignore && typeEffectiveness < 2) {
-                        typeEffectiveness = Math.min(typeEffectiveness, immuneMultiplier);
-                    }
-
-                    miscMessageList[onChannel[e]].push("Your {0}'s type effectiveness against the wild {1} is <b>{2}x</b>!".format(poke(leader, true), poke(currentDisplay, true), typeEffectiveness));
-                }
-                if (this.hasCostumeSkill(player, "ballHint")) {
-                    var bestBalls = [];
-                    var bestRate = 0;
-                    for (var i = 0; i < allBalls.length; i++) {
-                        var ball = allBalls[i];
-                        if (isBallAvailable(player, ball) && !["master", "spirit", "uturn"].contains(ball)) {
-                            var ballRate = safari.computeCatchRate(onChannel[e], ball, currentDisplay, true);
-                            //sys.sendMessage(sys.id("ripper roo"), ball + ": " + ballRate, safchan);
-                            if (ballRate >= bestRate) {
-                                if (ballRate > bestRate) {
-                                    bestRate = ballRate;
-                                    bestBalls = [];
-                                }
-                                
-                                bestBalls.push(ball);
-                            }
-                        }
-                    }
-                    if (bestBalls.length > 0) {
-                        bestBalls = readable(bestBalls.map( function(e) { return "«" + link("/" + ccatch + " " + e, finishName(e).split(" ")[0]) + "»" }));
-                        miscMessageList[onChannel[e]].push("The best Balls for you to use against the wild {0} are: {1}".format(poke(currentDisplay, true), bestBalls));
-                    }
-                }
-                if (safari.hasCostumeSkill(player, "revealAction")) {
-                    miscMessageList[onChannel[e]].push("The wild {0} {1} currently {2}!".format(poke(currentDisplay, true), is_are, currentPokemonAction));
-                }
-                if (safari.hasCostumeSkill(player, "revealMood")) {
-                    miscMessageList[onChannel[e]].push("The wild {0} {1} feeling {2}!".format(poke(currentDisplay, true), is_are, currentPokemonMood));
-                }
-                if (player.options.leadAbilityMessages) {
-                    var getIgnorableAbilities = function(id) {
-                        var ignorable = ["Color Change", "Contrary", "Defeatist", "Emergency Exit", "Levitate", "Moxie", "Pressure", "Run Away", "Wimp Out", "Wonder Guard"].map(abilitynum);
-                        var ret = [];
-                        for (var i = 0; i < ignorable.length; i++) {
-                            if (canHaveAbility(id, ignorable[i])) {
-                                ret.push(ignorable[i]);
-                            }
-                        }
-                        return ret;
-                    };
-                    var ignorable = getIgnorableAbilities(currentDisplay);
-                    if (ignore && ignorable.length > 0) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s {1} bypasses the wild {2}'s {3}!".format(poke(leader, true), abilityOff(ignore), poke(currentDisplay, true), readable(ignorable.map(abilityOff))));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Intimidate"))) {
-                        abilityMessageList[onChannel[e]].push("Your {0} weakens the wild {1} with Intimidate!".format(poke(leader, true), poke(currentDisplay, true)));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Scrappy")) && (hasType(leader, "Normal") || hasType(leader, "Fighting")) && hasType(currentDisplay, "Ghost")) {
-                        abilityMessageList[onChannel[e]].push("Your {0} can strike Ghost-types with Scrappy!".format(poke(leader, true)));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Technician"))) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s Technician strengthens weaker Poké Balls!".format(poke(leader, true)));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Tinted Lens"))) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s Tinted Lens mitigates type resistances!".format(poke(leader, true)));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Keen Eye")) && player.balls.lens > 0) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s Keen Eye gives you a better chance of taking higher quality photos!".format(poke(leader, true)));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Simple"))) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s Simple intensifies type matchups!".format(poke(leader, true)));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Sniper")) && currentBaiter !== null && currentBaiter !== player.id) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s Sniper boosts your catch rate against Pokémon baited by others!".format(poke(leader, true)));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Speed Boost"))) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s Speed Boost gives you a better chance of throwing before others!".format(poke(leader, true)));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Gale Wings"))) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s Gale Wings gives you a much better chance of throwing before others!".format(poke(leader, true)));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Prankster"))) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s Prankster gives you a better chance of taking photos before others!".format(poke(leader, true)));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Infiltrator")) && currentPokemon != currentDisplay) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s Infiltrator reveals that the wild {1} {2} actually {3} in disguise!".format(poke(leader, true), poke(currentDisplay, true), is_are, poke(currentPokemon, true)));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Steelworker")) && !hasType(leader, "Steel")) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s Steelworker grants it the Steel-type!".format(poke(leader, true), poke(currentDisplay, true), is_are, poke(currentPokemon, true)));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Imposter")) && !canHaveAbility(currentDisplay, abilitynum("Imposter"))) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s Imposter transformed it into {1}!".format(poke(leader, true), an(poke(currentDisplay, true))));
-                    }
-                    if (canHaveAbility(leader, abilitynum("Ball Fetch"))) {
-                        abilityMessageList[onChannel[e]].push("Your {0}'s Ball Fetch can recover your Poké Balls for you!".format(poke(leader, true)));
-                    }
-                    var ignoreRules = [12, 109]; // Oblivious, Unaware
-                    if (contestCount > 0 && currentRules) {
-                        for (var i = 0; i < ignoreRules.length; i++) {
-                            if (canHaveAbility(leader, ignoreRules[i])) {
-                                abilityMessageList[onChannel[e]].push("Your {0}'s {1} ignores contest buffs and nerfs!".format(poke(leader, true), abilityOff(ignoreRules[i])));
-                                break;
-                            }
-                        }
-                    }
-                    var heldChanceAbilities = [14, 105, 119, 124, 187]; // Compound Eyes, Super Luck, Frisk, Pickpocket, Magician
-                    for (var i = 0; i < heldChanceAbilities.length; i++) {
-                        if (canHaveAbility(leader, heldChanceAbilities[i])) {
-                            abilityMessageList[onChannel[e]].push("Your {0}'s {1} helps you find held items more often!".format(poke(leader, true), abilityOff(heldChanceAbilities[i])));
-                            break;
-                        }
-                    }
-
-                    var abilBoosted = [];
-                    if (currentThemeEffect == "rain") {
-                        abilBoosted = [abilitynum("Swift Swim"), abilitynum("Hydration"), abilitynum("Rain Dish"), abilitynum("Dry Skin")];
-                    } else if (currentThemeEffect == "sunny") {
-                        abilBoosted = [abilitynum("Chlorophyll"), abilitynum("Solar Power"), abilitynum("Flower Gift"), abilitynum("Leaf Guard")];
-                    } else if (currentThemeEffect == "sandstorm") {
-                        abilBoosted = [abilitynum("Sand Rush"), abilitynum("Sand Veil"), abilitynum("Sand Force")];
-                    } else if (currentThemeEffect == "hail") {
-                        abilBoosted = [abilitynum("Slush Rush"), abilitynum("Snow Cloak"), abilitynum("Ice Body"), abilitynum("Ice Face")];
-                    }
-                    for (var i = 0; i < abilBoosted.length; i++) {
-                        if (canHaveAbility(leader, abilBoosted[i])) {
-                            abilityMessageList[onChannel[e]].push("Your {0}'s {1} boosts your catch rate during the current weather!".format(poke(leader, true), abilityOff(abilBoosted[i])));
-                            break;
-                        }
-                    }
-                }
-            }
-
-            for (var msg in wildAbilityMessageList) {
-                sendAll(wildAbilityMessageList[msg], false, false, false, mandatoryDisplay);
-            }
-            for (var user in abilityMessageList) {
-                player = getAvatar(user);
-                if (!player) {
-                    continue;
-                }
-                if (abilityMessageList[user].length === 0 || !player.options.leadAbilityMessages) {
-                    if (player.options.showLeadMessage && (mandatoryDisplay || !cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true))) {
-                        safaribot.sendMessage(user, "Your {0} prepares to fight!".format(poke(safari.getEffectiveLead(player, true), true)), safchan);
-                    }
-                    continue;
-                }
-                if (mandatoryDisplay || !cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
-                    for (var message in abilityMessageList[user]) {
-                        safaribot.sendMessage(user, abilityMessageList[user][message], safchan);
-                    }
-                }
-            }
-            for (var user in miscMessageList) {
-                if (miscMessageList[user].length === 0) {
-                    continue;
-                }
-                if (mandatoryDisplay || !cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
-                    for (var message in miscMessageList[user]) {
-                        safaribot.sendHtmlMessage(user, miscMessageList[user][message], safchan);
-                    }
-                }
-            }
             preparationPhase = sys.rand(5, 8);
             preparationThrows = {};
             preparationFirst = null;
@@ -8388,6 +8184,226 @@ function Safari() {
             }
             lastWild = now();
             lastWildAction = now();
+        }
+    };
+    this.afterSpawnDisplay = function(src, mandatoryDisplay) {
+        var toSend = src ? [src] : sys.playersOfChannel(safchan);
+        var abilityMessageList = {};
+        var miscMessageList = {};
+        var wildAbilityMessageList = [];
+        
+        var is_are = currentPokemonCount > 1 ? "are" : "is"
+        if (canHaveAbility(currentPokemon, abilitynum("Contrary"))) {
+            wildAbilityMessageList.push("The wild {0} {1} inverting type matchups with Contrary!".format(poke(currentDisplay, true), is_are));
+        }
+        if (canHaveAbility(currentPokemon, abilitynum("Levitate"))) {
+            wildAbilityMessageList.push("The wild {0} {1} airborne due to Levitate!".format(poke(currentDisplay, true), is_are));
+        }
+        if (canHaveAbility(currentPokemon, abilitynum("Pressure"))) {
+            wildAbilityMessageList.push("The wild {0} {1} exerting {2} Pressure!".format(poke(currentDisplay, true), is_are, currentPokemonCount > 1 ? "their" : "its"));
+        }
+        if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard"))) {
+            wildAbilityMessageList.push("The wild {0} {1} protected by Wonder Guard!".format(poke(currentDisplay, true), is_are));
+        }
+        for (var e in toSend) {
+            var pid = toSend[e];
+            ballMacro(pid);
+            
+            var player = getAvatar(pid);
+            if (!player) {
+                continue;
+            }
+            if (wildEvent) { // if an Event spawns, reset ball cooldown so everyone can attempt a throw
+                player.cooldowns.ball = 0;
+            }
+
+            if (!abilityMessageList.hasOwnProperty(pid)) {
+                abilityMessageList[pid] = [];
+            }
+            if (!miscMessageList.hasOwnProperty(pid)) {
+                miscMessageList[pid] = [];
+            }
+            var leader = this.getEffectiveLead(player, true);
+            var ignore = ignoresWildAbilities(player);
+            if (this.hasCostumeSkill(player, "typeMatchupHelper")) {
+                var typeEffectiveness = 0;
+                var wild = currentDisplay;
+                var pType1 = type1(leader), pType2 = type2(leader), wType1 = type1(wild), wType2 = type2(wild);
+                var pType3 = canHaveAbility(leader, abilitynum("Steelworker")) && !hasType(leader, "Steel") ? "Steel" : null;
+                if (currentTypeOverride) {
+                    wType1 = currentTypeOverride;
+                }
+                var inverse = (player.costume === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(currentPokemon, abilitynum("Contrary")) && !ignore);
+                // use currentPokemon instead of currentDisplay for ability related stuff, since they broadcast an ability message anyway
+                var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) && !ignore, scrappy: canHaveAbility(leader, abilitynum("Scrappy")) };
+                if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
+                    typeEffectiveness = this.checkEffective([wType1, wType2], [pType1, pType2, pType3], !inverse);
+                }
+                else {
+                    typeEffectiveness = this.checkEffective([pType1, pType2, pType3], [wType1, wType2], inverse, select);
+                }
+                if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard")) && !ignore && typeEffectiveness < 2) {
+                    typeEffectiveness = Math.min(typeEffectiveness, immuneMultiplier);
+                }
+
+                miscMessageList[pid].push("Your {0}'s type effectiveness against the wild {1} is <b>{2}x</b>!".format(poke(leader, true), poke(currentDisplay, true), typeEffectiveness));
+            }
+            if (this.hasCostumeSkill(player, "ballHint")) {
+                var bestBalls = [];
+                var bestRate = 0;
+                for (var i = 0; i < allBalls.length; i++) {
+                    var ball = allBalls[i];
+                    if (isBallAvailable(player, ball) && !["master", "spirit", "uturn"].contains(ball)) {
+                        var ballRate = safari.computeCatchRate(pid, ball, currentDisplay, true);
+                        //sys.sendMessage(sys.id("ripper roo"), ball + ": " + ballRate, safchan);
+                        if (ballRate >= bestRate) {
+                            if (ballRate > bestRate) {
+                                bestRate = ballRate;
+                                bestBalls = [];
+                            }
+                            
+                            bestBalls.push(ball);
+                        }
+                    }
+                }
+                if (bestBalls.length > 0) {
+                    bestBalls = readable(bestBalls.map( function(e) { return "«" + link("/" + ccatch + " " + e, finishName(e).split(" ")[0]) + "»" }));
+                    miscMessageList[pid].push("The best Balls for you to use against the wild {0} are: {1}".format(poke(currentDisplay, true), bestBalls));
+                }
+            }
+            if (safari.hasCostumeSkill(player, "revealAction")) {
+                miscMessageList[pid].push("The wild {0} {1} currently {2}!".format(poke(currentDisplay, true), is_are, currentPokemonAction));
+            }
+            if (safari.hasCostumeSkill(player, "revealMood")) {
+                miscMessageList[pid].push("The wild {0} {1} feeling {2}!".format(poke(currentDisplay, true), is_are, currentPokemonMood));
+            }
+            if (player.options.leadAbilityMessages) {
+                var getIgnorableAbilities = function(id) {
+                    var ignorable = ["Color Change", "Contrary", "Defeatist", "Emergency Exit", "Levitate", "Moxie", "Pressure", "Run Away", "Wimp Out", "Wonder Guard"].map(abilitynum);
+                    var ret = [];
+                    for (var i = 0; i < ignorable.length; i++) {
+                        if (canHaveAbility(id, ignorable[i])) {
+                            ret.push(ignorable[i]);
+                        }
+                    }
+                    return ret;
+                };
+                var ignorable = getIgnorableAbilities(currentDisplay);
+                if (ignore && ignorable.length > 0) {
+                    abilityMessageList[pid].push("Your {0}'s {1} bypasses the wild {2}'s {3}!".format(poke(leader, true), abilityOff(ignore), poke(currentDisplay, true), readable(ignorable.map(abilityOff))));
+                }
+                if (canHaveAbility(leader, abilitynum("Intimidate"))) {
+                    abilityMessageList[pid].push("Your {0} weakens the wild {1} with Intimidate!".format(poke(leader, true), poke(currentDisplay, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Scrappy")) && (hasType(leader, "Normal") || hasType(leader, "Fighting")) && hasType(currentDisplay, "Ghost")) {
+                    abilityMessageList[pid].push("Your {0} can strike Ghost-types with Scrappy!".format(poke(leader, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Technician"))) {
+                    abilityMessageList[pid].push("Your {0}'s Technician strengthens weaker Poké Balls!".format(poke(leader, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Tinted Lens"))) {
+                    abilityMessageList[pid].push("Your {0}'s Tinted Lens mitigates type resistances!".format(poke(leader, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Keen Eye")) && player.balls.lens > 0) {
+                    abilityMessageList[pid].push("Your {0}'s Keen Eye gives you a better chance of taking higher quality photos!".format(poke(leader, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Simple"))) {
+                    abilityMessageList[pid].push("Your {0}'s Simple intensifies type matchups!".format(poke(leader, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Sniper")) && currentBaiter !== null && currentBaiter !== player.id) {
+                    abilityMessageList[pid].push("Your {0}'s Sniper boosts your catch rate against Pokémon baited by others!".format(poke(leader, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Speed Boost"))) {
+                    abilityMessageList[pid].push("Your {0}'s Speed Boost gives you a better chance of throwing before others!".format(poke(leader, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Gale Wings"))) {
+                    abilityMessageList[pid].push("Your {0}'s Gale Wings gives you a much better chance of throwing before others!".format(poke(leader, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Prankster"))) {
+                    abilityMessageList[pid].push("Your {0}'s Prankster gives you a better chance of taking photos before others!".format(poke(leader, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Infiltrator")) && currentPokemon != currentDisplay) {
+                    abilityMessageList[pid].push("Your {0}'s Infiltrator reveals that the wild {1} {2} actually {3} in disguise!".format(poke(leader, true), poke(currentDisplay, true), is_are, poke(currentPokemon, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Steelworker")) && !hasType(leader, "Steel")) {
+                    abilityMessageList[pid].push("Your {0}'s Steelworker grants it the Steel-type!".format(poke(leader, true), poke(currentDisplay, true), is_are, poke(currentPokemon, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Imposter")) && !canHaveAbility(currentDisplay, abilitynum("Imposter"))) {
+                    abilityMessageList[pid].push("Your {0}'s Imposter transformed it into {1}!".format(poke(leader, true), an(poke(currentDisplay, true))));
+                }
+                if (canHaveAbility(leader, abilitynum("Ball Fetch"))) {
+                    abilityMessageList[pid].push("Your {0}'s Ball Fetch can recover your Poké Balls for you!".format(poke(leader, true)));
+                }
+                var ignoreRules = [12, 109]; // Oblivious, Unaware
+                if (contestCount > 0 && currentRules) {
+                    for (var i = 0; i < ignoreRules.length; i++) {
+                        if (canHaveAbility(leader, ignoreRules[i])) {
+                            abilityMessageList[pid].push("Your {0}'s {1} ignores contest buffs and nerfs!".format(poke(leader, true), abilityOff(ignoreRules[i])));
+                            break;
+                        }
+                    }
+                }
+                var heldChanceAbilities = [14, 105, 119, 124, 187]; // Compound Eyes, Super Luck, Frisk, Pickpocket, Magician
+                for (var i = 0; i < heldChanceAbilities.length; i++) {
+                    if (canHaveAbility(leader, heldChanceAbilities[i])) {
+                        abilityMessageList[pid].push("Your {0}'s {1} helps you find held items more often!".format(poke(leader, true), abilityOff(heldChanceAbilities[i])));
+                        break;
+                    }
+                }
+
+                var abilBoosted = [];
+                if (currentThemeEffect == "rain") {
+                    abilBoosted = [abilitynum("Swift Swim"), abilitynum("Hydration"), abilitynum("Rain Dish"), abilitynum("Dry Skin")];
+                } else if (currentThemeEffect == "sunny") {
+                    abilBoosted = [abilitynum("Chlorophyll"), abilitynum("Solar Power"), abilitynum("Flower Gift"), abilitynum("Leaf Guard")];
+                } else if (currentThemeEffect == "sandstorm") {
+                    abilBoosted = [abilitynum("Sand Rush"), abilitynum("Sand Veil"), abilitynum("Sand Force")];
+                } else if (currentThemeEffect == "hail") {
+                    abilBoosted = [abilitynum("Slush Rush"), abilitynum("Snow Cloak"), abilitynum("Ice Body"), abilitynum("Ice Face")];
+                }
+                for (var i = 0; i < abilBoosted.length; i++) {
+                    if (canHaveAbility(leader, abilBoosted[i])) {
+                        abilityMessageList[pid].push("Your {0}'s {1} boosts your catch rate during the current weather!".format(poke(leader, true), abilityOff(abilBoosted[i])));
+                        break;
+                    }
+                }
+            }
+        }
+
+        for (var msg in wildAbilityMessageList) {
+            if (src) {
+                safaribot.sendMessage(src, wildAbilityMessageList[msg], safchan);
+            }
+            else {
+                sendAll(wildAbilityMessageList[msg], false, false, false, mandatoryDisplay);
+            }
+        }
+        for (var user in abilityMessageList) {
+            player = getAvatar(user);
+            if (!player) {
+                continue;
+            }
+            if (abilityMessageList[user].length === 0 || !player.options.leadAbilityMessages) {
+                if (player.options.showLeadMessage && (mandatoryDisplay || !cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true))) {
+                    safaribot.sendMessage(user, "Your {0} prepares to fight!".format(poke(safari.getEffectiveLead(player, true), true)), safchan);
+                }
+                continue;
+            }
+            if (mandatoryDisplay || !cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
+                for (var message in abilityMessageList[user]) {
+                    safaribot.sendMessage(user, abilityMessageList[user][message], safchan);
+                }
+            }
+        }
+        for (var user in miscMessageList) {
+            if (miscMessageList[user].length === 0) {
+                continue;
+            }
+            if (mandatoryDisplay || !cantBecause(user, "", ["auction", "battle", "event", "pyramid", "baking"], "", true)) {
+                for (var message in miscMessageList[user]) {
+                    safaribot.sendHtmlMessage(user, miscMessageList[user][message], safchan);
+                }
+            }
         }
     };
     this.allFlagsMet = function(player, flags) {
@@ -31966,7 +31982,7 @@ function Safari() {
                 }
             }
         }
-        var maxSize = 101;
+        var maxSize = 1001;
         if (list.length > maxSize) {
             safaribot.sendMessage(src, "You can only add up to " + maxSize + " Items/Pokémon to your Tradeblocked list.", safchan);
             return;
@@ -39901,7 +39917,8 @@ function Safari() {
         var searchedMons1 = 0;
         var searchedMons2 = 0;
         var searchedMons3 = 0;
-        for (var j = 0; j < 899; j++) { // not using highest dex num here since these are probably floodgates we want to open manually per new gen
+        var bakeDexNum = 899; // not using highest dex num here since these are probably floodgates we want to open manually per new gen
+        for (var j = 0; j < bakeDexNum; j++) {
             for (var i = 0; i <= 62; i++) { // 62 for alcremie formes excluding finale. could probably rewrite this section to utilise getAllForms or something as a more elegant solution but i dont have energy for that :v
                 mon = getInputPokemon(poke(j + (65536 * i)));
                 if (!(mon.num)) {
@@ -40082,7 +40099,7 @@ function Safari() {
             if (loop > 500) {
                 break;
             }
-            var get = sys.rand(1, 899);
+            var get = sys.rand(1, bakeDexNum);
             bst = getBST(get);
             if (bst < 361 && (!(legendaries.contains(get))) && !out.commons.list.contains(get)) {
                 out.commons.list.push(get);
@@ -40094,7 +40111,7 @@ function Safari() {
             if (loop > 200) {
                 break;
             }
-            var get = sys.rand(1, highestDexNum);
+            var get = sys.rand(1, bakeDexNum);
             bst = getBST(get);
             if (bst < 481 && (!(legendaries.contains(get))) && !out.uncommons.list.contains(get)) {
                 out.uncommons.list.push(get);
@@ -52993,9 +53010,9 @@ function Safari() {
         }
         
         contestForfeited.push(player.idnum);
-        if (player.id in contestCatchers) {
+        /*if (player.id in contestCatchers) {
             delete contestCatchers[player.id];
-        }
+        }*/
         if (player.id in pendingActiveChanges) {
             delete pendingActiveChanges[player.id];
         }
@@ -53373,7 +53390,7 @@ function Safari() {
         if (!dailyBoost)
             return false;
         
-        var leader = this.getEffectiveLead(player);
+        var leader = this.getEffectiveLead(player, true);
         var species = pokeInfo.species(leader);
         return dailyBoost.pokemon == species && !isMega(leader) && !noDailyBonusForms.contains(parseInt(leader));
     };
@@ -60414,9 +60431,15 @@ function Safari() {
             this.showNextContest(src);
             sys.sendMessage(src, "*** ******************************************** ***", safchan);
             if (currentPokemon && (!(currentTheme && contestThemes[currentTheme].disguises))) {
-                sys.sendHtmlMessage(src, "There's a wild " + poke(currentDisplay, true) + "! <i>(BST: " + currentDisplayBST + ")", safchan);
-                
-                ballMacro(src);
+                var appmsg = currentPokemonCount > 1 ? "There are wild {0}! <i>(BST: {1})</i>" : "There's a wild {0}! <i>(BST: {1})</i>";
+                appmsg = appmsg.format(poke(currentDisplay, true), currentDisplayBST);
+                var shiny = typeof currentPokemon === "string";
+                var sprite = "";
+                for (var i = 0; i < currentPokemonCount; i++) {
+                    sprite += pokeInfo.sprite(currentDisplay);
+                }
+                sys.sendHtmlMessage(src, "<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + (wildEvent ? "<br/><b>All ball cooldowns were reset!</b>" : "") + "</center><hr>", safchan);
+                safari.afterSpawnDisplay(src, true);
             }
             else {
                 sys.sendHtmlMessage(src, link("/dashboard", "«Dashboard»"), safchan);
@@ -60823,6 +60846,9 @@ function Safari() {
                     for (var e in contestCatchers) {
                         if (contestCatchers.hasOwnProperty(e)) {
                             player = getAvatarOff(e);
+                            if (contestForfeited.contains(player.idnum)) {
+                                continue;
+                            }
                             if (contestCatchers[e].length >= maxCaught) {
                                 if (player) {
                                     if (contestCatchers[e].length > maxCaught) {
@@ -60930,6 +60956,9 @@ function Safari() {
                         if (contestantsCount.hasOwnProperty(e)) {
                             player = getAvatarOff(e);
                             if (contestantsCount[e] > 0 && player) {
+                                if (contestForfeited.contains(player.idnum)) {
+                                    continue;
+                                }
                                 playerId = sys.id(e);
                                 var basis = 2.5;
                                 amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * basis), 1);
