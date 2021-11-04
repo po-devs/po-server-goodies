@@ -11468,7 +11468,7 @@ function Safari() {
             playerDisplayName = "Some stealthy ninja";
         }
         sendAll(playerDisplayName + " is taking a photo of the " + pokeName + "!");
-        safaribot.sendHtmlMessage(src, toColor("You took a photo of " + this.describePhoto(photo) + "! [", "#DD4411") + link("/album delete:" + (player.photos.length+1), "Delete", true) + toColor("]", "#DD4411"), safchan);
+        safaribot.sendHtmlMessage(src, toColor("You took a photo of " + this.describePhoto(photo) + "! [" + link("/photo", "Take Another") + "] [", "#DD4411") + link("/album delete:" + (player.photos.length+1), "Delete", true) + toColor("]", "#DD4411"), safchan);
         
         player.records.photosTaken += 1;
 
