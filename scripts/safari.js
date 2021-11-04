@@ -12216,7 +12216,7 @@ function Safari() {
         
         if (contestCount > 0 || currentPokemon) {
             if (!(contestCount > 0 && contestForfeited.contains(player.idnum))) {
-                safari.addPendingActive(player.id, "quickLoadParty", "qload:" + data, ["auction", "battle", "event", "tutorial", "pyramid", "distortion", "wild", "contest", "baking"]);
+                safari.addPendingActive(player.id, "quickLoadParty", data.join(","), ["auction", "battle", "event", "tutorial", "pyramid", "distortion", "wild", "contest", "baking"]);
                 safaribot.sendMessage(src, "Your party will be changed to " + readable(toLoad.map(poke), "and") + " at the next opportunity!", safchan);
                 return;
             }
@@ -53126,9 +53126,6 @@ function Safari() {
         /*if (player.id in contestCatchers) {
             delete contestCatchers[player.id];
         }*/
-        if (player.id in pendingActiveChanges && pendingActiveChanges[player.id].manageParty) {
-            safari.deletePendingActive(player.id, "manageParty");
-        }
 
         player.altTimeline.lead = 0;
         sys.sendMessage(src, "", safchan);
@@ -55347,7 +55344,7 @@ function Safari() {
                     return true;
                 }
                 safari.deletePendingActive(player.id, "all");
-                safaribot.sendMessage(src, "You pending commands have been cleared.", safchan);
+                safaribot.sendMessage(src, "Your pending commands have been cleared.", safchan);
                 return true;
             }
             if (command === "ballmacro") {
