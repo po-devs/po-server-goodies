@@ -11468,11 +11468,11 @@ function Safari() {
             playerDisplayName = "Some stealthy ninja";
         }
         sendAll(playerDisplayName + " is taking a photo of the " + pokeName + "!");
-        safaribot.sendHtmlMessage(src, toColor("You took a photo of " + this.describePhoto(photo) + "! [" + link("/photo", "Take Another") + "] [", "#DD4411") + link("/album delete:" + (player.photos.length+1), "Delete", true) + toColor("]", "#DD4411"), safchan);
-        
-        player.records.photosTaken += 1;
 
+        player.records.photosTaken += 1;
         player.photos.push(photo);
+        safaribot.sendHtmlMessage(src, toColor("You took a photo of " + this.describePhoto(photo) + "!" +  (player.photos.length < 20 ? " [" + link("/photo", "Take Another") + "]" : "") + " [" + link("/ballmacro", "Choose Another Action") + "] [", "#DD4411") + link("/album delete:" + (player.photos.length), "Delete", true) + toColor("]", "#DD4411"), safchan);
+
         safari.costumeEXP(player, "takephoto", currentPokemonCount);
         if (player.photos.length >= 20) {
             safaribot.sendMessage(src, "Your camera's memory is now full! You need to free up some space to take more photos!", safchan);
