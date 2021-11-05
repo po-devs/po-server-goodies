@@ -8438,6 +8438,9 @@ function Safari() {
         }
         
         currentPokemon = null;
+
+        safari.runPendingActive();
+
         currentTypeOverride = null;
         currentExtraBST = 0;
         wildBallThrows = {};
@@ -8448,7 +8451,7 @@ function Safari() {
         spiritSpawn = true;
         wildSpirit = false;
         var themesListed = [].concat(nextTheme);
-        
+
         var votesResult;
         if (commandData.toLowerCase() === "none") {
             currentTheme = null;
