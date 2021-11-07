@@ -795,10 +795,18 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         }
         sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData.toCorrectCase() + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData.toCorrectCase() + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + (reason.length > 0 ? " [Reason: " + reason + "]" : "") + " [Channel: "+sys.channel(channel) + "]");
 
-        sys.playerIds().forEach(function(id) {
-            if (sys.loggedIn(id) && sys.ip(id) === tarip)
-                SESSION.users(id).activate(type, sys.name(src), expires, reason, true);
-        });
+        if (tarip !== "::1%0") {
+            sys.playerIds().forEach(function(id) {
+                if (sys.loggedIn(id) && sys.ip(id) === tarip)
+                    SESSION.users(id).activate(type, sys.name(src), expires, reason, true);
+            });
+        }
+        else { // hack to target single user session for webclient's shared IPs
+            SESSION.users(tar)[type].active = true;
+            SESSION.users(tar)[type].by = sys.name(src);
+            SESSION.users(tar)[type].expires = expires;
+            SESSION.users(tar)[type].reason = reason;
+        }
         if (!sys.loggedIn(tar)) {
             memoryhash.add(tarip, sys.time() + ":" + sys.name(src) + ":" + expires + ":" + commandData + ":" + reason);
         }
@@ -2467,7 +2475,13 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode, team, destTie
         sys.stopEvent();
         return;
     }*/
-
+    if (SESSION.users(src).smute.active) {
+        if (sys.loggedIn(sys.id("Blinky"))) {
+            sys.sendMessage(sys.id("Blinky"), "±Luxray: " + sys.name(src) + " # Challenge", staffchannel);
+        }
+        sys.stopEvent();
+        return;
+    }
     if (sys.tier(src,team).indexOf("Doubles") != -1 && destTier.indexOf("Doubles") != -1 && mode != 1) {
         battlebot.sendMessage(src, "To fight in doubles, enable doubles in the challenge window!");
         sys.stopEvent();
