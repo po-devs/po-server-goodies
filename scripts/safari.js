@@ -24075,7 +24075,7 @@ function Safari() {
         }
         return false;
     };
-    function Battle(p1, p2) {
+    function Battle(p1, p2, silent) {
         var player1 = getAvatar(p1);
         this.cantWatch = false;
         this.startTime = now();
@@ -24139,7 +24139,9 @@ function Safari() {
         this.scoreOrder = [];
         this.finished = false;
 
-        sendAll("A battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! [" + link("/watch " + this.name1, "Watch") + "]", true);
+        if (!silent) {
+            sendAll("A battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! [" + link("/watch " + this.name1, "Watch") + "]", true);
+        }
     }
     Battle.prototype.nextTurn = function() {
         if (this.turn < 0) {
@@ -33896,7 +33898,7 @@ function Safari() {
                     }
                 }
                 if (id && getAvatar(id)) {
-                    var battle = new Battle(id, npc);
+                    var battle = new Battle(id, npc, (ac + 1) % 7 !== 0);
                     for (e = 0; e < viewers.length; e++) {
                         if (!battle.viewers.contains(viewers[e])) {
                             battle.viewers.push(viewers[e]);
