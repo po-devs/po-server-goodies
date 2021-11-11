@@ -346,7 +346,8 @@ function Safari() {
             sunshard: 0,
             dummy: 0,
             dummy2: 0,
-            dummy3: 0
+            dummy3: 0,
+            battlepoint: 0
         },
         eventFlags: {
             "144": 0,
@@ -923,6 +924,7 @@ function Safari() {
             showLeadMessage: false,
             canSellFormes: true,
             showEvoMessages: true,
+            broadcastEvoMessages: true,
             anyNotifications: true,
             questNotifications: true,
             persistentBait: false,
@@ -1154,6 +1156,8 @@ function Safari() {
 
             silver: {name: "silver", fullName: "Silver Coin", type: "items", icon: 273, price: 300, aliases: ["silver", "silver coin", "silvercoin"], tradable: false, cap: 9999},
             shady: {name: "shady", fullName: "Shady Coin", type: "items", icon: 300, price: 500, aliases: ["shady", "shady coin", "shadycoin"], tradable: false, cap: 9999},
+            battlepoint: {name: "battlepoint", fullName: "Battle Point", type: "items", icon: 0, price: 0, aliases: ["battlepoint", "bp", "battle point", "battlepoints", "battle points"], tradable: false, cap: 9999},
+            
 
             entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 300, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false, cap: 50},
             coupon: {name: "coupon", fullName: "Decor Coupon", type: "items", icon: 58, price: 15000, aliases: ["coupon", "decor coupon", "decorcoupon", "decoupon"], tradable: false},
@@ -1533,6 +1537,7 @@ function Safari() {
         dew:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHZSURBVEhLY/z//z8DLQETlKYZGPoWEBUHlo4TwYp+fFgA5nMIJIDp4/vzGcEMPACvBYaGhv9BhhkYBDDoa3yHiiLAzv2nGR7c7GM4f/48TotwWgAy3MJhA1aD0cHMGZE4LcFqAbLhhgaKUFEGhvMX7oPpizc4Ge4/eMAgJS7BYGb4H8y/dqGG4eD+xRiWYI1kULDADDcwYIBjEJ+HhxMsp6igwPDu43u4Zf9Z7KG6UQGGBaAIBYU5IQAyVIhfEEyDLNPWcYUnBmSA1QeEwh3kapgPQDTIkp/ff0BlUQGGBbCkCAKgML9wgQGOQfyL1/+C5ZB9AAPIemEAZ0YDuRIEFqx4ATYYbDhQ7MtXZrA4sg8+frjA8OffF7A4OsCwAJaJQMEEMhBGwywEgYQICSgL4hMQUJL9BdeLDPD6AGY4OgD5CmTwjx8/oSIMDKoqCEuRAdZ84BF48H+AhzhWw5+/eI5iMCh44iPcGY6ces+wZK4lcfng5YMCsOEgV6JjkOEgQ2EYBED54/eXOWA2OsBbVIgrTIDyIC5FB+5OZgyebkYMGRkWpBUVMAAr7PgFgNkYCEApRkX2JwM39z+wqyfP3sRw9WwbeYUdMqBZcU0NgDOZUgsMdQsYGAAGYQVLYeEoTgAAAABJRU5ErkJggg==",
         easteregg:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAUCAYAAABvVQZ0AAAEDWlDQ1BJQ0MgUHJvZmlsZQAAOI2NVV1oHFUUPrtzZyMkzlNsNIV0qD8NJQ2TVjShtLp/3d02bpZJNtoi6GT27s6Yyc44M7v9oU9FUHwx6psUxL+3gCAo9Q/bPrQvlQol2tQgKD60+INQ6Ium65k7M5lpurHeZe58853vnnvuuWfvBei5qliWkRQBFpquLRcy4nOHj4g9K5CEh6AXBqFXUR0rXalMAjZPC3e1W99Dwntf2dXd/p+tt0YdFSBxH2Kz5qgLiI8B8KdVy3YBevqRHz/qWh72Yui3MUDEL3q44WPXw3M+fo1pZuQs4tOIBVVTaoiXEI/MxfhGDPsxsNZfoE1q66ro5aJim3XdoLFw72H+n23BaIXzbcOnz5mfPoTvYVz7KzUl5+FRxEuqkp9G/Ajia219thzg25abkRE/BpDc3pqvphHvRFys2weqvp+krbWKIX7nhDbzLOItiM8358pTwdirqpPFnMF2xLc1WvLyOwTAibpbmvHHcvttU57y5+XqNZrLe3lE/Pq8eUj2fXKfOe3pfOjzhJYtB/yll5SDFcSDiH+hRkH25+L+sdxKEAMZahrlSX8ukqMOWy/jXW2m6M9LDBc31B9LFuv6gVKg/0Szi3KAr1kGq1GMjU/aLbnq6/lRxc4XfJ98hTargX++DbMJBSiYMIe9Ck1YAxFkKEAG3xbYaKmDDgYyFK0UGYpfoWYXG+fAPPI6tJnNwb7ClP7IyF+D+bjOtCpkhz6CFrIa/I6sFtNl8auFXGMTP34sNwI/JhkgEtmDz14ySfaRcTIBInmKPE32kxyyE2Tv+thKbEVePDfW/byMM1Kmm0XdObS7oGD/MypMXFPXrCwOtoYjyyn7BV29/MZfsVzpLDdRtuIZnbpXzvlf+ev8MvYr/Gqk4H/kV/G3csdazLuyTMPsbFhzd1UabQbjFvDRmcWJxR3zcfHkVw9GfpbJmeev9F08WW8uDkaslwX6avlWGU6NRKz0g/SHtCy9J30o/ca9zX3Kfc19zn3BXQKRO8ud477hLnAfc1/G9mrzGlrfexZ5GLdn6ZZrrEohI2wVHhZywjbhUWEy8icMCGNCUdiBlq3r+xafL549HQ5jH+an+1y+LlYBifuxAvRN/lVVVOlwlCkdVm9NOL5BE4wkQ2SMlDZU97hX86EilU/lUmkQUztTE6mx1EEPh7OmdqBtAvv8HdWpbrJS6tJj3n0CWdM6busNzRV3S9KTYhqvNiqWmuroiKgYhshMjmhTh9ptWhsF7970j/SbMrsPE1suR5z7DMC+P/Hs+y7ijrQAlhyAgccjbhjPygfeBTjzhNqy28EdkUh8C+DU9+z2v/oyeH791OncxHOs5y2AtTc7nb/f73TWPkD/qwBnjX8BoJ98VVBg/m8AAAKpSURBVDgRrZNdSBRhFIbf2TV3VzfULJXUNSvLkrJUUiz7A7UgvUkJsii6KMJ+LoqQLowuoiALLIgkhEgoyBuphAqFUtxcISXT0sW01XX9XTV3x5mddWdyTviBuEWIB2bOmfO955l555vhlLnAMoVmmTiECfgXrNPagarq+4g/nIzpIRe8vTKuXyz96wj3N5tnSk/ifH40IhPjoPNJ+C6kgg8eQc2zGjwprvIL9GvzWOEBHL22FXEbNQSiyahpBARx2J2TjXPlp/4PdrrkOPLybiBLGIDPx6OH4+FRhmEX++GQBqDETCLjbApO3CpcBFxg02KxoFZ6ifg0ExNG+GYwqg1i1wcFG6Y0ejTMGNFx04aKigq2tsBm5dvHDMTZw0hEICGQ6l0eB1r1kfiqW429QW4YMjkGUosFsM4XbWxRtcPCIFFplL2UswQ7QmURad0RTKIWDFZfV4dXJQ9R0D+M1PfRTMRVp1AdqohoNMQgUJbp6WwuEwrCMnAoO4dp2Xcmeb3o+9mIpGwXNiW2YHO9CV175mwVtpJ4itMjcWQWOxtjIEELry8WM+IYeFFgMLYBTqcTxUW5eFp0mRa55G7KyrtMyvyalQgec7FBtXjdbobpQh7S09Opz2yGh4eja8gJC/8Zo5MTUHRz76klCT/2byGhcdYOLtdMh2dHG5raW9He38NAqojZVC9u33mEIfMn/JqwQftNC4PQi1irgIEQEcp6K2RHMEbH3HB+FMDrQvBBHlTHWDCb850HZfew1jwCcZUR+gk3tVdE/dlFjVGG7NZAljSotH7Bm4a6+THKzOZ899LVK3BkRuJ5Uy21VKgagQkeyoMJfX5BtKj+6P5ifHxcKb9bpmyL3UBH8vZ1Sv6RfUpzc7M/OfUW2aQ7LPG0yOYSOTS2rLDfO+E/2wSFswEAAAAASUVORK5CYII=",
         celebrityTicket: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABSlBMVEUAAAA2NDI0MjA4NDMyMTCyWSHleTA3MzA3NzM1MjLkeDC1WiGVSyG0WyLlejA0MjHy61j3lVq1WyGVSiHNmknOnEqzWiHvvWrPnUuVTCKTSiDMmUjOm0qVSyKzWSHtu2nMm0nNnEqUSiHNm0mEZCJbShiCYiDMmkg3NTM1MzLz6llaShiBYSHMmEi1WyKyWCDjeTE3Mi/ykVj261rPnUpZSRiSeVdbSxnKmUeWTSG1WiKzWCCzWiI2MjA1Mi+2WyGWTCKGZCJdSxlcTBlaShmjeiDOnUr0lFo4NDE0MS/heDG3WiHMmkmUSyFcShhbShmkeiLNnEnrumn061o4NzE2MjE1MS/geTHMmUnMmkqmfCKmeyLNnUo5NjI1NDE4NC+TSiGUSSHPnEu1WiDykVm2WiCyWSI4MzA2MzE2Mi/wkFjkejI2NTT///8UwuSBAAAAAXRSTlMAQObYZgAAAAFiS0dEbbsGAK0AAAAHdElNRQflBQ0LICASaJy3AAAA+UlEQVQoz2NgGAKAkQmnFDMLKxs7dikOTi5uHl4+bLIc/AKCQsIiomKYeoFS4hKiklLSMrJyaLJAKXkFEUVRoKySkhKKySBdyiqqauoQWRFRIbheDU0tcQl1FVVtbR0RUZCsroyevoEhxPFGxiaiIDlTM3MLoKSopZW1ja0dWMrA3gHoCEcnZzMXbW1XZVFRNy13D09wcHh5K/mI+ipJy4iKOvq5+AcEugUFh4RC7QsL946IlFUCy0Y5RscEBcfGIRwaH+6tlKAE8h7QQFQpqCzQ5ETlJAwpiGyEjGxyChYpsKx9appBegb2yMjMyjbEHYsaOWSnDToCAGQqK5f3PcjLAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTA1LTEzVDExOjMyOjI4KzAwOjAwJxQ37AAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wNS0xM1QxMTozMjoyOCswMDowMFZJj1AAAAAASUVORK5CYII=",
+        battlepoint: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9kKBwMqG8nKfMIAAAHKSURBVEjH3ZUvbNtAFIe/pAGN1Egz67GGTAo8swQGLtImeTBsKeukkrKSSVNZB8fisdKwFQwE1iyGhp40cAGTGqkHDCZl4ORLLq1T34a2J1ny3ZO/3/tzfgf/ujV8P5BSrsv3fr9PkiTWl6Zp468EpJTr4ccFPQFxogCY9IX1fz4NH4k0feBnUwPPFAxOBNeRgd/d3gBwNl04GQK0fOCZcvfL9eDVGICe+IMelPCbqwnBcZdDIRFyZP09sQHPFnD3XVHEI1uqRl04QHDcBeB+mSNk5AhtWxTC+5HpR9MH/kKYB6BQKYsvE1T6dW8Fmj6Rl1aKAah05ghFIVzMVLXAc/BdodJUOrPwPK8Q8IHv2vgytnAxP7VNbu7C57ebmt4v873Q0j++jImTx3CAg91z3hEvgRZ6mZlm6hWFXtE+CjjsBM5eoVd74U4G2+dZyBHhuxghIyfalcprR+5kIIT4MG+/pt3qEIXG8VObbIR8YzNqHwU28rfnn56FOwI/giG6Ad8yXSlU6Ad+6WVtuPMnSynXajgFoNs1tRqcCKLQzJxMbcr41GmpdR+Uk7BKCPzglbOoSgjwgtcadttCgBe89o22fYn4wP8P+w2k5SeThMNs4AAAAABJRU5ErkJggg==",
         //candybag:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAMUSURBVEhLtVRfSFNRGP/uvLkJ1YwMJvOlcLVrmyQ0yUjYS/VmPSib4Hv02mNlb6unqBB8qMfaU4q2qF6DBgY9KCUuUCIhcf0BkxXMbXo6v2/33N0771KhfnA45/tzvv/naEII+p/wmPuuMDw8LHp7e0Uqldp1VDtmYBiG0DSi3EjE5FTRurRGgZkV8vl8NDs7KzXc0dABDH+6fJxKB5op/Hje5DqxZhymr6fbWZ7L5dydwEH9CofDglKDwjDCAud6uX0p3WOxbpFMJiXLKXcQWHbj9bJGKxKJ8J3QqYgknTIHEYvF9mxcrUaBOaaoUCjwHgx28L4XoAfGE9kLOQzj4+NWYx1N1m4PCbNhNDk5SaOjN2UUkm+2D2dd16lSqTCvszNEi4uL1iSl02kxsjztaLrloKenR8wNdVoTszBUJDUWFaGRrtUCaUQbT30mp5oRdqtExWKRjc8PbvCC9E3eQ5s7GH+9qls0ByUv5vuCTAOOHpwPbvLeZF64km2myISXz4Bb5FezOkcO7pakFwaL/AAVHA4enC1bxrsmfBQIBqi9I0DX3+1zNR6VziHHuiF11N2H/SXeAcsBUlM1h3G0ZvVLntf0cpOrcQDy/Eqepj43MY2S9ge2+CcAXZuiW0f5AAWPNKac1Ud+5pmX3l7a4DO4KIuK3H4XZUOjOYNoNMoaMAblLrOmbsbXS1XXimsv6a9yrQpqtNlBPB7fNi3dU/u5DIoDZ4g8JycFPEQOG3ff62zc3+onf3NVG7qqMOxgbGxMuzOnMwM4J2t4JNDGzUM2uBCb8nLaWCelQRX5i98dPAw/19aZrs/aanJ6qdokKDySU4DmAXi5yKQoJ1hNDKKFI0Ruh914IpHg3Woynnni46ilcPGVl75VWuhQWyvTfwOC+SAfp7qrGoyz4y/CaKHGAKJ5vuzhN4CoAZUVGoiyfM//4H/Jbhz3Xsbu08DAwHYHAJxMXyjTCX/1VStpVn4boYNb1Nai0bUZne71VbgP9rIg8lAoRJlMxpwhFwcK1kORqkrFfgbqaVUWOxo6+Dcg+gOPizMCRY/02QAAAABJRU5ErkJggg==",
         // Not necessary since they're already in PO
         /*oran:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAHlBMVEUwMDBQUIDg6PiYoLi4wPhQoPBY0PhoaLhQeMj////bPOk9AAAACnRSTlP///////////8AsswszwAAAAFiS0dECfHZpewAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAC1SURBVHjaY5zJgABMDAQ439MRnO+PlAqAFAuInc4syCcOlUkPLfyrJADhfA8VfG9w1qUAzClVZGC+ZHy2HKLsAwOD3dnrNwqABnwv+PifkcWF4S9Y5sFHxv8MfxgU3EEchX/vPwBVPIDIALUpALEBWIaB4QBQgPkDkMM5mYHBAciWByv7r3yAgcFInmEmyG2dz5PAdoFlOCcA6QUMMyeAXdDZuYAhYeZPBgZGcBikQ+QZiQsQAE9FMeRhR/RDAAAAAElFTkSuQmCC",
@@ -1815,14 +1820,14 @@ function Safari() {
             coupon: "A coupon holding a special offer to those interested in decorating their Secret Base. Can be traded for a Decoration at the Decor.",
             fossil: "A rare fossil often desired by archaeologists. Use it to enter the Pyramid without paying the entry fee by typing \"/quest pyramid:fossil:Name1:Name2\". You also receive " + (itemData.fossil.bonusRate * 100) + "% more points during that run.",
             form: "A form that you can fill to start an event. Use it with  \"/use form\" for more details.",
-            pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack\". Obtained from Official Events and Pyramid.",
+            pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack:[Amount to Use]\". Obtained from Official Events, Pyramid, and Detective",
             fragment: "A fragment of a broken Pokéball. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball! Obtained from Itemfinder and when obtaining a Master Ball while having one already.",
             materia: "A basic substance required for various alchemic creations. Obtained from Alchemy quest.",
             philosopher: "A legendary pink gem that is said to be capable of performing outstanding transformations. Obtained from League quest.",
             philosopherpebble: "An incompletely crystallized Philosopher's Stone. It still holds a fraction of the complete Stone's transformative power, so maybe you can make use of it somehow... Obtained from the weekly Celebrity leaderboards.",
             ash: "An extremely rare material useful in transmutation. Obtained from clearing Celebrity quest on Normal or harder.",
-            egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg\". Obtained from Pyramid quest.",
-            bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright\". Obtained from Pyramid quest.",
+            egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg:[Amount to Use]\". Obtained from Pyramid quest.",
+            bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright:[Amount to Use]\". Obtained from Pyramid quest.",
             water: "Water with high mineral content that increases your stamina at Pyramid by " + (itemData.water.bonusRate * 100) + "%. Use with \"/use water\".",
             soda: "Carbonated drink that reduces remaining cooldown for a quest, auction, burn heal or costume change to " + (itemData.soda.bonusRate * 100) + "%. Use with \"/use soda:[Quest]\". Obtained from Trivia event games.",
             cookie: "A delicious cookie that brings good luck in the form of a random buff for a limited time when eaten. Use with \"/use cookie\" (using another one will replace the previous effect).",
@@ -1843,8 +1848,9 @@ function Safari() {
             //candybag: "A basket full of goodies. Can be used with /use candybag, /use candybag:10, /use candybag:100, and /use candybag:1000. Don't open until Halloween!",
             lucky: "Coins used to bet on which Celebrity you think will win the tournament.",
             celebrityTicket: "A ticket to battle the Celebrities. It can be used with /use celebrityticket to make your next challenge a reward run, and /use celebrityticket:[region] to pick a region to challenge next!",
-            moonshard:"Scientists are still figuring out what these rocks may be useful for!",
-            sunshard:"Scientists are still figuring out what these rocks may be useful for!"
+            moonshard: "A shard that holds the power of the moon. Can unlock special Pokémon skills. Use /quest idol for more details.",
+            sunshard: "A shard that holds the power of the sun. Can unlock special Pokémon skills. Use /quest idol for more details.",
+            battlepoint: "A unit of currency used in the Battle Tower shop. Obtainable from the Tower quest."
         };
         perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "% | With Rich Girl Costume: " + itemData.amulet.maxRate * 100 * costumeData["rich"].rate + "%). Obtained from Gachapon.",
@@ -8232,7 +8238,7 @@ function Safari() {
                 player.cooldowns.ball = 0;
             }
             player.spawnlessThrows = 0;
-
+            safari.saveGame(player);
             if (!abilityMessageList.hasOwnProperty(pid)) {
                 abilityMessageList[pid] = [];
             }
@@ -8421,8 +8427,6 @@ function Safari() {
                 }
             }
         }
-
-        safari.saveGame(player);
     };
     this.allFlagsMet = function(player, flags) {
         for (var i = 0; i < flags.length; i++) {
@@ -10195,7 +10199,7 @@ function Safari() {
         if (safari.isBattling(sys.name(src))) {
             for (var b = 0; b < currentBattles.length; b++) {
                 var battle = currentBattles[b];
-                if (battle.isInBattle(name) && battle.startTime < lastWild) {
+                if (battle.isInBattle(name)) {
                     safari.forfeitBattle(src);
                 }
             }
@@ -15378,7 +15382,7 @@ function Safari() {
         }
 
         var targetName = utilities.non_flashing(commandData.toCorrectCase());
-        sendAll(sys.name(src) + " poked " + targetName + " with their " + sName + ".");
+        safaribot.sendHtmlAll(sys.name(src) + " poked " + targetName + " with their " + sName + ".", safchan);
         player.cooldowns.stick = currentTime + itemData.stick.cooldown;
         this.saveGame(player);
     };
@@ -16041,9 +16045,10 @@ function Safari() {
             safaribot.sendMessage(src, "Your " + info.name + " " + verb + " " + poke(evolution) + "!", safchan);
             sys.sendMessage(src, "", safchan);
         } else {
+            var rareEvo = isRare(info.num, true) || isRare(evolution, true);
             var canView = sys.playersOfChannel(safchan).filter(function(e) {
                 var p = getAvatar(e);
-                if (!p || isRare(info.num, true) || isRare(evolution, true) || p.options.showEvoMessages || e === src) {
+                if (!p || rareEvo || p.options.showEvoMessages || e === src) {
                     return true;
                 }
                 return false;
@@ -16052,10 +16057,19 @@ function Safari() {
                 if (cantBecause(e, false, ["auction", "battle", "event", "pyramid", "baking"], false, true) && e !== src) {
                     return;
                 }
-                sys.sendMessage(e, "", safchan);
-                safaribot.sendHtmlMessage(e, pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), safchan);
-                safaribot.sendHtmlMessage(e, sys.name(src) + "'s " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " " + verb + " " + poke(evolution, true) + "!", safchan);
-                sys.sendMessage(e, "", safchan);
+
+                if (rareEvo || player.options.broadcastEvoMessages) { // if broadcast enabled or rare evo
+                    sys.sendMessage(e, "", safchan);
+                    safaribot.sendHtmlMessage(e, pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), safchan);
+                    safaribot.sendHtmlMessage(e, sys.name(src) + "'s " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " " + verb + " " + poke(evolution, true) + "!", safchan);
+                    sys.sendMessage(e, "", safchan);
+                }
+                else if (e === src) { // else only print to yourself
+                    sys.sendMessage(e, "", safchan);
+                    safaribot.sendHtmlMessage(e, pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), safchan);
+                    safaribot.sendHtmlMessage(e, "Your " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " " + verb + " " + poke(evolution, true) + "!", safchan);
+                    sys.sendMessage(e, "", safchan);
+                }
             });
         }
         this.saveGame(player);
@@ -17705,6 +17719,55 @@ function Safari() {
             safaribot.sendMessage(src, "You are not in any battle/Pyramid run/Baking quest!", safchan);
         }
     };
+    this.watchInvite = function(src, tar) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+
+        var targetId = sys.id(tar);
+        var target = getAvatar(targetId);
+
+        if (!target) {
+            safaribot.sendMessage(src, "Couldn't find a player by that name!", safchan);
+            return;
+        }
+        if (targetId === src) {
+            safaribot.sendMessage(src, "You can't invite yourself!", safchan);
+            return;
+        }
+        var player = getAvatar(src);
+
+        var hit = false;
+        for (var b in currentBattles) {
+            if (currentBattles[b].isInBattle(player.id)) {
+                currentBattles[b].whitelist.push(target.id);
+                safaribot.sendHtmlMessage(targetId, sys.name(src) + " is inviting your to watch their current battle! Use " + link("/watch " + sys.name(src)) + " to do so.", safchan);
+                safaribot.sendMessage(src, "You invited " + sys.name(targetId) + " to watch your battle!", safchan);
+                hit = true;
+                break;
+            }
+        }
+        for (var p in currentPyramids) {
+            if (currentPyramids[p].isInPyramid(player.id)) {
+                safaribot.sendHtmlMessage(targetId, sys.name(src) + " is inviting your to watch their current Pyramid run! Use " + link("/watchpyr " + sys.name(src)) + " to do so.", safchan);
+                safaribot.sendMessage(src, "You invited " + sys.name(targetId) + " to watch your Pyramid run!", safchan);
+                hit = true;
+                break;
+            }
+        }
+        for (b in currentBakings) {
+            if (currentBakings[b].isInKitchen(player.id)) {
+                safaribot.sendHtmlMessage(targetId, sys.name(src) + " is inviting your to watch their current Baking quest! Use " + link("/watchbak " + sys.name(src)) + " to do so.", safchan);
+                safaribot.sendMessage(src, "You invited " + sys.name(targetId) + " to watch your Baking quest!", safchan);
+                hit = true;
+                break;
+            }
+        }
+
+        if (!hit) {
+            safaribot.sendMessage(src, "You are not in any battle/Pyramid run/Baking quest!", safchan);
+        }
+    };
     this.configurePlayerOptions = function(src, data) {
         if (!validPlayers("self", src)) {
             return;
@@ -17793,6 +17856,14 @@ function Safari() {
                     "You will now view all evolution/devolution messages!",
                     "You will now only see your own evolution/devolution messages! Note: Rare evolutions/devolutions from other players will always be shown.",
                     ["only viewing your own evolution/devolution messages", "viewing all evolution/devolution messages"],
+                    data
+                ]);
+                break;
+            case "broadcastevo": case "printevo": case "broadcastdevo": case "printdevo": case "broadcastevos": case "printevos": case "broadcastdevos": case "printdevos":
+                changeOption(dataInput, "broadcastEvoMessages", [
+                    "You will now broadcast your evolution/devolution messages to the channel!",
+                    "You will no longer broadcast your evolution/devolution messages to the channel! Note: Rare evolutions/devolutions will always be broadcast.",
+                    ["not broadcasting your evolution/devolution messages", "broadcasting your evolution/devolution messages"],
                     data
                 ]);
                 break;
@@ -17888,7 +17959,8 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Lead Display Messages: " + link("/options leadmessage:", player.options.showLeadMessage ? "Show if No Relevant Ability" : "Do Not Show"), safchan);
                 safaribot.sendHtmlMessage(src, "Auto-Forfeit Battle: " + link("/options autoforfeit:", player.options.autoForfeitThrow ? "Automatically Forfeit When Throwing on Rare Pokémon" : "Do Not Forfeit When Throwing on Rare Pokémon"), safchan);
                 safaribot.sendHtmlMessage(src, "Sell Pokémon formes to NPC: " + link("/options cansellformes:", player.options.canSellFormes ? "Allow Pokémon Forme Sales to the NPC" : "Do Not Allow Pokémon Forme Sales to the NPC"), safchan);
-                safaribot.sendHtmlMessage(src, "Evolution/Devolution Messages: " + link("/options showevo:", player.options.showEvoMessages ? "Show Everyone's Evolutions/Devolutions" : "Only Show My Own Evolutions/Devolutions"), safchan);
+                safaribot.sendHtmlMessage(src, "Other Players' Evolution/Devolution Messages: " + link("/options showevo:", player.options.showEvoMessages ? "Show Everyone's Evolutions/Devolutions" : "Only Show My Own Evolutions/Devolutions"), safchan);
+                safaribot.sendHtmlMessage(src, "Your Evolution/Devolution Messages: " + link("/options broadcastevo:", player.options.broadcastEvoMessages ? "Broadcast My Evolutions/Devolutions" : "Do Not Broadcast My Evolutions/Devolutions"), safchan);
                 safaribot.sendHtmlMessage(src, "Notifications: " + link("/options notifs:", player.options.anyNotifications ? "Receiving Notifications" : "Not Receiving Notifications"), safchan);
                 if (player.options.anyNotifications) {
                     safaribot.sendHtmlMessage(src, "Quest Notifications: " + link("/options questnotifs:", player.options.questNotifications ? "Receiving Quest Notifications" : "Not Receiving Quest Notifications"), safchan);
@@ -23961,7 +24033,7 @@ function Safari() {
         for (b in currentBattles) {
             battle = currentBattles[b];
             if (battle.isInBattle(tName)) {
-                if (battle.cantWatch && !SESSION.channels(safchan).isChannelAdmin(src)) {
+                if (battle.cantWatch && !SESSION.channels(safchan).isChannelAdmin(src) && !battle.whitelist.contains(name.toLowerCase())) {
                     safaribot.sendMessage(src, "You cannot watch/unwatch this battle!", safchan);
                     return;
                 }
@@ -23969,12 +24041,12 @@ function Safari() {
                     battle.sendToViewers(name + " stopped watching this battle!");
                     battle.viewers.splice(battle.viewers.indexOf(name.toLowerCase()), 1);
                 } else {
-                    if (!battle.isInBattle(name) && (!canView(src, battle.name1) || (!battle.npcBattle && !canView(src, battle.name2)))) {
+                    if (!battle.isInBattle(name) && (!canView(src, battle.name1) || (!battle.npcBattle && !canView(src, battle.name2))) && !battle.whitelist.contains(name.toLowerCase())) {
                         safaribot.sendMessage(src, "You cannot view this person's battles!", safchan);
                         return;
                     }
                     if (player.idnum in battle.watchCounts) {
-                        if (battle.watchCounts[player.idnum] >= watchCountMax) {
+                        if (battle.watchCounts[player.idnum] >= watchCountMax && !SESSION.channels(safchan).isChannelAdmin(src)) {
                             safaribot.sendMessage(src, "You can only watch this battle {0}!".format(plural(watchCountMax, "time")), safchan);
                             return;
                         }
@@ -24010,6 +24082,7 @@ function Safari() {
         this.name1 = sys.name(p1);
         this.viewers = [this.name1.toLowerCase()];
         this.watchCounts = {};
+        this.whitelist = [this.name1.toLowerCase()];
         this.team1 = player1.party.concat().shuffle();
 
         var isNPC = this.npcBattle = typeof p2 == "object";
@@ -24280,6 +24353,7 @@ function Safari() {
             this.viewers = [];
         }
         this.watchCounts = {};
+        this.whitelist = [];
         this.moveAmt = 3;
         this.cantWatch = opt.cantWatch || false;
 
@@ -24299,9 +24373,11 @@ function Safari() {
             if (this.viewers.length == 0) {
                 this.viewers = [this.name1.toLowerCase()];
             }
+            this.whitelist.push(this.name1.toLowerCase());
             this.biasNPC0 = null;
         }
         if (typeof p2 !== "object") {
+            this.whitelist.push(sys.name(p2));
             this.name2 = sys.name(p2);
             this.idnum2 = getAvatar(p2).idnum;
             this.viewers.push(this.name2.toLowerCase());
@@ -24609,6 +24685,7 @@ function Safari() {
                 this.idnum3 = isNPC ? "<NPC>" + this.name3 : player3.idnum;
                 this.team3 = this.originalTeam3 = this.buildTeam(this.name3, player3.party, this.idnum3, player3.cherished);
                 this.viewers.push(this.name3.toLowerCase());
+                this.whitelist.push(this.name3.toLowerCase());
             }
 
             if (isNPC) {
@@ -24624,6 +24701,7 @@ function Safari() {
                 this.idnum4 = player4.idnum;
                 this.team4 = this.originalTeam4 = this.buildTeam(this.name4, player4.party, this.idnum4, player4.cherished);
                 this.viewers.push(this.name4.toLowerCase());
+                this.whitelist.push(this.name4.toLowerCase());
 
                 if (!this.oneOnTwo) {
                     this.team1 = this.team1.slice(0, 4);
@@ -32206,6 +32284,9 @@ function Safari() {
             case "we have no elevators":
                 this.fightTower(src, args);
             break;
+            case "tower2":
+                this.fightTower2(src, args);
+            break;
             case "pyramid":
             case "old triangle":
             case "pyr":
@@ -33452,6 +33533,580 @@ function Safari() {
         };
 
         safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: You have a party with 6 Pokémon and paid the $" + addComma(cost) + " Entry Fee, therefore you are allowed to enter that door and start your Battle Tower challenge!", safchan);
+
+        var battle = new Battle(src, npc);
+        currentBattles.push(battle);
+        safari.toRecentQuests(player, "tower");
+    };
+    this.fightTower2 = function(src, data) {
+        var player = getAvatar(src);
+        var reason = "start a battle";
+        if (cantBecause(src, reason, ["tutorial"])) {
+            return;
+        }
+        if (!SESSION.channels(safchan).isChannelAdmin(src)) { // REMOVE THIS LATER
+            return;
+        }
+        var cost = costumeData.ninja.thresh || 499;
+        for (var i = 0; i < player.party.length; i++) {
+            cost = Math.max(cost, getBST(player.party[i]));
+        }
+        var trainerSprite = '<img src="' + base64trainers.tower + '">';
+        if (data.length === 0) {
+            // CHANGE THIS LATER
+            safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: Welcome to the SNEAKY BATTLE TOWER REVAMP BETA, a place where you can face successive battles until you lose! Type " + link("/quest tower2:help") + " for more information!", safchan);
+            safaribot.sendHtmlMessage(src, "Tower Clerk: To enter the Tower, you must pay a cost based on your strongest Pokémon's BST (currently $" + cost + ") and have a party of 6 Pokémon (currently " + player.party.length + "), then type " + link("/quest tower2:start") + "! Be careful though, you may miss a contest during this challenge!", safchan);
+            if (player.quests.tower.cooldown >= now()) {
+                safaribot.sendMessage(src, "Tower Clerk: Our trainers are still restoring their Pokémon from the last challenge, so please wait " + timeLeftString(player.quests.tower.cooldown) + " to try again!", safchan);
+            }
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        var opt = data[0].toLowerCase();
+        if (opt === "help") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: In this challenge, you must battle successive trainers in a row with no time to change your party between each round, until you are defeated!", safchan);
+            safaribot.sendMessage(src, "Tower Clerk: You receive prizes such as Balls, Candy Dusts, Silver Coins and others according to your progress! Try to win lots of rounds for better rewards!", safchan);
+            safaribot.sendMessage(src, "Tower Clerk: Be careful though, once you start the challenge you can't stop until you lose, so you may miss contests or important spawns!", safchan);
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "Tower Clerk: If you are ready to challenge the Battle Tower, type /quest tower:start.", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        if (player.quests.tower.cooldown >= now()) {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: You want to challenge the Battle Tower again already? Please take a rest while our trainers are preparing their teams, you will be able to challenge again in " + timeLeftString(player.quests.tower.cooldown) + "!", safchan);
+            //return;
+        }
+        if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid", "baking"])) {
+            return;
+        }
+        if (["shop", "buy"].contains(opt)) {
+            if (cantBecause(src, "buy items", ["contest"])) {
+                return;
+            }
+            var itemChoice = data[1],
+                amount = data[2];
+            var wares = { // tentative
+                "@gem": 1,
+                "@dew": 1,
+                "@starpiece": 3,
+                "@amulet": 3,
+                "@soothe": 3,
+                "@scarf": 3,
+                "@eviolite": 3,
+                "@crown": 3,
+                "@honey": 3,
+                "@battery": 3,
+                "@pokeblock": 4,
+                "@pack": 5,
+                "@nugget": 5,
+                "@fossil": 7,
+                "@mushroom": 10,
+                "@bignugget": 10,
+                "@cometshard": 15,
+                "@sunshard": 15,
+                "@moonshard": 15,
+                "@miracle": 30,
+                "@platinum": 35
+            };
+
+            if (!itemChoice) {
+                sys.sendMessage(src, "", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: You can purchase some souvenirs with your hard-earned " + es(finishName("battlepoint")) + " (BP) here!", safchan);
+                for (var w in wares) {
+                    var itemName = getInput(w).name;
+                    safaribot.sendHtmlMessage(src, "{0}: {1} BP".format(link("/quest tower:shop:" + itemName + ":1", itemName, true), wares[w]), safchan);
+                }
+                sys.sendMessage(src, "", safchan);
+                safaribot.sendHtmlMessage(src, "You currently have " + plural(player.balls.battlepoint, "battlepoint") + ". To buy something, use " + link("/quest tower:shop:", "/quest tower:shop:[Item Name]:[Amount to Buy]", true), safchan);
+                return;
+            }
+
+            var input = getInput(itemChoice);
+            var amount = parseInt(amount);
+
+            if (!wares.hasOwnProperty(input.input)) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: \"" + itemChoice + "\"? That's not something we have in stock!", safchan);
+                return;
+            }
+            if (!amount || isNaN(amount) || amount <= 0) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: That's not a valid number!", safchan);
+                return;
+            }
+            
+            var price = wares[input.input];
+            var cost = price * amount;
+            var cap = getCap(input.id);
+
+            if (player.balls.battlepoint < cost) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "You don't have enough {0} to afford that! You need {1}, but you only have {2}.".format(es(finishName("battlepoint")), plural(amount, "battlepoint"), player.balls.battlepoint), safchan);
+                return;
+            }
+            if (!this.isBelowCap(src, input.id, amount, input.type)) {
+                return;
+            }
+
+            player.balls.battlepoint -= cost;
+            player.balls[input.id] += amount;
+
+            safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: Thanks for buying " + plural(amount, input.name) + " for " + plural(cost, "battlepoint") + "! You now have " + (input.type == "item" ? plural(player.balls[input.id], input.name) + " and " : "") + plural(player.balls.battlepoint, "battlepoint") + "!", safchan);
+            safari.saveGame(player);
+            // CHANGE HELP AND START TEXT
+            // new tower-based records??
+            // update tower-based costume skills & re-evaluate tower-based missions (if any, icr)
+            // scale cd by streak length
+            // update cherry delight?
+            return;
+        }
+        if (opt !== "start") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: If you are ready to challenge the Battle Tower, type /quest tower:start. If you need more information, type /quest tower:help.", safchan);
+            return;
+        }
+        if (stopQuests.tower) {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: Sorry, our Trainers are taking a short lunch break. Please return at a later point in time!", safchan);
+            return;
+        }
+
+        if (player.party.length < 6) {
+            safaribot.sendMessage(src, "Your party must have 6 Pokémon for this challenge!", safchan);
+            return;
+        }
+        if (hasPokeInShop(src)) {
+            return;
+        }
+
+        if (player.money < cost) {
+            safaribot.sendMessage(src, "You need to pay $" + addComma(cost) + " to enter the Tower, but you only have $" + addComma(player.money) + "!", safchan);
+            return;
+        }
+        // ENABLE LATER
+        //player.money -= cost;
+        //safari.updateEconomyData(-cost, "questFee");
+        this.saveGame(player);
+
+        var skip = false;
+        var startingMinBST = 0;
+        var startingMaxBST = 430;
+        var startingMinPower = 10;
+        var startingMaxPower = 60;
+        var postBattle = function(name, isWinner, playerScore, npcScore, args, viewers) {
+            var player = getAvatarOff(name);
+            var id = sys.id(name);
+            if (isWinner) {
+                var bossLevels = [21, 35, 49, 70]; // possibly change later? just copying usual ingame tower boss levels for now
+                skip = false;
+                if (player.costume === "ninja" && chance(costumeData.ninja.rate) && !bossLevels.contains(args.count + 1)) {
+                    skip = true;
+                }
+                var ac = args.count + skip;
+                var counterMon = (ac > 49) && chance(0.25 + (ac * Math.random() * 0.033)) ? parseInt(player.party.random(), 10) : null;
+                var nextMinBST = startingMinBST;
+                var nextMaxBST = startingMaxBST;
+                var minPower = 5;
+                var maxPower = 30;
+                var littlecup = ac <= 7 ? true : false;
+                var onlyEvolved = ac >= 21 ? true : false;
+                var specialIncludes = [];
+                if (ac > 3) {
+                    nextMaxBST += 10; // 440
+                }
+                if (ac > 7) {
+                    nextMaxBST += 20; // 460
+                }
+                if (ac > 10) {
+                    nextMaxBST += 20; // 480
+                }
+                if (ac > 14) {
+                    maxPower += 10;
+                    nextMaxBST += 50; // 530
+                }
+                if (ac > 17) {
+                    nextMaxBST += 20; // 550
+                }
+                if (ac > 21) {
+                    maxPower += 20;
+                    nextMaxBST += 30; // 580
+                }
+                if (ac > 35) {
+                    minPower += 5;
+                    nextMinBST = startingMaxBST; // 430
+                    nextMaxBST += 20; // 600
+                }
+                if (ac > 42) {
+                    nextMinBST += 70; // 500
+                    
+                }
+                if (ac > 49) {
+                    maxPower += 10;
+                    nextMinBST += 30; // 530
+                    nextMaxBST += 70; // 670
+                    specialIncludes = [65748, 65630, 65717, 65678]; // Mega Scizor, Mega Gengar, Mega Ampharos, Mega Aerodactyl
+                }
+                if (ac > 56) {
+                    minPower += 5;
+                    specialIncludes = [65984, 65842, 65790, 65542, 65545, 65796, 65666, 131730]; // Mega Lucario, Mega Aggron, Mega Sceptile, Mega Charizard X, Mega Blastoise, Mega Swampert, Mega Gyarados, Ash Greninja
+                }
+                if (ac > 70) {
+                    minPower = startingMinPower + Math.floor(args.count / 2);
+                    maxPower = startingMaxPower + Math.floor(ac / 2);
+                    // Giratina-Origin, Mega Diancie, Kyurem-Black, Kyurem-White, Mega Garchomp, Mega Latios, Mega Latias, Mega Metagross, Mega Salamence, Zygarde-Complete, Zacian-Crowned Sword, Zamazenta-Crowned Shield, Arceus-Water, Arceus-Steel, Arceus-Fairy, Ultra Necrozma, Primal Groudon, Primal Kyogre, Mega Rayquaza, Eternatus-Eternamax
+                    specialIncludes = specialIncludes.concat([66023, 66255, 131718, 66182, 65981, 65917, 65916, 65912, 65909, 131790, 66424, 66425, 655853, 524781, 1114605, 197408, 65919, 65918, 65920, 66426]);
+                    nextMaxBST += 999;
+                }
+
+                var bossNPCs = [ // maybe wait for bdsp and see if we get any roster changes but this should be fine?
+                    {
+                        name: "Tower Tycoon Palmer",
+                        party: [681, 612, 537, 350, 464, 149],
+                        power: [10, 100], // TODO: adjust boss power levels
+                    },
+                    {
+                        name: "Salon Maiden Anabel",
+                        party: [65, 244, 461, 429, 373, 143],
+                        power: [20, 100],
+                    },
+                    {
+                        name: "Tower Tycoon Palmer",
+                        party: [66217, 887, 491, 486, 485, 488],
+                        power: [25, 110],
+                    },
+                    {
+                        name: "Salon Maiden Anabel",
+                        party: [243, 65917, 65984, 65909, 65912, 143],
+                        power: [35, 110],
+                    }
+                ];
+
+                var npc;
+                if (bossLevels.contains(ac + 1)) {
+                    npc = bossNPCs[bossLevels.indexOf(ac + 1)];
+                }
+                else {
+                    npc = {
+                        name: "Trainer " + generateName(),
+                        party: generateTeam(6, nextMinBST, nextMaxBST, null, null, onlyEvolved, littlecup, counterMon, specialIncludes.shuffle().shift()),
+                        power: [minPower, maxPower],
+                    };
+                }
+
+                npc.postBattle = postBattle;
+                npc.postArgs = {
+                    count: ac + 1,
+                    reward: args.reward,
+                    pinap: args.pinap
+                };
+                npc.desc = "Tower2 Lvl. " + (ac + 1); // CHANGE LATER
+
+                var roo = sys.id("ripper roo");
+                sys.sendMessage(roo, "Tower Lvl. " + (ac + 1), safchan);
+                sys.sendMessage(roo, "Minimum Power: " + minPower, safchan);
+                sys.sendMessage(roo, "Maximum Power: " + maxPower, safchan);
+                sys.sendMessage(roo, "Final Power: " + npc.power.join(", "), safchan);
+                sys.sendMessage(roo, "Minimum BST: " + nextMinBST, safchan);
+                sys.sendMessage(roo, "Maximum BST: " + nextMaxBST, safchan);
+                sys.sendMessage(roo, "Special Includes: " + specialIncludes.map(poke), safchan);
+
+                sys.sendMessage(id, "", safchan);
+                safaribot.sendMessage(id, "Tower Clerk: Good job! You have defeated " + plural(args.count, "trainer") + " so far! Now for the next battle!", safchan);
+                if (skip) {
+                    safaribot.sendMessage(id, "You carefully time your movements as you head up to the next floor. You dash for the stairs to skip battling, but not before mocking the unaware Trainer!", safchan);
+                }
+
+                var minBP = 2, maxBP = 7;
+                var times = 1 + skip;
+
+                for (var i = 0; i < times; i++) {
+                    var mod, rew, amt, loop, c, bp;
+                    //We calculate the level they are on first, then go back and grab the reward from previous floor
+                    c = args.count - i;
+                    mod = c % 7;
+                    loop = Math.floor(c / 7) + 1;
+                    bp = 0;
+
+                    var cbonus = safari.hasCostumeSkill(player, "towerLoot") ? (1.2 + (safari.getCostumeLevel(player)/50)) : 1;
+
+                    if (bossLevels.contains(c)) {
+                        bp = [10, 15, 25, 50][bossLevels.indexOf(c)];
+                        rew = ["mega", "mega", "fragment", "fragment"][bossLevels.indexOf(c)];
+                        amt = [2, 3, 1, 4][bossLevels.indexOf(c)];
+                    }
+                    else {
+                        if (c % 7 === 0) { // every 7th battle
+                            bp = Math.min(minBP + (c / 7 - 1), maxBP);
+                        }
+                        switch (mod) { // depending on average streak len, could scale v quickly, remember to re-evaluate after testing
+                            case 0:
+                                rew = "gem";
+                                amt = 1;
+                            break;
+                            case 1:
+                                rew = "gacha";
+                                amt = Math.floor(loop * 1.5 * cbonus);
+                            break;
+                            case 2:
+                                rew = "bait";
+                                amt = Math.floor(loop * 1.5 * cbonus);
+                            break;
+                            case 3:
+                                rew = "dust";
+                                amt = Math.round(loop * cbonus) * 10;
+                            break;
+                            case 4:
+                                rew = "money";
+                                amt = Math.round(3 * loop * cbonus) * 10;
+                            break;
+                            case 5:
+                                rew = ["bluapricorn", "ylwapricorn", "grnapricorn", "blkapricorn"].random();
+                                amt = Math.floor(loop * 1.25 * cbonus);
+                            break;
+                            case 6:
+                                rew = "silver";
+                                amt = Math.ceil(loop / 2);
+                            break;
+                        }
+                    }
+
+                    if (!npc.postArgs.reward.hasOwnProperty("battlepoint")) {
+                        npc.postArgs.reward.battlepoint = 0;
+                    }
+                    if (!npc.postArgs.reward.hasOwnProperty(rew)) {
+                        npc.postArgs.reward[rew] = 0;
+                    }
+                    
+                    npc.postArgs.reward[rew] += amt;
+                    npc.postArgs.reward.battlepoint += bp;
+
+                    var was_were;
+
+                    if (amt) {
+                        was_were = amt > 1 ? "were" : "was";
+                        safaribot.sendMessage(id, (rew === "money" ? "$" + amt : plural(amt, rew)) + " " + was_were + " added to your final prizes!", safchan);
+                    }
+                    if (bp) {
+                        was_were = bp > 1 ? "were" : "was";
+                        safaribot.sendMessage(id, plural(bp, "battlepoint") + " " + was_were + " added to your final prizes!", safchan);
+                    }
+                }
+
+                for (var e = 0; e < viewers.length; e++) {
+                    if (viewers[e] !== name.toLowerCase()) {
+                        safaribot.sendMessage(sys.id(viewers[e]), "Tower Clerk: " + name + " has defeated " + plural(args.count, "trainer") + " so far!", safchan);
+                        if (skip) {
+                            safaribot.sendMessage(sys.id(viewers[e]), "You notice " + name + " sneak around on the next floor and dash for the stairs without being noticed. Impressed by their ability, you remain quiet so they don't get caught.", safchan);
+                        }
+                    }
+                }
+                if (id && getAvatar(id)) {
+                    var battle = new Battle(id, npc);
+                    for (e = 0; e < viewers.length; e++) {
+                        if (!battle.viewers.contains(viewers[e])) {
+                            battle.viewers.push(viewers[e]);
+                        }
+                    }
+                    if (!viewers.contains(name.toLowerCase())) {
+                        battle.viewers.splice(battle.viewers.indexOf(name.toLowerCase()), 1);
+                    }
+                    currentBattles.push(battle);
+                } else {
+                    player.quests.tower.cooldown = now() + hours(0.25);
+                    safari.saveGame(player);
+                    for (e = 0; e < viewers.length; e++) {
+                        safaribot.sendMessage(sys.id(viewers[e]), "Tower Clerk: The challenge was cancelled because " + name + " is nowhere to be found for their next match!", safchan);
+                    }
+                }
+            } else {
+                var count = args.count - 1 - skip, updatelb = false;
+                if (count > player.records.towerHighest) {
+                    player.records.towerHighest = count;
+                    if (leaderboards.towerHighest.length === 0 || count > leaderboards.towerHighest[0].value) {
+                        // ENABLE LATER
+                        //safaribot.sendHtmlAll("<b>" + name.toCorrectCase() + " has defeated " + plural(count, "trainer") + " at the Battle Tower and set a new record!</b>", safchan);
+                        //updatelb = true;
+                    }
+                }
+                var traveledCount = count;
+                var h = 3;
+                var penalty = player.quests.tower.bonusPower !== 0; //could edit player value to a negative number mid-tower to act as a kill switch in order to complete a run
+                if (traveledCount === 0) {
+                    h = 0.5;
+                } else if (traveledCount <= 3) {
+                    h = 1;
+                } else if (traveledCount <= 6) {
+                    h = 1.5;
+                } else if (traveledCount <= 10) {
+                    h = 2;
+                }
+                // ENABLE LATER
+                //player.quests.tower.cooldown = now() + Math.round(hours(h + penalty) * (1 - safari.getFortune(player, "questcd", 0, "tower")));
+
+                var rewardText = [];
+                for (var r in args.reward) {
+                    if (r == "money") {
+                        rewardText.push("$" + args.reward[r]);
+                    } else {
+                        rewardText.push(plural(args.reward[r], finishName(r)));
+                    }
+                }
+                if (id) {
+                    var team = " Your Team: " + (player.costume !== "none" ? " [" + costumeAlias(player.costume, true, true) + " costume] " : "") + readable(player.party.map(poke)) + ".";
+                    if (count === 0) {
+                        safaribot.sendHtmlMessage(id, trainerSprite + "Tower Clerk: Too bad, " + name + "! You couldn't defeat any trainer!", safchan);
+                    } else if (count < 5) {
+                        safaribot.sendHtmlMessage(id, trainerSprite + "Tower Clerk: Game over, " + name + "! You defeated " + count + " trainer" + (count == 1 ? "" : "s") + "!" + team, safchan);
+                    } else if (count < 20) {
+                        safaribot.sendHtmlMessage(id, trainerSprite + "Tower Clerk: Good job, " + name + "! You defeated " + count + " trainers!" + team, safchan);
+                    } else if (count < 50) {
+                        safaribot.sendHtmlMessage(id, trainerSprite + "Tower Clerk: Amazing, " + name + "! You defeated " + count + " trainers! Congratulations!" + team, safchan);
+                    } else {
+                        safaribot.sendHtmlMessage(id, trainerSprite + "Tower Clerk: OH MY GOD, " + name + "! You defeated " + count + " trainers! That was superb!" + team, safchan);
+                    }
+                    if (skip) {
+                        safaribot.sendHtmlMessage(id, trainerSprite + "Tower Clerk: Hey wait a minute! You didn't defeat the previous Trainer so I can't count it in your performance assessment.", safchan);
+                    }
+                    if (rewardText.length > 0) {
+                        safaribot.sendMessage(id, "Tower Clerk: For your performance in the Battle Tower challenge, we reward you with " + readable(rewardText, "and") + "!", safchan);
+                    }
+                }
+                // ENABLE LATER
+                /*for (r in args.reward) {
+                    if (r == "money") {
+                        player.money += args.reward[r];
+                        player.records.towerEarnings += args.reward[r];
+                        safari.updateEconomyData(args.reward[r], "questFee");
+                        if (player.money > moneyCap) {
+                            player.money = moneyCap;
+                        }
+                    } else {
+                        if (r == "silver") {
+                            player.records.towerSilver += args.reward[r];
+                        }
+                        rewardCapCheck(player, r, args.reward[r], true);
+                    }
+                }*/
+                for (var e = 0; e < viewers.length; e++) {
+                    if (viewers[e] !== name.toLowerCase() && sys.id(viewers[e])) {
+                        safaribot.sendHtmlMessage(sys.id(viewers[e]), "Tower Clerk: <i>" + name + " was able to clear " + plural(count, "trainer") + "!</i>", safchan);
+                        if (rewardText.length > 0) {
+                            safaribot.sendHtmlMessage(sys.id(viewers[e]), "Tower Clerk: For their performance in the Battle Tower challenge, " + name + " was rewarded with " + readable(rewardText, "and") + "!", safchan);
+                        }
+                    }
+                }
+                player.notificationData.lastTowerParty = [].concat(player.party);
+
+                if (!player.costumes.contains("ninja") && count >= costumeData.ninja.acqReq && player.costume !== "battle") {
+                    var noAcq;
+                    for (var i = 0; i < player.party.length; i++) {
+                        if (getBST(player.party[i]) > costumeData.ninja.thresh) {
+                            noAcq = true;
+                            break;
+                        }
+                    }
+                    if (!noAcq) {
+                        player.costumes.push("ninja");
+                        safaribot.sendHtmlMessage(src, "<b>Received the following costume:</b> " + costumeData.ninja.fullName + ".", safchan);
+                        player.ninjaParty = player.party.concat();
+                    }
+                }
+
+                var passed = true;
+                for (var i = 0; i < player.party.length; i++) {
+                    if (getBST(player.party[i]) > 480) {
+                        passed = false;
+                        break;
+                    }
+                }
+
+                var k = Object.keys(effectiveness), m = [], y, l = [], u = true;
+                for (var t in k) {
+                    y = true;
+                    for (var p in player.party) {
+                        if (!hasType(player.party[p],k[t])) {
+                            y = false;
+                        }
+                    }
+                    if (y) {
+                        m.push(k[t]);
+                    }
+                }
+                for (var p in player.party) {
+                    if (l.indexOf(player.party[p]) !== -1) {
+                        u = false;
+                        break;
+                    }
+                    l.push(player.party[p]);
+                }
+
+                // ENABLE LATER
+
+                /*safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u, lowBST: passed});
+                safari.costumeEXP(player, "fighttower", 4 + (count * 3));
+                var currentLB = monthlyLeaderboards["towerHighest"].get(player.id) || 0;
+                if (currentLB < count) {
+                    safari.addToMonthlyLeaderboards(player.id, "towerHighest", count, true);
+                }
+                player.notificationData.towerWaiting = true;
+                safari.pendingNotifications(player.id);
+                safari.clearQuestNotifications(player, "Tower");
+                if (safari.events.towerTroubleEnabled && safari.events.towerTroubleData.searchText !== "") {
+                    if (!(safari.events.towerTroubleData.players.hasOwnProperty(player.idnum+""))) {
+                        safari.events.towerTroubleData.players[player.idnum+""] = 0;
+                    }
+                    if (count > safari.events.towerTroubleData.players[player.idnum+""]) {
+                        if (safari.satisfiesTowerTrouble(src, player.party)) {
+                            safaribot.sendHtmlMessage(src, "Your Tower Trouble high score is now " + count + "!", safchan);
+                            safari.events.towerTroubleData.players[player.idnum+""] = Math.max(safari.events.towerTroubleData.players[player.idnum+""], count);
+                        }
+                    }
+                    else {
+                        safaribot.sendHtmlMessage(src, "Your Tower Trouble high score is " + safari.events.towerTroubleData.players[player.idnum+""] + "!", safchan);
+                    }
+                }
+
+                if (penalty) {
+                    safaribot.sendMessage(src, "Due to the intense sweetness of the " + finishName("cherry") + ", you will be unable to challenge Tower for longer than normal due the resulting sugar crash!", safchan);
+                    player.quests.tower.bonusPower = 0;
+                }
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Tower|||Challenged using " + readable(player.party.map(poke)) +  "|||Cleared " + plural(count, "floor") + (rewardText.length > 0 ? ", received " + readable(rewardText, "and") : "") + "\n");
+                safari.saveGame(player);
+                if (updatelb) {
+                    safari.updateLeaderboards();
+                }*/
+            }
+        };
+        var pinapActive = [];
+        for (var i = 0; i < player.party.length; i++) {
+            var hit = false;
+            if (i >= player.helds.length) {
+                continue;
+            }
+            if (parseInt(player.helds[i], 10) != 7) {
+                continue;
+            }
+            for (var e = 0; e < player.party.length; e++) {
+                if (getBST(player.party[e]) == getBST(player.party[i]) && (!(e == i))) {
+                    hit = true;
+                    continue;
+                }
+            }
+            if (!(hit)) {
+                player.helds[i] = -1;
+                pinapActive.push(player.party[i]);
+                safaribot.sendHtmlMessage(src, "Your " + poke(player.party[i], true) + " consumed its Pinap Berry!", safchan);
+            }
+        }
+        var npc = {
+            name: "Trainer " + generateName(),
+            party: generateTeam(6, startingMinBST, startingMaxBST, null, null, null, true),
+            power: [startingMinPower, startingMaxPower],
+            postBattle: postBattle,
+            postArgs: {
+                count: 1,
+                reward: {},
+                pinap: pinapActive
+            },
+            desc: "Tower2 Lvl. 1" // CHANGE LATER
+        };
+
+        safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: You have a party with 6 Pokémon and paid the $" + addComma(cost) + " entry fee, therefore you are allowed to enter that door and start your Battle Tower challenge!", safchan);
 
         var battle = new Battle(src, npc);
         currentBattles.push(battle);
@@ -38725,13 +39380,16 @@ function Safari() {
             return abilityOff(sys.rand(1, 233)).split(" ").random();
         }
     }
-    function generateTeam(size, minBST, maxBST, maxLegends, useType, onlyEvolved, littlecup, noGen7, counterMon) {
+    function generateTeam(size, minBST, maxBST, maxLegends, useType, onlyEvolved, littlecup, counterMon, include) {
         var out = [], p, legendCount = 0, bst, maxLoop = 2500, i = 0, countersHit = 0, atkm, defm, hitCounter = false;
         size = size || 6;
         maxLegends = maxLegends || 1;
 
+        if (include) {
+            out = out.concat(include).slice(0, size);
+        }
         while (out.length < size) {
-            p = sys.rand(1, (noGen7 ? 722 : highestDexNum));
+            p = sys.rand(1, highestDexNum);
             bst = getBST(p);
 
             if (minBST && bst < minBST) {
@@ -40278,9 +40936,9 @@ function Safari() {
 
             this.msg(player.id, "You " + g + "!");
             this.msg(player.id, "<u>Bait Data:</u>");
-            this.msg(player.id, "- <b>Commons (" + toFixed(player.deluxeBait.commons.rate, 3) + "%):</b> " + player.deluxeBait.commons.list.map(function(x) { return pokeInfo.icon(x) + " " + link("/bst " + poke(x), poke(x)); }).join(", "));
-            this.msg(player.id, "- <b>Uncommons (" + toFixed(player.deluxeBait.uncommons.rate, 3) + "%):</b> " + player.deluxeBait.uncommons.list.map(function(x) { return pokeInfo.icon(x) + " " + link("/bst " + poke(x), poke(x)); }).join(", "));
-            this.msg(player.id, "- <b>Rares (" + toFixed(player.deluxeBait.rares.rate, 5) + "%):</b> " + player.deluxeBait.rares.list.map(function(x) { return pokeInfo.icon(x) + " " + link("/bst " + poke(x), poke(x)); }).join(", "));
+            this.msg(player.id, "- <b>Commons (" + toFixed(player.deluxeBait.commons.rate, 3) + "%):</b> " + player.deluxeBait.commons.list.map(function(x) { return poke(x) }).join(", "));
+            this.msg(player.id, "- <b>Uncommons (" + toFixed(player.deluxeBait.uncommons.rate, 3) + "%):</b> " + player.deluxeBait.uncommons.list.map(function(x) { return poke(x) }).join(", "));
+            this.msg(player.id, "- <b>Rares (" + toFixed(player.deluxeBait.rares.rate, 5) + "%):</b> " + player.deluxeBait.rares.list.map(function(x) { return poke(x) }).join(", "));
             if (player.deluxeBait.inedible > 0) {
                 this.msg(player.id, "- <b>Somewhat inedible (" + toFixed(player.deluxeBait.inedible * 100, 5) + "%)</b>");
             }
@@ -40289,9 +40947,9 @@ function Safari() {
         }
         for (var v in this.viewers) {
             this.msg(this.viewers[v], "<u>Bait Data:</u>");
-            this.msg(this.viewers[v], "- <b>Commons:</b> " + out.commons.list.map(function(x) { return pokeInfo.icon(x) + " " + link("/bst " + poke(x), poke(x)); }).join(", "));
-            this.msg(this.viewers[v], "- <b>Uncommons:</b> " + out.uncommons.list.map(function(x) { return pokeInfo.icon(x) + " " + link("/bst " + poke(x), poke(x)); }).join(", "));
-            this.msg(this.viewers[v], "- <b>Rares:</b> " + out.rares.list.map(function(x) { return pokeInfo.icon(x) + " " + link("/bst " + poke(x), poke(x)); }).join(", "));
+            this.msg(this.viewers[v], "- <b>Commons:</b> " + out.commons.list.map(function(x) { return poke(x) }).join(", "));
+            this.msg(this.viewers[v], "- <b>Uncommons:</b> " + out.uncommons.list.map(function(x) { return poke(x) }).join(", "));
+            this.msg(this.viewers[v], "- <b>Rares:</b> " + out.rares.list.map(function(x) { return poke(x) }).join(", "));
         }
         this.finished = true;
         this.msgAll("");
@@ -54810,6 +55468,7 @@ function Safari() {
             "/watch: To watch someone else's battle.",
             "/watchpyr: To watch someone else's Pyramid run",
             "/watchbak: To watch someone else's Baking quest",
+            "/watchinvite: To invite someone to watch your current battle/Pyramid run/Baking quest. Note that invited users will be able to view your battle even if you have disabled Battle Visibility in your /options.",
             "*** Utility Commands ***",
             "/party: To add or remove a Pokémon from your party, set your party's leader*, or load a previously saved party. Type /party for more details.",
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details. Use /findt for a text-only version or /finds for a text version with links to sell them.",
@@ -55300,9 +55959,9 @@ function Safari() {
                     return true;
                 }
                 safaribot.sendHtmlMessage(src, "<u>Current " + finishName("deluxe") + " Data:</u>", safchan);
-                safaribot.sendHtmlMessage(src, "- <b>Commons (" + toFixed(player.deluxeBait.commons.rate, 3) + "%):</b> " + player.deluxeBait.commons.list.map(function(x) { return pokeInfo.icon(x) + " " + link("/bst " + poke(x), poke(x)); }).join(", "), safchan);
-                safaribot.sendHtmlMessage(src, "- <b>Uncommons (" + toFixed(player.deluxeBait.uncommons.rate, 3) + "%):</b> " + player.deluxeBait.uncommons.list.map(function(x) { return pokeInfo.icon(x) + " " + link("/bst " + poke(x), poke(x)); }).join(", "), safchan);
-                safaribot.sendHtmlMessage(src, "- <b>Rares (" + toFixed(player.deluxeBait.rares.rate, 5) + "%):</b> " + player.deluxeBait.rares.list.map(function(x) { return pokeInfo.icon(x) + " " + link("/bst " + poke(x), poke(x)); }).join(", "), safchan);
+                safaribot.sendHtmlMessage(src, "- <b>Commons (" + toFixed(player.deluxeBait.commons.rate, 3) + "%):</b> " + player.deluxeBait.commons.list.map(function(x) { return poke(x) }).join(", "), safchan);
+                safaribot.sendHtmlMessage(src, "- <b>Uncommons (" + toFixed(player.deluxeBait.uncommons.rate, 3) + "%):</b> " + player.deluxeBait.uncommons.list.map(function(x) { return poke(x) }).join(", "), safchan);
+                safaribot.sendHtmlMessage(src, "- <b>Rares (" + toFixed(player.deluxeBait.rares.rate, 5) + "%):</b> " + player.deluxeBait.rares.list.map(function(x) { return poke(x) }).join(", "), safchan);
                 if (player.deluxeBait.inedible > 0) {
                     safaribot.sendHtmlMessage(src, "- <b>Somewhat inedible (" + toFixed(player.deluxeBait.inedible * 100, 5) + "%)</b>", safchan);
                 }
@@ -55423,6 +56082,10 @@ function Safari() {
                 } else {
                     safari.watchBattle(src, commandData);
                 }
+                return true;
+            }
+            if (command === "watchinvite") {
+                safari.watchInvite(src, commandData);
                 return true;
             }
             if (command === "softwatch") {
@@ -60756,22 +61419,35 @@ function Safari() {
                 //checkUpdate(); //test
             }
         }
-        if (currentBattles.length > 0 && contestCooldown % 4 === 0) {
+        if (currentBattles.length > 0 && contestCooldown % 2 === 0) {
             for (var e = currentBattles.length - 1; e >= 0; e--) {
                 var battle = currentBattles[e];
                 if (battle.battle2) {
-                    if (!battle.paused)
-                        battle.nextTurn();
-                    else
-                        battle.totalPauseTime += 4;
-
-                    if (battle.paused && battle.totalPauseTime > battle.pauseLimit) {
-                        battle.paused = false;
-                        battle.sendToViewers(toColor("<b>The battle has been unpaused since the time limit is up!</b>", "crimson"));
-                    }
+                    continue;
                 }
-                else {
+
+                battle.nextTurn();
+
+                if (battle.finished) {
+                    currentBattles.splice(e, 1);
+                    checkUpdate();
+                }
+            }
+        }
+        if (currentBattles.length > 0 && contestCooldown % 4 === 0) { // Battle2
+            for (var e = currentBattles.length - 1; e >= 0; e--) {
+                var battle = currentBattles[e];
+                if (!battle.battle2) {
+                    continue;
+                }
+                if (!battle.paused)
                     battle.nextTurn();
+                else
+                    battle.totalPauseTime += 4;
+
+                if (battle.paused && battle.totalPauseTime > battle.pauseLimit) {
+                    battle.paused = false;
+                    battle.sendToViewers(toColor("<b>The battle has been unpaused since the time limit is up!</b>", "crimson"));
                 }
 
                 if (battle.finished) {
