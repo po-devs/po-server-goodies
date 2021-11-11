@@ -929,7 +929,8 @@ function Safari() {
             questNotifications: true,
             persistentBait: false,
             receiveWeeklyMedals: true,
-            showContestCaptures: true
+            showContestCaptures: true,
+            androidTextFlow: false
         },
         spawnlessThrows: 0
     };
@@ -17900,6 +17901,14 @@ function Safari() {
                     data
                 ]);
                 break;
+            case "androidlag": case "androidinputlag":
+                changeOption(dataInput, "androidTextFlow", [
+                    "You will now receive continuous server messages to offset chat input lag on Android!",
+                    "You will no longer receive continuous server messages to offset chat input lag on Android!",
+                    ["not receiving continuous server messages", "receiving continuous server messages"],
+                    data
+                ]);
+                break;
             case "weeklymedals": case "receiveweeklymedals": case "weeklymedal": case "receiveweeklymedal":
                 changeOption(dataInput, "receiveWeeklyMedals", [
                     "You will now receive medals for being in the top 3 of the weekly leaderboards!",
@@ -17973,6 +17982,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Weekly Leaderboard Medals: " + link("/options weeklymedals:", player.options.receiveWeeklyMedals ? "Receiving Weekly Medals" : "Not Receiving Weekly Medals"), safchan);
                 safaribot.sendHtmlMessage(src, "Persistent Bait: " + link("/options persistbait:", player.options.persistentBait ? "Continuously Bait until Successful" : "Only Use 1 Bait at a Time"), safchan);
                 safaribot.sendHtmlMessage(src, "View Contest Captures: " + link("/options viewcontestcaptures:", player.options.showContestCaptures ? "View My Contest Captures & BST Tally During Contests" : "Do Not View My Contest Captures & BST Tally During Contests"), safchan);
+                safaribot.sendHtmlMessage(src, "Offset Android Input Lag: " + link("/options androidlag:", player.options.androidTextFlow ? "Receive Continuous Server Messages" : "Do Not Receive Continuous Server Messages"), safchan);
                 var dexOptions = ["stats", "effectiveness", "trivia"];
                 safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
                     return player.options.dexOptional.contains(e) ? link("/options hidedex:" + e, cap(e)) + " <b>[Enabled]</b>" : link("/options showdex:" + e, cap(e)) + " <b>[Disabled]</b>";
@@ -33609,16 +33619,16 @@ function Safari() {
                 "@honey": 3,
                 "@battery": 3,
                 "@pokeblock": 4,
-                "@pack": 5,
-                "@nugget": 5,
+                "@nugget": 7,
                 "@fossil": 7,
-                "@mushroom": 10,
-                "@bignugget": 10,
+                "@pack": 10,
+                "@mushroom": 15,
                 "@cometshard": 15,
-                "@sunshard": 15,
-                "@moonshard": 15,
-                "@miracle": 30,
-                "@platinum": 35
+                "@bignugget": 20,
+                "@platinum": 20,
+                "@sunshard": 25,
+                "@moonshard": 25,
+                "@miracle": 40,
             };
 
             if (!itemChoice) {
@@ -33699,18 +33709,18 @@ function Safari() {
         var startingMinBST = 0;
         var startingMaxBST = 430;
         var startingMinPower = 10;
-        var startingMaxPower = 50;
+        var startingMaxPower = 40;
         var postBattle = function(name, isWinner, playerScore, npcScore, args, viewers) {
             var player = getAvatarOff(name);
             var id = sys.id(name);
             if (isWinner) {
-                var bossLevels = [21, 35, 49, 70]; // possibly change later? just copying usual ingame tower boss levels for now
+                var bossLevels = [21, 35, 49, 70];
                 skip = false;
                 if (player.costume === "ninja" && chance(costumeData.ninja.rate) && !bossLevels.contains(args.count + 1)) {
                     skip = true;
                 }
                 var ac = args.count + skip;
-                var counterMon = (ac > 49) && chance(0.25 + (ac * Math.random() * 0.033)) ? parseInt(player.party.random(), 10) : null;
+                var counterMon = (ac >= 49) && chance(0.25 + (ac * Math.random() * 0.033)) ? parseInt(player.party.random(), 10) : null;
                 var nextMinBST = startingMinBST;
                 var nextMaxBST = startingMaxBST;
                 var minPower = startingMinPower;
@@ -33721,43 +33731,45 @@ function Safari() {
                 if (ac > 3) {
                     nextMaxBST += 10; // 440
                 }
-                if (ac > 7) {
+                if (ac >= 7) {
+                    maxPower += 10;
                     nextMaxBST += 20; // 460
                 }
                 if (ac > 10) {
                     nextMaxBST += 20; // 480
                 }
-                if (ac > 14) {
+                if (ac >= 14) {
                     maxPower += 10;
                     nextMaxBST += 50; // 530
                 }
                 if (ac > 17) {
                     nextMaxBST += 20; // 550
                 }
-                if (ac > 21) {
+                if (ac >= 21) {
                     nextMaxBST += 30; // 580
                 }
-                if (ac > 35) {
+                if (ac >= 35) {
                     minPower += 5;
                     maxPower += 20;
                     nextMinBST = startingMaxBST; // 430
                     nextMaxBST += 20; // 600
                 }
-                if (ac > 42) {
+                if (ac >= 42) {
                     nextMinBST += 70; // 500
-                    
                 }
-                if (ac > 49) {
+                if (ac >= 49) {
                     maxPower += 10;
                     nextMinBST += 30; // 530
                     nextMaxBST += 70; // 670
+                }
+                if (ac >= 56) {
+                    minPower += 5;
                     specialIncludes = [65748, 65630, 65717, 65678]; // Mega Scizor, Mega Gengar, Mega Ampharos, Mega Aerodactyl
                 }
-                if (ac > 56) {
-                    minPower += 5;
+                if (ac >= 63) {
                     specialIncludes = [65984, 65842, 65790, 65542, 65545, 65796, 65666, 131730]; // Mega Lucario, Mega Aggron, Mega Sceptile, Mega Charizard X, Mega Blastoise, Mega Swampert, Mega Gyarados, Ash Greninja
                 }
-                if (ac > 70) {
+                if (ac >= 70) {
                     minPower = startingMinPower + Math.floor(args.count / 2);
                     maxPower = startingMaxPower + Math.floor(ac / 2);
                     // Giratina-Origin, Mega Diancie, Kyurem-Black, Kyurem-White, Mega Garchomp, Mega Latios, Mega Latias, Mega Metagross, Mega Salamence, Zygarde-Complete, Zacian-Crowned Sword, Zamazenta-Crowned Shield, Arceus-Water, Arceus-Steel, Arceus-Fairy, Ultra Necrozma, Primal Groudon, Primal Kyogre, Mega Rayquaza, Eternatus-Eternamax
@@ -33765,26 +33777,26 @@ function Safari() {
                     nextMaxBST += 999;
                 }
 
-                var bossNPCs = [ // maybe wait for bdsp and see if we get any roster changes but this should be fine?
+                var bossNPCs = [
                     {
                         name: "Tower Tycoon Palmer",
                         party: [681, 612, 537, 350, 464, 149],
-                        power: [10, 100], // TODO: adjust boss power levels
+                        power: [20 + player.quests.tower.bonusPower, 100 + player.quests.tower.bonusPower],
                     },
                     {
                         name: "Salon Maiden Anabel",
-                        party: [65, 244, 461, 429, 373, 143],
-                        power: [20, 100],
+                        party: [65, 244, 461, 376, 373, 143],
+                        power: [20 + player.quests.tower.bonusPower, 100 + player.quests.tower.bonusPower],
                     },
                     {
                         name: "Tower Tycoon Palmer",
                         party: [66217, 887, 491, 486, 485, 488],
-                        power: [25, 110],
+                        power: [25 + player.quests.tower.bonusPower, 110 + player.quests.tower.bonusPower],
                     },
                     {
                         name: "Salon Maiden Anabel",
                         party: [243, 65917, 65984, 65909, 65912, 143],
-                        power: [35, 110],
+                        power: [35 + player.quests.tower.bonusPower, 110 + player.quests.tower.bonusPower],
                     }
                 ];
 
@@ -61408,24 +61420,28 @@ function Safari() {
         }
         var onChannel = sys.playersOfChannel(safchan);
         for (var e in onChannel) { // potentially server-intensive, but should be okay. shift to after contest w/ mega reversion & lb update if not.
-            var p = getAvatar(onChannel[e]);
+            var pid = onChannel[e]
+            var p = getAvatar(pid);
             if (!p) {
                 continue;
             }
             var needsUpdate = false;
             if (p.fortune) {
                 if (p.fortune.deadline < now() && p.fortune.deadline > 0) {
-                    safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect expired!</b>".format(finishName("cookie")), safchan);
+                    safaribot.sendHtmlMessage(pid, "<b>Your {0} effect expired!</b>".format(finishName("cookie")), safchan);
                     p.fortune.deadline = 0;
                     needsUpdate = true;
                 }
             }
             if (p.zcrystalDeadline) {
                 if (p.zcrystalDeadline < now() && p.zcrystalDeadline > 0) {
-                    safaribot.sendHtmlMessage(onChannel[e], "<b>Your {0} effect expired!</b>".format(finishName("crystal")), safchan);
+                    safaribot.sendHtmlMessage(pid, "<b>Your {0} effect expired!</b>".format(finishName("crystal")), safchan);
                     p.zcrystalDeadline = 0;
                     needsUpdate = true;
                 }
+            }
+            if (contestCooldown % 3 === 0 && p.options.androidTextFlow && sys.os(pid) === "android") {
+                sys.sendMessage(pid, "", safchan);
             }
             if (needsUpdate) {
                 safari.saveGame(p);
