@@ -11700,7 +11700,7 @@ function Safari() {
         }
         this.saveGame(player);
     }
-    this.viewPlayer = function(src, data, textOnly) {
+    this.viewPlayer = function(src, data, textOnly, bypass) {
         var player = getAvatar(src);
         if (!player) {
             return;
@@ -11717,9 +11717,14 @@ function Safari() {
             return;
         }
 
-        if (target != player && !target.options.visible && !SESSION.channels(safchan).isChannelAdmin(src)) {
-            safaribot.sendMessage(src, "You cannot view this person's party!", safchan);
-            return;
+        if (target != player && !target.options.visible) {
+            if (!bypass && !SESSION.channels(safchan).isChannelOwner(src)) {
+                safaribot.sendMessage(src, "You cannot view this person's party!", safchan);
+                return;
+            }
+            else if (bypass) {
+                safaribot.sendHtmlMessage(id, "<b>" + sys.name(src) + " used an auth bypass to view your party. If this was not communicated/consented to beforehand, contact a channel owner to report abuse</b>", safchan);
+            }
         }
 
         sys.sendHtmlMessage(src, this.showParty(id, false, src, textOnly), safchan);
@@ -23987,7 +23992,7 @@ function Safari() {
         }
         
     };
-    this.watchBattle = function(src, data, soft) {
+    this.watchBattle = function(src, data, soft, bypass) {
         var name = sys.name(src);
         if (!validPlayers("self", src)) {
             return;
@@ -24026,14 +24031,14 @@ function Safari() {
             if (!target) {
                 return false;
             }
-            return !(target.id !== sys.name(src).toLowerCase() && !target.options.visible && !SESSION.channels(safchan).isChannelAdmin(src));
+            return !(target.id !== sys.name(src).toLowerCase() && !target.options.visible);
         };
 
         var battle, b;
         for (b in currentBattles) {
             battle = currentBattles[b];
             if (battle.isInBattle(tName)) {
-                if (battle.cantWatch && !SESSION.channels(safchan).isChannelAdmin(src) && !battle.whitelist.contains(name.toLowerCase())) {
+                if (battle.cantWatch && !SESSION.channels(safchan).isChannelOwner(src) && !battle.whitelist.contains(name.toLowerCase())) {
                     safaribot.sendMessage(src, "You cannot watch/unwatch this battle!", safchan);
                     return;
                 }
@@ -24042,11 +24047,16 @@ function Safari() {
                     battle.viewers.splice(battle.viewers.indexOf(name.toLowerCase()), 1);
                 } else {
                     if (!battle.isInBattle(name) && (!canView(src, battle.name1) || (!battle.npcBattle && !canView(src, battle.name2))) && !battle.whitelist.contains(name.toLowerCase())) {
-                        safaribot.sendMessage(src, "You cannot view this person's battles!", safchan);
-                        return;
+                        if (!bypass) {    
+                            safaribot.sendMessage(src, "You cannot view this person's battles!", safchan);
+                            return;
+                        }
+                        else {
+                            battle.sendToViewers("<b>" + name + " is using an auth bypass to watch this battle! If this was not communicated/consented to beforehand, contact a channel owner to report abuse.</b>");
+                        }
                     }
                     if (player.idnum in battle.watchCounts) {
-                        if (battle.watchCounts[player.idnum] >= watchCountMax && !SESSION.channels(safchan).isChannelAdmin(src)) {
+                        if (battle.watchCounts[player.idnum] >= watchCountMax && !bypass) {
                             safaribot.sendMessage(src, "You can only watch this battle {0}!".format(plural(watchCountMax, "time")), safchan);
                             return;
                         }
@@ -33689,7 +33699,7 @@ function Safari() {
         var startingMinBST = 0;
         var startingMaxBST = 430;
         var startingMinPower = 10;
-        var startingMaxPower = 60;
+        var startingMaxPower = 50;
         var postBattle = function(name, isWinner, playerScore, npcScore, args, viewers) {
             var player = getAvatarOff(name);
             var id = sys.id(name);
@@ -33703,10 +33713,10 @@ function Safari() {
                 var counterMon = (ac > 49) && chance(0.25 + (ac * Math.random() * 0.033)) ? parseInt(player.party.random(), 10) : null;
                 var nextMinBST = startingMinBST;
                 var nextMaxBST = startingMaxBST;
-                var minPower = 5;
-                var maxPower = 30;
+                var minPower = startingMinPower;
+                var maxPower = startingMaxPower;
                 var littlecup = ac <= 7 ? true : false;
-                var onlyEvolved = ac >= 21 ? true : false;
+                var onlyEvolved = ac >= 14 ? true : false;
                 var specialIncludes = [];
                 if (ac > 3) {
                     nextMaxBST += 10; // 440
@@ -33725,11 +33735,11 @@ function Safari() {
                     nextMaxBST += 20; // 550
                 }
                 if (ac > 21) {
-                    maxPower += 20;
                     nextMaxBST += 30; // 580
                 }
                 if (ac > 35) {
                     minPower += 5;
+                    maxPower += 20;
                     nextMinBST = startingMaxBST; // 430
                     nextMaxBST += 20; // 600
                 }
@@ -33827,9 +33837,9 @@ function Safari() {
                     var cbonus = safari.hasCostumeSkill(player, "towerLoot") ? (1.2 + (safari.getCostumeLevel(player)/50)) : 1;
 
                     if (bossLevels.contains(c)) {
-                        bp = [10, 15, 25, 50][bossLevels.indexOf(c)];
+                        bp = [10, 10, 15, 50][bossLevels.indexOf(c)];
                         rew = ["mega", "mega", "fragment", "fragment"][bossLevels.indexOf(c)];
-                        amt = [2, 3, 1, 4][bossLevels.indexOf(c)];
+                        amt = [1, 2, 1, 4][bossLevels.indexOf(c)];
                     }
                     else {
                         if (c % 7 === 0) { // every 7th battle
@@ -55524,6 +55534,8 @@ function Safari() {
             "/trick [player]։[pokemon]։[amount]։[message]: Sends the designated player a fake wild Pokémon. Pokémon and amount are optional, defaults to random and 1. Message is an optional message such as \"Don't throw!\", defaults to nothing.",
             "/dqphoto [number]: Removes a photo request from Journal quest. Use if a request is too hard or not fulfilled after a long time.",
             "/offmsg [players]։[message]: Sets a message that will be sent to these players next time they join the channel.",
+            "/watchbypass [player]: Bypasses a player's visibility settings to watch their battle. The player WILL be informed that you bypassed their settings and are watching their battle.",
+            "/viewbypass [player]: Bypasses a player's visibility settings to view their party. The player WILL be informed that you bypassed their settings and are viewing their party.",
 
             "Log Files: Use /command [amount]։[lookup]։[limit] to return a list of logged data. Defaults to 10. Lookup will only return logs with the specified value in the past amount of logs (can use && or || for multiples terms). Limit will restrict the number of results displayed even if more than that is found (defaults to 100).",
             "Available logs: ***tradelog (trades), raretrades (trades involving legendaries, shinies or rare forms), shoplog (shop transactions), auctionlog (auctions), lostlog (actions that led to a Pokémon being lost), mythlog (rare spawns and Masterball usage), altlog (save transfers), eventlog (events), giftlog (gifts or values edited), crosslog (cross-promotion rewards), showids (saves created with their idnum), questlog (quests finished), misclog (other stuff)"
@@ -57051,6 +57063,18 @@ function Safari() {
 
         //Staff Commands
         if (SESSION.channels(safchan).isChannelAdmin(src)) {
+            if (command === "watchbypass") {
+                if (currentEvent && commandData === "*") {
+                    currentEvent.watchEvent(src);
+                } else {
+                    safari.watchBattle(src, commandData, false, true);
+                }
+                return true;
+            }
+            if (command === "viewbypass") {
+                safari.viewPlayer(src, commandData, false, true);
+                return true;
+            }
             if (command === "safaribans") {
                 script.banList(src, "safaribans", commandData);
                 return true;
