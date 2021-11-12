@@ -17792,11 +17792,11 @@ function Safari() {
 
             if (input === "on") {
                 player.options[prop] = true;
-                safaribot.sendMessage(src, flavourOn, safchan);
+                safaribot.sendHtmlMessage(src, flavourOn, safchan);
             }
             else if (input === "off") {
                 player.options[prop] = false;
-                safaribot.sendMessage(src, flavourOff, safchan);
+                safaribot.sendHtmlMessage(src, flavourOff, safchan);
             }
             else {
                 var index = player.options[prop] | 0; // 0 for false, 1 for true
@@ -17903,7 +17903,7 @@ function Safari() {
                 break;
             case "androidlag": case "androidinputlag":
                 changeOption(dataInput, "androidTextFlow", [
-                    "You will now receive continuous server messages to offset chat input lag on Android!",
+                    "You will now receive continuous server messages to offset chat input lag on Android! Blank server messages will be sent to you in " + link("/cjoin Safari Android Spam", "#Safari Android Spam") + ".",
                     "You will no longer receive continuous server messages to offset chat input lag on Android!",
                     ["not receiving continuous server messages", "receiving continuous server messages"],
                     data
@@ -33796,7 +33796,7 @@ function Safari() {
                     {
                         name: "Salon Maiden Anabel",
                         party: [243, 65917, 65984, 65909, 65912, 143],
-                        power: [35 + player.quests.tower.bonusPower, 110 + player.quests.tower.bonusPower],
+                        power: [30 + player.quests.tower.bonusPower, 110 + player.quests.tower.bonusPower],
                     }
                 ];
 
@@ -61440,8 +61440,9 @@ function Safari() {
                     needsUpdate = true;
                 }
             }
-            if (contestCooldown % 3 === 0 && p.options.androidTextFlow && sys.os(pid) === "android") {
-                sys.sendMessage(pid, "", safchan);
+            if (contestCooldown % 2 === 0 && p.options.androidTextFlow && sys.os(pid) === "android") {
+                var spamChan = sys.channelId("Safari Android Spam") || safchan;
+                sys.sendMessage(pid, "", spamChan);
             }
             if (needsUpdate) {
                 safari.saveGame(p);

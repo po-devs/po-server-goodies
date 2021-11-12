@@ -1054,7 +1054,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     }
     answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
     if (this.scoreType !== "speed") {
-        if (this.scoreType === "elimination") {
+        if (this.scoreType === "elimination" && totalPlayers > 1) {
             var allCorrect = true;
             var sortArray = [];
             var sortArrayBySpeed = [];
