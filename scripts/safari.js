@@ -60166,6 +60166,7 @@ function Safari() {
                             data = JSON.parse(resp);
                             permObj.add("pokeskillsurl", url);
                             skillData = data;
+                            permObj.add("skillData", JSON.stringify(skillData));
                             safaribot.sendMessage(src, "Pokéskills successfully loaded!", safchan);
                             safari.sanitizeAll();
                         } catch (error) {
