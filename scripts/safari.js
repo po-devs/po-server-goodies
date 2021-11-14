@@ -1942,8 +1942,6 @@ function Safari() {
     var preparationPhase = 0;
     var preparationThrows = {};
     var bufferThrows = {};
-    var nextBufferThrow = null;
-    var nextBufferUser = null;
     var preparationFirst = null;
     var rockScareThreshold = 15000;
     var lastWild = 0;
@@ -2983,8 +2981,6 @@ function Safari() {
         wildEvent = false;
         wildBallThrows = {};
         bufferThrows = {};
-        nextBufferThrow = null;
-        nextBufferUser = null;
         currentThrowers = [];
         currentPokemonCount = 1;
         lastPokemonCount = 1;
@@ -10183,7 +10179,6 @@ function Safari() {
                 "ball": ball,
                 "throwAt": player.cooldowns.ball + 1
             };
-            safari.updateNextBuffer();
             return;
         }
         if (contestCount > 0 && contestantsWild.indexOf(name.toLowerCase()) === -1) {
@@ -10764,8 +10759,6 @@ function Safari() {
                 wildEvent = false;
                 wildBallThrows = {};
                 bufferThrows = {};
-                nextBufferThrow = null;
-                nextBufferUser = null;
                 currentThrowers = [];
                 wildSpirit = false;
                 currentBaiter = null;
@@ -10998,8 +10991,6 @@ function Safari() {
         wildSpirit = false;
         wildBallThrows = {};
         bufferThrows = {};
-        nextBufferThrow = null;
-        nextBufferUser = null;
         currentThrowers = [];
         spiritSpawn = false;
     };
@@ -11404,7 +11395,6 @@ function Safari() {
                 "ball": "takephoto",
                 "throwAt": player.cooldowns.ball + 1
             };
-            safari.updateNextBuffer();
             return;
         }
 
@@ -14039,18 +14029,6 @@ function Safari() {
         player.unreadInbox.splice(a, 1);
         safaribot.sendHtmlMessage(src, "Deleted mail: '" + msg + "'!", safchan);
         return;
-    };
-    this.updateNextBuffer = function() { // get next buffer throw time
-        var soonestThrow = 0;
-        var soonestUser = "";
-        for (var p in bufferThrows) {
-            if (soonestThrow === 0 || bufferThrows[p].throwAt < soonestThrow) {
-                soonestThrow = bufferThrows[p].throwAt;
-                soonestUser = p;
-            }
-        }
-        nextBufferThrow = soonestThrow || null;
-        nextBufferUser = soonestUser || null;
     };
     this.runPendingActive = function(name) {
         var runPending = function(id, name, pendingActive) {
@@ -24150,8 +24128,9 @@ function Safari() {
             if (!player2.power || player2.length < 2) {
                 player2.power = [10, 100];
             }
-            this.powerMin = player2.power[0];
-            this.powerMax = player2.power[1];
+            this.copy = player2.copy;
+            this.powerMin = this.copy ? this.selfPowerMin : player2.power[0];
+            this.powerMax = this.copy ? this.selfPowerMax : player2.power[1];
             this.postBattle = player2.postBattle;
             this.postArgs = player2.postArgs;
             npcDesc = player2.desc || null;
@@ -24215,6 +24194,9 @@ function Safari() {
 
         if ((this.pinap.contains(p1Poke))) {
             p1Power += itemData.pinap.rate;
+            if (this.copy) {
+                p2Power += itemData.pinap.rate;
+            }
         }
 
         if (p1Power > p2Power) {
@@ -33268,9 +33250,6 @@ function Safari() {
             return;
         }
         if (["shop", "buy"].contains(opt)) {
-            if (cantBecause(src, "buy items", ["contest", "auction", "event", "pyramid"])) {
-                return;
-            }
             var itemChoice = data[1],
                 amount = data[2];
             var wares = {
@@ -33306,6 +33285,9 @@ function Safari() {
                 }
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "You currently have " + plural(player.balls.battlepoint, "battlepoint") + ". To buy something, use " + link("/quest tower:shop:", "/quest tower:shop:[Item Name]:[Amount to Buy]", true), safchan);
+                return;
+            }
+            if (cantBecause(src, "buy items", ["contest", "auction", "event", "pyramid"])) {
                 return;
             }
 
@@ -33388,13 +33370,13 @@ function Safari() {
                     skip = true;
                 }
                 var ac = args.count + skip;
-                var counterMon = (ac >= 49) && chance(0.25 + (ac * Math.random() * 0.033)) ? parseInt(player.party.random(), 10) : null;
+                var counterMon = (ac >= 42) && chance(0.25 + (ac * Math.random() * 0.033)) ? parseInt(player.party.random(), 10) : null;
                 var nextMinBST = startingMinBST;
                 var nextMaxBST = startingMaxBST;
                 var minPower = startingMinPower;
                 var maxPower = startingMaxPower;
-                var littlecup = ac <= 7 ? true : false;
-                var onlyEvolved = ac >= 14 ? true : false;
+                var littlecup = ac <= 7;
+                var onlyEvolved = ac >= 14;
                 var specialIncludes = [];
                 if (ac > 3) {
                     nextMaxBST += 10; // 440
@@ -33406,38 +33388,39 @@ function Safari() {
                 if (ac > 10) {
                     nextMaxBST += 20; // 480
                 }
-                if (ac >= 14) {
+                if (ac >= 13) {
                     maxPower += 10;
                     nextMaxBST += 50; // 530
                 }
                 if (ac > 17) {
                     nextMaxBST += 20; // 550
                 }
-                if (ac >= 21) {
+                if (ac >= 20) {
+                    minPower += 5;
                     nextMaxBST += 30; // 580
                 }
-                if (ac >= 35) {
+                if (ac >= 34) {
                     minPower += 5;
                     maxPower += 20;
                     nextMinBST = startingMaxBST; // 430
                     nextMaxBST += 20; // 600
                 }
-                if (ac >= 42) {
+                if (ac >= 41) {
                     nextMinBST += 70; // 500
                 }
-                if (ac >= 49) {
+                if (ac >= 48) {
                     maxPower += 10;
                     nextMinBST += 30; // 530
                     nextMaxBST += 70; // 670
                 }
-                if (ac >= 56) {
+                if (ac >= 55) {
                     minPower += 5;
                     specialIncludes = [65748, 65630, 65717, 65678]; // Mega Scizor, Mega Gengar, Mega Ampharos, Mega Aerodactyl
                 }
-                if (ac >= 63) {
+                if (ac >= 62) {
                     specialIncludes = [65984, 65842, 65790, 65542, 65545, 65796, 65666, 131730]; // Mega Lucario, Mega Aggron, Mega Sceptile, Mega Charizard X, Mega Blastoise, Mega Swampert, Mega Gyarados, Ash Greninja
                 }
-                if (ac >= 70) {
+                if (ac >= 69) {
                     minPower = startingMinPower + Math.floor(args.count / 2);
                     maxPower = startingMaxPower + Math.floor(ac / 2);
                     // Giratina-Origin, Mega Diancie, Kyurem-Black, Kyurem-White, Mega Garchomp, Mega Latios, Mega Latias, Mega Metagross, Mega Salamence, Zygarde-Complete, Zacian-Crowned Sword, Zamazenta-Crowned Shield, Arceus-Water, Arceus-Steel, Arceus-Fairy, Ultra Necrozma, Primal Groudon, Primal Kyogre, Mega Rayquaza, Eternatus-Eternamax
@@ -33449,42 +33432,54 @@ function Safari() {
                     {
                         name: "Tower Tycoon Palmer",
                         party: [681, 612, 537, 350, 464, 149],
-                        power: [20 + player.quests.tower.bonusPower, 100 + player.quests.tower.bonusPower],
+                        power: [30 + player.quests.tower.bonusPower, 110 + player.quests.tower.bonusPower],
                     },
                     {
                         name: "Salon Maiden Anabel",
                         party: [65, 244, 461, 376, 373, 143],
-                        power: [20 + player.quests.tower.bonusPower, 110 + player.quests.tower.bonusPower],
+                        power: [40 + player.quests.tower.bonusPower, 110 + player.quests.tower.bonusPower],
                     },
                     {
                         name: "Tower Tycoon Palmer",
                         party: [66217, 887, 491, 486, 485, 488],
-                        power: [25 + player.quests.tower.bonusPower, 110 + player.quests.tower.bonusPower],
+                        power: [40 + player.quests.tower.bonusPower, 120 + player.quests.tower.bonusPower],
                     },
                     {
                         name: "Salon Maiden Anabel",
                         party: [243, 65917, 65984, 65909, 65912, 143],
-                        power: [30 + player.quests.tower.bonusPower, 110 + player.quests.tower.bonusPower],
+                        power: [40 + player.quests.tower.bonusPower, 125 + player.quests.tower.bonusPower],
                     }
                 ];
 
-                var npc;
+                var npc, clone = args.clone || false;
                 if (bossLevels.contains(ac + 1)) {
                     npc = bossNPCs[bossLevels.indexOf(ac + 1)];
                 }
                 else {
-                    npc = {
-                        name: "Trainer " + generateName(),
-                        party: generateTeam(6, nextMinBST, nextMaxBST, null, null, onlyEvolved, littlecup, counterMon, specialIncludes.shuffle().shift()),
-                        power: [minPower, maxPower],
-                    };
+                    if (ac >= 35 && chance(0.3) && !clone && ((ac + 1) % 7 === 0)) {
+                        npc = {
+                            name: player.id.toCorrectCase() + "?",
+                            party: player.party,
+                            power: [-1, -1],
+                            copy: true
+                        };
+                        args.clone = true;
+                    }
+                    else {
+                        npc = {
+                            name: "Trainer " + generateName(),
+                            party: generateTeam(6, nextMinBST, nextMaxBST, null, null, onlyEvolved, littlecup, counterMon, specialIncludes.shuffle().shift()),
+                            power: [minPower, maxPower],
+                        };
+                    }
                 }
 
                 npc.postBattle = postBattle;
                 npc.postArgs = {
                     count: ac + 1,
                     reward: args.reward,
-                    pinap: args.pinap
+                    pinap: args.pinap,
+                    clone: args.clone
                 };
                 npc.desc = "Tower Lvl. " + (ac + 1);
 
@@ -33514,6 +33509,9 @@ function Safari() {
                     loop = Math.floor(c / 7) + 1;
                     bp = 0;
 
+                    if (c <= 0) {
+                        continue;
+                    }
                     var cbonus = safari.hasCostumeSkill(player, "towerLoot") ? (1.2 + (safari.getCostumeLevel(player)/50)) : 1;
 
                     if (bossLevels.contains(c)) {
@@ -33805,7 +33803,8 @@ function Safari() {
             postArgs: {
                 count: 1,
                 reward: {},
-                pinap: pinapActive
+                pinap: pinapActive,
+                clone: false
             },
             desc: "Tower Lvl. 1"
         };
@@ -61081,19 +61080,24 @@ function Safari() {
         deluxeBaitCooldown--;
 
         safari.runPendingActive();
-        if (currentPokemon && nextBufferThrow && now() >= nextBufferThrow) {
-            if (bufferThrows.hasOwnProperty(nextBufferUser)) {
-                if (isPlaying(nextBufferUser)) {
-                    var ball = bufferThrows[nextBufferUser].ball;
-                    if (ball === "takephoto") {
-                        safari.takePhoto(sys.id(nextBufferUser), "*", false, false, true);
+        if (currentPokemon) {
+            for (var p in bufferThrows) {
+                var toRemove = [];
+                if (bufferThrows[p].throwAt <= now()) {
+                    if (isPlaying(p)) {
+                        var ball = bufferThrows[p].ball;
+                        if (ball === "takephoto") {
+                            safari.takePhoto(sys.id(p), "*", false, false, true);
+                        }
+                        else {
+                            safari.throwBall(sys.id(p), ball, null, null, "catch", false, false, true);
+                        }
                     }
-                    else {
-                        safari.throwBall(sys.id(nextBufferUser), ball, null, null, "catch", false, false, true);
-                    }
+                    toRemove.push(p);
                 }
-                delete bufferThrows[nextBufferUser];
-                safari.updateNextBuffer();
+            }
+            for (var n in toRemove) {
+                delete bufferThrows[toRemove[n]];
             }
         }
         var onChannel = sys.playersOfChannel(safchan);
