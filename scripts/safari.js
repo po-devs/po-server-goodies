@@ -33629,13 +33629,14 @@ function Safari() {
                     h = 0.25;
                 }
                 else {
+                    h = 1;
                     for (var i = 0; i <= Math.floor(traveledCount / 7); i++) {
                         h += 0.5; // 30 mins for each 7 floors cleared
                     }
                 }
                 for (var i = 0; i < bossLevels; i++) {
-                    if (traveledCount >= bossLevels[i]) {
-                        h += 0.5; // extra 30 mins for each boss cleared i.e. each boss is worth 1h total
+                    if (traveledCount >= (bossLevels[i] - 1)) {
+                        h += 0.5; // extra 30 mins for each boss attempted i.e. each boss is worth 1h total
                     }
                 }
                 h = Math.min(h, maxH);
@@ -38949,6 +38950,7 @@ function Safari() {
         if (player.costume !== "none") {
             line2 = link("/showcostume", costumeAlias(player.costume, false, true) + " (Lv. " + safari.getCostumeLevel(player) + ")");
         }
+        line2 += " " + link("/party", "«Party»");
         var currentTime = now();
         if (player.balls.itemfinder + player.balls.permfinder > 0) {
             line2 += "   " + link("/finder", "«Finder»");
@@ -61081,23 +61083,22 @@ function Safari() {
 
         safari.runPendingActive();
         if (currentPokemon) {
-            for (var p in bufferThrows) {
-                var toRemove = [];
-                if (bufferThrows[p].throwAt <= now()) {
-                    if (isPlaying(p)) {
-                        var ball = bufferThrows[p].ball;
+            var keys = Object.keys(bufferThrows);
+            for (var p = 0; p < keys.length; p++) {
+                var pName = keys[p];
+                if (currentPokemon && bufferThrows[pName] && bufferThrows[pName].throwAt <= now()) { // check some of these again since i suspect there might be a race condition here
+                    if (isPlaying(pName)) {
+                        var ball = bufferThrows[pName].ball;
                         if (ball === "takephoto") {
-                            safari.takePhoto(sys.id(p), "*", false, false, true);
+                            safari.takePhoto(sys.id(pName), "*", false, false, true);
                         }
                         else {
-                            safari.throwBall(sys.id(p), ball, null, null, "catch", false, false, true);
+                            safari.throwBall(sys.id(pName), ball, null, null, "catch", false, false, true);
                         }
                     }
-                    toRemove.push(p);
+                    delete bufferThrows[pName];
+                    p--;
                 }
-            }
-            for (var n in toRemove) {
-                delete bufferThrows[toRemove[n]];
             }
         }
         var onChannel = sys.playersOfChannel(safchan);
