@@ -577,6 +577,7 @@ function Safari() {
             towerBP: 0,
             towerTotal: 0,
             towerBosses: 0,
+            towerSecretBosses: 0,
             towerFinalBosses: 0,
             consecutiveLogins: 0,
             gemsUsed: 0,
@@ -13600,7 +13601,7 @@ function Safari() {
             sys.sendMessage(src, "±Quests: Turned in {0} Pokémon (Collector: {1}, Scientist: {2}).".format(addComma(given), addComma(rec.collectorGiven), addComma(rec.scientistGiven)), safchan);
             sys.sendMessage(src, "±Quests: Arena Record: {0}-{1} ({2}, {3}). Performed {4}, {5} and {6}.".format(addComma(rec.arenaWon), addComma(rec.arenaLost), percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost), plural(rec.arenaPoints, "point"), plural(rec.wonderTrades, "Wonder Trade"), plural(rec.transmutations + rec.transmutationsMade, "Transmutation"), plural(rec.philosopherTransmutations, "Philosopher Transmutations")), safchan);
             sys.sendMessage(src, "±Quests: Lead a {0} point Pyramid Run. Participated in a {1} point Pyramid Run. Cleared the Pyramid {2} as Leader and {3} as Helper.".format(addComma(rec.pyramidLeaderScore), addComma(rec.pyramidHelperScore), plural(rec.pyramidLeaderClears, "time"), plural(rec.pyramidHelperClears, "time")), safchan);
-            sys.sendMessage(src, "±Quests: Reached the {0} floor of the Battle Tower. Cleared a cumulative total of {1}. Defeated a Battle Tower boss {2} and defeated the final Battle Tower boss {3}. Earned a total of {4}.".format(getOrdinal(rec.towerHighest), plural(rec.towerTotal, "Battle Tower floor"), plural(rec.towerBosses, "time"), plural(rec.towerFinalBosses, "time"), plural(rec.towerBP, "battlepoint")), safchan);
+            sys.sendMessage(src, "±Quests: Reached the {0} floor of the Battle Tower. Cleared a cumulative total of {1}. Defeated a Battle Tower boss {2} and defeated the final Battle Tower boss {3}. Earned a total of {4}.".format(getOrdinal(rec.towerHighest), plural(rec.towerTotal, "Battle Tower floor"), plural(rec.towerBosses, "time"), plural(rec.towerFinalBosses, "time"), plural(rec.towerBP, "battlepoint")) + (rec.towerSecretBosses > 0 ? " Defeated the secret Battle Tower boss {0}.".format(plural(rec.towerSecretBosses, "time")) : ""), safchan);
             sys.sendMessage(src, "±Quests: Turned in {0} to Journal for a total of {1}. ".format(plural(rec.journalSubmitted, "phоto"), plural(rec.journalPoints, "Photo Point")), safchan);
             sys.sendMessage(src, "±Quests: Cleared {0} and lost {1}. Cleared all of the Gyms {2}, all of the Elite Four {3}, and lost to the Elite Four {4}.".format(plural(rec.gymsCleared, "Gym Battle"), plural(rec.gymsLost, "Gym Battle"), plural(rec.allGymsCleared, "time"), plural(rec.eliteCleared, "time"), plural(rec.eliteLost, "time")), safchan);
             sys.sendMessage(src, "±Quests: Obtained a Celebrity score of {0} on Easy, {1} on Normal, {2} on Hard, {3} on Expert, {4} on Super Expert, and {5} on Abyssal.".format(rec.celebrityScoreEasy, rec.celebrityScore, rec.celebrityScoreHard, rec.celebrityScoreExpert, rec.celebrityScoreSuperExpert, rec.celebrityScoreAbyssal), safchan);
@@ -33375,8 +33376,8 @@ function Safari() {
                 var nextMaxBST = startingMaxBST;
                 var minPower = startingMinPower;
                 var maxPower = startingMaxPower;
-                var littlecup = ac <= 7;
-                var onlyEvolved = ac >= 14;
+                var littlecup = ac <= 6;
+                var onlyEvolved = ac >= 13;
                 var specialIncludes = [];
                 if (ac > 3) {
                     nextMaxBST += 10; // 440
@@ -33432,38 +33433,39 @@ function Safari() {
                     {
                         name: "Tower Tycoon Palmer",
                         party: [681, 612, 537, 350, 464, 149],
-                        power: [30 + player.quests.tower.bonusPower, 110 + player.quests.tower.bonusPower],
+                        power: [30 + player.quests.tower.bonusPower, 120 + player.quests.tower.bonusPower],
                     },
                     {
                         name: "Salon Maiden Anabel",
                         party: [65, 244, 461, 376, 373, 143],
-                        power: [40 + player.quests.tower.bonusPower, 110 + player.quests.tower.bonusPower],
+                        power: [40 + player.quests.tower.bonusPower, 120 + player.quests.tower.bonusPower],
                     },
                     {
                         name: "Tower Tycoon Palmer",
                         party: [66217, 887, 491, 486, 485, 488],
-                        power: [40 + player.quests.tower.bonusPower, 120 + player.quests.tower.bonusPower],
+                        power: [45 + player.quests.tower.bonusPower, 130 + player.quests.tower.bonusPower],
                     },
                     {
                         name: "Salon Maiden Anabel",
                         party: [243, 65917, 65984, 65909, 65912, 143],
-                        power: [40 + player.quests.tower.bonusPower, 125 + player.quests.tower.bonusPower],
+                        power: [50 + player.quests.tower.bonusPower, 130 + player.quests.tower.bonusPower],
                     }
                 ];
 
-                var npc, clone = args.clone || false;
+                var npc, clone = args.usedClone || false, cloneFloor = args.cloneFloor || false;
                 if (bossLevels.contains(ac + 1)) {
                     npc = bossNPCs[bossLevels.indexOf(ac + 1)];
                 }
                 else {
-                    if (ac >= 35 && chance(0.3) && !clone && ((ac + 1) % 7 === 0)) {
+                    if (ac >= bossLevels[0] && chance(0.2) && !clone && ((ac + 1) % 7 === 0)) {
                         npc = {
                             name: player.id.toCorrectCase() + "?",
                             party: player.party,
                             power: [-1, -1],
                             copy: true
                         };
-                        args.clone = true;
+                        args.usedClone = true;
+                        cloneFloor = ac + 1;
                     }
                     else {
                         npc = {
@@ -33479,8 +33481,11 @@ function Safari() {
                     count: ac + 1,
                     reward: args.reward,
                     pinap: args.pinap,
-                    clone: args.clone
+                    usedClone: args.usedClone,
+                    name: npc.name,
+                    cloneFloor: cloneFloor
                 };
+
                 npc.desc = "Tower Lvl. " + (ac + 1);
 
                 /*var roo = sys.id("ripper roo");
@@ -33516,7 +33521,7 @@ function Safari() {
 
                     if (bossLevels.contains(c)) {
                         bp = [10, 15, 20, 50][bossLevels.indexOf(c)];
-                        rew = ["mega", "mega", "fragment", "fragment"][bossLevels.indexOf(c)];
+                        rew = ["mushroom", "mega", "fragment", "fragment"][bossLevels.indexOf(c)];
                         amt = [1, 2, 1, 4][bossLevels.indexOf(c)];
                     }
                     else {
@@ -33611,6 +33616,13 @@ function Safari() {
                         safaribot.sendHtmlAll("<b>" + name.toCorrectCase() + " has defeated " + plural(count, "trainer") + " at the Battle Tower and set a new record!</b>", safchan);
                         updatelb = true;
                     }
+                }
+                if (args.cloneFloor && count >= args.cloneFloor) {
+                    player.records.towerSecretBosses += 1;
+                    if (!args.reward.hasOwnProperty("mirror")) {
+                        args.reward.mirror = 0;
+                    }
+                    args.reward.mirror += 2;
                 }
                 player.records.towerTotal += count;
                 for (var i = 0; i < bossLevels.length; i++) {
@@ -33768,7 +33780,7 @@ function Safari() {
                 }
 
                 player.quests.tower.bonusPower = 0;
-                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Tower|||Challenged using " + readable(player.party.map(poke)) +  "|||Cleared " + plural(count, "floor") + (rewardText.length > 0 ? ", received " + readable(rewardText, "and") : "") + "\n");
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Tower|||Challenged using " + readable(player.party.map(poke)) +  "|||Cleared " + plural(count, "floor") + ", defeated by " + args.name + (rewardText.length > 0 ? ", received " + readable(rewardText, "and") : "") + "\n");
                 safari.saveGame(player);
                 if (updatelb) {
                     safari.updateLeaderboards();
@@ -33805,10 +33817,11 @@ function Safari() {
                 count: 1,
                 reward: {},
                 pinap: pinapActive,
-                clone: false
+                usedClone: false
             },
             desc: "Tower Lvl. 1"
         };
+        npc.postArgs.name = npc.name;
 
         safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: You have a party with 6 Pokémon and paid the $" + addComma(cost) + " entry fee, therefore you are allowed to enter that door and start your Battle Tower challenge!", safchan);
 
@@ -46759,7 +46772,7 @@ function Safari() {
             case "help": this.dayCareHelp(src); break;
             case "berry": this.dayCarePlantBerry(src, player, cdata.slice(1).join(":")); break;
             default: 
-                daycarebot.sendHtmlMessage(src, "Hey there! The commands for the Daycare are " + link("/dc dropoff:", "Dropoff", true) + ", " + link("/dc retrieve", "Retrieve") + ", " + link("/dc berry:", "Berry") + ", and " + link("/dc help", "Help") + "!", safchan);
+                daycarebot.sendHtmlMessage(src, "Hey there! The commands for the Daycare are " + link("/dc dropoff:", "Dropoff", true) + ", " + link("/dc retrieve", "Retrieve") + ", " + link("/dc berry:", "Berry") + ", " + link("/dc interact", "Interact") + ", and " + link("/dc help", "Help") + "!", safchan);
                 var isAtRegion = {
                     "beach": [],
                     "grotto": [],
@@ -46820,7 +46833,30 @@ function Safari() {
     };
     this.dayCareInteract = function(src, player, target, mode) {
         var pokemon = null, target = parseInt(target, 10);
+        var ownMons = [];
+        var otherMons = []; // unused... for now
         for (var t in this.daycarePokemon) {
+            var p = this.daycarePokemon[t];
+            if (p.area === "holding") {
+                continue;
+            }
+            if (p.ownernum === player.idnum) {
+                ownMons.push(p);
+            }
+            else {
+                otherMons.push(p);
+            }
+        }
+        if (ownMons.length === 0) {
+            daycarebot.sendHtmlMessage(src, "You don't seem to have any Pokémon with us right now! Why not have some of your Pokémon stay here with " + link("/dc dropoff:", "/dc dropoff:[Pokémon Name]", true) + "?", safchan);
+            return false;
+        }
+        if (isNaN(target)) {
+            daycarebot.sendHtmlMessage(src, "Which of your Pokémon would you like to check up on?", safchan);
+            daycarebot.sendHtmlMessage(src, ownMons.map(function(e) { return pokeInfo.icon(e.id) + " " + link("/dc interact:" + e.uid, poke(e.id)); }).join(", "), safchan);
+            return false;
+        }
+        for (var t in ownMons) {
             if (target === this.daycarePokemon[t].uid) {
                 pokemon = this.daycarePokemon[t];
                 break;
@@ -61087,7 +61123,7 @@ function Safari() {
             var keys = Object.keys(bufferThrows);
             for (var p = 0; p < keys.length; p++) {
                 var pName = keys[p];
-                if (currentPokemon && bufferThrows[pName] && bufferThrows[pName].throwAt <= now()) { // check some of these again since i suspect there might be a race condition here
+                if (currentPokemon && bufferThrows[pName] && bufferThrows[pName].throwAt <= now()) { // check some of these values again since i suspect there might be a race condition here
                     if (isPlaying(pName)) {
                         var ball = bufferThrows[pName].ball;
                         if (ball === "takephoto") {
