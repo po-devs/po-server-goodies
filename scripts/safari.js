@@ -46857,8 +46857,8 @@ function Safari() {
             return false;
         }
         for (var t in ownMons) {
-            if (target === this.daycarePokemon[t].uid) {
-                pokemon = this.daycarePokemon[t];
+            if (target === ownMons[t].uid) {
+                pokemon = ownMons[t];
                 break;
             }
         }
