@@ -10176,8 +10176,8 @@ function Safari() {
             }
         }
         var currentTime = now();
-        if (!bypass && (!preparationFirst || name.toLowerCase() !== preparationFirst) && (player.cooldowns.ball > currentTime) && (preparationPhase <= 0 || player.cooldowns.ball + preparationPhase > currentTime)) {
-            safaribot.sendHtmlMessage(src, "You are preparing to throw your " + ballName + " at the next opportunity! (Remaining cooldown: " + timeLeftString(player.cooldowns.ball) + ") [" + link("/cancel", "Cancel") + "]", safchan);
+        if (!bypass && (!preparationFirst || name.toLowerCase() !== preparationFirst) && (player.cooldowns.ball > currentTime || ((player.id in bufferThrows) && !bufferThrow)) && (preparationPhase <= 0 || player.cooldowns.ball + preparationPhase > currentTime)) {
+            safaribot.sendHtmlMessage(src, "You are preparing to throw your " + ballName + " at the next opportunity! (Remaining cooldown: " + (timeLeftString(player.cooldowns.ball) || "1 second") + ") [" + link("/cancel", "Cancel") + "]", safchan);
             bufferThrows[player.id] = {
                 "ball": ball,
                 "throwAt": player.cooldowns.ball + 1
