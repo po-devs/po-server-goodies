@@ -55430,7 +55430,7 @@ function Safari() {
                 safari.towerTroubleCommand(src, commandData);
                 return true;
             }
-            if (command === "photo") {
+            if (command === "photo" || command === "p") {
                 safari.takePhoto(src, commandData);
                 return true;
             }
