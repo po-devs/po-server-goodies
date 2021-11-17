@@ -572,6 +572,7 @@ function Safari() {
             arenaLost: 0,
             arenaPoints:0,
             towerHighest: 0,
+            towerHighestNew: 0,
             towerEarnings: 0,
             towerSilver: 0,
             towerBP: 0,
@@ -1978,8 +1979,9 @@ function Safari() {
         // itemsFound: { desc: "by items found with Itemfinder", alts: ["found", "itemsfound", "items found"], alias: "found" },
         collectorEarnings: { desc: "by money received from the Collector", alts: ["collector", "collector money", "collectormoney", "collector $", "collectorearnings"], alias: "collector", isMoney: true },
         // collectorGiven: { desc: "by Pokémon given to the Collector", alts: ["collector", "collector pokémon", "collectorpokémon", "collector pokemon", "collector poke", "collectorpoke", "collectorgiven"], alias: "collector" },
-        towerHighest: { desc: "by best Battle Tower run", alts: ["tower", "battletower", "battle tower", "towerhighest"], alias: "tower" },
-        arenaPoints: { desc: "by arena points", alts: ["points", "arena", "arenapoints"], alias: "arenapoints" },
+        towerHighest: { desc: "by best old Battle Tower run", alts: ["old tower", "oldbattletower", "old battle tower", "oldtowerhighest"], alias: "old tower" },
+        towerHighestNew: { desc: "by best Battle Tower run", alts: ["tower", "battletower", "battle tower", "towerhighest"], alias: "tower" },
+        arenaPoints: { desc: "by Arena points", alts: ["points", "arena", "arenapoints", "arena points"], alias: "arena points" },
         salt: { desc: "by saltiest players", alts: ["salt", "salty"], alias: "salt" },
         pokesStolen: { desc: "by Pokémon stolen from NPCs", alts: ["stolen", "pokesstolen"], alias: "stolen" },
         // topQuizScore: { desc: "by best score in Quiz", alts: ["quiz", "score", "quizscore", "quiz score", "topquizscore"], alias: "quiz" },
@@ -1992,7 +1994,7 @@ function Safari() {
         pyramidScore: { desc: "by best Pyramid score", alts: ["pyramid", "pyramidscore", "pyramid score", "pyr"], alias: "pyramid" },
         // pyramidTotalScore: { desc: "by total Pyramid points", alts: ["pyramidtotal", "pyramid total", "pyramidtotalscore"], alias: "pyramid total" },
         pyramidFinished: { desc: "by cleared Pyramid runs", alts: ["pyramidfinished", "pyramid finished"], alias: "pyramid finished" },
-        eliteCleared: { desc: "by cleared Elite Four challenges", alts: ["elite", "elite four", "elitefour", "elite4", "e4", "elite 4", "e 4", "elite cleared",], alias: "elite cleared" },
+        eliteCleared: { desc: "by cleared Elite Four challenges", alts: ["elite", "elite four", "elitefour", "elite4", "e4", "elite 4", "e 4", "elite cleared", "elite four cleared", "elite 4 cleared"], alias: "elite four cleared" },
         baseValue: { desc: "by most valuable Secret Base", alts: ["base", "secretbase", "secret base",], alias: "base" },
         journalPoints: { desc: "by most photo points", alts: ["photos", "photo", "photo points", "photo points"], alias: "photo" },
         missionPoints: { desc: "by most mission points", alts: ["missions", "mission", "mission points", "mission point"], alias: "mission" },
@@ -2004,7 +2006,7 @@ function Safari() {
         contestsWon: { desc: "by contests won during this week", alts: ["contest weekly", "contests weekly"], alias: "contest weekly", lastAlias: "contest last", file: "scriptdata/safari/weeklyContestsWon.txt", lastDesc: "by contests won during the last week", reward: true },
         collectorEarnings: { desc: "by money received from the Collector during this week", alts: ["collector weekly", "collector money weekly", "collectormoney weekly", "collector $ weekly"], alias: "collector weekly",  lastAlias: "collector last",isMoney: true, file: "scriptdata/safari/weeklyCollectorEarnings.txt", lastDesc: "by money received from the Collector during the last week", reward: true },
         arenaPoints: { desc: "by Arena points won this week", alts: ["arena weekly"], alias: "arena weekly",  lastAlias: "arena last", file: "scriptdata/safari/weeklyArenaPoints.txt", lastDesc: "by Arena points won during the last week", reward: true },
-        towerHighest: { desc: "by best Battle Tower run this week", alts: ["tower weekly", "battletower weekly", "battle tower weekly", "towerhighest weekly"], alias: "tower weekly",  lastAlias: "tower last", file: "scriptdata/safari/weeklyTowerHighest.txt", lastDesc: "by best Battle Tower run during the last week", reward: true },
+        towerHighestNew: { desc: "by best Battle Tower run this week", alts: ["tower weekly", "battletower weekly", "battle tower weekly", "towerhighest weekly"], alias: "tower weekly",  lastAlias: "tower last", file: "scriptdata/safari/weeklyTowerHighest.txt", lastDesc: "by best Battle Tower run during the last week", reward: true },
         journalPoints: { desc: "by Photo points won this week", alts: ["photo weekly", "journal weekly"], alias: "photo weekly",  lastAlias: "photo last", file: "scriptdata/safari/weeklyPhotoPoints.txt", lastDesc: "by Photo points won during the last week", reward: true },
         pyramidScore: { desc: "by Pyramid score this week", alts: ["pyramid weekly", "pyr weekly"], alias: "pyramid weekly",  lastAlias: "pyr last", file: "scriptdata/safari/weeklyPyramidScore.txt", lastDesc: "by Pyramid points won during the last week", reward: true },
         celebrityScore: { desc: "by best Normal Celebrity score this week", alts: ["celebrity weekly", "celebrityscore weekly", "celebrity score weekly", "celeb weekly", "celebrity normal weekly", "celebrityscore normal weekly", "celebrity score normal weekly", "celeb normal weekly"], alias: "celebrity weekly", lastAlias: "celebrity normal last", file: "scriptdata/safari/weeklyCelebrityScore.txt", lastDesc: "by best Normal Celebrity score during the last week", reward: true },
@@ -13601,7 +13603,7 @@ function Safari() {
             sys.sendMessage(src, "±Quests: Turned in {0} Pokémon (Collector: {1}, Scientist: {2}).".format(addComma(given), addComma(rec.collectorGiven), addComma(rec.scientistGiven)), safchan);
             sys.sendMessage(src, "±Quests: Arena Record: {0}-{1} ({2}, {3}). Performed {4}, {5} and {6}.".format(addComma(rec.arenaWon), addComma(rec.arenaLost), percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost), plural(rec.arenaPoints, "point"), plural(rec.wonderTrades, "Wonder Trade"), plural(rec.transmutations + rec.transmutationsMade, "Transmutation"), plural(rec.philosopherTransmutations, "Philosopher Transmutations")), safchan);
             sys.sendMessage(src, "±Quests: Lead a {0} point Pyramid Run. Participated in a {1} point Pyramid Run. Cleared the Pyramid {2} as Leader and {3} as Helper.".format(addComma(rec.pyramidLeaderScore), addComma(rec.pyramidHelperScore), plural(rec.pyramidLeaderClears, "time"), plural(rec.pyramidHelperClears, "time")), safchan);
-            sys.sendMessage(src, "±Quests: Reached the {0} floor of the Battle Tower. Cleared a cumulative total of {1}. Defeated a Battle Tower boss {2} and defeated the final Battle Tower boss {3}. Earned a total of {4}.".format(getOrdinal(rec.towerHighest), plural(rec.towerTotal, "Battle Tower floor"), plural(rec.towerBosses, "time"), plural(rec.towerFinalBosses, "time"), plural(rec.towerBP, "battlepoint")) + (rec.towerSecretBosses > 0 ? " Defeated the secret Battle Tower boss {0}.".format(plural(rec.towerSecretBosses, "time")) : ""), safchan);
+            sys.sendMessage(src, "±Quests: Reached the {0} floor of the Battle Tower. Cleared a cumulative total of {1}. Defeated a Battle Tower boss {2} and defeated the final Battle Tower boss {3}. Earned a total of {4}.".format(getOrdinal(rec.towerHighestNew), plural(rec.towerTotal, "Battle Tower floor"), plural(rec.towerBosses, "time"), plural(rec.towerFinalBosses, "time"), plural(rec.towerBP, "battlepoint")) + (rec.towerSecretBosses > 0 ? " Defeated the secret Battle Tower boss {0}.".format(plural(rec.towerSecretBosses, "time")) : ""), safchan);
             sys.sendMessage(src, "±Quests: Turned in {0} to Journal for a total of {1}. ".format(plural(rec.journalSubmitted, "phоto"), plural(rec.journalPoints, "Photo Point")), safchan);
             sys.sendMessage(src, "±Quests: Cleared {0} and lost {1}. Cleared all of the Gyms {2}, all of the Elite Four {3}, and lost to the Elite Four {4}.".format(plural(rec.gymsCleared, "Gym Battle"), plural(rec.gymsLost, "Gym Battle"), plural(rec.allGymsCleared, "time"), plural(rec.eliteCleared, "time"), plural(rec.eliteLost, "time")), safchan);
             sys.sendMessage(src, "±Quests: Obtained a Celebrity score of {0} on Easy, {1} on Normal, {2} on Hard, {3} on Expert, {4} on Super Expert, and {5} on Abyssal.".format(rec.celebrityScoreEasy, rec.celebrityScore, rec.celebrityScoreHard, rec.celebrityScoreExpert, rec.celebrityScoreSuperExpert, rec.celebrityScoreAbyssal), safchan);
@@ -14920,7 +14922,7 @@ function Safari() {
     };
 
     /* Items */
-    this.throwBait = function (src, commandData, golden, hax, iterations, deluxe) {
+    this.throwBait = function (src, commandData, command, golden, hax, iterations, deluxe) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -14932,7 +14934,7 @@ function Safari() {
         var isPreparing = preparationPhase > 0 && (!preparationFirst || sys.name(src).toLowerCase() !== preparationFirst);
         var persist = player.options.persistentBait;
 
-        var messBait = deluxe ? "dbait" : (golden ? "gbait" : "bait");
+        var messBait = command;
         var mess = "[Track] " + sys.name(src) + " is using /" + messBait + " " + commandData + (persist ? " [Persist]" : "");
         if (!isPreparing) {
             this.trackMessage(mess, player);
@@ -24165,9 +24167,6 @@ function Safari() {
         if (!silent) {
             sendAll("A battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! [" + link("/watch " + this.name1, "Watch") + "]", true);
         }
-        else {
-            this.sendToViewers("A battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started!");
-        }
     }
     Battle.prototype.nextTurn = function() {
         if (this.turn < 0) {
@@ -33310,10 +33309,9 @@ function Safari() {
             
             var price = wares[input.input];
             var cost = price * amount;
-            var cap = getCap(input.id);
 
             if (player.balls.battlepoint < cost) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "You don't have enough {0} to afford that! You need {1}, but you only have {2}.".format(es(finishName("battlepoint")), plural(amount, "battlepoint"), player.balls.battlepoint), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: You don't have enough {0} to afford that! You need {1}, but you only have {2}.".format(es(finishName("battlepoint")), plural(cost, "battlepoint"), player.balls.battlepoint), safchan);
                 return;
             }
             if (!this.isBelowCap(src, input.id, amount, input.type)) {
@@ -33595,7 +33593,8 @@ function Safari() {
                     }
                 }
                 if (id && getAvatar(id)) {
-                    var battle = new Battle(id, npc, (ac + 1) % 7 !== 0);
+                    var silent = (ac + 1) % 7 !== 0;
+                    var battle = new Battle(id, npc, silent);
                     for (e = 0; e < viewers.length; e++) {
                         if (!battle.viewers.contains(viewers[e])) {
                             battle.viewers.push(viewers[e]);
@@ -33603,6 +33602,9 @@ function Safari() {
                     }
                     if (!viewers.contains(name.toLowerCase())) {
                         battle.viewers.splice(battle.viewers.indexOf(name.toLowerCase()), 1);
+                    }
+                    if (silent) {
+                        battle.sendToViewers("A battle between " + battle.name1 + " and " + battle.name2 + " (" + npc.desc + ") has started!");
                     }
                     currentBattles.push(battle);
                 } else {
@@ -33614,9 +33616,9 @@ function Safari() {
                 }
             } else {
                 var count = args.count - 1 - skip, updatelb = false;
-                if (count > player.records.towerHighest) {
-                    player.records.towerHighest = count;
-                    if (leaderboards.towerHighest.length === 0 || count > leaderboards.towerHighest[0].value) {
+                if (count > player.records.towerHighestNew) {
+                    player.records.towerHighestNew = count;
+                    if (leaderboards.towerHighestNew.length === 0 || count > leaderboards.towerHighestNew[0].value) {
                         safaribot.sendHtmlAll("<b>" + name.toCorrectCase() + " has defeated " + plural(count, "trainer") + " at the Battle Tower and set a new record!</b>", safchan);
                         updatelb = true;
                     }
@@ -33761,9 +33763,9 @@ function Safari() {
 
                 safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u, lowBST: passed});
                 safari.costumeEXP(player, "fighttower", 4 + (count * 3));
-                var currentLB = monthlyLeaderboards["towerHighest"].get(player.id) || 0;
+                var currentLB = monthlyLeaderboards["towerHighestNew"].get(player.id) || 0;
                 if (currentLB < count) {
-                    safari.addToMonthlyLeaderboards(player.id, "towerHighest", count, true);
+                    safari.addToMonthlyLeaderboards(player.id, "towerHighestNew", count, true);
                 }
                 player.notificationData.towerWaiting = true;
                 safari.pendingNotifications(player.id);
@@ -55686,15 +55688,15 @@ function Safari() {
                 return true;
             }
             if (command === "bait" || command === "b") {
-                safari.throwBait(src, commandData);
+                safari.throwBait(src, commandData, command);
                 return true;
             }
             if (["dbait", "deluxe", "deluxebait", "db"].contains(command)) {
-                safari.throwBait(src, commandData, false, false, false, true);
+                safari.throwBait(src, commandData, command, false, false, false, true);
                 return true;
             }
             if (command === "gbait" || command === "golden" || command === "gb") {
-                safari.throwBait(src, commandData, true, false, false, false);
+                safari.throwBait(src, commandData, command, true, false, false, false);
                 return true;
             }
             if (["showdbait", "showdeluxe", "showdeluxebait", "viewdeluxe", "viewdeluxebait", "viewdbait"].contains(command)) {
@@ -56155,12 +56157,14 @@ function Safari() {
             }
             if (command === "leaderboard" || command == "lb") {
                 var rec = commandData.toLowerCase(), e;
-
+                var capAll = function(str) {
+                    return str.split(" ").map(cap).join(" ");
+                };
                 if (!rec || rec === "*" || rec === "list" || rec === "ls") {
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendMessage(src, "Existing leaderboards (type /lb [type] for the list): ", safchan);
                     for (e in leaderboardTypes) {
-                        safaribot.sendHtmlMessage(src, link("/lb " + leaderboardTypes[e].alias, cap(leaderboardTypes[e].alias)) + ": Leaderboard " + leaderboardTypes[e].desc + (monthlyLeaderboardTypes.hasOwnProperty(e) ? " | " + link("/lb " + monthlyLeaderboardTypes[e].alias, cap(monthlyLeaderboardTypes[e].alias)) + " | " + link("/lb " + monthlyLeaderboardTypes[e].lastAlias, cap(monthlyLeaderboardTypes[e].lastAlias)) : ""), safchan);
+                        safaribot.sendHtmlMessage(src, link("/lb " + leaderboardTypes[e].alias, capAll(leaderboardTypes[e].alias)) + ": Leaderboard " + leaderboardTypes[e].desc + (monthlyLeaderboardTypes.hasOwnProperty(e) ? " | " + link("/lb " + monthlyLeaderboardTypes[e].alias, capAll(monthlyLeaderboardTypes[e].alias)) + " | " + link("/lb " + monthlyLeaderboardTypes[e].lastAlias, capAll(monthlyLeaderboardTypes[e].lastAlias)) : ""), safchan);
                     }
                     sys.sendMessage(src, "", safchan);
                     return true;
