@@ -16082,7 +16082,7 @@ function Safari() {
         }
         this.saveGame(player);
     };
-    this.findItem = function(src) {
+    this.findItem = function(src, combo) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -16097,6 +16097,7 @@ function Safari() {
             }
         }
 
+        combo = combo || 0;
         var dailyCharges = player.balls.itemfinder,
             permCharges = player.balls.permfinder,
             totalCharges = dailyCharges + permCharges;
@@ -16114,7 +16115,7 @@ function Safari() {
         }
 
         var currentTime = now();
-        if (player.cooldowns.itemfinder > currentTime) {
+        if (player.cooldowns.itemfinder > currentTime && !combo) {
             safaribot.sendHtmlMessage(src, "Your Itemfinder needs to cool down otherwise it will overheat! Try again in " + timeLeftString(player.cooldowns.itemfinder) + ". " + link("/finder", "[Try Again]"), safchan);
             return;
         }
@@ -16122,7 +16123,7 @@ function Safari() {
             return;
         }
 
-        var pulls = Math.min(this.getFortune(player, "finderburn", 1), totalCharges);
+        var pulls = Math.min(this.getFortune(player, "finderburn", 1) + combo, totalCharges);
 
         while (pulls > 0) {
             pulls -= 1;
@@ -24163,6 +24164,9 @@ function Safari() {
 
         if (!silent) {
             sendAll("A battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! [" + link("/watch " + this.name1, "Watch") + "]", true);
+        }
+        else {
+            this.sendToViewers("A battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started!");
         }
     }
     Battle.prototype.nextTurn = function() {
@@ -33279,7 +33283,7 @@ function Safari() {
 
             if (!itemChoice) {
                 sys.sendMessage(src, "", safchan);
-                safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: You can purchase some souvenirs with your hard-earned " + es(finishName("battlepoint")) + " (BP) here!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: You can purchase some souvenirs here with your hard-earned " + es(finishName("battlepoint")) + " (BP)!", safchan);
                 for (var w in wares) {
                     var itemName = getInput(w).name;
                     safaribot.sendHtmlMessage(src, "{0}: {1} BP".format(link("/quest tower:shop:" + itemName + ":1", itemName, true), wares[w]), safchan);
@@ -33642,7 +33646,7 @@ function Safari() {
                 }
                 else {
                     h = 1;
-                    for (var i = 0; i <= Math.floor(traveledCount / 7); i++) {
+                    for (var i = 0; i < Math.floor(traveledCount / 7); i++) {
                         h += 0.5; // 30 mins for each 7 floors cleared
                     }
                 }
@@ -38966,7 +38970,7 @@ function Safari() {
         line2 += " " + link("/party", "«Party»");
         var currentTime = now();
         if (player.balls.itemfinder + player.balls.permfinder > 0) {
-            line2 += "   " + link("/finder", "«Finder»");
+            line2 += "   " + link("/finder", "«Itemfinder»");
         }
         if (player.balls.gacha > 0) {
             line2 += "   " + link("/gacha", "«Gachapon»");
@@ -39012,7 +39016,7 @@ function Safari() {
         }
         var unseenNotifs = this.countUnseenNotifications(player);
         var unreadMail = countRepeated(player.unreadInbox, true);
-        var line5 = link("/notifications" + (unseenNotifs > 0 ? " unread" : ""), "«Notifications»") + " " + link("/inbox" + (unreadMail > 0 ? " unread" : ""), "«Inbox»");
+        var line5 = link("/notifications" + (unseenNotifs > 0 ? " unread" : ""), "«Notifications" + (unseenNotifs > 0 ? " (" + unseenNotifs + ")" : "") + "»") + " " + link("/inbox" + (unreadMail > 0 ? " unread" : ""), "«Inbox" + (unreadMail > 0 ? " (" + unreadMail + ")" : "") + "»");
 
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, line1, safchan);
