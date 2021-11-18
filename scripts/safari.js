@@ -54441,7 +54441,7 @@ function Safari() {
         sys.write(saveBackupFile3, sys.getFileContent(saveBackupFile2));
         sys.write(saveBackupFile2, sys.getFileContent(saveBackupFile1));
         sys.write(saveBackupFile1, sys.getFileContent(rawPlayers.fname));
-        sys.write("backup-" + permFile, sys.getFileContent(permObj));
+        sys.write("scriptdata/safari/safariobjects-backup.txt", sys.getFileContent(permFile));
 
         backupPlayers1 = new MemoryHash(saveBackupFile1);
         backupPlayers2 = new MemoryHash(saveBackupFile2);
