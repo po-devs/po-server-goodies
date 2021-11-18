@@ -10176,6 +10176,8 @@ function Safari() {
             }
         }
         var currentTime = now();
+        // we check not only if cooldown is over, but also if there is already a queued throw, and if there is, block the input + update bufferThrows with the new input, therefore only allowing the queued throw to be executed on next stepEvent. prevents weird situations where player cd is over + player manually inputs a throw between seconds, making it seem like the queued command disappears or is even re-queued after the manual input induces cooldown again
+        // e.g. stepEvent, player has queued throw and original cd is not over --> player cd wears off between seconds + player inputs throw manually --> ball is thrown, new cd is induced --> next stepEvent, original cd is over therefore queued throw is executed --> queued throw hits new cd and is requeued
         if (!bypass && (!preparationFirst || name.toLowerCase() !== preparationFirst) && (player.cooldowns.ball > currentTime || ((player.id in bufferThrows) && !bufferThrow)) && (preparationPhase <= 0 || player.cooldowns.ball + preparationPhase > currentTime)) {
             safaribot.sendHtmlMessage(src, "You are preparing to throw your " + ballName + " at the next opportunity! (Remaining cooldown: " + (timeLeftString(player.cooldowns.ball) || "1 second") + ") [" + link("/cancel", "Cancel") + "]", safchan);
             bufferThrows[player.id] = {
@@ -11331,7 +11333,7 @@ function Safari() {
     };
 
     /* Photos */
-    this.takePhoto = function(src, data, bypass, suppress, bufferThrow) {
+    this.takePhoto = function(src, data, bypass, suppress, command, bufferThrow) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -11349,7 +11351,7 @@ function Safari() {
 
         var name = sys.name(src);
         if (!suppress && !bypass) {
-            var mess = "[Track] " + name + " is using /photo" + " " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)" + (bufferThrow ? " [Buffered Throw]" : "");
+            var mess = "[Track] " + name + " is using /" + command + " " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)" + (bufferThrow ? " [Buffered Throw]" : "");
             this.trackMessage(mess, player);
         }
         
@@ -38989,7 +38991,6 @@ function Safari() {
         line2 += "   " + link("/info", "«Info»");
         line2 += "   " + link("/buy", "«Buy»");
         line2 += "   " + link("/quest", "«Quests»");
-        line2 += "   " + link("/options", "«Options»");
         var line3 = "<b>Recent Quests:</b>";
         var qu = this.organizeRecentQuests(player), item;
         for (var i = 0; i < qu.length; i++) {
@@ -39019,7 +39020,7 @@ function Safari() {
         var unseenNotifs = this.countUnseenNotifications(player);
         var unreadMail = countRepeated(player.unreadInbox, true);
         var line5 = link("/notifications" + (unseenNotifs > 0 ? " unread" : ""), "«Notifications" + (unseenNotifs > 0 ? " (" + unseenNotifs + ")" : "") + "»") + " " + link("/inbox" + (unreadMail > 0 ? " unread" : ""), "«Inbox" + (unreadMail > 0 ? " (" + unreadMail + ")" : "") + "»");
-
+        line5 += " " + link("/options", "«Options»");
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, line1, safchan);
         safaribot.sendHtmlMessage(src, line2, safchan);
@@ -46839,32 +46840,33 @@ function Safari() {
     };
     this.dayCareInteract = function(src, player, target, mode) {
         var pokemon = null, target = parseInt(target, 10);
-        var ownMons = [];
-        var otherMons = []; // unused... for now
-        for (var t in this.daycarePokemon) {
-            var p = this.daycarePokemon[t];
-            if (p.area === "holding") {
-                continue;
-            }
-            if (p.ownernum === player.idnum) {
-                ownMons.push(p);
-            }
-            else {
-                otherMons.push(p);
-            }
-        }
-        if (ownMons.length === 0) {
-            daycarebot.sendHtmlMessage(src, "You don't seem to have any Pokémon with us right now! Why not have some of your Pokémon stay here with " + link("/dc dropoff:", "/dc dropoff:[Pokémon Name]", true) + "?", safchan);
-            return false;
-        }
+
         if (isNaN(target)) {
+            var ownMons = [];
+            var otherMons = []; // unused... for now
+            for (var t in this.daycarePokemon) {
+                var p = this.daycarePokemon[t];
+                if (p.area === "holding") {
+                    continue;
+                }
+                if (p.ownernum === player.idnum) {
+                    ownMons.push(p);
+                }
+                else {
+                    otherMons.push(p);
+                }
+            }
+            if (ownMons.length === 0) {
+                daycarebot.sendHtmlMessage(src, "You don't seem to have any Pokémon with us right now! Why not have some of your Pokémon stay here with " + link("/dc dropoff:", "/dc dropoff:[Pokémon Name]", true) + "?", safchan);
+                return false;
+            }
             daycarebot.sendHtmlMessage(src, "Which of your Pokémon would you like to check up on?", safchan);
             daycarebot.sendHtmlMessage(src, ownMons.map(function(e) { return pokeInfo.icon(e.id) + " " + link("/dc interact:" + e.uid, poke(e.id)); }).join(", "), safchan);
             return false;
         }
-        for (var t in ownMons) {
-            if (target === ownMons[t].uid) {
-                pokemon = ownMons[t];
+        for (var t in this.daycarePokemon) {
+            if (target === this.daycarePokemon[t].uid) {
+                pokemon = this.daycarePokemon[t];
                 break;
             }
         }
@@ -55431,7 +55433,7 @@ function Safari() {
                 return true;
             }
             if (command === "photo" || command === "p") {
-                safari.takePhoto(src, commandData);
+                safari.takePhoto(src, commandData, false, false, command);
                 return true;
             }
             if (command === "pokeblock") {
@@ -61135,7 +61137,7 @@ function Safari() {
                     if (isPlaying(pName)) {
                         var ball = bufferThrows[pName].ball;
                         if (ball === "takephoto") {
-                            safari.takePhoto(sys.id(pName), "*", false, false, true);
+                            safari.takePhoto(sys.id(pName), "*", false, false, "photo", true);
                         }
                         else {
                             safari.throwBall(sys.id(pName), ball, null, null, "catch", false, false, true);
