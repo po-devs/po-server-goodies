@@ -1379,7 +1379,7 @@ function Safari() {
             }
         },
         ninja: {
-            icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 0.1, thresh: 499,
+            icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 0.15, thresh: 499,
             effect: "A master in ninjutsu. Able to lurk amongst the shadows and create diversions to sneak past a small number of Trainers in the Battle Tower.",
             effect2: "Is less adept at catching with a legendary Pokémon as a lead.",
             noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon with &lt;500 BST (without using Battle Girl costume)",
@@ -33360,18 +33360,17 @@ function Safari() {
         safari.updateEconomyData(-cost, "questFee");
         this.saveGame(player);
 
-        var skip = false;
-        var startingMinBST = 0;
-        var startingMaxBST = 430;
-        var startingMinPower = 10;
-        var startingMaxPower = 40;
         var postBattle = function(name, isWinner, playerScore, npcScore, args, viewers) {
             var player = getAvatarOff(name);
             var id = sys.id(name);
             var bossLevels = [21, 35, 49, 70];
+            var startingMinBST = 0;
+            var startingMaxBST = 430;
+            var startingMinPower = 10;
+            var startingMaxPower = 40;
             if (isWinner) {
-                skip = false;
-                if (player.costume === "ninja" && chance(costumeData.ninja.rate) && !bossLevels.contains(args.count + 1)) {
+                var skip = false;
+                if (player.costume === "ninja" && chance(costumeData.ninja.rate) && ((args.count + 1) % 7 !== 0)) {
                     skip = true;
                 }
                 var ac = args.count + skip;
@@ -33487,7 +33486,8 @@ function Safari() {
                     pinap: args.pinap,
                     usedClone: args.usedClone,
                     name: npc.name,
-                    cloneFloor: cloneFloor
+                    cloneFloor: cloneFloor,
+                    skippedPrevious: skip
                 };
 
                 npc.desc = "Tower Lvl. " + (ac + 1);
@@ -33508,82 +33508,75 @@ function Safari() {
                 }
 
                 var minBP = 2, maxBP = 7;
-                var times = 1 + skip;
 
-                for (var i = 0; i < times; i++) {
-                    var mod, rew, amt, loop, c, bp;
-                    //We calculate the level they are on first, then go back and grab the reward from previous floor
-                    c = args.count - i;
-                    mod = c % 7;
-                    loop = Math.floor(c / 7) + 1;
-                    bp = 0;
+                var mod, rew, amt, loop, c, bp;
+                c = args.count;
+                mod = c % 7;
+                loop = Math.floor(c / 7) + 1;
+                bp = 0;
 
-                    if (c <= 0) {
-                        continue;
-                    }
-                    var cbonus = safari.hasCostumeSkill(player, "towerLoot") ? (1.2 + (safari.getCostumeLevel(player)/50)) : 1;
+                var cbonus = safari.hasCostumeSkill(player, "towerLoot") ? (1.2 + (safari.getCostumeLevel(player)/50)) : 1;
 
-                    if (bossLevels.contains(c)) {
-                        bp = [10, 15, 20, 50][bossLevels.indexOf(c)];
-                        rew = ["mushroom", "mega", "fragment", "fragment"][bossLevels.indexOf(c)];
-                        amt = [1, 2, 1, 4][bossLevels.indexOf(c)];
+                if (bossLevels.contains(c)) {
+                    bp = [10, 15, 20, 50][bossLevels.indexOf(c)];
+                    rew = ["mushroom", "mega", "fragment", "fragment"][bossLevels.indexOf(c)];
+                    amt = [1, 2, 1, 4][bossLevels.indexOf(c)];
+                }
+                else {
+                    if (mod === 0) { // every 7th battle
+                        bp = Math.min(minBP + (c / 7 - 1), maxBP);
                     }
-                    else {
-                        if (c % 7 === 0) { // every 7th battle
-                            bp = Math.min(minBP + (c / 7 - 1), maxBP);
-                        }
-                        switch (mod) {
-                            case 0:
-                                rew = "gem";
-                                amt = 1;
-                            break;
-                            case 1:
-                                rew = "gacha";
-                                amt = Math.floor(loop * 1.5 * cbonus);
-                            break;
-                            case 2:
-                                rew = "bait";
-                                amt = Math.floor(loop * 1.5 * cbonus);
-                            break;
-                            case 3:
-                                rew = "dust";
-                                amt = Math.round(loop * cbonus) * 10;
-                            break;
-                            case 4:
-                                rew = "money";
-                                amt = Math.round(3 * loop * cbonus) * 10;
-                            break;
-                            case 5:
-                                rew = ["bluapricorn", "ylwapricorn", "grnapricorn", "blkapricorn"].random();
-                                amt = Math.floor(loop * 1.25 * cbonus);
-                            break;
-                            case 6:
-                                rew = "silver";
-                                amt = Math.ceil(loop / 2);
-                            break;
-                        }
+                    switch (mod) {
+                        case 0:
+                            rew = "gem";
+                            amt = 1;
+                        break;
+                        case 1:
+                            rew = "gacha";
+                            amt = Math.floor(loop * 1.5 * cbonus);
+                        break;
+                        case 2:
+                            rew = "bait";
+                            amt = Math.floor(loop * 1.5 * cbonus);
+                        break;
+                        case 3:
+                            rew = "dust";
+                            amt = Math.round(loop * cbonus) * 10;
+                        break;
+                        case 4:
+                            rew = "money";
+                            amt = Math.round(3 * loop * cbonus) * 10;
+                        break;
+                        case 5:
+                            rew = ["bluapricorn", "ylwapricorn", "grnapricorn", "blkapricorn"].random();
+                            amt = Math.floor(loop * 1.25 * cbonus);
+                        break;
+                        case 6:
+                            rew = "silver";
+                            amt = Math.ceil(loop / 2);
+                        break;
                     }
+                }
 
-                    if (!npc.postArgs.reward.hasOwnProperty("battlepoint")) {
-                        npc.postArgs.reward.battlepoint = 0;
-                    }
-                    if (!npc.postArgs.reward.hasOwnProperty(rew)) {
-                        npc.postArgs.reward[rew] = 0;
-                    }
-                    
-                    npc.postArgs.reward[rew] += amt;
-                    npc.postArgs.reward.battlepoint += bp;
+                if (!npc.postArgs.reward.hasOwnProperty("battlepoint")) {
+                    npc.postArgs.reward.battlepoint = 0;
+                }
+                if (!npc.postArgs.reward.hasOwnProperty(rew)) {
+                    npc.postArgs.reward[rew] = 0;
+                }
+                
+                npc.postArgs.reward[rew] += amt;
+                npc.postArgs.reward.battlepoint += bp;
 
-                    var was_were;
+                var was_were;
 
-                    if (amt) {
-                        was_were = amt > 1 ? "were" : "was";
-                        safaribot.sendMessage(id, (rew === "money" ? "$" + amt : plural(amt, rew)) + " " + was_were + " added to your final prizes!", safchan);
-                    }
-                    if (bp) {
-                        was_were = bp > 1 ? "were" : "was";
-                        safaribot.sendMessage(id, plural(bp, "battlepoint") + " " + was_were + " added to your final prizes!", safchan);
-                    }
+                if (amt) {
+                    was_were = amt > 1 ? "were" : "was";
+                    safaribot.sendMessage(id, (rew === "money" ? "$" + amt : plural(amt, rew)) + " " + was_were + " added to your final prizes!", safchan);
+                }
+                if (bp) {
+                    was_were = bp > 1 ? "were" : "was";
+                    safaribot.sendMessage(id, plural(bp, "battlepoint") + " " + was_were + " added to your final prizes!", safchan);
                 }
 
                 for (var e = 0; e < viewers.length; e++) {
@@ -33617,7 +33610,7 @@ function Safari() {
                     }
                 }
             } else {
-                var count = args.count - 1 - skip, updatelb = false;
+                var count = args.count - 1 - args.skippedPrevious, updatelb = false;
                 if (count > player.records.towerHighestNew) {
                     player.records.towerHighestNew = count;
                     if (leaderboards.towerHighestNew.length === 0 || count > leaderboards.towerHighestNew[0].value) {
@@ -33684,8 +33677,8 @@ function Safari() {
                     } else {
                         safaribot.sendHtmlMessage(id, trainerSprite + "Tower Clerk: OH MY GOD, " + name + "! You defeated " + count + " trainers! That was superb!" + team, safchan);
                     }
-                    if (skip) {
-                        safaribot.sendHtmlMessage(id, trainerSprite + "Tower Clerk: Hey wait a minute! You didn't defeat the previous Trainer so I can't count it in your performance assessment.", safchan);
+                    if (args.skippedPrevious) {
+                        safaribot.sendHtmlMessage(id, trainerSprite + "Tower Clerk: Hey wait a minute! You didn't defeat the previous Trainer, so I can't count it in your performance assessment.", safchan);
                     }
                     if (rewardText.length > 0) {
                         safaribot.sendMessage(id, "Tower Clerk: For your performance in the Battle Tower challenge, we reward you with " + readable(rewardText, "and") + "!", safchan);
@@ -33788,7 +33781,7 @@ function Safari() {
                 }
 
                 player.quests.tower.bonusPower = 0;
-                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Tower|||Challenged using " + readable(player.party.map(poke)) +  "|||Cleared " + plural(count, "floor") + ", defeated by " + args.name + (rewardText.length > 0 ? ", received " + readable(rewardText, "and") : "") + "\n");
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Tower|||Challenged using " + readable(player.party.map(poke)) +  " and " + costumeData[player.costume].fullName + " Costume|||Cleared " + plural(count, "floor") + ", defeated by " + args.name + (rewardText.length > 0 ? ", received " + readable(rewardText, "and") : "") + "\n");
                 safari.saveGame(player);
                 if (updatelb) {
                     safari.updateLeaderboards();
@@ -33818,14 +33811,15 @@ function Safari() {
         }
         var npc = {
             name: "Trainer " + generateName(),
-            party: generateTeam(6, startingMinBST, startingMaxBST, null, null, null, true),
-            power: [startingMinPower, startingMaxPower],
+            party: generateTeam(6, 0, 430, null, null, null, true),
+            power: [10, 30],
             postBattle: postBattle,
             postArgs: {
                 count: 1,
                 reward: {},
                 pinap: pinapActive,
-                usedClone: false
+                usedClone: false,
+                skippedPrevious: false
             },
             desc: "Tower Lvl. 1"
         };
