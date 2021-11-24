@@ -938,7 +938,10 @@ function Safari() {
             showContestCaptures: true,
             androidTextFlow: false
         },
-        spawnlessThrows: 0
+        spawnlessThrows: 0,
+        burningAura: false,
+        brilliantAura: false,
+        offlineSales: {}
     };
 
     /* Item Variables */
@@ -1263,9 +1266,9 @@ function Safari() {
             skills: {
                 preschoolerPack1: [2, 2],
                 typeMatchupHelper: [3, 3],
-                preschoolerPack2: [4, 4],
+                ballHint: [4, 4],
                 fasterFinder: [5, 5],
-                ballHint: [6, 6],
+                preschoolerPack2: [6, 6],
                 preschoolerPack3: [7, 7],
                 preschoolerPack4: [9, 9],
                 preschoolerPack5: [11, 11],
@@ -1544,7 +1547,7 @@ function Safari() {
         dew:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHZSURBVEhLY/z//z8DLQETlKYZGPoWEBUHlo4TwYp+fFgA5nMIJIDp4/vzGcEMPACvBYaGhv9BhhkYBDDoa3yHiiLAzv2nGR7c7GM4f/48TotwWgAy3MJhA1aD0cHMGZE4LcFqAbLhhgaKUFEGhvMX7oPpizc4Ge4/eMAgJS7BYGb4H8y/dqGG4eD+xRiWYI1kULDADDcwYIBjEJ+HhxMsp6igwPDu43u4Zf9Z7KG6UQGGBaAIBYU5IQAyVIhfEEyDLNPWcYUnBmSA1QeEwh3kapgPQDTIkp/ff0BlUQGGBbCkCAKgML9wgQGOQfyL1/+C5ZB9AAPIemEAZ0YDuRIEFqx4ATYYbDhQ7MtXZrA4sg8+frjA8OffF7A4OsCwAJaJQMEEMhBGwywEgYQICSgL4hMQUJL9BdeLDPD6AGY4OgD5CmTwjx8/oSIMDKoqCEuRAdZ84BF48H+AhzhWw5+/eI5iMCh44iPcGY6ces+wZK4lcfng5YMCsOEgV6JjkOEgQ2EYBED54/eXOWA2OsBbVIgrTIDyIC5FB+5OZgyebkYMGRkWpBUVMAAr7PgFgNkYCEApRkX2JwM39z+wqyfP3sRw9WwbeYUdMqBZcU0NgDOZUgsMdQsYGAAGYQVLYeEoTgAAAABJRU5ErkJggg==",
         easteregg:"data:image/png;base64,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",
         celebrityTicket: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABSlBMVEUAAAA2NDI0MjA4NDMyMTCyWSHleTA3MzA3NzM1MjLkeDC1WiGVSyG0WyLlejA0MjHy61j3lVq1WyGVSiHNmknOnEqzWiHvvWrPnUuVTCKTSiDMmUjOm0qVSyKzWSHtu2nMm0nNnEqUSiHNm0mEZCJbShiCYiDMmkg3NTM1MzLz6llaShiBYSHMmEi1WyKyWCDjeTE3Mi/ykVj261rPnUpZSRiSeVdbSxnKmUeWTSG1WiKzWCCzWiI2MjA1Mi+2WyGWTCKGZCJdSxlcTBlaShmjeiDOnUr0lFo4NDE0MS/heDG3WiHMmkmUSyFcShhbShmkeiLNnEnrumn061o4NzE2MjE1MS/geTHMmUnMmkqmfCKmeyLNnUo5NjI1NDE4NC+TSiGUSSHPnEu1WiDykVm2WiCyWSI4MzA2MzE2Mi/wkFjkejI2NTT///8UwuSBAAAAAXRSTlMAQObYZgAAAAFiS0dEbbsGAK0AAAAHdElNRQflBQ0LICASaJy3AAAA+UlEQVQoz2NgGAKAkQmnFDMLKxs7dikOTi5uHl4+bLIc/AKCQsIiomKYeoFS4hKiklLSMrJyaLJAKXkFEUVRoKySkhKKySBdyiqqauoQWRFRIbheDU0tcQl1FVVtbR0RUZCsroyevoEhxPFGxiaiIDlTM3MLoKSopZW1ja0dWMrA3gHoCEcnZzMXbW1XZVFRNy13D09wcHh5K/mI+ipJy4iKOvq5+AcEugUFh4RC7QsL946IlFUCy0Y5RscEBcfGIRwaH+6tlKAE8h7QQFQpqCzQ5ETlJAwpiGyEjGxyChYpsKx9appBegb2yMjMyjbEHYsaOWSnDToCAGQqK5f3PcjLAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTA1LTEzVDExOjMyOjI4KzAwOjAwJxQ37AAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wNS0xM1QxMTozMjoyOCswMDowMFZJj1AAAAAASUVORK5CYII=",
-        battlepoint: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9kKBwMqG8nKfMIAAAHKSURBVEjH3ZUvbNtAFIe/pAGN1Egz67GGTAo8swQGLtImeTBsKeukkrKSSVNZB8fisdKwFQwE1iyGhp40cAGTGqkHDCZl4ORLLq1T34a2J1ny3ZO/3/tzfgf/ujV8P5BSrsv3fr9PkiTWl6Zp468EpJTr4ccFPQFxogCY9IX1fz4NH4k0feBnUwPPFAxOBNeRgd/d3gBwNl04GQK0fOCZcvfL9eDVGICe+IMelPCbqwnBcZdDIRFyZP09sQHPFnD3XVHEI1uqRl04QHDcBeB+mSNk5AhtWxTC+5HpR9MH/kKYB6BQKYsvE1T6dW8Fmj6Rl1aKAah05ghFIVzMVLXAc/BdodJUOrPwPK8Q8IHv2vgytnAxP7VNbu7C57ebmt4v873Q0j++jImTx3CAg91z3hEvgRZ6mZlm6hWFXtE+CjjsBM5eoVd74U4G2+dZyBHhuxghIyfalcprR+5kIIT4MG+/pt3qEIXG8VObbIR8YzNqHwU28rfnn56FOwI/giG6Ad8yXSlU6Ad+6WVtuPMnSynXajgFoNs1tRqcCKLQzJxMbcr41GmpdR+Uk7BKCPzglbOoSgjwgtcadttCgBe89o22fYn4wP8P+w2k5SeThMNs4AAAAABJRU5ErkJggg==",
+        battlepoint: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAIVBMVEUAAAAwMDD4+PjwcHD4sLDwoKC4qKhwUFCYcHCwYGD///8C+1qZAAAAAXRSTlMAQObYZgAAAAFiS0dECmjQ9FYAAAAHdElNRQflCxYGCShoBXbCAAAAcElEQVQY02NgIBcwCiBxhBQRPEYlJUM4T1hJyRgmx+jspGKiBOUJqRgbOympBEJ1KBsBFYI5wk5KymZlKqYgZYxANcrmHcUQCWMgqGiHSRgbwyQYQxESDAyCoXAJCG+6Kdw1QF4gwtGCocheECTJ9wCggxVEFBenTwAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0xMS0yMlQwNjowOTozNSswMDowMHrq0NsAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMTEtMjJUMDY6MDk6MzUrMDA6MDALt2hnAAAAAElFTkSuQmCC",
         //candybag:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAMUSURBVEhLtVRfSFNRGP/uvLkJ1YwMJvOlcLVrmyQ0yUjYS/VmPSib4Hv02mNlb6unqBB8qMfaU4q2qF6DBgY9KCUuUCIhcf0BkxXMbXo6v2/33N0771KhfnA45/tzvv/naEII+p/wmPuuMDw8LHp7e0Uqldp1VDtmYBiG0DSi3EjE5FTRurRGgZkV8vl8NDs7KzXc0dABDH+6fJxKB5op/Hje5DqxZhymr6fbWZ7L5dydwEH9CofDglKDwjDCAud6uX0p3WOxbpFMJiXLKXcQWHbj9bJGKxKJ8J3QqYgknTIHEYvF9mxcrUaBOaaoUCjwHgx28L4XoAfGE9kLOQzj4+NWYx1N1m4PCbNhNDk5SaOjN2UUkm+2D2dd16lSqTCvszNEi4uL1iSl02kxsjztaLrloKenR8wNdVoTszBUJDUWFaGRrtUCaUQbT30mp5oRdqtExWKRjc8PbvCC9E3eQ5s7GH+9qls0ByUv5vuCTAOOHpwPbvLeZF64km2myISXz4Bb5FezOkcO7pakFwaL/AAVHA4enC1bxrsmfBQIBqi9I0DX3+1zNR6VziHHuiF11N2H/SXeAcsBUlM1h3G0ZvVLntf0cpOrcQDy/Eqepj43MY2S9ge2+CcAXZuiW0f5AAWPNKac1Ud+5pmX3l7a4DO4KIuK3H4XZUOjOYNoNMoaMAblLrOmbsbXS1XXimsv6a9yrQpqtNlBPB7fNi3dU/u5DIoDZ4g8JycFPEQOG3ff62zc3+onf3NVG7qqMOxgbGxMuzOnMwM4J2t4JNDGzUM2uBCb8nLaWCelQRX5i98dPAw/19aZrs/aanJ6qdokKDySU4DmAXi5yKQoJ1hNDKKFI0Ruh914IpHg3Woynnni46ilcPGVl75VWuhQWyvTfwOC+SAfp7qrGoyz4y/CaKHGAKJ5vuzhN4CoAZUVGoiyfM//4H/Jbhz3Xsbu08DAwHYHAJxMXyjTCX/1VStpVn4boYNb1Nai0bUZne71VbgP9rIg8lAoRJlMxpwhFwcK1kORqkrFfgbqaVUWOxo6+Dcg+gOPizMCRY/02QAAAABJRU5ErkJggg==",
         // Not necessary since they're already in PO
         /*oran:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAHlBMVEUwMDBQUIDg6PiYoLi4wPhQoPBY0PhoaLhQeMj////bPOk9AAAACnRSTlP///////////8AsswszwAAAAFiS0dECfHZpewAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAC1SURBVHjaY5zJgABMDAQ439MRnO+PlAqAFAuInc4syCcOlUkPLfyrJADhfA8VfG9w1qUAzClVZGC+ZHy2HKLsAwOD3dnrNwqABnwv+PifkcWF4S9Y5sFHxv8MfxgU3EEchX/vPwBVPIDIALUpALEBWIaB4QBQgPkDkMM5mYHBAciWByv7r3yAgcFInmEmyG2dz5PAdoFlOCcA6QUMMyeAXdDZuYAhYeZPBgZGcBikQ+QZiQsQAE9FMeRhR/RDAAAAAElFTkSuQmCC",
@@ -2425,7 +2428,18 @@ function Safari() {
     var galarFormEvos = [ // Have their BST set to 560
         862,863,864,865,866,867
     ];
-    var pokeColors = {"red": [4, 5, 6, 45, 46, 47, 98, 99, 100, 101, 118, 119, 124, 126, 129, 136, 165, 166, 168, 193, 212, 218, 219, 224, 225, 233, 240, 250, 255, 256, 257, 265, 308, 318, 323, 338, 341, 342, 262495, 380, 383, 386, 401, 402, 131485, 467, 474, 479, 498, 499, 500, 513, 514, 538, 543, 545, 553, 554, 555, 557, 558, 560, 616, 617, 621, 624, 625, 628, 631, 653, 654, 655, 661, 662, 663, 697, 717, 725, 726, 727, 741, 66281, 66310, 131846, 776, 787, 794, 66337, 826, 850, 851, 889, 131484, 131657, 590490, 1049242, 721562, 1245850], "blue": [7, 8, 9, 65564, 29, 30, 31, 65574, 43, 44, 65588, 65589, 55, 60, 61, 62, 72, 73, 114, 116, 117, 130, 131, 134, 138, 139, 144, 147, 148, 158, 159, 160, 170, 171, 183, 184, 189, 194, 195, 202, 214, 230, 231, 245, 258, 259, 260, 276, 277, 283, 284, 294, 295, 298, 307, 319, 320, 321, 333, 334, 340, 131423, 358, 360, 363, 364, 365, 366, 367, 371, 373, 374, 375, 376, 378, 381, 382, 393, 394, 395, 403, 404, 405, 408, 409, 65958, 65959, 443, 444, 445, 447, 448, 453, 454, 456, 457, 458, 465, 471, 482, 489, 490, 501, 502, 503, 515, 516, 524, 525, 526, 527, 528, 535, 536, 537, 539, 66091, 564, 565, 580, 588, 603, 604, 605, 615, 633, 634, 635, 638, 642, 656, 657, 658, 678, 686, 687, 692, 693, 698, 699, 712, 713, 716, 728, 729, 730, 738, 746, 747, 748, 328454, 393990, 775, 789, 790, 131872, 816, 817, 818, 821, 822, 824, 845, 853, 1835877, 1901413, 1966949, 2032485, 2098021, 2163557, 2229093, 875, 881, 883, 888, 787098, 1114778, 524954], "yellow": [14, 15, 25, 26, 27, 28, 38, 52, 131124, 53, 54, 77, 78, 96, 97, 103, 125, 135, 145, 146, 155, 156, 157, 172, 181, 191, 192, 203, 206, 213, 239, 243, 267, 279, 291, 296, 310, 311, 312, 322, 337, 385, 414, 415, 416, 433, 466, 480, 488, 494, 540, 542, 559, 563, 566, 567, 595, 596, 612, 619, 647, 694, 695, 702, 66277, 742, 743, 197382, 778, 785, 66336, 197408, 807, 825, 835, 836, 2425701, 2491237, 2556773, 2622309, 2687845, 2753381, 2818917, 3605349, 3670885, 3736421, 3801957, 3867493, 3933029, 3998565, 4784997, 4850533, 4916069, 4981605, 5047141, 5112677, 5178213, 870, 877, 878, 894, 197274], "green": [1, 2, 3, 10, 11, 69, 70, 71, 65624, 65625, 123, 152, 153, 154, 167, 177, 178, 182, 186, 188, 246, 248, 251, 252, 253, 254, 269, 270, 271, 272, 286, 309, 315, 316, 329, 330, 331, 332, 346, 352, 357, 384, 387, 388, 389, 406, 407, 412, 413, 436, 437, 455, 469, 470, 492, 495, 496, 497, 511, 512, 541, 546, 547, 548, 549, 550, 556, 568, 569, 577, 578, 579, 610, 611, 66154, 622, 623, 640, 641, 650, 651, 652, 701, 718, 737, 751, 752, 764, 262918, 781, 797, 810, 811, 812, 829, 830, 833, 834, 840, 841, 842, 843, 844, 1246053, 1311589, 1377125, 1442661, 1508197, 1573733, 1639269, 879, 880, 882, 885, 886, 887, 895, 898, 66121, 328346, 983706, 459418], "black": [65542, 65555, 65556, 143, 197, 198, 201, 215, 228, 229, 303, 325, 336, 344, 353, 354, 355, 356, 430, 441, 446, 461, 477, 487, 491, 522, 523, 561, 562, 608, 609, 644, 664, 665, 66254, 131790, 731, 732, 733, 757, 758, 771, 796, 799, 800, 837, 838, 839, 893, 66428, 897, 131970], "brown": [13, 16, 17, 18, 20, 21, 22, 65562, 37, 50, 51, 56, 57, 58, 59, 63, 64, 65, 74, 75, 76, 83, 84, 85, 104, 105, 106, 107, 115, 120, 127, 128, 133, 140, 141, 149, 161, 162, 163, 164, 185, 216, 217, 220, 221, 234, 237, 244, 263, 273, 274, 275, 285, 287, 289, 292, 297, 324, 327, 328, 343, 349, 377, 390, 391, 392, 396, 397, 398, 399, 400, 65949, 418, 419, 427, 428, 438, 449, 450, 473, 485, 504, 505, 506, 534, 551, 552, 586, 606, 618, 626, 629, 630, 645, 659, 660, 667, 668, 672, 673, 679, 680, 681, 688, 689, 690, 691, 696, 708, 709, 710, 711, 721, 722, 723, 724, 734, 735, 744, 745, 131817, 749, 750, 769, 770, 774, 819, 820, 827, 828, 846, 847, 852, 863, 4195173, 4260709, 4326245, 4391781, 4457317, 4522853, 4588389, 65948, 197193, 131738, 393882, 918170, 852634], "purple": [19, 23, 24, 32, 33, 34, 41, 42, 48, 49, 88, 89, 90, 91, 92, 93, 94, 65641, 109, 110, 121, 132, 142, 150, 169, 190, 196, 205, 207, 210, 226, 236, 268, 301, 302, 314, 317, 326, 345, 65916, 65917, 421, 422, 423, 424, 425, 426, 429, 434, 435, 442, 451, 452, 472, 484, 509, 510, 574, 575, 576, 620, 649, 704, 705, 706, 714, 715, 720, 739, 197349, 755, 756, 761, 762, 763, 459526, 788, 792, 803, 804, 823, 848, 849, 854, 855, 861, 866, 871, 876, 890, 262810], "gray": [66, 67, 68, 65610, 65611, 65612, 81, 82, 95, 65646, 111, 112, 200, 204, 208, 211, 223, 227, 232, 247, 261, 262, 290, 299, 304, 305, 306, 313, 339, 347, 348, 351, 361, 362, 369, 379, 410, 411, 431, 432, 462, 464, 476, 507, 508, 519, 520, 521, 529, 530, 532, 533, 544, 570, 571, 572, 573, 589, 597, 598, 599, 600, 601, 632, 639, 646, 677, 703, 707, 736, 767, 768, 772, 773, 777, 782, 783, 784, 801, 802, 805, 808, 809, 814, 862, 867, 874, 891, 892, 66428, 656026], "white": [12, 65563, 65573, 65613, 65614, 86, 87, 65658, 175, 176, 179, 65758, 235, 249, 65799, 264, 266, 278, 280, 281, 282, 288, 335, 65887, 359, 372, 417, 459, 460, 468, 475, 478, 483, 486, 493, 66067, 66090, 197163, 131627, 581, 582, 583, 584, 587, 590, 591, 592, 593, 602, 607, 613, 614, 627, 636, 637, 643, 648, 666, 669, 670, 671, 674, 675, 676, 66214, 684, 685, 740, 765, 766, 780, 791, 793, 795, 798, 806, 813, 815, 831, 832, 864, 865, 868, 869, 66405, 131941, 197477, 263013, 328549, 394085, 459621, 3015525, 3081061, 3146597, 3212133, 3277669, 3343205, 3408741, 872, 873, 884, 896, 66434, 66202], "pink": [35, 36, 39, 40, 79, 80, 102, 108, 113, 122, 137, 151, 173, 174, 180, 187, 199, 209, 222, 238, 241, 242, 293, 300, 350, 368, 370, 420, 65957, 439, 440, 463, 481, 517, 518, 531, 585, 594, 682, 683, 700, 719, 131813, 753, 754, 759, 760, 779, 786, 856, 857, 858, 859, 860, 3605349, 3670885, 3736421, 3801957, 3867493, 3933029, 3998565, 65615, 131152, 65735, 1180314]};
+    var pokeColors = {
+        "red": [4, 5, 6, 45, 46, 47, 98, 99, 100, 101, 118, 119, 124, 126, 129, 136, 165, 166, 168, 193, 212, 218, 219, 224, 225, 233, 240, 250, 255, 256, 257, 265, 308, 318, 323, 338, 341, 342, 262495, 380, 383, 386, 401, 402, 131485, 467, 474, 479, 498, 499, 500, 513, 514, 538, 543, 545, 553, 554, 555, 557, 558, 560, 616, 617, 621, 624, 625, 628, 631, 653, 654, 655, 661, 662, 663, 697, 717, 725, 726, 727, 741, 66281, 66310, 131846, 776, 787, 794, 66337, 826, 850, 851, 889, 131484, 131657, 590490, 1049242, 721562, 1245850, 65682],
+        "blue": [7, 8, 9, 65564, 29, 30, 31, 65574, 43, 44, 65588, 65589, 55, 60, 61, 62, 72, 73, 114, 116, 117, 130, 131, 134, 138, 139, 144, 147, 148, 158, 159, 160, 170, 171, 183, 184, 189, 194, 195, 202, 214, 230, 231, 245, 258, 259, 260, 276, 277, 283, 284, 294, 295, 298, 307, 319, 320, 321, 333, 334, 340, 131423, 358, 360, 363, 364, 365, 366, 367, 371, 373, 374, 375, 376, 378, 381, 382, 393, 394, 395, 403, 404, 405, 408, 409, 65958, 65959, 443, 444, 445, 447, 448, 453, 454, 456, 457, 458, 465, 471, 482, 489, 490, 501, 502, 503, 515, 516, 524, 525, 526, 527, 528, 535, 536, 537, 539, 66091, 564, 565, 580, 588, 603, 604, 605, 615, 633, 634, 635, 638, 642, 656, 657, 658, 678, 686, 687, 692, 693, 698, 699, 712, 713, 716, 728, 729, 730, 738, 746, 747, 748, 328454, 393990, 775, 789, 790, 131872, 816, 817, 818, 821, 822, 824, 845, 853, 1835877, 1901413, 1966949, 2032485, 2098021, 2163557, 2229093, 875, 881, 883, 888, 787098, 1114778, 524954],
+        "yellow": [14, 15, 25, 26, 27, 28, 38, 52, 131124, 53, 54, 77, 78, 96, 97, 103, 125, 135, 145, 146, 155, 156, 157, 172, 181, 191, 192, 203, 206, 213, 239, 243, 267, 279, 291, 296, 310, 311, 312, 322, 337, 385, 414, 415, 416, 433, 466, 480, 488, 494, 540, 542, 559, 563, 566, 567, 595, 596, 612, 619, 647, 694, 695, 702, 66277, 742, 743, 197382, 778, 785, 66336, 197408, 807, 825, 835, 836, 2425701, 2491237, 2556773, 2622309, 2687845, 2753381, 2818917, 3605349, 3670885, 3736421, 3801957, 3867493, 3933029, 3998565, 4784997, 4850533, 4916069, 4981605, 5047141, 5112677, 5178213, 870, 877, 878, 894, 197274],
+        "green": [1, 2, 3, 10, 11, 69, 70, 71, 65624, 65625, 123, 152, 153, 154, 167, 177, 178, 182, 186, 188, 246, 248, 251, 252, 253, 254, 269, 270, 271, 272, 286, 309, 315, 316, 329, 330, 331, 332, 346, 352, 357, 384, 387, 388, 389, 406, 407, 412, 413, 436, 437, 455, 469, 470, 492, 495, 496, 497, 511, 512, 541, 546, 547, 548, 549, 550, 556, 568, 569, 577, 578, 579, 610, 611, 66154, 622, 623, 640, 641, 650, 651, 652, 701, 718, 737, 751, 752, 764, 262918, 781, 797, 810, 811, 812, 829, 830, 833, 834, 840, 841, 842, 843, 844, 1246053, 1311589, 1377125, 1442661, 1508197, 1573733, 1639269, 879, 880, 882, 885, 886, 887, 895, 898, 66121, 328346, 983706, 459418],
+        "black": [65542, 65555, 65556, 143, 197, 198, 201, 215, 228, 229, 303, 325, 336, 344, 353, 354, 355, 356, 430, 441, 446, 461, 477, 487, 491, 522, 523, 561, 562, 608, 609, 644, 664, 665, 66254, 131790, 731, 732, 733, 757, 758, 771, 796, 799, 800, 837, 838, 839, 893, 66428, 897, 131970],
+        "brown": [13, 16, 17, 18, 20, 21, 22, 65562, 37, 50, 51, 56, 57, 58, 59, 63, 64, 65, 74, 75, 76, 83, 84, 85, 104, 105, 106, 107, 115, 120, 127, 128, 133, 140, 141, 149, 161, 162, 163, 164, 185, 216, 217, 220, 221, 234, 237, 244, 263, 273, 274, 275, 285, 287, 289, 292, 297, 324, 327, 328, 343, 349, 377, 390, 391, 392, 396, 397, 398, 399, 400, 65949, 418, 419, 427, 428, 438, 449, 450, 473, 485, 504, 505, 506, 534, 551, 552, 586, 606, 618, 626, 629, 630, 645, 659, 660, 667, 668, 672, 673, 679, 680, 681, 688, 689, 690, 691, 696, 708, 709, 710, 711, 721, 722, 723, 724, 734, 735, 744, 745, 131817, 749, 750, 769, 770, 774, 819, 820, 827, 828, 846, 847, 852, 863, 4195173, 4260709, 4326245, 4391781, 4457317, 4522853, 4588389, 65948, 197193, 131738, 393882, 918170, 852634],
+        "purple": [19, 23, 24, 32, 33, 34, 41, 42, 48, 49, 88, 89, 90, 91, 92, 93, 94, 65641, 109, 110, 121, 132, 142, 150, 169, 190, 196, 205, 207, 210, 226, 236, 268, 301, 302, 314, 317, 326, 345, 65916, 65917, 421, 422, 423, 424, 425, 426, 429, 434, 435, 442, 451, 452, 472, 484, 509, 510, 574, 575, 576, 620, 649, 704, 705, 706, 714, 715, 720, 739, 197349, 755, 756, 761, 762, 763, 459526, 788, 792, 803, 804, 823, 848, 849, 854, 855, 861, 866, 871, 876, 890, 262810, 65680],
+        "gray": [66, 67, 68, 65610, 65611, 65612, 81, 82, 95, 65646, 111, 112, 200, 204, 208, 211, 223, 227, 232, 247, 261, 262, 290, 299, 304, 305, 306, 313, 339, 347, 348, 351, 361, 362, 369, 379, 410, 411, 431, 432, 462, 464, 476, 507, 508, 519, 520, 521, 529, 530, 532, 533, 544, 570, 571, 572, 573, 589, 597, 598, 599, 600, 601, 632, 639, 646, 677, 703, 707, 736, 767, 768, 772, 773, 777, 782, 783, 784, 801, 802, 805, 808, 809, 814, 862, 867, 874, 891, 892, 66428, 656026],
+        "white": [12, 65563, 65573, 65613, 65614, 86, 87, 65658, 175, 176, 179, 65758, 235, 249, 65799, 264, 266, 278, 280, 281, 282, 288, 335, 65887, 359, 372, 417, 459, 460, 468, 475, 478, 483, 486, 493, 66067, 66090, 197163, 131627, 581, 582, 583, 584, 587, 590, 591, 592, 593, 602, 607, 613, 614, 627, 636, 637, 643, 648, 666, 669, 670, 671, 674, 675, 676, 66214, 684, 685, 740, 765, 766, 780, 791, 793, 795, 798, 806, 813, 815, 831, 832, 864, 865, 868, 869, 66405, 131941, 197477, 263013, 328549, 394085, 459621, 3015525, 3081061, 3146597, 3212133, 3277669, 3343205, 3408741, 872, 873, 884, 896, 66434, 66202],
+        "pink": [35, 36, 39, 40, 79, 80, 102, 108, 113, 122, 137, 151, 173, 174, 180, 187, 199, 209, 222, 238, 241, 242, 293, 300, 350, 368, 370, 420, 65957, 439, 440, 463, 481, 517, 518, 531, 585, 594, 682, 683, 700, 719, 131813, 753, 754, 759, 760, 779, 786, 856, 857, 858, 859, 860, 3605349, 3670885, 3736421, 3801957, 3867493, 3933029, 3998565, 65615, 131152, 65735, 1180314]
+    };
 
     /* Quest Variables */
     var arenaOpponents = {
@@ -6909,7 +6923,7 @@ function Safari() {
     function findLink(id) {
         return link("/findd " + poke(id), poke(id));
     }
-    function typeIcon(type) {
+    function typeIcon(type, text) {
         var text = "#fefefe";
         var colors = {
             Normal: { bg: "#a8a878" },
@@ -6939,7 +6953,7 @@ function Safari() {
             bg = colors[type].bg;
         }
         
-        return "<background color='"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'>&nbsp;" + type + "&nbsp;</font></background>";
+        return "<background color='"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'>&nbsp;" + (text ? text : type) + "&nbsp;</font></background>";
     }
     function generation(pokeNum, wordy) {
         var num = pokeInfo.species(pokeNum);
@@ -7826,10 +7840,10 @@ function Safari() {
     }
 
     /* Wild Pokemon & Contests */
-    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player, appearAs, goldenBait, themeOverride, spawnTest, spiritMon) {
+    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player, appearAs, baitType, themeOverride, spawnTest, spiritMon) {
         var num,
             pokeId,
-            goldenBonus = goldenBait && player.records.goldenBaitUsed >= player.records.goldenBaitWeak,
+            goldenBonus = baitType === "golden" && player.records.goldenBaitUsed >= player.records.goldenBaitWeak,
             shinyRand = sys.rand(0, shinyChance - (goldenBonus ? itemData.golden.shinyBonus : 0)),
             shiny = shinyRand < 1,
             statCap,
@@ -7896,10 +7910,8 @@ function Safari() {
                     }
                 }
                 else {
-                    statCap = sys.rand(300, 601 + (goldenBonus ? (itemData.golden.bstBonus + crystalEffect == "golden" ? 2 : 0) : 0));
-                    if ((!(goldenBonus) && (contestCount <= 0))) {
-                        canLegend = false;
-                    }
+                    var extraCap = (goldenBonus ? (itemData.golden.bstBonus + crystalEffect == "golden" ? 2 : 0) : 0);
+                    statCap = sys.rand(300, 601 + extraCap);
                     var list = [], bst, extrabst = 0, truebst, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.22;
                     var hitEvent = false;
                     var includeContestVariations = themeOverride && theme.variations;
@@ -7967,7 +7979,7 @@ function Safari() {
                         }
                         truebst = bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
                         extrabstChance = 1;
-                        if (bst >= 600) {
+                        if (bst > 600) {
                             extrabst = (bst - 600);
                             bst = 599;
                             extrabstChance = ((((125 - extrabst) * (180 - extrabst)) / (240 - extrabst)) * 0.01 * extrabstChanceModifier);
@@ -8047,8 +8059,16 @@ function Safari() {
         else {
             if ((isRare(num) || shiny) && !dexNum) {
                 amount = 1;
-                if ((isLegendary(num) || shiny) && ((contestCount > 0 && contestCount % 2 === 0)) || getBST(num) > 600 && goldenBonus) { // if legendary or shiny and either contest active + 1 in 2 chance or contest no active and BST over 600
-                    wildEvent = true;
+                if ((isLegendary(num) || shiny) && contestCount) { // if legendary or shiny and either contest active + 1 in 2 chance or contest not active and BST over 600
+                    wildEvent = chance(0.5);
+                }
+                else if (getBST(num) > 600 && themeOverride) {
+                    if (getBST(num) > 670) {
+                        wildEvent = true;
+                    }
+                    else {
+                        wildEvent = chance(0.5);
+                    }
                 }
             }
 
@@ -10752,6 +10772,21 @@ function Safari() {
                         safaribot.sendMessage(src, "You reeled in someone's unsuccessful " + finishName(finalReel) + "! You now have " + plural(player.balls[finalReel], finishName(finalReel)) + ".", safchan);
                         safari.saveGame(player);
                     }
+                }
+            }
+            if (safari.validDailyBoost(currentPokemon)) {
+                if (!player.burningAura && !player.brilliantAura) {
+                    if (player.costume === "ninja") {
+                        sys.sendMessage(src, "", safchan);
+                        safaribot.sendHtmlMessage(src, "After catching the Pokémon-of-the-Day, you were surrounded by a " + typeIcon("Fire", "burning") + " aura!", safchan);
+                        sys.sendMessage(src, "", safchan);
+                    }
+                    else {
+                        sys.sendAll("", safchan);
+                        safaribot.sendHtmlAll("After catching the Pokémon-of-the-Day, " + playerDisplayName + " was surrounded by a " + link("/burn " + playerDisplayName, typeIcon("Fire", "burning")) + " aura!", safchan);
+                        sys.sendAll("", safchan);
+                    }
+                    player.burningAura = true;
                 }
             }
             if (amt < 1) {
@@ -15098,7 +15133,7 @@ function Safari() {
                     currentBaiter = player.id;
                     var p = player.nextSpawn;
                     if (p.pokemon.num && !deluxe) {
-                        safari.createWild(p.pokemon.num, p.pokemon.shiny, p.amt, null, null, player, p.disguise);
+                        safari.createWild(p.pokemon.num, p.pokemon.shiny, p.amt, null, null, player, p.disguise, golden ? "golden" : "bait");
                         p.pokemon = p.disguise = {};
                         p.amt = 1;
                     } else {
@@ -15122,7 +15157,7 @@ function Safari() {
                             safari.createWild(mon, null, 1, null, null, player, null, false, null);
                         } else {
                             var where = player.mushroomDeadline > 0 ? player.mushroomTheme : null;
-                            safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where);
+                            safari.createWild(null, null, 1, null, safari.getEffectiveLead(player, true), player, null, golden ? "golden" : "bait", where);
                         }
                         if (golden) {
                             goldenBaitCooldown = itemData[item].successCD + sys.rand(0,9);
@@ -17963,37 +17998,45 @@ function Safari() {
                 break;
             default:
                 sys.sendMessage(src, "", safchan);
-                sys.sendMessage(src, "*** Safari Settings ***", safchan);
-                safaribot.sendHtmlMessage(src, "Party/Battle Visibility: " + link("/options view:", player.options.visible ? "Visible" : "Hidden"), safchan);
-                safaribot.sendHtmlMessage(src, "Contest/Event Flashes: " + link("/options flashme:", player.options.flashme ? "Enabled" : "Disabled"), safchan);
-                safaribot.sendHtmlMessage(src, "Small Box View: " + link("/options smallbox:", player.options.smallBox ? "Enabled" : "Disabled"), safchan);
-                safaribot.sendHtmlMessage(src, "Trade Requests: " + link("/options trade:", player.options.trading ? "Accepting" : "Rejecting"), safchan);
-                safaribot.sendHtmlMessage(src, "Favorite Ball: " + link("/options favorite:", finishName(player.options.favoriteBall)), safchan);
-                safaribot.sendHtmlMessage(src, "Idol Skills: " + link("/options idolskills:", player.options.pokeskillsDisabled ? "Disabled" : "Enabled"), safchan);
-                safaribot.sendHtmlMessage(src, "Mono Ball Type: " + link("/options mono:", player.options.monoSecondary ? "Secondary Type" : "Main Type"), safchan);
-                safaribot.sendHtmlMessage(src, "Cherish Ball Message: " + link("/options cherishmsg:", player.options.cherishOff ? "Do Not Show" : "Always Show"), safchan);
-                safaribot.sendHtmlMessage(src, "Cherish Ball Link: " + link("/options cherishlink:", player.options.alwaysShowCherishBall ? "Always Active" : "Inactive"), safchan);
-                safaribot.sendHtmlMessage(src, "Master Ball Link: " + link("/options mblink:", player.options.alwaysShowMasterBall ? "Always Active" : "Only Active on Rare Pokémon"), safchan);
-                safaribot.sendHtmlMessage(src, "Sell Prompts: " + link("/options sellprompt:", player.options.sellPrompt ? "Always Show" : "Do Not Show"), safchan);
-                safaribot.sendHtmlMessage(src, "Lead Ability Messages: " + link("/options abilitymessage:", player.options.leadAbilityMessages ? "Always Show" : "Do Not Show"), safchan);
-                safaribot.sendHtmlMessage(src, "Lead Display Messages: " + link("/options leadmessage:", player.options.showLeadMessage ? "Show if No Relevant Ability" : "Do Not Show"), safchan);
-                safaribot.sendHtmlMessage(src, "Auto-Forfeit Battle: " + link("/options autoforfeit:", player.options.autoForfeitThrow ? "Automatically Forfeit When Throwing on Rare Pokémon" : "Do Not Forfeit When Throwing on Rare Pokémon"), safchan);
-                safaribot.sendHtmlMessage(src, "Sell Pokémon formes to NPC: " + link("/options cansellformes:", player.options.canSellFormes ? "Allow Pokémon Forme Sales to the NPC" : "Do Not Allow Pokémon Forme Sales to the NPC"), safchan);
-                safaribot.sendHtmlMessage(src, "Other Players' Evolution/Devolution Messages: " + link("/options showevo:", player.options.showEvoMessages ? "Show Everyone's Evolutions/Devolutions" : "Only Show My Own Evolutions/Devolutions"), safchan);
-                safaribot.sendHtmlMessage(src, "Your Evolution/Devolution Messages: " + link("/options broadcastevo:", player.options.broadcastEvoMessages ? "Broadcast My Evolutions/Devolutions" : "Do Not Broadcast My Evolutions/Devolutions"), safchan);
-                safaribot.sendHtmlMessage(src, "Notifications: " + link("/options notifs:", player.options.anyNotifications ? "Receiving Notifications" : "Not Receiving Notifications"), safchan);
-                if (player.options.anyNotifications) {
-                    safaribot.sendHtmlMessage(src, "Quest Notifications: " + link("/options questnotifs:", player.options.questNotifications ? "Receiving Quest Notifications" : "Not Receiving Quest Notifications"), safchan);
+                if (data === "2") {
+                    sys.sendMessage(src, "*** Safari Settings | Page 2 ***", safchan);
+                    safaribot.sendHtmlMessage(src, "Lead Ability Messages: " + link("/options abilitymessage:", player.options.leadAbilityMessages ? "Always Show" : "Do Not Show"), safchan);
+                    safaribot.sendHtmlMessage(src, "Lead Display Messages: " + link("/options leadmessage:", player.options.showLeadMessage ? "Show if No Relevant Ability" : "Do Not Show"), safchan);
+                    safaribot.sendHtmlMessage(src, "Auto-Forfeit Battle: " + link("/options autoforfeit:", player.options.autoForfeitThrow ? "Automatically Forfeit When Throwing on Rare Pokémon" : "Do Not Forfeit When Throwing on Rare Pokémon"), safchan);
+                    safaribot.sendHtmlMessage(src, "Sell Pokémon formes to NPC: " + link("/options cansellformes:", player.options.canSellFormes ? "Allow Pokémon Forme Sales to the NPC" : "Do Not Allow Pokémon Forme Sales to the NPC"), safchan);
+                    safaribot.sendHtmlMessage(src, "Other Players' Evolution/Devolution Messages: " + link("/options showevo:", player.options.showEvoMessages ? "Show Everyone's Evolutions/Devolutions" : "Only Show My Own Evolutions/Devolutions"), safchan);
+                    safaribot.sendHtmlMessage(src, "Your Evolution/Devolution Messages: " + link("/options broadcastevo:", player.options.broadcastEvoMessages ? "Broadcast My Evolutions/Devolutions" : "Do Not Broadcast My Evolutions/Devolutions"), safchan);
+                    safaribot.sendHtmlMessage(src, "Notifications: " + link("/options notifs:", player.options.anyNotifications ? "Receiving Notifications" : "Not Receiving Notifications"), safchan);
+                    if (player.options.anyNotifications) {
+                        safaribot.sendHtmlMessage(src, "Quest Notifications: " + link("/options questnotifs:", player.options.questNotifications ? "Receiving Quest Notifications" : "Not Receiving Quest Notifications"), safchan);
+                    }
+                    safaribot.sendHtmlMessage(src, "Weekly Leaderboard Medals: " + link("/options weeklymedals:", player.options.receiveWeeklyMedals ? "Receiving Weekly Medals" : "Not Receiving Weekly Medals"), safchan);
+                    safaribot.sendHtmlMessage(src, "Persistent Bait: " + link("/options persistbait:", player.options.persistentBait ? "Continuously Bait until Successful" : "Only Use 1 Bait at a Time"), safchan);
+                    safaribot.sendHtmlMessage(src, "View Contest Captures: " + link("/options viewcontestcaptures:", player.options.showContestCaptures ? "View My Contest Captures & BST Tally During Contests" : "Do Not View My Contest Captures & BST Tally During Contests"), safchan);
+                    safaribot.sendHtmlMessage(src, "Offset Android Input Lag: " + link("/options androidlag:", player.options.androidTextFlow ? "Receive Continuous Server Messages" : "Do Not Receive Continuous Server Messages"), safchan);
+                    var dexOptions = ["stats", "effectiveness", "trivia"];
+                    safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
+                        return player.options.dexOptional.contains(e) ? link("/options hidedex:" + e, cap(e)) + " <b>[Enabled]</b>" : link("/options showdex:" + e, cap(e)) + " <b>[Disabled]</b>";
+                    }).join(", "), safchan);
+                    sys.sendMessage(src, "", safchan);
+                    safaribot.sendHtmlMessage(src, link("/options 1","«Previous Page»"),safchan);
                 }
-                safaribot.sendHtmlMessage(src, "Weekly Leaderboard Medals: " + link("/options weeklymedals:", player.options.receiveWeeklyMedals ? "Receiving Weekly Medals" : "Not Receiving Weekly Medals"), safchan);
-                safaribot.sendHtmlMessage(src, "Persistent Bait: " + link("/options persistbait:", player.options.persistentBait ? "Continuously Bait until Successful" : "Only Use 1 Bait at a Time"), safchan);
-                safaribot.sendHtmlMessage(src, "View Contest Captures: " + link("/options viewcontestcaptures:", player.options.showContestCaptures ? "View My Contest Captures & BST Tally During Contests" : "Do Not View My Contest Captures & BST Tally During Contests"), safchan);
-                safaribot.sendHtmlMessage(src, "Offset Android Input Lag: " + link("/options androidlag:", player.options.androidTextFlow ? "Receive Continuous Server Messages" : "Do Not Receive Continuous Server Messages"), safchan);
-                var dexOptions = ["stats", "effectiveness", "trivia"];
-                safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
-                    return player.options.dexOptional.contains(e) ? link("/options hidedex:" + e, cap(e)) + " <b>[Enabled]</b>" : link("/options showdex:" + e, cap(e)) + " <b>[Disabled]</b>";
-                }).join(", "), safchan);
-                sys.sendMessage(src, "", safchan);
+                else {
+                    sys.sendMessage(src, "*** Safari Settings | Page 1 ***", safchan);
+                    safaribot.sendHtmlMessage(src, "Party/Battle Visibility: " + link("/options view:", player.options.visible ? "Visible" : "Hidden"), safchan);
+                    safaribot.sendHtmlMessage(src, "Contest/Event Flashes: " + link("/options flashme:", player.options.flashme ? "Enabled" : "Disabled"), safchan);
+                    safaribot.sendHtmlMessage(src, "Small Box View: " + link("/options smallbox:", player.options.smallBox ? "Enabled" : "Disabled"), safchan);
+                    safaribot.sendHtmlMessage(src, "Trade Requests: " + link("/options trade:", player.options.trading ? "Accepting" : "Rejecting"), safchan);
+                    safaribot.sendHtmlMessage(src, "Favorite Ball: " + link("/options favorite:", finishName(player.options.favoriteBall)), safchan);
+                    safaribot.sendHtmlMessage(src, "Idol Skills: " + link("/options idolskills:", player.options.pokeskillsDisabled ? "Disabled" : "Enabled"), safchan);
+                    safaribot.sendHtmlMessage(src, "Mono Ball Type: " + link("/options mono:", player.options.monoSecondary ? "Secondary Type" : "Main Type"), safchan);
+                    safaribot.sendHtmlMessage(src, "Cherish Ball Message: " + link("/options cherishmsg:", player.options.cherishOff ? "Do Not Show" : "Always Show"), safchan);
+                    safaribot.sendHtmlMessage(src, "Cherish Ball Link: " + link("/options cherishlink:", player.options.alwaysShowCherishBall ? "Always Active" : "Inactive"), safchan);
+                    safaribot.sendHtmlMessage(src, "Master Ball Link: " + link("/options mblink:", player.options.alwaysShowMasterBall ? "Always Active" : "Only Active on Rare Pokémon"), safchan);
+                    safaribot.sendHtmlMessage(src, "Sell Prompts: " + link("/options sellprompt:", player.options.sellPrompt ? "Always Show" : "Do Not Show"), safchan);
+                    sys.sendMessage(src, "", safchan);
+                    safaribot.sendHtmlMessage(src, link("/options 2","«Next Page»"),safchan);
+                }
                 break;
         }
     };
@@ -19532,7 +19575,6 @@ function Safari() {
                 seller.balls[input.id] -= amount;
                 this.updateShop(seller, input.id);
             }
-            safari.saveGame(seller);
             if (isPlaying(sellerName)) {
                 sys.sendMessage(sellerId, "", safchan);
                 if (isSilver) {
@@ -19542,6 +19584,15 @@ function Safari() {
                 }
                 sys.sendMessage(sellerId, "", safchan);
             }
+            else {
+                if (!seller.offlineSales.hasOwnProperty(input.input)) {
+                    seller.offlineSales[input.input] = 0;
+                }
+                else {
+                    seller.offlineSales[input.input] += amount;
+                }
+            }
+            safari.saveGame(seller);
             if (!isSilver) {
                 safari.updateEconomyData(cost, "playerShop");
             }
@@ -19851,6 +19902,14 @@ function Safari() {
                 safari.notification(player, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", "Login");
             }
             player.firstCelebrityRun = true;
+            if (player.burningAura) {
+                safaribot.sendMessage(src, "The power of your burning aura wore off...", safchan);
+            }
+            if (player.brilliantAura) {
+                safaribot.sendMessage(src, "The power of your brilliant aura wore off...", safchan);
+            }
+            player.burningAura = false;
+            player.brilliantAura = false;
             
             safari.trialsLogin(player);
             safari.bonusLogin(player);
@@ -19880,7 +19939,7 @@ function Safari() {
                     this.inboxMessage(player, "Your Secret Base generated " + readable(out.discarded) + ", but you discarded them due to excess!", true);
                 }
             }
-            if (player.burnLastUsed !== 0 && player.balls.burn > 0) {
+            /*if (player.burnLastUsed !== 0 && player.balls.burn > 0) {
                 var n = Math.floor((now() - player.burnLastUsed) / hours(itemData.burn.threshold));
                 if (n > 0) {
                     n = Math.min(n, player.balls.burn);
@@ -19889,7 +19948,7 @@ function Safari() {
                     safaribot.sendMessage(src, "You discarded " + plural(n, "burn") + " after noticing it was past its expiration date!", safchan);
                     this.notification(player, "You discarded " + plural(n, "burn") + " after noticing it was past its expiration date!", "Items");
                 }
-            }
+            }*/
             if (safari.riceMode === true) {
                 for (var p in player.party) {
                     var mon = player.party[p];
@@ -52982,10 +53041,19 @@ function Safari() {
             for (var d in toDelete) {
                 delete player.quests.journal.trackedRequests[toDelete[d]];
             }
+            var offlineSales = [];
+            for (var ware in player.offlineSales) {
+                
+            }
+            if (offlineSales.length > 0) {
+                safari.notification(player, "The following items were sold in your shop while you were away: {0}.".format(readable(offlineSales)), "Shop");
+                player.offlineSales = {};
+            }
             var unread = countRepeated(player.unreadInbox, true);
             if (unread > 0) {
-                safaribot.sendHtmlMessage(src, toFlashing(addFlashTag(sys.name(src)) + ", you have " + plural(unread, "unread message") + ". To read them, type " + link("/inbox") + ". ", sys.name(src)), safchan);
+                safaribot.sendHtmlMessage(src, toFlashing(addFlashTag(sys.name(src)) + ", you have " + plural(unread, "unread message") + ". To read them, type " + link("/inbox unread") + ". ", sys.name(src)), safchan);
             }
+            safari.notificationPing(player);
             if (contestCount > 0 && currentThemeEffect === "past") {
                 if (now() > player.altTimeline.cooldown) {
                     player.altTimeline.lead = 0;
@@ -56523,6 +56591,9 @@ function Safari() {
                 if (getAllForms(info.num, true).length > 0) {
                     safaribot.sendMessage(src, info.name + " has " + plural(getAllForms(info.num, true).length, "alternate forme") + ".", safchan);
                 }
+                if (isRare(info.num)) {
+                    safaribot.sendMessage(src, info.name + " is a rare Pokémon!", safchan);
+                }
                 var themes = safari.getAllThemesForPoke(info.num, true);
                 if (themes.length > 0) {
                     safaribot.sendHtmlMessage(src, info.name + " can be found in the following " + plural(themes.length, "theme") + ": " + readable(themes.map(function(e) { return link("/themespawns " + e.replace(/(\[.+\])/, "").trim(), e) }), "and") + ".", safchan);
@@ -57956,6 +58027,20 @@ function Safari() {
                 }, null, true);
                 return true;
             }
+            if (command === "giftlog") {
+                safari.showLog(src, command, commandData, giftLog, "gift", function(x) {
+                    var info = x.split("|||");
+                    var time = new Date(parseInt(info[0], 10)).toUTCString();
+                    var name = info[1];
+                    var target = info[2];
+                    var commandName = info[3];
+                    var verb = info[4];
+                    var gift = info[5];
+
+                    return name + " used /" + commandName + " --- " + target + " " + verb + " " + gift + " --- (" + time + ")";
+                });
+                return true;
+            }
             if (command === "raretrades") {
                 safari.showLog(src, command, commandData, rareTradeLog, "rare trade", function(x) {
                     var info = x.split("|||");
@@ -59155,20 +59240,6 @@ function Safari() {
                     sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + target.toCorrectCase() + "|||bestow|||received|||" + info.name + "\n");
                 }
                 this.saveGame(player);
-                return true;
-            }
-            if (command === "giftlog") {
-                safari.showLog(src, command, commandData, giftLog, "gift", function(x) {
-                    var info = x.split("|||");
-                    var time = new Date(parseInt(info[0], 10)).toUTCString();
-                    var name = info[1];
-                    var target = info[2];
-                    var commandName = info[3];
-                    var verb = info[4];
-                    var gift = info[5];
-
-                    return name + " used /" + commandName + " --- " + target + " " + verb + " " + gift + " --- (" + time + ")";
-                });
                 return true;
             }
             if (command === "clearjackpot") {
