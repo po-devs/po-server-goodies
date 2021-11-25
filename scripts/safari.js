@@ -216,7 +216,7 @@ function Safari() {
         // unused
         "999": base64Ribbons.legendRibbon
     };
-    var playerTemplate = {
+    var playerTemplate = { // when adding any object that has variable keys, remember to exclude them from sanitisation!
         id: "",
         casedName: "",
         nameColor: "",
@@ -629,6 +629,8 @@ function Safari() {
             journalSubmitted: 0,
             burnReceived: 0,
             burnGiven: 0,
+            burnAuraReceivedHeal: 0,
+            burnAuraGaveHeal: 0,
             shadyUsed: 0,
             mongerAuctionsWon: 0,
             cookiesEaten: 0,
@@ -941,8 +943,9 @@ function Safari() {
         spawnlessThrows: 0,
         burningAura: false,
         brilliantAura: false,
-        offlineSales: {}
-    };
+        offlineSales: {},
+        consecutiveCombo: 0
+    }; // template end
 
     /* Item Variables */
     var itemCap = 999;
@@ -6923,7 +6926,7 @@ function Safari() {
     function findLink(id) {
         return link("/findd " + poke(id), poke(id));
     }
-    function typeIcon(type, text) {
+    function typeIcon(type, string) {
         var text = "#fefefe";
         var colors = {
             Normal: { bg: "#a8a878" },
@@ -6953,7 +6956,7 @@ function Safari() {
             bg = colors[type].bg;
         }
         
-        return "<background color='"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'>&nbsp;" + (text ? text : type) + "&nbsp;</font></background>";
+        return "<background color='"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'>&nbsp;" + (string ? string : type) + "&nbsp;</font></background>";
     }
     function generation(pokeNum, wordy) {
         var num = pokeInfo.species(pokeNum);
@@ -7851,7 +7854,6 @@ function Safari() {
             ignoreForms = false,
             canLegend = true,
             crystalEffect;
-
         if (amount > 1) {
             shiny = false;
         }
@@ -8059,15 +8061,15 @@ function Safari() {
         else {
             if ((isRare(num) || shiny) && !dexNum) {
                 amount = 1;
-                if ((isLegendary(num) || shiny) && contestCount) { // if legendary or shiny and either contest active + 1 in 2 chance or contest not active and BST over 600
+                if ((isLegendary(num) || shiny) && contestCount > 0) { // if legendary or shiny and contest is active
                     wildEvent = chance(0.5);
                 }
-                else if (getBST(num) > 600 && themeOverride) {
+                else if (getBST(num) > 600 && themeOverride) { // if bst > 600 and is shroom bait
                     if (getBST(num) > 670) {
-                        wildEvent = true;
+                        wildEvent = true; // > 670s are always event
                     }
                     else {
-                        wildEvent = chance(0.5);
+                        wildEvent = chance(0.5); // the rest are 50/50 like standard contests
                     }
                 }
             }
@@ -9543,6 +9545,34 @@ function Safari() {
 
        sys.sendMessage(src, "", safchan);
     };
+    this.getAuraEffect = function(player, type, def) {
+        if (!player) {
+            return def;
+        }
+        if (!player.burningAura && !player.brilliantAura) {
+            return def;
+        }
+        var bonuses = {
+            "questcd": [0.2, 0.5],
+            "costumecd": [0.25, 0.5],
+            "catchrate": [1.05, 1.15],
+            "extramega" : [1, 1.2],
+            "extracrystal": [1, 2]
+        };
+        return bonuses[type][player.brilliantAura + 0] || def;
+    };
+    this.describeAuraEffects = function(player) {
+        if (!player) {
+            return "None";
+        }
+        if (!player.burningAura && !player.brilliantAura) {
+            return "None";
+        }
+        if (player.brilliantAura) {
+            return "-{0}% Costume Cooldown, -{1}% Quest Cooldown, +{2}% Catch Rate, +{3}% Mega Evolution Time, +{4}% Z-Crystal Time".format(safari.getAuraEffect(player, "costumecd", 0) * 100, safari.getAuraEffect(player, "questcd", 0) * 100, Math.round(safari.getAuraEffect(player, "catchrate", 1) * 100 - 100), Math.round(safari.getAuraEffect(player, "extramega", 1) * 100 - 100), Math.round(safari.getAuraEffect(player, "extracrystal", 1) * 100 - 100));
+        }
+        return "-{0}% Costume Cooldown, -{1}% Quest Cooldown, +{2}% Catch Rate".format(safari.getAuraEffect(player, "costumecd", 0) * 100, safari.getAuraEffect(player, "questcd", 0) * 100, Math.floor(safari.getAuraEffect(player, "catchrate", 1) * 100 - 100));
+    };
     this.getTier = function(pokeId) {
         if (ultraPokes.hasOwnProperty(pokeId+"")) {
             return ultraPokes[pokeId+""].tier;
@@ -10047,7 +10077,8 @@ function Safari() {
                 abilityBoost *= 1.3;
             }
         }
-        var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff * abilityBoost + anyballbuff, 0.01) * eventChance;
+        var auraBoost = safari.getAuraEffect(player, "catchrate", 1);
+        var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff * abilityBoost * auraBoost + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true && !theory) {
             if (player.helds.length > 0 && player.helds[0] == 2 && !needsPechaCleared.contains(player.id.toLowerCase())) {
                 player.berries.pecha = true;
@@ -10774,19 +10805,24 @@ function Safari() {
                     }
                 }
             }
-            if (safari.validDailyBoost(currentPokemon)) {
+            if (safari.isDailyBoost(currentPokemon)) {
                 if (!player.burningAura && !player.brilliantAura) {
                     if (player.costume === "ninja") {
                         sys.sendMessage(src, "", safchan);
-                        safaribot.sendHtmlMessage(src, "After catching the Pokémon-of-the-Day, you were surrounded by a " + typeIcon("Fire", "burning") + " aura!", safchan);
-                        sys.sendMessage(src, "", safchan);
+                        safaribot.sendHtmlMessage(src, "After catching the Pokémon-of-the-Day, you were surrounded by a " + typeIcon("Fire", "Burning Aura") + "!", safchan);
+                        if (amt > 1) {
+                            sys.sendMessage(src, "", safchan);
+                        }
                     }
                     else {
                         sys.sendAll("", safchan);
-                        safaribot.sendHtmlAll("After catching the Pokémon-of-the-Day, " + playerDisplayName + " was surrounded by a " + link("/burn " + playerDisplayName, typeIcon("Fire", "burning")) + " aura!", safchan);
-                        sys.sendAll("", safchan);
+                        safaribot.sendHtmlAll("After catching the Pokémon-of-the-Day, " + playerDisplayName + " was surrounded by a " + "<a href='po:send//burn " + playerDisplayName + "'>" + typeIcon("Fire", "Burning Aura") + "</a>" + "!", safchan);
+                        if (amt > 1) {
+                            sys.sendAll("", safchan);
+                        }
                     }
                     player.burningAura = true;
+                    safaribot.sendHtmlMessage(src, "The Burning Aura granted you the following bonuses: " + safari.describeAuraEffects(player) + "!", safchan);
                 }
             }
             if (amt < 1) {
@@ -11899,6 +11935,12 @@ function Safari() {
             if (safari.validDailyBoost(player)) {
                 safaribot.sendHtmlMessage(src, "<b>Your lead Pokémon is the current Pokémon-of-the-Day!</b>", safchan);
             }
+            if (player.brilliantAura) {
+                safaribot.sendHtmlMessage(src, "<b>Your Brilliant Aura grants you the following bonuses:</b> " + safari.describeAuraEffects(player) + ".", safchan);
+            }
+            else if (player.burningAura) {
+                safaribot.sendHtmlMessage(src, "<b>Your Burning Aura grants you the following bonuses:</b> " + safari.describeAuraEffects(player) + ".", safchan);
+            }
             if (player.helds[0] == "9") {
                 safaribot.sendHtmlMessage(src, "<b>Current Petaya Combo:</b> " + player.berries.petayaCombo, safchan);
             }
@@ -11920,15 +11962,11 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("scale") + "'s Color:</b> " + cap(player.scaleColor) + " for the next " + timeLeftString(player.scaleDeadline) + "!", safchan);
             }
             if (player.mushroomDeadline > 0) {
-                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("mushroom") + "'s Theme:</b> " + themeName(player.mushroomTheme) + " for the next " + player.mushroomDeadline + " Pokémon that you bait! (Effect can be cancelled with " + link("/shroomcancel", false, true) + ")", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("mushroom") + "'s Theme:</b> " + link("/themerares " + player.mushroomTheme, themeName(player.mushroomTheme)) + " for the next " + player.mushroomDeadline + " Pokémon that you bait! (Effect can be cancelled with " + link("/shroomcancel", false, true) + ")", safchan);
             }
             if (player.zcrystalDeadline >= n && player.zcrystalUser) {
                 var type = getCrystalEffect(player.zcrystalUser);
-                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("crystal") + "'s Effect:</b> You will " + zCrystalData[type].description.format(zCrystalData[type].chance * 100) + " for the next " + timeLeftString(player.zcrystalDeadline) + " (only if " + poke(player.zcrystalUser, true) + " is your active Pokémon)!", safchan);
-            }
-            if (player.zcrystalUser && !isNaN(player.zcrystalUser)) {
-                var type = getCrystalEffect(player.zcrystalUser);
-                safaribot.sendHtmlMessage(src, "<b>" + poke(player.zcrystalUser, true) + "</b> will deal " + (100 * (zCrystalData[type].npcBuff || defaultCrystalBuff)) + "% more damage in the next NPC rotation battle quest you enter.", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("crystal") + "'s Effect:</b> You will " + zCrystalData[type].description.format(zCrystalData[type].chance * 100) + " for the next " + timeLeftString(player.zcrystalDeadline) + " (only if " + poke(player.zcrystalUser, true) + " is your active Pokémon)! <b>" + poke(player.zcrystalUser, true) + "</b> will deal " + (100 * (zCrystalData[type].npcBuff || defaultCrystalBuff)) + "% more damage in the next NPC Rotation Battle quest you enter.", safchan);
             }
             sys.sendMessage(src, "", safchan);
             return;
@@ -12662,7 +12700,7 @@ function Safari() {
         if (cos === "none") {
             safaribot.sendMessage(src, "You removed your costume! You can put on a new costume in " + timeLeftString(player.cooldowns.costume) + ".", safchan);
         } else {
-            player.cooldowns.costume = currentTime + hours(3);
+            player.cooldowns.costume = currentTime + Math.floor(hours(3) * (1 - safari.getAuraEffect(player, "costumecd", 0)));
             safaribot.sendMessage(src, "You changed into your " + costumeName + " costume! [Effect: " + costumeData[cos].effect + "]", safchan);
             if (player.tutorial.inTutorial && player.tutorial.step === 4 && costumeName === costumeData.preschooler.fullName) {
                 advanceTutorial(src, 5);
@@ -13788,6 +13826,7 @@ function Safari() {
                 }
             }
         }
+        safari.saveGame(player);
     };
     this.notification = function(player, message, fromWhere, mute) {
         if (!player.hasOwnProperty("notifications")) {
@@ -15451,26 +15490,44 @@ function Safari() {
             safaribot.sendMessage(src, "Please wait " + timeLeftString(player.cooldowns.burn) + " before giving someone " + an(sName) + "!", safchan);
             return;
         }
-
         var targetName = utilities.non_flashing(commandData.toCorrectCase());
-        sendAll("", true, true);
-        safaribot.sendAll(sys.name(src) + " gave " + an(sName) + " to " + targetName + "!", safchan);
-        safaribot.sendMessage(targetId, "You received " + plural(1, item) + "!", safchan);
-        sendAll("", true, true);
+        if (target.brilliantAura) {
+            safaribot.sendMessage(src, "Doesn't seem like " + targetName + " will need " + an(sName) + " for the rest of today!", safchan);
+            return;
+        }
+        else if (target.burningAura) {
+            sendAll("", true, true);
+            safaribot.sendHtmlAll(sys.name(src) + " purified " + targetName + "'s " + typeIcon("Fire", "Burning Aura") + " into a " + typeIcon("Fairy", "Brilliant Aura") +"!", safchan);
+            target.brilliantAura = true;
+            safaribot.sendHtmlMessage(targetId, "The Brilliant Aura granted you the following bonuses: " + safari.describeAuraEffects(target) + "!", safchan);
+            safaribot.sendHtmlMessage(targetId, "As thanks, you shared the power of your Brilliant Aura with " + sys.name(src) + "!", safchan);
+            player.brilliantAura = true;
+            safaribot.sendHtmlMessage(src, "As thanks, " + targetName + " shared the power of their Brilliant Aura with you!", safchan);
+            safaribot.sendHtmlMessage(src, "The Brilliant Aura granted you the following bonuses: " + safari.describeAuraEffects(player) + "!", safchan);
+            sendAll("", true, true);
+
+            player.records.burnAuraGaveHeal += 1;
+            target.records.burnAuraReceivedHeal += 1;
+        }
+        else {
+            if (target.balls[item] >= getCap(item)) {
+                safaribot.sendMessage(src, targetName + " cannot carry any more " + sName + "!", safchan);
+                return;
+            }
+            sendAll("", true, true);
+            safaribot.sendAll(sys.name(src) + " gave " + an(sName) + " to " + targetName + "!", safchan);
+            safaribot.sendMessage(targetId, "You received " + plural(1, item) + "!", safchan);
+            sendAll("", true, true);
+            target.balls[item] += 1;
+        }
 
         player.cooldowns.burn = currentTime + itemData.burn.cooldown;
-        if (target.balls[item] === 0) {
-            target.cooldowns.burn = currentTime + itemData.burn.cooldown;
-        }
+
         player.balls[item] -= 1;
-        target.balls[item] += 1;
 
         player.records.burnGiven += 1;
         target.records.burnReceived += 1;
         player.burnLastUsed = now();
-        if (target.balls[item] === 1) {
-            target.burnLastUsed = now();
-        }
 
         this.saveGame(player);
         this.saveGame(target);
@@ -16051,7 +16108,7 @@ function Safari() {
         player.balls.mega -= 1;
         player.records.megaEvolutions += 1;
         this.updateShop(player, "mega");
-        var duration = itemData.mega.duration * 24 + this.getFortune(player, "extramega", 0);
+        var duration = (itemData.mega.duration * 24 + this.getFortune(player, "extramega", 0)) * this.getAuraEffect(player, "extramega", 1);
 
         this.evolvePokemon(src, info, evolvedId, "Mega Evolved into", true);
         this.logLostCommand(sys.name(src), "mega " + commandData, "Mega Evolved into " + poke(evolvedId));
@@ -17518,14 +17575,15 @@ function Safari() {
             player.balls.crystal-= 1;
             
             var cName = zCrystalData[type].name;
+            var finalDuration = itemData.crystal.duration * safari.getAuraEffect(player, "extracrystal", 1);
             player.zcrystalUser = player.party[0],
-            player.zcrystalDeadline = now() + itemData.crystal.duration * 60 * 1000;
+            player.zcrystalDeadline = now() + Math.floor(finalDuration * 60 * 1000);
             player.records.crystalsUsed += 1;
             
             this.saveGame(player);
             sys.sendAll("", safchan);
             safaribot.sendAll(sys.name(src) + " used " + an(cName) + "! Their " + poke(active, true) + " surrounded itself with its Z-Power!", safchan);
-            safaribot.sendMessage(src, "You used " + an(finishName("crystal")) + " on your " + poke(active, true) + "! You will " + buffDesc + " for " + plural(itemData.crystal.duration, "minute") + " (only if " + poke(active, true) + " is your active Pokémon)!", safchan);
+            safaribot.sendMessage(src, "You used " + an(finishName("crystal")) + " on your " + poke(active, true) + "! You will " + buffDesc + " for " + plural(Math.floor(finalDuration), "minute") + " (only if " + poke(active, true) + " is your active Pokémon)!", safchan);
             this.updateShop(player, "crystal");
             safaribot.sendMessage(src, itemsLeft(player, "crystal"), safchan);
             sys.sendAll("", safchan);
@@ -17545,7 +17603,7 @@ function Safari() {
             player.mushroomDeadline = dur;
             player.records.mushroomsEaten += 1;
             this.saveGame(player);
-            safaribot.sendHtmlMessage(src, "You ate a suspicious " + finishName("mushroom") + "! As you get dizzier and dizzier, you start thinking that you are in " + an(themeName(player.mushroomTheme)) + " environment for the next " + player.mushroomDeadline + " Pokémon that you bait! (Effect can be cancelled with " + link("/shroomcancel", false, true) + ")", safchan);
+            safaribot.sendHtmlMessage(src, "You ate a suspicious " + finishName("mushroom") + "! As you get dizzier and dizzier, you start thinking that you are in " + link("/themerares " + player.mushroomTheme, an(themeName(player.mushroomTheme) + " environment")) + " for the next " + player.mushroomDeadline + " Pokémon that you bait! (Effect can be cancelled with " + link("/shroomcancel", false, true) + ")", safchan);
             this.updateShop(player, "mushroom");
             safaribot.sendMessage(src, itemsLeft(player, "mushroom"), safchan);
             return;
@@ -18000,10 +18058,8 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
                 if (data === "2") {
                     sys.sendMessage(src, "*** Safari Settings | Page 2 ***", safchan);
-                    safaribot.sendHtmlMessage(src, "Lead Ability Messages: " + link("/options abilitymessage:", player.options.leadAbilityMessages ? "Always Show" : "Do Not Show"), safchan);
-                    safaribot.sendHtmlMessage(src, "Lead Display Messages: " + link("/options leadmessage:", player.options.showLeadMessage ? "Show if No Relevant Ability" : "Do Not Show"), safchan);
-                    safaribot.sendHtmlMessage(src, "Auto-Forfeit Battle: " + link("/options autoforfeit:", player.options.autoForfeitThrow ? "Automatically Forfeit When Throwing on Rare Pokémon" : "Do Not Forfeit When Throwing on Rare Pokémon"), safchan);
-                    safaribot.sendHtmlMessage(src, "Sell Pokémon formes to NPC: " + link("/options cansellformes:", player.options.canSellFormes ? "Allow Pokémon Forme Sales to the NPC" : "Do Not Allow Pokémon Forme Sales to the NPC"), safchan);
+                    safaribot.sendHtmlMessage(src, "Contest/Event Flashes: " + link("/options flashme:", player.options.flashme ? "Enabled" : "Disabled"), safchan);
+                    safaribot.sendHtmlMessage(src, "Cherish Ball Message: " + link("/options cherishmsg:", player.options.cherishOff ? "Do Not Show" : "Always Show"), safchan);
                     safaribot.sendHtmlMessage(src, "Other Players' Evolution/Devolution Messages: " + link("/options showevo:", player.options.showEvoMessages ? "Show Everyone's Evolutions/Devolutions" : "Only Show My Own Evolutions/Devolutions"), safchan);
                     safaribot.sendHtmlMessage(src, "Your Evolution/Devolution Messages: " + link("/options broadcastevo:", player.options.broadcastEvoMessages ? "Broadcast My Evolutions/Devolutions" : "Do Not Broadcast My Evolutions/Devolutions"), safchan);
                     safaribot.sendHtmlMessage(src, "Notifications: " + link("/options notifs:", player.options.anyNotifications ? "Receiving Notifications" : "Not Receiving Notifications"), safchan);
@@ -18024,16 +18080,18 @@ function Safari() {
                 else {
                     sys.sendMessage(src, "*** Safari Settings | Page 1 ***", safchan);
                     safaribot.sendHtmlMessage(src, "Party/Battle Visibility: " + link("/options view:", player.options.visible ? "Visible" : "Hidden"), safchan);
-                    safaribot.sendHtmlMessage(src, "Contest/Event Flashes: " + link("/options flashme:", player.options.flashme ? "Enabled" : "Disabled"), safchan);
                     safaribot.sendHtmlMessage(src, "Small Box View: " + link("/options smallbox:", player.options.smallBox ? "Enabled" : "Disabled"), safchan);
                     safaribot.sendHtmlMessage(src, "Trade Requests: " + link("/options trade:", player.options.trading ? "Accepting" : "Rejecting"), safchan);
+                    safaribot.sendHtmlMessage(src, "Mono Ball Type: " + link("/options mono:", player.options.monoSecondary ? "Secondary Type" : "Main Type"), safchan);
                     safaribot.sendHtmlMessage(src, "Favorite Ball: " + link("/options favorite:", finishName(player.options.favoriteBall)), safchan);
                     safaribot.sendHtmlMessage(src, "Idol Skills: " + link("/options idolskills:", player.options.pokeskillsDisabled ? "Disabled" : "Enabled"), safchan);
-                    safaribot.sendHtmlMessage(src, "Mono Ball Type: " + link("/options mono:", player.options.monoSecondary ? "Secondary Type" : "Main Type"), safchan);
-                    safaribot.sendHtmlMessage(src, "Cherish Ball Message: " + link("/options cherishmsg:", player.options.cherishOff ? "Do Not Show" : "Always Show"), safchan);
                     safaribot.sendHtmlMessage(src, "Cherish Ball Link: " + link("/options cherishlink:", player.options.alwaysShowCherishBall ? "Always Active" : "Inactive"), safchan);
                     safaribot.sendHtmlMessage(src, "Master Ball Link: " + link("/options mblink:", player.options.alwaysShowMasterBall ? "Always Active" : "Only Active on Rare Pokémon"), safchan);
                     safaribot.sendHtmlMessage(src, "Sell Prompts: " + link("/options sellprompt:", player.options.sellPrompt ? "Always Show" : "Do Not Show"), safchan);
+                    safaribot.sendHtmlMessage(src, "Sell Pokémon formes to NPC: " + link("/options cansellformes:", player.options.canSellFormes ? "Allow Pokémon Forme Sales to the NPC" : "Do Not Allow Pokémon Forme Sales to the NPC"), safchan);
+                    safaribot.sendHtmlMessage(src, "Lead Ability Messages: " + link("/options abilitymessage:", player.options.leadAbilityMessages ? "Always Show" : "Do Not Show"), safchan);
+                    safaribot.sendHtmlMessage(src, "Lead Display Messages: " + link("/options leadmessage:", player.options.showLeadMessage ? "Show if No Relevant Ability" : "Do Not Show"), safchan);
+                    safaribot.sendHtmlMessage(src, "Auto-Forfeit Battle: " + link("/options autoforfeit:", player.options.autoForfeitThrow ? "Automatically Forfeit When Throwing on Rare Pokémon" : "Do Not Forfeit When Throwing on Rare Pokémon"), safchan);
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendHtmlMessage(src, link("/options 2","«Next Page»"),safchan);
                 }
@@ -19588,9 +19646,7 @@ function Safari() {
                 if (!seller.offlineSales.hasOwnProperty(input.input)) {
                     seller.offlineSales[input.input] = 0;
                 }
-                else {
-                    seller.offlineSales[input.input] += amount;
-                }
+                seller.offlineSales[input.input] += amount;
             }
             safari.saveGame(seller);
             if (!isSilver) {
@@ -19884,7 +19940,7 @@ function Safari() {
             var out = giveStuff(player, reward, true);
 
             safaribot.sendMessage(src, "You received the following rewards for playing Safari " + (logins > 1 ? logins + "  days in a row" : "today" ) + ": " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), safchan);
-            safari.notification(player, "You received the following rewards for playing Safari " + (logins > 1 ? logins + "  days in a row" : "today" ) + ": " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), "Login");
+            safari.notification(player, "You received the following rewards for playing Safari " + (logins > 1 ? logins + "  days in a row" : "today" ) + ": " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), "Login", true);
             safaribot.sendMessage(src, "Your Itemfinder has been recharged to " + recharges + " charges!", safchan);
             
             if (safari.events.spiritDuelsEnabled) {
@@ -19899,14 +19955,14 @@ function Safari() {
             }
             if (logins % 32 === 30) {
                 safaribot.sendHtmlMessage(src, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", safchan);
-                safari.notification(player, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", "Login");
+                safari.notification(player, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", "Login", true);
             }
             player.firstCelebrityRun = true;
             if (player.burningAura) {
-                safaribot.sendMessage(src, "The power of your burning aura wore off...", safchan);
+                safaribot.sendMessage(src, "The power of your Burning Aura wore off...", safchan);
             }
             if (player.brilliantAura) {
-                safaribot.sendMessage(src, "The power of your brilliant aura wore off...", safchan);
+                safaribot.sendMessage(src, "The power of your Brilliant Aura wore off...", safchan);
             }
             player.burningAura = false;
             player.brilliantAura = false;
@@ -20608,7 +20664,10 @@ function Safari() {
                 safari.events.towerTroubleEnabled = (enable ? true : false);
                 safaribot.sendMessage(src,"Event Tower Trouble " + (enable ? "enabled" : "disabled") + "!" );
                 break;
+            default:
+                return;
         }
+        permObj.add("events", JSON.stringify(safari.events));
     }
     /* Bonus Login */
     this.bonusLogin = function(player) {
@@ -32753,7 +32812,7 @@ function Safari() {
                 this.addToMonthlyLeaderboards(player.id, "collectorEarnings", payout);
                 quest.reward = 0;
                 quest.requests = [];
-                quest.cooldown = now() + Math.round(hours(3) * (1 - safari.getFortune(player, "questcd", 0, "collector")));
+                quest.cooldown = now() + Math.round(hours(3) * (1 - safari.getFortune(player, "questcd", 0, "collector")) * (1 - safari.getAuraEffect(player, "questcd", 0)));
                 player.notificationData.collectorWaiting = true;
                 safari.pendingNotifications(player.id);
                 quest.deadline = 0;
@@ -33164,7 +33223,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Haha, seems like I won this time! Try harder next time!", safchan);
             }
             var cdamt = (args.cooldown * (isWinner ? 1 : 0.5)) * (safari.hasCostumeSkill(player, "fasterArena") ? 0.85 : 1);
-            player.quests.arena.cooldown = now() + Math.round(hours(cdamt) * (1 - safari.getFortune(player, "questcd", 0, "arena")));
+            player.quests.arena.cooldown = now() + Math.round(hours(cdamt) * (1 - safari.getFortune(player, "questcd", 0, "arena")) * (1 - safari.getAuraEffect(player, "questcd", 0)));
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arena|||Fought " + args.name + " using " + readable(player.party.map(poke)) +  " team|||" + (isWinner ? "Won" : "Lost") + " "+ playerScore + "x" + npcScore + (rewname ? ", received " + rewname : "") + "\n");
             safari.saveGame(player);
         };
@@ -33713,7 +33772,7 @@ function Safari() {
                 }
                 h = Math.min(h, maxH);
 
-                player.quests.tower.cooldown = now() + Math.round(hours(h) * (1 - safari.getFortune(player, "questcd", 0, "tower")));
+                player.quests.tower.cooldown = now() + Math.round(hours(h) * (1 - safari.getFortune(player, "questcd", 0, "tower")) * (1 - safari.getAuraEffect(player, "questcd", 0)));
 
                 var rewardText = [];
                 for (var r in args.reward) {
@@ -34020,7 +34079,7 @@ function Safari() {
         safari.updateEconomyData(-fee, "questFee");
         player.records.wonderTrades += 1;
 
-        quest.cooldown = now() + Math.round(hours(cooldown) * (1 - safari.getFortune(player, "questcd", 0, "wonder")));
+        quest.cooldown = now() + Math.round(hours(cooldown) * (1 - safari.getFortune(player, "questcd", 0, "wonder")) * (1 - safari.getAuraEffect(player, "questcd", 0)));
         player.notificationData.wonderWaiting = true;
         
         var twins = false;
@@ -36418,7 +36477,7 @@ function Safari() {
             if (rec.cooldown > 0) {
                 player.quests.alchemist.cooldown = Math.max(
                     player.quests.alchemist.cooldown,
-                    now() + Math.round(hours(rec.cooldown) * (1 - safari.getFortune(player, "questcd", 0, "alchemist")))
+                    now() + Math.round(hours(rec.cooldown) * (1 - safari.getFortune(player, "questcd", 0, "alchemist")) * (1 - safari.getAuraEffect(player, "questcd", 0)))
                 );
                 player.notificationData.alchemistWaiting = true;
             }
@@ -37797,7 +37856,7 @@ function Safari() {
                     }
                     
                     player.quests.league.badges.push(gym.badge.toLowerCase());
-                    player.quests.league.cooldown = now() + Math.round(hours(2) * (1 - safari.getFortune(player, "questcd", 0, "league")));
+                    player.quests.league.cooldown = now() + Math.round(hours(2) * (1 - safari.getFortune(player, "questcd", 0, "league")) * (1 - safari.getAuraEffect(player, "questcd", 0)));
                     
                     if (player.quests.league.badges.length >= 7) {
                         player.quests.league.eliteNext = true;
@@ -37820,7 +37879,7 @@ function Safari() {
                     
                     if (!id) {
                         player.records.gymsLost += 1;
-                        player.quests.league.cooldown = now() + Math.round(hours(2) * (1 - safari.getFortune(player, "questcd", 0, "league")));
+                        player.quests.league.cooldown = now() + Math.round(hours(2) * (1 - safari.getFortune(player, "questcd", 0, "league")) * (1 - safari.getAuraEffect(player, "questcd", 0)));
                         safari.saveGame(player);
                         for (e = 0; e < viewers.length; e++) {
                             safaribot.sendMessage(sys.id(viewers[e]), "League Guide: The challenge was cancelled because " + name + " is nowhere to be found for their next match!", safchan);
@@ -37859,7 +37918,7 @@ function Safari() {
                     player.zcrystalUser = false; //remove crystal effect after battle
                 }
                 player.records.gymsLost += 1;
-                player.quests.league.cooldown = now() + Math.round(hours(2) * (1 - safari.getFortune(player, "questcd", 0, "league")));
+                player.quests.league.cooldown = now() + Math.round(hours(2) * (1 - safari.getFortune(player, "questcd", 0, "league")) * (1 - safari.getAuraEffect(player, "questcd", 0)));
                 safari.pendingNotifications(player.id);
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||League|||Challenged " + args.gym.name + " Gym with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
 
@@ -38263,7 +38322,7 @@ function Safari() {
         }
         var rewardName = translateStuff(rew);
         rew = giveStuff(player, toStuffObj(rew));
-        player.quests.journal.cooldown = n + Math.round(hours(0.5) * (1 - safari.getFortune(player, "questcd", 0, "journal")));
+        player.quests.journal.cooldown = n + Math.round(hours(0.5) * (1 - safari.getFortune(player, "questcd", 0, "journal")) * (1 - safari.getAuraEffect(player, "questcd", 0)));
         player.notificationData.journalWaiting = true;
         player.records.journalSubmitted += 1;
         var oldPoints = player.records.journalPoints;
@@ -39025,6 +39084,8 @@ function Safari() {
             line2 = link("/showcostume", costumeAlias(player.costume, false, true) + " (Lv. " + safari.getCostumeLevel(player) + ")");
         }
         line2 += " " + link("/party", "«Party»");
+        line2 += " " + link("/bag", "«Bag»");
+        line2 += " " + link("/bagt", "«Bag (Text)»");
         var currentTime = now();
         if (player.balls.itemfinder + player.balls.permfinder > 0) {
             line2 += "   " + link("/finder", "«Itemfinder»");
@@ -39041,7 +39102,6 @@ function Safari() {
         if (player.balls.deluxe > 0) {
             line2 += "   " + link("/dbait", "«Deluxe Bait»");
         }
-        line2 += "   " + link("/info", "«Info»");
         line2 += "   " + link("/buy", "«Buy»");
         line2 += "   " + link("/quest", "«Quests»");
         var line3 = "<b>Recent Quests:</b>";
@@ -39072,7 +39132,8 @@ function Safari() {
         }
         var unseenNotifs = this.countUnseenNotifications(player);
         var unreadMail = countRepeated(player.unreadInbox, true);
-        var line5 = link("/notifications" + (unseenNotifs > 0 ? " unread" : ""), "«Notifications" + (unseenNotifs > 0 ? " (" + unseenNotifs + ")" : "") + "»") + " " + link("/inbox" + (unreadMail > 0 ? " unread" : ""), "«Inbox" + (unreadMail > 0 ? " (" + unreadMail + ")" : "") + "»");
+        var line5 = link("/info", "«Info»");
+        line5 += " " + link("/notifications" + (unseenNotifs > 0 ? " unread" : ""), "«Notifications" + (unseenNotifs > 0 ? " (" + unseenNotifs + ")" : "") + "»") + " " + link("/inbox" + (unreadMail > 0 ? " unread" : ""), "«Inbox" + (unreadMail > 0 ? " (" + unreadMail + ")" : "") + "»");
         line5 += " " + link("/options", "«Options»");
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, line1, safchan);
@@ -41174,7 +41235,7 @@ function Safari() {
             name = this.names[e];
             player = getAvatarOff(name);
             if (name === this.leader) {
-                player.quests.pyramid.cooldown = now() + Math.round(((this.usingVoucher ? 15 : 45)*60*1000) * (1 - safari.getFortune(player, "questcd", 0, "pyramid")));
+                player.quests.pyramid.cooldown = now() + Math.round(((this.usingVoucher ? 15 : 45)*60*1000) * (1 - safari.getFortune(player, "questcd", 0, "pyramid")) * (1 - safari.getAuraEffect(player, "questcd", 0)));
                 player.notificationData.pyramidWaiting = true;
                 if (this.points > player.records.pyramidLeaderScore) {
                     player.records.pyramidLeaderScore = this.points;
@@ -53033,20 +53094,20 @@ function Safari() {
                 }
             }
             if (journalExpired.length > 0) {
-                safari.notification(player, "{0}: {1} expired while you were away!".format(plural(journalExpired.length, "Journal request"), readable(journalExpired)), "Journal");
+                safari.notification(player, "{0}: {1} expired while you were away!".format(plural(journalExpired.length, "Journal request"), readable(journalExpired)), "Journal", true);
             }
             if (journalExpiring.length > 0) {
-                safari.notification(player, "{0}: {1} {2} expiring soon!".format(plural(journalExpiring.length, "Journal request"), readable(journalExpiring), journalExpiring.length === 1 ? "is" : "are"), "Journal");
+                safari.notification(player, "{0}: {1} {2} expiring soon!".format(plural(journalExpiring.length, "Journal request"), readable(journalExpiring), journalExpiring.length === 1 ? "is" : "are"), "Journal", true);
             }
             for (var d in toDelete) {
                 delete player.quests.journal.trackedRequests[toDelete[d]];
             }
             var offlineSales = [];
             for (var ware in player.offlineSales) {
-                
+                offlineSales.push(plural(player.offlineSales[ware], ware));
             }
             if (offlineSales.length > 0) {
-                safari.notification(player, "The following items were sold in your shop while you were away: {0}.".format(readable(offlineSales)), "Shop");
+                safari.notification(player, "The following items were sold in your shop while you were away: {0}.".format(readable(offlineSales)), "Shop", true);
                 player.offlineSales = {};
             }
             var unread = countRepeated(player.unreadInbox, true);
@@ -53850,9 +53911,7 @@ function Safari() {
                     if (isPlaying(p.name)) {
                         safaribot.sendMessage(sys.id(p.name), "You were awarded the following medals from the " + w + " Weekly Leaderboard Category: " + readable(awarded) + "!", safchan);
                     }
-                    else {
-                        safari.inboxMessage(player, "You were awarded the following medals from the " + w + " Weekly Leaderboard Category: " + readable(awarded) + "!", isPlaying(p.name));
-                    }
+                    safari.notification(player, "You were awarded the following medals from the " + w + " Weekly Leaderboard Category: " + readable(awarded) + "!", "Weekly Leaderboard", isPlaying(p.name));
                     for (var medal = 0; medal < toAward.length; medal++) {
                         safari.awardMedal(player, toAward[medal]);
                     }
@@ -53968,10 +54027,13 @@ function Safari() {
     this.validDailyBoost = function(player) {
         if (!dailyBoost)
             return false;
-        
+
         var leader = this.getEffectiveLead(player, true);
-        var species = pokeInfo.species(leader);
-        return dailyBoost.pokemon == species && !isMega(leader) && !noDailyBonusForms.contains(parseInt(leader));
+        return safari.isDailyBoost(leader);
+    };
+    this.isDailyBoost = function(mon) {
+        var species = pokeInfo.species(mon);
+        return dailyBoost.pokemon == species && !isMega(mon) && !noDailyBonusForms.contains(parseInt(mon));
     };
     this.getEffectiveLead = function(player, trueSpecies) {
         var leader = player.party[0];
@@ -54562,7 +54624,7 @@ function Safari() {
                     }
                     delete obj[prop];
                 } else if (!Array.isArray(obj[prop]) && typeof obj[prop] == "object" && typeof template[prop] == "object") {
-                    if (!["shop", "decorations", "secretBase", "nextSpawn", "pokeskills", "trackedRequests"].contains(prop)) {
+                    if (!["shop", "decorations", "secretBase", "nextSpawn", "pokeskills", "trackedRequests", "offlineSales"].contains(prop)) {
                         for (p in obj[prop]) {
                             removeInvalid(obj[prop], p, template[prop]);
                         }
@@ -54988,9 +55050,7 @@ function Safari() {
                 if (isPlaying(e)) {
                     safaribot.sendMessage(sys.id(e), "You " + out + " from the " + cap(lbInfo.alias) + " Leaderboard!", safchan);
                 }
-                else {
-                    this.inboxMessage(p, "You " + out + " from the " + cap(lbInfo.alias) + " Leaderboard!", isPlaying(e));
-                }
+                this.notification(p, "You " + out + " from the " + cap(lbInfo.alias) + " Leaderboard!", "Weekly Leaderboard", isPlaying(e));
                 rew = translateStuff(winners[e]);
                 sys.appendToFile(crossLog, now() + "|||" + lbInfo.alias.split(" ").map(cap).join(" ") + " Leaderboard|||" + p.id.toCorrectCase() + "|||" + rew + "\n");
             }
@@ -55506,7 +55566,7 @@ function Safari() {
                 safari.rockScare(src);
                 return true;
             }
-            if (["options", "settings"].contains(command)) {
+            if (["options", "settings", "o"].contains(command)) {
                 safari.configurePlayerOptions(src, commandData);
                 return true;
             }
