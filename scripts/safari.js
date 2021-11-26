@@ -106,6 +106,7 @@ function Safari() {
     var cage = "<img src='data:image/png;base64,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'>";
     var langPack = null;
     var starters = [1, 4, 7];
+    var maxConsecutiveCombo = 9999;
     
     // mostly any formes that contain significant type/BST differences from their base forme 
     var noDailyBonusForms = [328350, 66015, 197087, 131551, 262623, 328159, 66091, 66282, 131730, 66310, 131846, 197382, 262918, 328454, 393990, 459526];
@@ -640,6 +641,7 @@ function Safari() {
             crystalsUsed: 0,
             photosRetouched: 0,
             missionPoints: 0,
+            currentMissionPoints: 0,
             missionCleared: 0,
             celebrityScore: 0,
             celebrityScoreEasy: 0,
@@ -938,7 +940,8 @@ function Safari() {
             persistentBait: false,
             receiveWeeklyMedals: true,
             showContestCaptures: true,
-            androidTextFlow: false
+            androidTextFlow: false,
+            showConsecutiveCombo: true
         },
         spawnlessThrows: 0,
         burningAura: false,
@@ -1208,7 +1211,7 @@ function Safari() {
 
             //Pokéball related items
             dew: {name: "dew", fullName: "Mystical Dew", type: "alchemy", icon: 8017, price: 9999, aliases: ["dew", "mdew", "mysticdew", "mysticaldew", "mystical dew"], threshold: 400, tradable: false},
-            hdew: {name: "hdew", fullName: "Harmonic Dew", type: "alchemy", icon: 129, price: 9999, aliases: ["hdew", "harmonicdew", "harmdew", "harmonic dew"], threshold: 400, tradable: false},
+            hdew: {name: "hdew", fullName: "Harmonic Dew", type: "alchemy", icon: 162, price: 9999, aliases: ["hdew", "harmonicdew", "harmdew", "harmonic dew"], threshold: 400, tradable: false},
             ldew: {name: "ldew", fullName: "Legendary Dew", type: "alchemy", icon: 131, price: 9999, aliases: ["ldew", "legendarydew", "legenddew", "legendary dew"], threshold: 400, tradable: false},
             blkapricorn: {name: "blkapricorn", fullName: "Black Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["blackapricorn", "black apricorn", "blkapricorn"], tradable: true},
             whtapricorn: {name: "whtapricorn", fullName: "White Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["whiteapricorn", "white apricorn", "whtapricorn"], tradable: true},
@@ -1737,7 +1740,7 @@ function Safari() {
         total: [0, 0, 0]
     };
 
-    var finderMissRate = 0.80;
+    var finderMissRate = 0.70;
     var safariHints = [
         "Did you know? Not only can you see your bag using /bag, but you can also see certain portions of it by using a more specific command! Trainers can use " + link("/bag wallet") + ", " + link("/bag balls") + ", " + link("/bag apricorns") + ", " + link("/bag perks") + ", " + link("/bag pawnables") + ", and " + link("/bag rare") + " to see specific rows!",
         "Like going on adventures with your friends? Use your teamwork to clear the Pyramid! Type " + link("/quest pyramid") + " to get started!",
@@ -2003,7 +2006,7 @@ function Safari() {
         eliteCleared: { desc: "by cleared Elite Four challenges", alts: ["elite", "elite four", "elitefour", "elite4", "e4", "elite 4", "e 4", "elite cleared", "elite four cleared", "elite 4 cleared"], alias: "elite four cleared" },
         baseValue: { desc: "by most valuable Secret Base", alts: ["base", "secretbase", "secret base",], alias: "base" },
         journalPoints: { desc: "by most photo points", alts: ["photos", "photo", "photo points", "photo points"], alias: "photo" },
-        missionPoints: { desc: "by most mission points", alts: ["missions", "mission", "mission points", "mission point"], alias: "mission" },
+        missionPoints: { desc: "by most mission points earned", alts: ["missions", "mission", "mission points", "mission point"], alias: "mission" },
         casesSolved: { desc: "by most Detective cases solved", alts: ["detective", "cases", "detective cases", "detective solved", "detectivesolved", "cases solved", "casessolved"], alias: "detective" },
         fastestCaseSolved: { desc: "by fastest Detective case solved", alts: ["detective fastest", "detectivefastest", "detective speed", "detectivespeed", "detective speedrun", "detectivespeedrun"], alias: "detective fastest" }
     };
@@ -7413,7 +7416,7 @@ function Safari() {
                     if (master) {
                         safaribot.sendMessage(src, "As you try to put it away, the " + finishName(reward) + " starts to glow very bright and then shatters in your hands. Sadly, all you could do was carefully grab a salvageable piece and stow it safely in your bag.", safchan);
                     } else if (check < 1) {
-                        safaribot.sendMessage(src, "However, you didn't have any space left and were forced to discard " + (withName ?  " the " + finishName(reward) : (amount === 1 ? "it" : "them")) + "!", safchan);
+                        safaribot.sendMessage(src, "However, you didn't have any space left and were forced to discard " + (withName ? "the " + plural(amount, reward) : (amount === 1 ? "it" : "them")) + "!", safchan);
                     } else {
                         safaribot.sendMessage(src, "However, you only had space for " + check + " and were forced to discard the rest" + (withName ? " of the " + finishName(reward) : "") + "!", safchan);
                     }
@@ -8064,7 +8067,7 @@ function Safari() {
                 if ((isLegendary(num) || shiny) && contestCount > 0) { // if legendary or shiny and contest is active
                     wildEvent = chance(0.5);
                 }
-                else if (getBST(num) > 600 && themeOverride) { // if bst > 600 and is shroom bait
+                else if (getBST(num) > 600 && themeOverride && isLegendary(num)) { // if bst > 600 and is shroom bait
                     if (getBST(num) > 670) {
                         wildEvent = true; // > 670s are always event
                     }
@@ -8381,6 +8384,9 @@ function Safari() {
                 }
                 if (canHaveAbility(leader, abilitynum("Ball Fetch"))) {
                     abilityMessageList[pid].push("Your {0}'s Ball Fetch can recover your Poké Balls for you!".format(poke(leader, true)));
+                }
+                if (canHaveAbility(leader, abilitynum("Skill Link"))) {
+                    abilityMessageList[pid].push("Your {0}'s Skill Link prevents your Consecutive Catch Combo from resetting!".format(poke(leader, true)));
                 }
                 var ignoreRules = [12, 109, 20]; // Oblivious, Unaware, Own Tempo
                 if (contestCount > 0 && currentRules) {
@@ -10352,7 +10358,10 @@ function Safari() {
                 safaribot.sendHtmlAll(playerDisplayName + " " + catchVerb + revealName + " with " + an(ballName)+ " and the help of their " + playerDisplayMon + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }
 
-            safaribot.sendHtmlMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball) + (amt > 0 ? (player.balls[ball] > 0 ? " [" + link("/" + ccatch + " " + ball, "Throw Again") + "]" : "") + " [" + link("/ballmacro", "Choose Another Action") + "]" : ""), safchan);
+            player.consecutiveCombo++;
+            player.consecutiveCombo = Math.min(maxConsecutiveCombo, player.consecutiveCombo);
+
+            safaribot.sendHtmlMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball) + (player.options.showConsecutiveCombo ? " (Consecutive Catch Combo: " + addComma(player.consecutiveCombo) + ")" : "") + (amt > 0 ? (player.balls[ball] > 0 ? " [" + link("/" + ccatch + " " + ball, "Throw Again") + "]" : "") + " [" + link("/ballmacro", "Choose Another Action") + "]" : ""), safchan);
 
             if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !ignoresWildAbilities(player) && !allBalls.filter(function(e) { return itemData[e].special }).contains(ball) && player.balls[ball] > 1 && chance(0.3)) {
                 safaribot.sendAll("The wild {0}'s Pressure used up an extra {1}...".format(poke(currentPokemon, true), finishName(ball)), safchan);
@@ -10722,7 +10731,7 @@ function Safari() {
                         safaribot.sendMessage(src, "Your " + activeName + " ate its Petaya Berry and evolved!", safchan);
                     }
                     else {
-                        safaribot.sendMessage(src, "Your {0}'s Petaya Combo: {1}/{2}".format(poke(leader, true), player.berries.petayaCombo, candiesRequired), safchan);
+                        safaribot.sendMessage(src, "Your {0}'s Petaya Combo: {1}/{2}".format(poke(leader, true), addComma(player.berries.petayaCombo), addComma(candiesRequired)), safchan);
                     }
                 }
             }
@@ -10865,6 +10874,9 @@ function Safari() {
             var keepMsg = "";
             wildBallThrows[ball].push(player.id);
             cooldown = cooldown * (1 - this.getFortune(player, "soothe", 0));
+            if (!canHaveAbility(trueLeader, abilitynum("Skill Link"))) {
+                player.consecutiveCombo = 0;
+            }
             if (ball == "ultra" && this.hasCostumeSkill(player, "lowUltraCD")) {
                 cooldown *= 0.5;
             }
@@ -11942,7 +11954,10 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "<b>Your Burning Aura grants you the following bonuses:</b> " + safari.describeAuraEffects(player) + ".", safchan);
             }
             if (player.helds[0] == "9") {
-                safaribot.sendHtmlMessage(src, "<b>Current Petaya Combo:</b> " + player.berries.petayaCombo, safchan);
+                safaribot.sendHtmlMessage(src, "<b>Current Petaya Combo:</b> " + addComma(player.berries.petayaCombo), safchan);
+            }
+            if (player.consecutiveCombo > 0) {
+                safaribot.sendHtmlMessage(src, "<b>Current Consecutive Catch Combo:</b> " + addComma(player.consecutiveCombo), safchan);
             }
             for (var i = 0; i < player.party.length; i++) {
                 var activeSkills = getActiveSkills(player.party[i], player);
@@ -13628,7 +13643,7 @@ function Safari() {
             sys.sendMessage(src, "±{0}: Threw {1} ({2} accuracy, {3}). Embarassed {4}.".format(finishName("rock"), plural(rec.rocksThrown, "rock"), percentage(onOthers, rec.rocksThrown), plural(onOthers, "hit"), plural(rec.rocksBounced, "time")), safchan);
             var onMe = rec.rocksHitBy + rec.rocksWalletHit + rec.rocksDodgedWindow + rec.rocksChargesLost;
             sys.sendMessage(src, "±{0}: Hit by {1} ({2} evasion, {3}). Caught {4}. Scared away {5} wild Pokémon.".format(finishName("rock"), plural(onMe, "rock"), percentage(rec.rocksDodged, rec.rocksDodged + onMe), plural(rec.rocksDodged, "dodge"), plural(rec.rocksCaught, "throw"), addComma(rec.wildsScared)), safchan);
-            sys.sendMessage(src, "±Game: {0} Consecutive Logins{1}. Won {2} Contests and {4}. Found {3} items with the Itemfinder.".format(addComma(rec.consecutiveLogins), (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : ""), addComma(rec.contestsWon), addComma(rec.itemsFound), plural(rec.medalsWon, "medal")), safchan);
+            sys.sendMessage(src, "±Game: {0} Consecutive Logins{1}. Won {2} contests and {4}. Found {3} items with the Itemfinder.".format(addComma(rec.consecutiveLogins), (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : ""), addComma(rec.contestsWon), addComma(rec.itemsFound), plural(rec.medalsWon, "medal")), safchan);
             sys.sendMessage(src, "±Game: Opened {0} and used {1}. Hatched {2} and {3} with {4} being a Rare Pokémon! Gave {5} and received {6}.".format(plural(rec.packsOpened, "pack"), plural(rec.gemsUsed, "gem"), plural(rec.eggsHatched, "egg"), plural(rec.brightEggsHatched, "bright"), addComma(rec.rareHatched), plural(rec.burnGiven, "burn"), plural(rec.burnReceived, "burn")), safchan);
             sys.sendMessage(src, "±Game: Used {0} and won {1}. Ate {2} and {3}, and used {4} and {5}. Sent {6} and retouched {7}.".format(plural(rec.shadyUsed, "shady"), plural(rec.mongerAuctionsWon, "Monger Auction"), plural(rec.cookiesEaten, "cookie"), plural(rec.mushroomsEaten, "mushroom"), plural(rec.scalesUsed, "scale"), plural(rec.crystalsUsed, "crystal"), plural(rec.mailsSent, "mail"), plural(rec.photosRetouched, "Photograph")), safchan);
             sys.sendMessage(src, "", safchan);
@@ -15475,12 +15490,15 @@ function Safari() {
     this.giveBurnHeal = function (src, commandData) {
         var item = "burn";
         var sName = finishName(item);
-        if (!validPlayers("both", src, commandData, "You cannot give " + an(sName) + " to yourself!")) {
+        var player = getAvatar(src);
+        var split = commandData.split(":");
+        var targetInput = split[0];
+        var targetId = sys.id(targetInput);
+        var confirm = split[1] === "confirm";
+        var target = getAvatar(targetId);
+        if (!validPlayers("both", src, targetInput, "You cannot give " + an(sName) + " to yourself!")) {
             return;
         }
-        var player = getAvatar(src);
-        var targetId = sys.id(commandData);
-        var target = getAvatar(targetId);
         if (!(item in player.balls) || player.balls[item] <= 0) {
             safaribot.sendMessage(src, "You have no " + sName + "!", safchan);
             return;
@@ -15490,14 +15508,18 @@ function Safari() {
             safaribot.sendMessage(src, "Please wait " + timeLeftString(player.cooldowns.burn) + " before giving someone " + an(sName) + "!", safchan);
             return;
         }
-        var targetName = utilities.non_flashing(commandData.toCorrectCase());
+        var targetName = utilities.non_flashing(targetInput.toCorrectCase());
         if (target.brilliantAura) {
             safaribot.sendMessage(src, "Doesn't seem like " + targetName + " will need " + an(sName) + " for the rest of today!", safchan);
             return;
         }
         else if (target.burningAura) {
+            if (player.brilliantAura) {
+                safaribot.sendMessage(src, "You already have a Brilliant Aura, give someone else a chance!", safchan);
+                return;
+            }
             sendAll("", true, true);
-            safaribot.sendHtmlAll(sys.name(src) + " purified " + targetName + "'s " + typeIcon("Fire", "Burning Aura") + " into a " + typeIcon("Fairy", "Brilliant Aura") +"!", safchan);
+            safaribot.sendHtmlAll(sys.name(src) + " purified " + targetName + "'s " + typeIcon("Fire", "Burning Aura") + " into a " + typeIcon("Fairy", "Brilliant Aura") + " with " + an(sName) + "!", safchan);
             target.brilliantAura = true;
             safaribot.sendHtmlMessage(targetId, "The Brilliant Aura granted you the following bonuses: " + safari.describeAuraEffects(target) + "!", safchan);
             safaribot.sendHtmlMessage(targetId, "As thanks, you shared the power of your Brilliant Aura with " + sys.name(src) + "!", safchan);
@@ -15511,7 +15533,11 @@ function Safari() {
         }
         else {
             if (target.balls[item] >= getCap(item)) {
-                safaribot.sendMessage(src, targetName + " cannot carry any more " + sName + "!", safchan);
+                safaribot.sendMessage(src, targetName + " cannot carry any more " + es(sName) + "!", safchan);
+                return;
+            }
+            if (!confirm) {
+                safaribot.sendHtmlMessage(src, targetName + " is not currently under the effects of a Burning Aura, type " + link("/burn " + split[0] + ":confirm") + " if you're sure you want to give them " + an(sName) + ".", safchan);
                 return;
             }
             sendAll("", true, true);
@@ -16193,7 +16219,6 @@ function Safari() {
             }
         }
 
-        combo = combo || 0;
         var dailyCharges = player.balls.itemfinder,
             permCharges = player.balls.permfinder,
             totalCharges = dailyCharges + permCharges;
@@ -16211,7 +16236,7 @@ function Safari() {
         }
 
         var currentTime = now();
-        if (player.cooldowns.itemfinder > currentTime && !combo) {
+        if (player.cooldowns.itemfinder > currentTime) {
             safaribot.sendHtmlMessage(src, "Your Itemfinder needs to cool down otherwise it will overheat! Try again in " + timeLeftString(player.cooldowns.itemfinder) + ". " + link("/finder", "[Try Again]"), safchan);
             return;
         }
@@ -16219,8 +16244,33 @@ function Safari() {
             return;
         }
 
-        var pulls = Math.min(this.getFortune(player, "finderburn", 1) + combo, totalCharges);
+        var pulls = this.getFortune(player, "finderburn", 1)
+        var minCombo = 3;
+        var comboPulls = 0;
+        var maxComboPulls = 50;
+        if (combo) {
+            if (player.consecutiveCombo < minCombo) {
+                safaribot.sendHtmlMessage(src, "Your Consecutive Catch Combo needs to be at least " + minCombo + " in order to power up your Itemfinder! " + link("/finder", "[Use Without Combo]"), safchan);
+                return;
+            }
+            var maxPullsPerCombo = 5;
+            var usable = player.consecutiveCombo - minCombo + 1;
+            for (var i = 0; i <= usable; i++) {
+                comboPulls += Math.min(maxPullsPerCombo, usable - i);
+            }
+            comboPulls = Math.min(comboPulls, maxComboPulls);
+            pulls += comboPulls;
+        }
 
+        pulls = Math.min(pulls, totalCharges);
+        if (comboPulls) {
+            player.consecutiveCombo = 0;
+            safaribot.sendHtmlMessage(src, "You powered up the Itemfinder with your Consecutive Catch Combo, allowing you to use it " + plural(pulls, "time") + " in a row!", safchan);
+        }
+
+        var emptyPulls = freePulls = 0;
+        var foundAny = false;
+        var totalRewards = {};
         while (pulls > 0) {
             pulls -= 1;
             var freefinder = chance(this.getFortune(player, "freefinder", 0));
@@ -16234,31 +16284,34 @@ function Safari() {
                 }
                 totalCharges -= 1;
             }
-            var freemsg = freefinder ? "<i>And no charge was consumed!</i> ": "";
+            else {
+                freePulls++;
+            }
 
             var reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
             if (reward == "nothing" && safari.hasCostumeSkill(player, "finderBasedOnLead")) {
                 var type = type1(parseInt(player.party[0], 10));
-                if (chance(0.01) && (chance((this.getCostumeLevel(player) - 2)/30))) {
+                var typeChance = Math.max(0.01, (this.getCostumeLevel(player) / 10) / 60);
+                if (chance(typeChance)) {
                     switch (type) {
-                        case "Normal": reward = "crystal"; break;
-                        case "Grass": reward = "mushroom"; break;
+                        case "Normal": reward = "pack"; break;
+                        case "Grass": reward = "golden"; break;
                         case "Fire": reward = "cookie"; break;
-                        case "Water": reward = "bigpearl2"; break;
-                        case "Ice": reward = "scarf"; break;
+                        case "Water": reward = "hdew"; break;
+                        case "Ice": reward = "crystal"; break;
                         case "Electric": reward = "recharge2"; break;
                         case "Dragon": reward = "cometshard"; break;
-                        case "Fairy": reward = "rare2"; break;
-                        case "Psychic": reward = "gacha2"; break;
-                        case "Dark": reward = "gacha2"; break;
-                        case "Bug": reward = "honey"; break;
-                        case "Poison": reward = "mushroom"; break;
-                        case "Flying": reward = "rare2"; break;
-                        case "Rock": reward = "nugget"; break;
-                        case "Ground": reward = "eviolite"; break;
-                        case "Steel": reward = "crown"; break;
+                        case "Fairy": reward = "mushroom"; break;
+                        case "Psychic": reward = "sunshard"; break;
+                        case "Dark": reward = "moonshard"; break;
+                        case "Bug": reward = "spray"; break;
+                        case "Poison": reward = "bignugget"; break;
+                        case "Flying": reward = "egg"; break;
+                        case "Rock": reward = "fossil"; break;
+                        case "Ground": reward = "starpiece"; break;
+                        case "Steel": reward = "silver"; break;
                         case "Fighting": reward = "celebrityTicket"; break;
-                        case "Ghost": reward = "bait2"; break;
+                        case "Ghost": reward = "brush"; break;
                     }
                 }
             }
@@ -16276,37 +16329,100 @@ function Safari() {
             }
 
             var giveReward = true;
-            var showMsg = true;
             var cd = itemData.itemfinder.cooldown;
             if (player.truesalt >= now() && chance(player.srate)) {
                 reward = reward !== "nothing" ? (Math.random() < 0.4 ? "rock" : "nothing") : reward;
             }
             switch (reward) {
+                case "pack": {
+                    safaribot.sendHtmlMessage(src, "<b>Beep. Boop.</b> How careless! Someone left " + an(finishName(reward)) + " full of goodies lying on the ground!", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "golden": {
+                    amount = 3;
+                    safaribot.sendHtmlMessage(src, "<b>Bling! Bling!</b> You notice some " + finishName(reward) + " growing on a mysterious, shimmering tree!", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "hdew": {
+                    amount = 20;
+                    safaribot.sendHtmlMessage(src, "<b>SPLASH!</b> You carelessly tripped and fell into a shining puddle of " + finishName(reward) + "! You decide to make the best of it and collect some for later use.", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "sunshard": {
+                    safaribot.sendHtmlMessage(src, "<b>BEEEEEEP!?</b> Your Itemfinder leads you through some brightly-lit ruins. At its heart, you find an altar with a single " + finishName(reward) + " mounted on it.", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "moonshard": {
+                    safaribot.sendHtmlMessage(src, "<b>BEEEEEEP!?</b> Your Itemfinder leads you through some dimly-lit ruins. At its heart, you find a pedestal with a single " + finishName(reward) + " mounted on it.", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "spray": {
+                    safaribot.sendHtmlMessage(src, "<b>BZZZ! BZZZ!</b> This place is infested with Bug-type Pokémon! You rummage through your bag looking for Repel to spray, but find " + an(finishName(reward)) + " instead. How did that get there?", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "bignugget": {
+                    safaribot.sendHtmlMessage(src, "<b>Bzweeeeep!</b> Your Itemfinder reacts violently near a nondescript dumpster. You brave the stench, dive in, and find a beautiful " + finishName(reward) + "!", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "egg":
+                case "bright": {
+                    safaribot.sendHtmlMessage(src, "<b>KACAW!</b> An enormous bird Pokémon flies overhead and drops " + an(finishName(reward)) + " right into your hands!", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "fossil": {
+                    safaribot.sendHtmlMessage(src, "<b>Beep. Beep. Boop?</b> Your Itemfinder points you towards some strange rocks on the ground. As you turn them over, you realise one of them is " + an(finishName(reward)) + "!", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "starpiece": {
+                    amount = 3;
+                    safaribot.sendHtmlMessage(src, "<b>Whew!</b> While looking up to admire the starry sky, you almost step into a crater in the ground! On closer inspection, there seem to be some glistening " + es(finishName(reward)) + " at the bottom of it!", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "silver": {
+                    amount = 8;
+                    safaribot.sendHtmlMessage(src, "<b>Beep. Boop. Bop!</b> Your Itemfinder leads you to a giant X painted on the ground! You grab a shovel and start digging, and uncover a tiny treasure chest with some " + es(finishName(reward)) + " inside!", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
+                case "brush": {
+                    safaribot.sendHtmlMessage(src, "<b>Beeee<font size=2>eeeee</font><font size=1>eeeeep...</font></b> A strange fog rolls in as your Itemfinder gives out. Wandering, you come across a mysterious exhumed grave. All that's left inside are some burned and defaced photos, and a conspicuous " + finishName(reward) + "...", safchan);
+                    this.costumeEXP(player, "findrare");
+                }
+                break;
                 case "rare2": {
                     reward = "rare";
                     amount = 2;
-                    safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found 2 Rare Candies behind a bigger than average bush!</b>", safchan);
+                    safaribot.sendHtmlMessage(src, "<b>Beep. Beep. BEEP! You found " + plural(amount, reward) + " behind a bigger than average bush!</b>", safchan);
                     this.costumeEXP(player, "findrare");
                 }
                 break;
                 case "rare": {
-                    safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found " + an(finishName(reward)) + " behind a bush!</b>", safchan);
+                    safaribot.sendHtmlMessage(src, "<b>Beep. Beep. BEEP! You found " + an(finishName(reward)) + " behind a bush!</b>", safchan);
                     this.costumeEXP(player, "findrare");
                 }
                 break;
                 case "crystal": {
-                    safaribot.sendHtmlAll("<b>Beeeeeeep! Oh my, a Crystal! " + sys.name(src) + " has found " + an(finishName(reward)) + " with their Itemfinder!</b>", safchan);
+                    safaribot.sendHtmlMessage(src, "<b>Beeeeeeep! Oh my, a Crystal! You found " + an(finishName(reward)) + " with your Itemfinder!</b>", safchan);
                     this.costumeEXP(player, "findrare");
                 }
                 break;
                 case "recharge2": {
                     reward = "permfinder";
-                    amount = 10 + this.getFortune(player, "findershock", 0);
+                    amount = 15 + this.getFortune(player, "findershock", 0);
                     showMsg = false;
-                    safaribot.sendHtmlMessage(src, "<b>Rai-ai-ai-... CHHUUUUUUUUU!</b> You were shocked by a wild Raichu while looking for items! You're too frazzled to use the Itemfinder for a while, but to put things into perspective, your Itemfinder recharged a bit recharged from the shock.", safchan);
-                    safaribot.sendHtmlMessage(src, "Your Itemfinder gained " + plural(amount, "charge") + ". " + freemsg + " [Remaining charges: " + (totalCharges + amount) + " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, getCap("permfinder")) + " bonus)].", safchan);
+                    safaribot.sendHtmlMessage(src, "<b>Rai-ai-ai-... CHHUUUUUUUUU!</b> You were shocked by a wild Raichu while looking for items! On the bright side, your Itemfinder recharged a lot due to the shock.", safchan);
                     safari.missionProgress(player,"getShocked",0,1,{});
-                    cd *= 10;
+                    this.costumeEXP(player, "findrare");
                 }
                 break;
                 case "recharge": {
@@ -16314,7 +16430,6 @@ function Safari() {
                     amount = 3 + this.getFortune(player, "findershock", 0);
                     showMsg = false;
                     safaribot.sendHtmlMessage(src, "<b>Pi-ka-CHUUU!</b> You were shocked by a wild Pikachu while looking for items! On the bright side, your Itemfinder slightly recharged due to the shock.", safchan);
-                    safaribot.sendHtmlMessage(src, "Your Itemfinder gained " + plural(amount, "charge") + ". " + freemsg + " [Remaining charges: " + (totalCharges + amount) + " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, getCap("permfinder")) + " bonus)].", safchan);
                     safari.missionProgress(player,"getShocked",0,1,{});
                 }
                 break;
@@ -16329,7 +16444,7 @@ function Safari() {
                 }
                 break;
                 case "cookie": {
-                    safaribot.sendHtmlMessage(src, "<b>!BEEPBEEPBEEPBEEP!</b> Oh no, " + sys.name(src) + " is on fire! Luckily, as a result of the fire, they were able to cook a nice " + finishName("cookie") + " from the surroundings!", safchan);
+                    safaribot.sendHtmlMessage(src, "<b>!BEEPBEEPBEEPBEEP!</b> Oh no, you're on fire! Luckily, as a result of the fire, you were able to cook a nice " + finishName("cookie") + " from the surroundings!", safchan);
                     this.costumeEXP(player, "findrare");
                     safari.missionProgress(player,"findCookie",0,1,{});
                 }
@@ -16390,7 +16505,7 @@ function Safari() {
                 break;
                 case "celebrityTicket": {
                     amount = 1;
-                    safaribot.sendMessage(src, "What's this? A voucher for an extra run at the Celebrities!", safchan);
+                    safaribot.sendHtmlMessage(src, "<b>Beeeeeep!</b> What's this? A voucher for an extra run at the Celebrities!", safchan);
                     this.costumeEXP(player, "findrare");
                 }
                 break;
@@ -16474,41 +16589,65 @@ function Safari() {
                             }
                         }
                         
-                        safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it! " + (freefinder ? "<i>Additionally, so charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "]. " + link("/finder", "[Use Again]"), safchan);
+                        safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it! " + link("/finder", "[Use Again]"), safchan);
                         sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Hint:</font></b> "  + dynamicHints.random(), safchan);
+                        foundAny = true;
                     }
                     else {
                         var hit = false;
                         if (player.costume == "explorer" && chance(0.2) && safari.detectiveData.hasOwnProperty(player.idnum+"") && safari.detectiveData[player.idnum].date === getDay(now()) && !safari.detectiveData[player.idnum].solved) {
                             for (var i = 0; i < safari.detectiveData[player.idnum+""].clues.length; i++) {
                                 if (safari.detectiveData[player.idnum+""].clues[i].unlock == "explorerfinder") {
-                                    safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! " +(freefinder ? "<i>Additionally, no charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "]. " + link("/finder", "[Use Again]"), safchan);
+                                    safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! " + link("/finder", "[Use Again]"), safchan);
                                     safari.detectiveClue(player.idnum, "explorerfinder", src);
                                     hit = true;
+                                    foundAny = true;
                                     break;
                                 }
                             }
                         }
                         if (!(hit)) {
-                            safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. "+(freefinder ? "<i>At least no charge was used... </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "]. " + link("/finder", "[Use Again]"), safchan);
+                            emptyPulls++;
                         }
                     }
                     giveReward = false;
-                    showMsg = false;
                 break;
-            }
-            if (showMsg) {
-                safaribot.sendHtmlMessage(src, "You found " + plural(amount, reward) + " with your Itemfinder! " + freemsg + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "]. " + link("/finder", "[Use Again]"), safchan);
             }
             if (giveReward) {
                 player.records.itemsFound += 1;
-                rewardCapCheck(player, reward, amount);
+                foundAny = true;
+                if (!totalRewards.hasOwnProperty(reward)) {
+                    totalRewards[reward] = 0;
+                }
+                totalRewards[reward] += amount;
             }
             if (player.costume == "flower" || player.costume == "fisherman") {
                 cd *= 1.4;
             } else if (player.costume == "preschooler" && safari.hasCostumeSkill(player, "fasterFinder")) {
                 cd *= 0.5;
             }
+        }
+        if (emptyPulls > 0) {
+            if (foundAny) {
+                safaribot.sendHtmlMessage(src, "Your Itemfinder did not detect anything the other " + plural(emptyPulls, "time") + "...", safchan);
+            }
+            else {
+                safaribot.sendHtmlMessage(src, "You pulled out your Itemfinder " + plural(emptyPulls, "time") + ", but it did not detect anything... [Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "]. " + link("/finder", "[Use Again]"), safchan);
+            }
+        }
+        if (foundAny && Object.keys(totalRewards).length > 0) {
+            var rewardVerbose = [];
+            for (var i in totalRewards) {
+                rewardVerbose.push(plural(totalRewards[i], i));
+            }
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendHtmlMessage(src, "You found " + readable(rewardVerbose) + " with your Itemfinder! [Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "]. " + link("/finder", "[Use Again]"), safchan);
+            for (var i in totalRewards) { // this is kind of awkward but I want the full reward string displayed first, and any messages from rewardCapCheck indicating discarded excess to be printed after, hence looping twice
+                rewardCapCheck(player, i, totalRewards[i], true);
+            }
+        }
+        if (freePulls > 0) {
+            safaribot.sendHtmlMessage(src, "You managed to save " + plural(freePulls, "charge") + " from being consumed!", safchan);
         }
         player.cooldowns.itemfinder = currentTime + cd;
         this.saveGame(player);
@@ -18024,6 +18163,14 @@ function Safari() {
                     data
                 ]);
                 break;
+            case "showcombo": case "showconsecutive": case "showconsecutivecombo":
+                changeOption(dataInput, "showConsecutiveCombo", [
+                    "You will now see your Consecutive Catch Combo after each capture!",
+                    "You will no longer see your Consecutive Catch Combo after each capture!",
+                    ["not seeing your Consecutive Catch Combo after each capture", "seeing your Consecutive Catch Combo after each capture"],
+                    data
+                ]);
+                break;
             case "favorite": case "favourite": case "favoriteball": case "favouriteball":
                 safari.setFavoriteBall(src, dataInput);
                 break;
@@ -18069,6 +18216,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "Weekly Leaderboard Medals: " + link("/options weeklymedals:", player.options.receiveWeeklyMedals ? "Receiving Weekly Medals" : "Not Receiving Weekly Medals"), safchan);
                     safaribot.sendHtmlMessage(src, "Persistent Bait: " + link("/options persistbait:", player.options.persistentBait ? "Continuously Bait until Successful" : "Only Use 1 Bait at a Time"), safchan);
                     safaribot.sendHtmlMessage(src, "View Contest Captures: " + link("/options viewcontestcaptures:", player.options.showContestCaptures ? "View My Contest Captures & BST Tally During Contests" : "Do Not View My Contest Captures & BST Tally During Contests"), safchan);
+                    safaribot.sendHtmlMessage(src, "View Consecutive Catch Combo: " + link("/options showcombo:", player.options.showConsecutiveCombo ? "View My Consecutive Catch Combo After Each Capture" : "Do Not View My Consecutive Catch Combo After Each Capture"), safchan);
                     safaribot.sendHtmlMessage(src, "Offset Android Input Lag: " + link("/options androidlag:", player.options.androidTextFlow ? "Receive Continuous Server Messages" : "Do Not Receive Continuous Server Messages"), safchan);
                     var dexOptions = ["stats", "effectiveness", "trivia"];
                     safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
@@ -18373,7 +18521,7 @@ function Safari() {
     var costumeSkillInfo = {
         botdboost: "Catch rate increased when using the Pokémon-of-the-Day",
         lowPhotoCD: "Reduced cooldown after taking photos",
-        finderBasedOnLead: "Use your lead Pokémon to influence the Itemfinder",
+        finderBasedOnLead: "Your lead Pokémon's primary type will influence the Itemfinder, allowing you to find unique items",
         pokefanPack: "Received " + an(finishName("egg")) + " for completing your training",
         ninjaPack1: "Received prizes for leveling up",
         ninjaPack2: "Received prizes for leveling up",
@@ -20341,6 +20489,7 @@ function Safari() {
         newMission.desc = newMission.desc.replace(/\$\{0\}/g, "$"+addComma(newMission.goal));
         newMission.desc = newMission.desc.format(newMission.goal, targetDesc);
         newMission.reward = missionsData.rewards[level].random();
+        newMission.level = level;
         
         return newMission;
     };
@@ -55321,7 +55470,7 @@ function Safari() {
             "/mega [Pokémon*]: Use a Mega Stone to Mega Evolve a Pokémon. Use /mega [Pokémon*]:[X or Y] to choose between Mega Evolutions for species that have multiple.",
             "/cancelmega [Pokémon*]: Cancel a Mega Evolution instantly.",
             "/gacha: Use a ticket to win a prize!",
-            "/finder: Use your item finder to look for items.",
+            "/finder: Use your Itemfinder to look for items. You can use \"/finder combo\" to power up your Itemfinder with your Consecutive Catch Combo, allowing you to use multiple charges at once. Note that this consumes your entire combo.",
             "/give [Berry Name]:[Party Slot]: Gives a berry to the Pokémon in the specified party slot (1 to 6). Party slot defaults to 1.",
             "/take [Party Slot]: Takes the held berry from the Pokémon in the specified party slot (1 to 6). Defaults to 1.",
             "/giveall [Berry Name]: Gives a berry to your entire party at once.",
@@ -55898,7 +56047,7 @@ function Safari() {
                 safari.giveBurnHeal(src, commandData);
                 return true;
             }
-            if (command === "gacha") {
+            if (command === "gacha" || command === "g") {
                 safari.gachapon(src, commandData);
                 return true;
             }
@@ -56737,7 +56886,7 @@ function Safari() {
                 sys.sendMessage(src, "*** LAST CONTESTS ***", safchan);
                 for (var e = 0, x; e < lastContests.length; e++) {
                     x = lastContests[e];
-                    safaribot.sendHtmlMessage(src, "Theme: {0} --- Won by: {1} --- Score: {2} --- Rules: {3} --- Finished {4} ago".format(x.theme, (x.winners ? x.winners : "No one"), (x.winners ? "Caught " + x.caught + ", BST " + x.bst + "" : "N/A"), x.rules, utilities.getTimeString(Math.floor((now() - x.finished)/1000) + 1)), safchan);
+                    safaribot.sendHtmlMessage(src, "Theme: {0} --- Won by: {1} --- Score: {2} --- Rules: {3} --- Finished {4} ago".format(x.theme, (x.winners ? x.winners + (!x.saved ? " (No Rewards)" : "") : "No one"), (x.winners ? "Caught " + x.caught + ", BST " + x.bst + "" : "N/A"), x.rules, utilities.getTimeString(Math.floor((now() - x.finished)/1000) + 1)), safchan);
                 }
                 sys.sendMessage(src, "", safchan);
                 return true;
@@ -56746,8 +56895,8 @@ function Safari() {
                 safari.showRecords(src, commandData);
                 return true;
             }
-            if (command === "itemfinder" || command === "finder") {
-                safari.findItem(src);
+            if (command === "itemfinder" || command === "finder" || command === "f") {
+                safari.findItem(src, commandData === "combo");
                 return true;
             }
             if (command === "use") {
@@ -61598,7 +61747,7 @@ function Safari() {
                 }
                 else if (contestCount === 0) {
                     contestMidPoint = false;
-                    var winners = [], pokeWinners = [], maxCaught = 0, maxBST = 0, player, contestInfo = { finished: now() }, fullWinners = [];
+                    var winners = [], pokeWinners = [], maxCaught = 0, maxBST = 0, player, contestInfo = { finished: now() }, fullWinners = [], contestSaved;
                     for (var e in contestCatchers) {
                         if (contestCatchers.hasOwnProperty(e)) {
                             player = getAvatarOff(e);
@@ -61678,11 +61827,11 @@ function Safari() {
                     sys.sendAll(separator, safchan);
                     safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
                     var saveContestVal = 8; //test this at 8 for now, if it needs to be higher or lower it can be adjusted in the future
+                    contestInfo.saved = contestSaved = true;
                     if (Object.keys(contestCatchers).length === 1) {
                         if (contestCatchers[winners[0]].length < saveContestVal) {
                             safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
-                            winners = [];
-                            contestInfo.winners = null;
+                            contestInfo.saved = contestSaved = false;
                         }
                     }
                     if (winners.length > 0) {
@@ -61745,32 +61894,34 @@ function Safari() {
                             player = getAvatarOff(winner);
                             if (player) {
                                 rewardName = [];
-                                for (r in reward) {
-                                    amt = reward[r];
-                                    if (["redapricorn", "grnapricorn", "bluapricorn", "whtapricorn", "blkapricorn", "pnkapricorn", "ylwapricorn"].contains(r) && safari.hasCostumeSkill(player, "extraApricornsFromContest")) {
-                                        amt = Math.floor(amt * (1 + (safari.getCostumeLevel(player) + 10)/30));
-                                    }
-                                    if (r == "cashbonus") {
-                                        var val = 1000;
-                                        if (catchersBST.hasOwnProperty(winner)) {
-                                            val = catchersBST[winner];
+                                if (contestSaved) {
+                                    for (r in reward) {
+                                        amt = reward[r];
+                                        if (["redapricorn", "grnapricorn", "bluapricorn", "whtapricorn", "blkapricorn", "pnkapricorn", "ylwapricorn"].contains(r) && safari.hasCostumeSkill(player, "extraApricornsFromContest")) {
+                                            amt = Math.floor(amt * (1 + (safari.getCostumeLevel(player) + 10)/30));
                                         }
-                                        if (val > 0) {
-                                            player.money += val;
-                                            player.money = Math.min(player.money, moneyCap);
-                                            rewardName.push("$" + val);
+                                        if (r == "cashbonus") {
+                                            var val = 1000;
+                                            if (catchersBST.hasOwnProperty(winner)) {
+                                                val = catchersBST[winner];
+                                            }
+                                            if (val > 0) {
+                                                player.money += val;
+                                                player.money = Math.min(player.money, moneyCap);
+                                                rewardName.push("$" + val);
+                                            }
+                                        } else if (amt > 0) {
+                                            player.balls[r] += amt;
+                                            if (player.balls[r] > getCap(r)) {
+                                                player.balls[r] = getCap(r);
+                                            }
+                                            if (r == "entry") {
+                                                rafflePlayers.add(player.id, player.balls.entry);
+                                                rafflePlayers.save();
+                                            }
+                                            rewardName.push(amt + " " + itemAlias(r, false, true) + (amt === 1 ? "" : "s"));
+                                            safari.missionProgress(player, "contestPrize", r, amt);
                                         }
-                                    } else if (amt > 0) {
-                                        player.balls[r] += amt;
-                                        if (player.balls[r] > getCap(r)) {
-                                            player.balls[r] = getCap(r);
-                                        }
-                                        if (r == "entry") {
-                                            rafflePlayers.add(player.id, player.balls.entry);
-                                            rafflePlayers.save();
-                                        }
-                                        rewardName.push(amt + " " + itemAlias(r, false, true) + (amt === 1 ? "" : "s"));
-                                        safari.missionProgress(player, "contestPrize", r, amt);
                                     }
                                 }
                                 player.records.contestsWon += 1;
@@ -61781,10 +61932,12 @@ function Safari() {
                                 safari.saveGame(player);
                                 playerId = sys.id(winner);
                                 safari.detectiveClue(player.idnum, "contest", playerId);
-                                if (playerId) {
-                                    safaribot.sendMessage(playerId, "You received " + readable(rewardName, "and") + " for winning the contest!", safchan);
+                                if (contestSaved) {
+                                    if (playerId) {
+                                        safaribot.sendMessage(playerId, "You received " + readable(rewardName, "and") + " for winning the contest!", safchan);
+                                    }
+                                    safari.notification(player, "You received " + readable(rewardName, "and") + " for winning the contest!", "Contest", isPlaying(winner));
                                 }
-                                safari.inboxMessage(player, "You received " + readable(rewardName, "and") + " for winning the contest!", isPlaying(winner));
                             }
                         }
                     }
