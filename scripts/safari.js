@@ -641,7 +641,6 @@ function Safari() {
             crystalsUsed: 0,
             photosRetouched: 0,
             missionPoints: 0,
-            currentMissionPoints: 0,
             missionCleared: 0,
             celebrityScore: 0,
             celebrityScoreEasy: 0,
@@ -658,6 +657,7 @@ function Safari() {
             goodJournalSubmission: 0,
             scientistPhotoSubmission: 0
         },
+        missionPoints: 0,
         photos: [],
         hideLB: [],
         removedFromLB: false,
@@ -2035,6 +2035,7 @@ function Safari() {
     var contestExtensionLimit = 600; // event extension limit, 10 minutes
     var contestMidPoint = false; //whether the contest is half over (checked after wild caught);
     var contestCatchers = {};
+    var contestThrowers = {};
     var contestBroadcast = true; //Determines whether Tohjo gets notified
     var contestCooldownLength = 1800; //1 contest every 30 minutes
     var contestCooldown = (SESSION.global() && SESSION.global().safariContestCooldown ? SESSION.global().safariContestCooldown : contestCooldownLength);
@@ -11042,6 +11043,12 @@ function Safari() {
         safari.pendingNotifications(player.id);
         if (currentPokemonCount > 0 && !currentThrowers.contains(player.id)) {
             currentThrowers.push(player.id);
+        }
+        if (contestCount > 0 && !freeThrow) {
+            if (!contestThrowers.hasOwnProperty(player.id)) {
+                contestThrowers[player.id] = 0;
+            }
+            contestThrowers[player.id]++;
         }
         this.saveGame(player);
     };
@@ -20420,6 +20427,10 @@ function Safari() {
     };
     
     /* Missions */
+    this.describeMission = function(m) {
+        var g = Math.min(m.count, m.goal) + "/" + m.goal;
+        return m.desc + " " + (m.count >= m.goal ? toColor("(" + g + ")", "blue") : "("+g+")") + " -  Reward: " + translateStuff(m.reward) + " + " + plural(m.points, "mission point") + (m.finished ? toColor(" [Received]", "red") : "");
+    };
     this.viewMissions = function(src) {
         if (!validPlayers("self", src)) {
             return;
@@ -20429,8 +20440,7 @@ function Safari() {
         sys.sendMessage(src, "*** CURRENT DAILY MISSIONS ***", safchan);
         for (var e = 0; e < player.missions.length; e++) {
             m = player.missions[e];
-            g = Math.min(m.count, m.goal) + "/" + m.goal;
-            sys.sendHtmlMessage(src, "<b>" + (e+1) + ".</b> " + m.desc + " " + (m.count >= m.goal ? toColor("(" + g + ")", "blue") : "("+g+")") + " -  Reward: " + translateStuff(m.reward) + " + " + plural(m.points, "mission point") + (m.finished ? toColor(" [Received]", "red") : ""), safchan);
+            sys.sendHtmlMessage(src, "<b>" + (e+1) + ".</b> " + safari.describeMission(m) + (canSwapMission(m) ? " [" + link("/swapmission " + e, "Swap") + "]" : ""), safchan);
             if (!m.finished && m.count >= m.goal) {
                 finished.push(m);
             }
@@ -20442,26 +20452,76 @@ function Safari() {
             if (canReceiveStuff(player, m.reward).result) {
                 g = giveStuff(player, toStuffObj(m.reward));
                 player.records.missionPoints += m.points;
+                player.missionPoints += m.points;
                 player.records.missionCleared += 1;
                 clearedAny = true;
                 safaribot.sendHtmlMessage(src, toColor("You " + g + " + " + plural(m.points, "mission point") + " for clearing the following mission: " + m.desc, "blue"), safchan);
                 safari.detectiveClue(player.idnum, "mission", src);
-                if (m.day !== today) {
-                    player.missions.splice(player.missions.indexOf(m), 1);
-                } else {
-                    m.finished = true;
-                }
+                m.finished = true;
             } else {
                 safaribot.sendHtmlMessage(src, toColor("You cleared a mission (" + m.desc + "), but you can't receive the reward (" + translateStuff(m.reward) + "). Type /mission again when you have space to receive the reward.", "red"), safchan);
             }
         }
-        if (clearedAny) {
-            safaribot.sendMessage(src, "You now have " + plural(player.records.missionPoints, "mission point") + "!", safchan);
-        }
+
+        sys.sendMessage(src, "", safchan);
+        safaribot.sendMessage(src, (clearedAny ? "You now have " : "You currently have ") + plural(player.missionPoints, "mission point") + "! (Total: " + addComma(player.records.missionPoints) + ")", safchan);
         safari.toRecentQuests(player, "missions");
         player.notificationData.missionWaiting = true;
         sys.sendMessage(src, "", safchan);
         safari.pendingNotifications(player.id);
+        safari.saveGame(player);
+    };
+    this.swapMission = function(src, commandData) {
+        var player = getAvatar(src);
+        if (!player || !player.missions.length) {
+            return;
+        }
+        if (!commandData) {
+            safaribot.sendHtmlMessage(src, "Please provide a mission index to swap!", safchan);
+            return;
+        }
+
+        var split = commandData.split(":");
+        var index = parseInt(split[0]);
+        var confirm = split[1] === "confirm";
+        if (isNaN(index) || index < 0 || index >= player.missions.length) {
+            safaribot.sendHtmlMessage(src, "Invalid mission index!", safchan);
+            return;
+        }
+
+        var mission = player.missions[index];
+        if (!canSwapMission(mission)) {
+            safaribot.sendHtmlMessage(src, "This mission can't be swapped out!", safchan);
+            return;
+        }
+
+        var swapCost = mission.points * 3;
+        if (!confirm) {
+            safaribot.sendHtmlMessage(src, "This mission (" + safari.describeMission(mission) + ") will cost " + plural(swapCost, "mission point") + " to swap. Type " + link("/swapmission " + index + ":confirm") + " to confirm.", safchan);
+            return;
+        }
+        if (player.missionPoints < swapCost) {
+            safaribot.sendHtmlMessage(src, "You don't have enough mission points to swap this mission! You need " + plural(swapCost, "mission point") + ", but you only have " + addComma(player.missionPoints) + ".", safchan);
+            return;
+        }
+
+        var newMission;
+        do {
+            newMission = safari.generateMission(mission.level);
+        } while (safari.checkMissionConflicts(newMission, player.missions, player.lastLogin));
+
+        if (!newMission) {
+            safaribot.sendHtmlMessage(src, "Error generating new mission!", safchan);
+            return;
+        }
+
+        newMission.count = 0;
+        newMission.day = player.lastLogin;
+        newMission.finished = false;
+        player.missionPoints -= swapCost;
+        safaribot.sendHtmlMessage(src, "You used " + plural(swapCost, "mission point") + " and swapped out the old mission (" + safari.describeMission(mission) + ") for a new one (" + safari.describeMission(newMission) + ")!", safchan);
+        player.missions.splice(index, 1, newMission);
+
         safari.saveGame(player);
     };
     this.renewMissions = function(player) {
@@ -20476,11 +20536,15 @@ function Safari() {
             do {
                 m = this.generateMission(e);
             } while (this.checkMissionConflicts(m, player.missions, today));
+            if (!m) {
+                continue;
+            }
             m.count = 0;
             m.day = today;
             m.finished = false;
             player.missions.push(m);
         }
+
         this.saveGame(player);
     };
     this.generateMission = function(level) {
@@ -20529,6 +20593,9 @@ function Safari() {
         return newMission;
     };
     this.checkMissionConflicts = function(mission, list, today) {
+        if (!mission) {
+            return false;
+        }
         var obj, e;
         var noTargetDuplicates = ["playContest", "catchContest", "winContest", "towerFloor", "arenaSilver", ];
         for (e = list.length; e--; ) {
@@ -20796,7 +20863,9 @@ function Safari() {
         }
         return false;
     };
-
+    function canSwapMission(mission) {
+        return !(mission.finished || (mission.day !== getDay(now())) || !mission.level || mission.special || (mission.count >= mission.goal));
+    }
     /* Events */
     this.safariEvents = function(src,what,enable) {
         if (!safari.events) {
@@ -56344,8 +56413,12 @@ function Safari() {
                 safari.closeStory(src);
                 return true;
             }
-            if (command === "mission" || command === "missions") {
+            if (command === "mission" || command === "missions" || command === "m") {
                 safari.viewMissions(src, commandData);
+                return true;
+            }
+            if (command === "swapmission") {
+                safari.swapMission(src, commandData);
                 return true;
             }
             if (command === "trials" || command === "trial") {
@@ -56674,7 +56747,7 @@ function Safari() {
                 safari.saveGame(player);
                 return true;
             } */
-            if (command === "inbox") {
+            if (command === "inbox" || command === "i") {
                 safari.viewInbox(src, ["unseen", "unread", "new", "u"].contains(commandData));
                 return true;
             }
@@ -58857,6 +58930,7 @@ function Safari() {
                     nextRules = null;
                     nextTheme = null;
                     contestCatchers = {};
+                    contestThrowers = {};
                     checkUpdate();
                 } else {
                     safaribot.sendMessage(src, "You can't skip a contest if there's none running or about to start!", safchan);
@@ -61659,6 +61733,9 @@ function Safari() {
                                     if (p.costume === "backpacker") {
                                         throwChances[i] *= 0.75;
                                     }
+                                    if (contestCount > 0 && contestThrowers.hasOwnProperty(p.id) && contestThrowers[p.id] >= 3 && isRare(currentDisplay)) {
+                                        throwChances[i] += (throwChances[i] * 2);
+                                    }
                                 }
                                 else {
                                     if (canHaveAbility(lead, abilitynum("Prankster"))) {
@@ -62038,6 +62115,7 @@ function Safari() {
                     resetVars();
                     currentRules = null;
                     contestCatchers = {};
+                    contestThrowers = {};
                     contestForfeited = [];
                     wildSpirit = false;
                     for (var e = 0; e < needsPechaCleared.length; e++) {
