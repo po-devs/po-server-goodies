@@ -16642,11 +16642,11 @@ function Safari() {
                             
                             if (playersWithValidShops.length > 0) {
                                 otherPlayer = playersWithValidShops.random();
-                                while (!shopItem) {
+                                do {
                                     var playerShop = otherPlayer.shop,
                                         randItem = Object.keys(playerShop).random();
                                     shopItem = playerShop[randItem].limit > 0 ? randItem : false;
-                                }
+                                } while (!shopItem);
                                 
                                 shopItemFinish = getInputPokemon(shopItem).name ? getInputPokemon(shopItem).name : finishName(shopItem.replace("@", ""));
                                 otherPlayerName = otherPlayer.id.toCorrectCase();
