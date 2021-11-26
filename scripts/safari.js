@@ -941,13 +941,15 @@ function Safari() {
             receiveWeeklyMedals: true,
             showContestCaptures: true,
             androidTextFlow: false,
-            showConsecutiveCombo: true
+            showConsecutiveCombo: true,
+            flashRares: true
         },
         spawnlessThrows: 0,
         burningAura: false,
         brilliantAura: false,
         offlineSales: {},
-        consecutiveCombo: 0
+        consecutiveCombo: 0,
+        pokeFlashList: []
     }; // template end
 
     /* Item Variables */
@@ -3523,6 +3525,24 @@ function Safari() {
     function addColorTag(name) {
         return "<!--c-->" + name + "<!--c-->";
     }
+    /*function toFlashing(message, name) { //Totally not stolen from tours
+        var newmessage = message;
+        var htmlname = html_escape(name);
+        var regex = new RegExp(htmlname, "gi");
+        var newregex1 = "";
+        if (sys.os(sys.id(name)) === "android") {
+            newregex1 = "<background color='#FCD116'>" + htmlname.toCorrectCase() + "</background><ping/>";
+            
+        } else if (sys.os(sys.id(name)) === "webclient") {
+            newregex1 = "<mark>" + htmlname.toCorrectCase() + "</mark><ping/>";
+        }
+        else {
+            newregex1 = "<font style='BACKGROUND-COLOR: #FCD116'>" + htmlname.toCorrectCase() + "</font><ping/>";
+        }
+
+        newmessage = message.replace(regex,newregex1);
+        return newmessage;
+    }*/
     function toFlashing(message, name) { //Totally not stolen from tours
         var newmessage = message;
         var flashtag = "<!--f-->";
@@ -8209,7 +8229,7 @@ function Safari() {
                 ret += "</center><hr>";
                 sendAll(ret, true, true, false, mandatoryDisplay);
             } else {
-                sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + (wildEvent ? "<br/><b>All ball cooldowns were reset!</b>" : "") + "</center><hr>", true, true, false, mandatoryDisplay);
+                sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + ((wildEvent || isRare(currentDisplay) && contestCount > 0) ? "<br/><b>All ball cooldowns were reset!</b>" : "") + "</center><hr>", true, true, false, mandatoryDisplay);
             }
 
             safari.afterSpawnDisplay(false, mandatoryDisplay);
@@ -8257,15 +8277,21 @@ function Safari() {
         }
         for (var e in toSend) {
             var pid = toSend[e];
-            ballMacro(pid);
-            
+
             var player = getAvatar(pid);
             if (!player) {
                 continue;
             }
-            if (wildEvent) { // if an Event spawns, reset ball cooldown so everyone can attempt a throw
+            if (wildEvent || (isRare(currentDisplay) && contestCount > 0)) { // if a rare display spawns, reset ball cooldown so everyone can attempt a throw
                 player.cooldowns.ball = 0;
             }
+            if (player.options.flashRares && isRare(currentDisplay)) {
+                sys.sendHtmlMessage(pid, toColor("<timestamp/><b>±Ping:</b> ", "#3daa68") + toFlashing(addFlashTag(sys.name(pid)) + ", a rare Pokémon has spawned!", sys.name(pid)), safchan);
+            }
+            else if (player.pokeFlashList.contains(parseInt(currentDisplay))) {
+                sys.sendHtmlMessage(pid, toColor("<timestamp/><b>±Ping:</b> ", "#3daa68") + toFlashing(addFlashTag(sys.name(pid)) + ", " + an(poke(currentDisplay, true)) + " has spawned!", sys.name(pid)), safchan);
+            }
+            ballMacro(pid);
             player.spawnlessThrows = 0;
             safari.saveGame(player);
             if (!abilityMessageList.hasOwnProperty(pid)) {
@@ -11288,7 +11314,7 @@ function Safari() {
         for (var pid in players) {
             var player = getAvatar(players[pid]);
             if (player && player.options.flashme) {
-                sys.sendHtmlMessage(players[pid], "<ping/>", safchan);
+                sys.sendHtmlMessage(players[pid], toColor("<timestamp/><b>±Ping:</b> ", "#3daa68") + toFlashing(addFlashTag(sys.name(players[pid])) + ", a contest/event is starting!", sys.name(players[pid])), safchan);
             }
         }
     };
@@ -18171,6 +18197,14 @@ function Safari() {
                     data
                 ]);
                 break;
+            case "pingrare": case "pingrares": case "flashrare": case "flashrares":
+                changeOption(dataInput, "flashRares", [
+                    "You will now be flashed when a rare Pokémon spawns!",
+                    "You will no longer be flashed when a rare Pokémon spawns!",
+                    ["not being flashed when a rare Pokémon spawns", "being flashed when a rare Pokémon spawns"],
+                    data
+                ]);
+                break;
             case "favorite": case "favourite": case "favoriteball": case "favouriteball":
                 safari.setFavoriteBall(src, dataInput);
                 break;
@@ -18206,6 +18240,7 @@ function Safari() {
                 if (data === "2") {
                     sys.sendMessage(src, "*** Safari Settings | Page 2 ***", safchan);
                     safaribot.sendHtmlMessage(src, "Contest/Event Flashes: " + link("/options flashme:", player.options.flashme ? "Enabled" : "Disabled"), safchan);
+                    safaribot.sendHtmlMessage(src, "Rare Pokémon Flashes: " + link("/options flashrare:", player.options.flashRares ? "Enabled" : "Disabled"), safchan);
                     safaribot.sendHtmlMessage(src, "Cherish Ball Message: " + link("/options cherishmsg:", player.options.cherishOff ? "Do Not Show" : "Always Show"), safchan);
                     safaribot.sendHtmlMessage(src, "Other Players' Evolution/Devolution Messages: " + link("/options showevo:", player.options.showEvoMessages ? "Show Everyone's Evolutions/Devolutions" : "Only Show My Own Evolutions/Devolutions"), safchan);
                     safaribot.sendHtmlMessage(src, "Your Evolution/Devolution Messages: " + link("/options broadcastevo:", player.options.broadcastEvoMessages ? "Broadcast My Evolutions/Devolutions" : "Do Not Broadcast My Evolutions/Devolutions"), safchan);
@@ -32399,6 +32434,47 @@ function Safari() {
             safaribot.sendMessage(receiverId, warnsTarget[e], safchan);
         }
         return warns.length === 0;
+    };
+    this.trackSpawn = function(src, data) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src), list;
+
+        var removeTrack = function(id) {
+            return link("/poketrack " + poke(id), poke(id));
+        };
+        list = player.pokeFlashList;
+        if (data === "*") {            
+            if (list.length > 0) {
+                safaribot.sendHtmlMessage(src, "You are currently being flashed for the following Pokémon (" + list.length + "): " + readable(list.map(removeTrack)), safchan);
+            }
+            safaribot.sendMessage(src, "Use /poketrack [Pokémon Name] to receive flashes when the specified Pokémon spawns. Use the command again to remove it. Note: If you want to receive flashes for certain Pokémon formes, you must add those formes individually.", safchan);
+            return;
+        }
+
+        var input = getInputPokemon(data);
+        if (!input.num) {
+            safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
+            return;
+        }
+
+        if (list.contains(input.num)) {
+            list.splice(list.indexOf(input.num), 1);
+            safaribot.sendMessage(src, "You removed " + input.name + " from your Tracked Pokémon list! Current list: " + (readable(list.map(poke)) || "Empty"), safchan);
+        }
+        else {
+            var maxSize = 1001;
+            if (list.length > maxSize) {
+                safaribot.sendMessage(src, "You can only add up to " + maxSize + " users to your Tracked Pokémon list.", safchan);
+                return;
+            }
+            list.push(input.num);
+            safaribot.sendMessage(src, "You added " + input.name + " to your Tracked Pokémon list! Current list: " + (readable(list.map(poke)) || "Empty"), safchan);
+        }
+
+        player.pokeFlashList = list;
+        this.saveGame(player);
     };
     this.blacklistPlayer = function(src, data) {
         if (!validPlayers("self", src)) {
@@ -55515,6 +55591,7 @@ function Safari() {
             "/shroomcancel: Cancels the effect of any " + finishName("mushroom") + " that you have active.",
             "/viewers: Shows which users are currently spectating your battle/Pyramid run/Baking quest.",
             "/clearpending: Cancels any pending commands you have queued.",
+            "/poketrack: To edit your Tracked Pokémon list. You will receive flashes when a Pokémon in the list spawns.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -55814,6 +55891,10 @@ function Safari() {
             }
             if (command === "playertradeblock") {
                 safari.blacklistPlayer(src, commandData);
+                return true;
+            }
+            if (["trackpoke", "poketrack", "pokeflash", "flashpoke"].contains(command)) {
+                safari.trackSpawn(src, commandData);
                 return true;
             }
             if (command === "auction") {
@@ -61305,7 +61386,7 @@ function Safari() {
                 for (var i = 0; i < currentPokemonCount; i++) {
                     sprite += pokeInfo.sprite(currentDisplay);
                 }
-                sys.sendHtmlMessage(src, "<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + (wildEvent ? "<br/><b>All ball cooldowns were reset!</b>" : "") + "</center><hr>", safchan);
+                sys.sendHtmlMessage(src, "<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + ((wildEvent || (isRare(currentDisplay) && contestCount > 0)) ? "<br/><b>All ball cooldowns were reset!</b>" : "") + "</center><hr>", safchan);
                 safari.afterSpawnDisplay(src, true);
             }
             else {
