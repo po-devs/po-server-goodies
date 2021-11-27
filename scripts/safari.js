@@ -34687,7 +34687,7 @@ function Safari() {
                         var cost = Math.round(5000 * (1 - (safari.hasCostumeSkill(p, "bakingDiscount") ? 0.5 : 0)));
                         p.money -= cost;
                         safari.updateEconomyData(-cost, "questFee");
-                        p.quests.baking.cooldown = now() + Math.round(hours(0.5));
+                        p.quests.baking.cooldown = now() + Math.round(hours(0.5) * (1 - safari.getFortune(player, "questcd", 0, "baking")) * (1 - safari.getAuraEffect(player, "questcd", 0)));
                         safaribot.sendHtmlMessage(sys.id(p.id), "Baking Administrator: You paid $" + addComma(cost) + " to enter the kitchen!", safchan);
                         safari.toRecentQuests(p, "baking");
                         this.saveGame(p);
