@@ -10872,6 +10872,7 @@ function Safari() {
                     }
                     player.burningAura = true;
                     safaribot.sendHtmlMessage(src, "The Burning Aura granted you the following bonuses: " + safari.describeAuraEffects(player) + "!", safchan);
+                    sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||caught the Pokémon-of-the-Day (" + poke(currentPokemon) + ") and received a Burning Aura.\n");
                 }
             }
             if (amt < 1) {
@@ -14277,7 +14278,6 @@ function Safari() {
         player.tutorialFinished = now();
         welcomePack(src);
         sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||used /skiptutorial\n");
-
     };
     this.progressTutorial = function (src, automatedStep, commandData) {
         if (!validPlayers("self", src)) {
@@ -15599,6 +15599,7 @@ function Safari() {
 
             player.records.burnAuraGaveHeal += 1;
             target.records.burnAuraReceivedHeal += 1;
+            sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||purified " + targetName + " with Burn Heal, both received a Brilliant Aura.\n");
         }
         else {
             if (target.balls[item] >= getCap(item)) {
