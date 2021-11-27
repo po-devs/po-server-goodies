@@ -942,7 +942,8 @@ function Safari() {
             showContestCaptures: true,
             androidTextFlow: false,
             showConsecutiveCombo: true,
-            flashRares: true
+            flashRares: true,
+            textViewOnly: false
         },
         spawnlessThrows: 0,
         burningAura: false,
@@ -10307,8 +10308,8 @@ function Safari() {
                 }
             }
         }
-        var aType = type1(leader);
-        var crystalEffect = ball !== "master" && player.zcrystalDeadline >= now() && player.zcrystalUser === leader && chance(zCrystalData[aType].chance) ? zCrystalData[aType] : { effect: "none" };
+        var aType = type1(trueLeader);
+        var crystalEffect = ball !== "master" && player.zcrystalDeadline >= now() && player.zcrystalUser === trueLeader && chance(zCrystalData[aType].chance) ? zCrystalData[aType] : { effect: "none" };
 
         if (!freeThrow) {
             player.balls[ball] -= 1;
@@ -11884,12 +11885,16 @@ function Safari() {
 
         sys.sendHtmlMessage(src, this.showParty(id, false, src, textOnly), safchan);
     };
-    this.viewItems = function(src, textOnly, search) {
+    this.viewItems = function(src, command, search) {
         if (!validPlayers("self", src)) {
             return;
         }
         var player = getAvatar(src);
         var isAndroid = (sys.os(src) === "android");
+        var textOnly = false;
+        if (command !== "bagf") {
+            textOnly = player.options.textViewOnly || command === "bagt";
+        }
         sys.sendHtmlMessage(src, this.showBag(player, isAndroid, textOnly, search), safchan);
     };
     this.viewBox = function(src, data, textOnly, shopLink) {
@@ -17777,11 +17782,12 @@ function Safari() {
             var active = player.party[0];
             var type = getCrystalEffect(active);
             var buffDesc = zCrystalData[type].description.format(zCrystalData[type].chance * 100);
+            var finalDuration = itemData.crystal.duration * safari.getAuraEffect(player, "extracrystal", 1);
             if (info.target !== "confirm") {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "When using " + an(finishName("crystal")) + ", you will receive a bonus based on your Active Pokémon's primary type (use /bst to check the Pokémon's first type).", safchan);
                 safaribot.sendMessage(src, "The bonus will work for " + plural(itemData.crystal.duration, "minute") + ", but only while the Pokémon that used the Z-Crystal on is your active Pokémon. The effects occur when throwing any ball except Master Ball.", safchan);
-                safaribot.sendHtmlMessage(src, "Your active Pokémon is " + toColor(poke(active, true), "red") + ", and it can activate " + zCrystalData[type].name + ". If you use a Z-Crystal, you will " + toColor(buffDesc +" for " + plural(itemData.crystal.duration, "minute"), "red") + ". To use the Z-Crystal, type " + link("/use Z-Crystal:confirm") + ". ", safchan);
+                safaribot.sendHtmlMessage(src, "Your active Pokémon is " + toColor(poke(active, true), "red") + ", and it can activate " + zCrystalData[type].name + ". If you use a Z-Crystal, you will " + toColor(buffDesc +" for " + plural(finalDuration, "minute"), "red") + ". To use the Z-Crystal, type " + link("/use Z-Crystal:confirm") + ". ", safchan);
                 safaribot.sendMessage(src, "Your lead Pokémon will also have increased damage output in Rotation Battle quests like Celebrity and League, although this will clear the Z-Crystal's effect.", safchan);
                 sys.sendMessage(src, "", safchan);
                 return;
@@ -17789,7 +17795,7 @@ function Safari() {
             player.balls.crystal-= 1;
             
             var cName = zCrystalData[type].name;
-            var finalDuration = itemData.crystal.duration * safari.getAuraEffect(player, "extracrystal", 1);
+            
             player.zcrystalUser = player.party[0],
             player.zcrystalDeadline = now() + Math.floor(finalDuration * 60 * 1000);
             player.records.crystalsUsed += 1;
@@ -18254,6 +18260,14 @@ function Safari() {
                     data
                 ]);
                 break;
+            case "textonly": case "textviewonly": case "bagtonly": case "bagtextonly":
+                changeOption(dataInput, "textViewOnly", [
+                    "You will now view the text version of your bag by default!",
+                    "You will now view the full version of your bag by default!",
+                    ["viewing the full version of your bag by default", "viewing the text version of your bag by default"],
+                    data
+                ]);
+                break;
             case "favorite": case "favourite": case "favoriteball": case "favouriteball":
                 safari.setFavoriteBall(src, dataInput);
                 break;
@@ -18302,6 +18316,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "View Contest Captures: " + link("/options viewcontestcaptures:", player.options.showContestCaptures ? "View My Contest Captures & BST Tally During Contests" : "Do Not View My Contest Captures & BST Tally During Contests"), safchan);
                     safaribot.sendHtmlMessage(src, "View Consecutive Catch Combo: " + link("/options showcombo:", player.options.showConsecutiveCombo ? "View My Consecutive Catch Combo After Each Capture" : "Do Not View My Consecutive Catch Combo After Each Capture"), safchan);
                     safaribot.sendHtmlMessage(src, "Offset Android Input Lag: " + link("/options androidlag:", player.options.androidTextFlow ? "Receive Continuous Server Messages" : "Do Not Receive Continuous Server Messages"), safchan);
+                    safaribot.sendHtmlMessage(src, "Text-Only Bag: " + link("/options textonly:", player.options.textViewOnly ? "View Text Version of Bag by Default" : "View Full Version of Bag by Default"), safchan);
                     var dexOptions = ["stats", "effectiveness", "trivia"];
                     safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
                         return player.options.dexOptional.contains(e) ? link("/options hidedex:" + e, cap(e)) + " <b>[Enabled]</b>" : link("/options showdex:" + e, cap(e)) + " <b>[Disabled]</b>";
@@ -20561,9 +20576,13 @@ function Safari() {
         newMission.day = player.lastLogin;
         newMission.finished = false;
         player.missionPoints -= swapCost;
-        safaribot.sendHtmlMessage(src, "You used " + plural(swapCost, "mission point") + " and swapped out the old mission (" + safari.describeMission(mission) + ") for a new one (" + safari.describeMission(newMission) + ")!", safchan);
-        player.missions.splice(index, 1, newMission);
 
+        var oldDesc = safari.describeMission(mission);
+        var newDesc = safari.describeMission(newMission);
+        
+        safaribot.sendHtmlMessage(src, "You used " + plural(swapCost, "mission point") + " and swapped out the old mission (" + oldDesc + ") for a new one (" + newDesc + ")!", safchan);
+        player.missions.splice(index, 1, newMission);
+        sys.appendToFile(miscLog, now() + "|||" + player.id.toCorrectCase() + "|||used " + plural(swapCost, "mission point") + " and swapped out an old mission (" + oldDesc + ") for a new one (" + newDesc + ")\n");
         safari.saveGame(player);
     };
     this.renewMissions = function(player) {
@@ -33891,17 +33910,19 @@ function Safari() {
                 }
                 if (ac >= 55) {
                     minPower += 5;
-                    specialIncludes = [65748, 65630, 65717, 65678]; // Mega Scizor, Mega Gengar, Mega Ampharos, Mega Aerodactyl
                 }
                 if (ac >= 62) {
-                    specialIncludes = [65984, 65842, 65790, 65542, 65545, 65796, 65666, 131730]; // Mega Lucario, Mega Aggron, Mega Sceptile, Mega Charizard X, Mega Blastoise, Mega Swampert, Mega Gyarados, Ash Greninja
+                    specialIncludes = [65748, 65630, 65717, 65678]; // Mega Scizor, Mega Gengar, Mega Ampharos, Mega Aerodactyl
                 }
                 if (ac >= 69) {
                     minPower = startingMinPower + Math.floor(args.count / 2);
                     maxPower = startingMaxPower + Math.floor(ac / 2);
+                    specialIncludes = [65984, 65842, 65790, 65542, 65545, 65796, 65666, 131730]; // Mega Lucario, Mega Aggron, Mega Sceptile, Mega Charizard X, Mega Blastoise, Mega Swampert, Mega Gyarados, Ash Greninja
+                    nextMaxBST += 999;
+                }
+                if (ac >= 76) {
                     // Giratina-Origin, Mega Diancie, Kyurem-Black, Kyurem-White, Mega Garchomp, Mega Latios, Mega Latias, Mega Metagross, Mega Salamence, Zygarde-Complete, Zacian-Crowned Sword, Zamazenta-Crowned Shield, Arceus-Water, Arceus-Steel, Arceus-Fairy, Ultra Necrozma, Primal Groudon, Primal Kyogre, Mega Rayquaza, Eternatus-Eternamax
                     specialIncludes = specialIncludes.concat([66023, 66255, 131718, 66182, 65981, 65917, 65916, 65912, 65909, 131790, 66424, 66425, 655853, 524781, 1114605, 197408, 65919, 65918, 65920, 66426]);
-                    nextMaxBST += 999;
                 }
 
                 var bossNPCs = [
@@ -39439,7 +39460,6 @@ function Safari() {
         }
         line2 += " " + link("/party", "«Party»");
         line2 += " " + link("/bag", "«Bag»");
-        line2 += " " + link("/bagt", "«Bag (Text)»");
         var currentTime = now();
         if (player.balls.itemfinder + player.balls.permfinder > 0) {
             line2 += "   " + link("/finder", "«Itemfinder»");
@@ -53461,7 +53481,7 @@ function Safari() {
                 offlineSales.push(plural(player.offlineSales[ware], ware));
             }
             if (offlineSales.length > 0) {
-                safari.notification(player, "The following items were sold in your shop while you were away: {0}.".format(readable(offlineSales)), "Shop", true);
+                safari.notification(player, "The following wares were sold in your shop while you were away: {0}.".format(readable(offlineSales)), "Shop", true);
                 player.offlineSales = {};
             }
             var unread = countRepeated(player.unreadInbox, true);
@@ -55697,7 +55717,7 @@ function Safari() {
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /box. Criteria are Alphabetical, Number, BST, Type and Duplicate.",
             "/bst [pokémon]: To view the BST of a Pokémon and price you can sell a Pokémon.",
             "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version or /boxs for a text version with links to sell them. Use /options smallbox to toggle an option to use a narrower box width.",
-            "/bag: To view all money and items. Use /bagt for a text-only version.",
+            "/bag: To view all money and items. Use /bagt for a text-only version or /bagf for the full version (if the text-only version is your default)",
             "/costumes: To view your current costumes. Use /getcostume to check your records to see if you earned any new costumes!",
             "/medals: To view your current medals.", 
             "/daycare: Displays the Daycare menu where you can deposit, retrieve, or interact with your Pokémon. You can deposit up to 2 Pokémon in the Daycare at once. Check the help button inside the command for more information. Alias(es): /dc.",
@@ -56134,8 +56154,8 @@ function Safari() {
                 }
                 return true;
             }
-            if (command === "bag" || command === "bagt") {
-                safari.viewItems(src, command === "bagt", commandData);
+            if (command === "bag" || command === "bagt" || command === "bagf") {
+                safari.viewItems(src, command, commandData);
                 return true;
             }
             if (command === "box" || command === "boxt" || command === "boxs") {
