@@ -8231,7 +8231,7 @@ function Safari() {
                 ret += "</center><hr>";
                 sendAll(ret, true, true, false, mandatoryDisplay);
             } else {
-                sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + ((wildEvent || isRare(currentDisplay) && contestCount > 0) ? "<br/><b>All ball cooldowns were reset!</b>" : "") + "</center><hr>", true, true, false, mandatoryDisplay);
+                sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + ((wildEvent || isRare(currentDisplay) && contestCount > 0) ? "<br/>All ball cooldowns were reset!" : "") + "</center><hr>", true, true, false, mandatoryDisplay);
             }
 
             safari.afterSpawnDisplay(false, mandatoryDisplay);
@@ -9714,6 +9714,7 @@ function Safari() {
             }
         }
         var shinyChance = isShiny ? 0.30 : 1;
+        var eventChance = wildEvent ? 0.4 : 1;
         var isLegend = isLegendary(wild);
         var legendaryChance = isLegend ? 0.50 : 1;
         var spiritMonBonus = wildSpirit ? 0.50 : 1;
@@ -9885,7 +9886,6 @@ function Safari() {
             legendaryChance = Math.max(0.75, legendaryChance);
             eventChance = Math.max(0.75, eventChance);
         }
-        var eventChance = (wildEvent ? 0.4 : 1);
         if (ball === "myth") {
             if (this.hasCostumeSkill(player, "mythBallBoost")) {
                 costumeBonus *= costumeBoost(player);
@@ -10118,7 +10118,7 @@ function Safari() {
                 player.berries.pecha = true;
                 needsPechaCleared.push(player.id.toLowerCase());
                 player.helds[0] = -1;
-                safaribot.sendMessage(sys.id(player.id), "Your " + poke(leader, true) + " ate its Pecha Berry and weakened the nerf!", safchan);
+                safaribot.sendMessage(sys.id(player.id), "Your " + poke(trueLeader, true) + " ate its Pecha Berry and weakened the nerf!", safchan);
             }
 
             finalChance = Math.min(RULES_NERF_CAP * (player.berries.pecha ? itemData.pecha.rate : 1), finalChance);
@@ -11384,7 +11384,7 @@ function Safari() {
             return;
         }
         if (timeSinceLastAction < rockScareThreshold) {
-            safaribot.sendMessage(src, "You can only scare the Pokémon away if " + (currentPokemonCount > 1 ? "they have" : "it has") + " not been interacted with for " + plural(Math.ceil((rockScareThreshold - timeSinceLastAction) / 1000), "more second") + "!", safchan);
+            safaribot.sendHtmlMessage(src, "You can only scare the Pokémon away if " + (currentPokemonCount > 1 ? "they have" : "it has") + " not been interacted with for " + plural(Math.ceil((rockScareThreshold - timeSinceLastAction) / 1000), "more second") + "! [" + link("/rockscare", "Try Again") + "] [" + link("/ballmacro", "Choose Another Action") + "]", safchan);
             return;
         }
         if (player.balls.rock < 1) {
@@ -32579,7 +32579,7 @@ function Safari() {
             if (list.length > 0) {
                 safaribot.sendHtmlMessage(src, "You are currently being flashed for the following Pokémon (" + list.length + "): " + readable(list.map(removeTrack)), safchan);
             }
-            safaribot.sendMessage(src, "Use \"/poketrack [Pokémon Name]\" to receive flashes when the specified Pokémon spawns. Use the command again to remove it. Note: If you want to receive flashes for certain Pokémon formes, you must add those formes individually. To clear your entire list, type \"/poketrack ~clear\".", safchan);
+            safaribot.sendMessage(src, "Use \"/poketrack [Pokémon Name 1], [Pokémon Name 2], etc.\" to receive flashes when the specified Pokémon spawn. Use the command again to remove them. Note: If you want to receive flashes for certain Pokémon formes, you must add those formes individually. To clear your entire list, type \"/poketrack ~clear\".", safchan);
             return;
         }
 
@@ -32589,26 +32589,37 @@ function Safari() {
             safari.saveGame(player);
             return;
         }
-        var input = getInputPokemon(data);
-        if (!input.num) {
-            safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
-            return;
-        }
-
-        if (list.contains(input.num)) {
-            list.splice(list.indexOf(input.num), 1);
-            safaribot.sendMessage(src, "You removed " + input.name + " from your Tracked Pokémon list! Current list: " + (readable(list.map(poke)) || "Empty"), safchan);
-        }
-        else {
-            var maxSize = 1001;
-            if (list.length > maxSize) {
-                safaribot.sendMessage(src, "You can only add up to " + maxSize + " users to your Tracked Pokémon list.", safchan);
-                return;
+        var inputList = data.split(",").map(function(e) { return e.trim() });
+        var added = [], removed = [];
+        for (var i = 0; i < inputList.length; i++) {
+            var input = getInputPokemon(inputList[i]);
+            if (!input.num) {
+                safaribot.sendMessage(src, "\"" + inputList[i] + "\" is not a valid Pokémon!", safchan);
+                continue;
             }
-            list.push(input.num);
-            safaribot.sendMessage(src, "You added " + input.name + " to your Tracked Pokémon list! Current list: " + (readable(list.map(poke)) || "Empty"), safchan);
+
+            if (list.contains(input.num)) {
+                list.splice(list.indexOf(input.num), 1);
+                removed.push(input.name);
+            }
+            else {
+                var maxSize = 1001;
+                if (list.length > maxSize) {
+                    safaribot.sendMessage(src, "You can only add up to " + maxSize + " users to your Tracked Pokémon list.", safchan);
+                    break;
+                }
+                list.push(input.num);
+                added.push(input.name);
+            }
         }
 
+        if (added.length > 0) {
+            safaribot.sendMessage(src, "You added " + readable(added) + " to your Tracked Pokémon list!", safchan);
+        }
+        if (removed.length > 0) {
+            safaribot.sendMessage(src, "You removed " + readable(removed) + " from your Tracked Pokémon list!", safchan);
+        }
+        safaribot.sendMessage(src, "Current list: " + (readable(list.map(poke)) || "Empty"), safchan);
         player.pokeFlashList = list;
         this.saveGame(player);
     };
@@ -33210,7 +33221,7 @@ function Safari() {
                 }
                 safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Oh, you don't want to help me anymore? It's a shame, but I understand. Come back later if you change your mind!", safchan);
                 quest.reward = 0;
-                quest.cooldown = now() + hours(1);
+                quest.cooldown = now() + Math.round(hours(1) * (1 - safari.getFortune(player, "questcd", 0, "collector")) * (1 - safari.getAuraEffect(player, "questcd", 0)));
                 player.notificationData.collectorWaiting = true;
                 quest.requests = [];
                 quest.deadline = null;
