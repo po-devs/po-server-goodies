@@ -9688,6 +9688,7 @@ function Safari() {
         var player = getAvatar(src), wild, isShiny, wildStats, story = false, storyMultiplier = 1;
         
         var leader = this.getEffectiveLead(player);
+        var trueLeader = this.getEffectiveLead(player, true);
 
         var ballBonus = itemData[ball].ballBonus;
 
