@@ -62078,10 +62078,13 @@ function Safari() {
                     safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
                     var saveContestVal = 8; //test this at 8 for now, if it needs to be higher or lower it can be adjusted in the future
                     contestInfo.saved = contestSaved = true;
-                    if (Object.keys(contestCatchers).length === 1) {
-                        if (contestCatchers[winners[0]].length < saveContestVal) {
-                            safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
-                            contestInfo.saved = contestSaved = false;
+                    if (Object.keys(contestCatchers).length === 1) { // if there's only 1 contestant
+                        player = getAvatarOff(Object.keys(contestCatchers)[0]);
+                        if (player && !contestForfeited.contains(player.idnum)) { // and that contestant didn't forfeit
+                            if (contestCatchers[winners[0]].length < saveContestVal) {
+                                safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
+                                contestInfo.saved = contestSaved = false;
+                            }
                         }
                     }
                     if (winners.length > 0) {
