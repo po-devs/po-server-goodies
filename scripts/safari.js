@@ -38294,7 +38294,9 @@ function Safari() {
                     if (player.quests.league.badges.length >= 7) {
                         player.quests.league.eliteNext = true;
                         player.records.allGymsCleared += 1;
-                        player.notificationData.leagueWaiting = false;
+                        if (player.quests.league.eliteCurrentUsed || !player.quests.league.eliteCurrent) {
+                            player.notificationData.leagueWaiting = false;
+                        }
                     }
                     if (safari.getFortune(player, "leagueheal", 0, null, true)) {
                         safari.useFortuneCharge(player, "leagueheal", 1);
@@ -38421,6 +38423,9 @@ function Safari() {
                     if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
                         player.zcrystalUser = false; //remove crystal effect after battle
                     }
+                    if (player.quests.league.badges.length >= 7) {
+                        player.notificationData.leagueWaiting = false;
+                    }
                     safari.pendingNotifications(player.id);
                     safari.saveGame(player);
                     sys.sendAll("", safchan);
@@ -38480,6 +38485,10 @@ function Safari() {
                 player.quests.league.eliteCurrentUsed = true;
                 player.quests.league.eliteCurrent = false;
                 player.records.eliteLost += 1;
+                if (player.quests.league.badges.length >= 7) {
+                    player.notificationData.leagueWaiting = false;
+                }
+                safari.pendingNotifications(player.id);
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Elite Four|||Challenged with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
                 safari.saveGame(player);
             }
