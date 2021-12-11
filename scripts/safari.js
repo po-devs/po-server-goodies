@@ -943,7 +943,8 @@ function Safari() {
             androidTextFlow: false,
             showConsecutiveCombo: true,
             flashRares: true,
-            textViewOnly: false
+            textViewOnly: false,
+            baitScramble: true
         },
         spawnlessThrows: 0,
         burningAura: false,
@@ -1888,7 +1889,7 @@ function Safari() {
             master: "An extremely rare Pokéball that never fails to catch. " + cdSeconds("master") + " Obtained from Gachapon and Alchemist.",
             premier: "A plain Pokéball gifted to you for your patronage. It works better when a Normal-type or a single-type Pokémon is active. " + cdSeconds("premier") + " Obtained by purchasing a lot of Pokéballs from the shop and Pyramid.",
             luxury: "A comfortable Pokéball with an increased catch rate that is said to make one wealthy. " + cdSeconds("luxury") + " Obtained from Arborist.",
-            myth: "An ancient Pokéball that ignores modern era catch modifiers. Said to be particularly effective against certain rare Pokémon. " + cdSeconds("myth") + " Obtained from Arborist.",
+            myth: "An ancient Pokéball that ignores modern era catch modifiers. Said to be particularly effective against rare Pokémon. " + cdSeconds("myth") + " Obtained from Arborist.",
             quick: "A somewhat different Pokéball that tends to get better priority during throws. " + cdSeconds("quick") + " Obtained from Arborist and Pyramid.",
             level: "A slickly designed Pokéball that raises the stat levels of the lead Pokémon. " + cdSeconds("level") + " Obtained from Arborist and Pyramid.",
             clone: "A mysterious Pokéball with a very low catch rate that can duplicate a pokémon's D.N.A. " + cdSeconds("clone") + " Obtained from Arborist and Pyramid.",
@@ -2020,7 +2021,7 @@ function Safari() {
         arenaPoints: { desc: "by Arena points won this week", alts: ["arena weekly"], alias: "arena weekly",  lastAlias: "arena last", file: "scriptdata/safari/weeklyArenaPoints.txt", lastDesc: "by Arena points won during the last week", reward: true },
         towerHighestNew: { desc: "by best Battle Tower run this week", alts: ["tower weekly", "battletower weekly", "battle tower weekly", "towerhighest weekly"], alias: "tower weekly",  lastAlias: "tower last", file: "scriptdata/safari/weeklyTowerHighest.txt", lastDesc: "by best Battle Tower run during the last week", reward: true },
         journalPoints: { desc: "by Photo points won this week", alts: ["photo weekly", "journal weekly"], alias: "photo weekly",  lastAlias: "photo last", file: "scriptdata/safari/weeklyPhotoPoints.txt", lastDesc: "by Photo points won during the last week", reward: true },
-        pyramidScore: { desc: "by Pyramid score this week", alts: ["pyramid weekly", "pyr weekly"], alias: "pyramid weekly",  lastAlias: "pyr last", file: "scriptdata/safari/weeklyPyramidScore.txt", lastDesc: "by Pyramid points won during the last week", reward: true },
+        pyramidScore: { desc: "by Pyramid score this week", alts: ["pyramid weekly", "pyr weekly"], alias: "pyramid weekly",  lastAlias: "pyramid last", file: "scriptdata/safari/weeklyPyramidScore.txt", lastDesc: "by Pyramid points won during the last week", reward: true },
         celebrityScore: { desc: "by best Normal Celebrity score this week", alts: ["celebrity weekly", "celebrityscore weekly", "celebrity score weekly", "celeb weekly", "celebrity normal weekly", "celebrityscore normal weekly", "celebrity score normal weekly", "celeb normal weekly"], alias: "celebrity weekly", lastAlias: "celebrity normal last", file: "scriptdata/safari/weeklyCelebrityScore.txt", lastDesc: "by best Normal Celebrity score during the last week", reward: true },
         celebrityScoreEasy: { desc: "by best Easy Celebrity score this week", alts: ["celebrity easy weekly", "celebrityscore easy weekly", "celebrity score easy weekly", "celeb easy weekly"], alias: "celebrity easy weekly", lastAlias: "celebrity easy last", file: "scriptdata/safari/weeklyCelebrityScoreEasy.txt", lastDesc: "by best Easy Celebrity score during the last week", reward: false },
         celebrityScoreHard: { desc: "by best Hard Celebrity score this week", alts: ["celebrity hard weekly", "celebrityscore hard weekly", "celebrity score hard weekly", "celeb hard weekly"], alias: "celebrity hard weekly", lastAlias: "celebrity hard last", file: "scriptdata/safari/weeklyCelebrityScoreHard.txt", lastDesc: "by best Hard Celebrity score during the last week", reward: true },
@@ -8265,6 +8266,9 @@ function Safari() {
         var wildAbilityMessageList = [];
         
         var is_are = currentPokemonCount > 1 ? "are" : "is"
+        if (safari.isDailyBoost(currentPokemon)) {
+            wildAbilityMessageList.push("The wild {0} {1} surrounded by a {2}!".format(poke(currentDisplay, true), is_are, typeIcon("Fire", "Burning Aura")));
+        }
         if (canHaveAbility(currentPokemon, abilitynum("Contrary"))) {
             wildAbilityMessageList.push("The wild {0} {1} inverting type matchups with Contrary!".format(poke(currentDisplay, true), is_are));
         }
@@ -8287,12 +8291,10 @@ function Safari() {
             if (wildEvent || (isRare(currentDisplay) && contestCount > 0)) { // if a rare display spawns, reset ball cooldown so everyone can attempt a throw
                 player.cooldowns.ball = 0;
             }
-            if (player.options.flashRares && isRare(currentDisplay)) {
-                sys.sendHtmlMessage(pid, toColor("<timestamp/><b>±Ping:</b> ", "#3daa68") + toFlashing(addFlashTag(sys.name(pid)) + ", a rare Pokémon has spawned!", sys.name(pid)), safchan);
-            }
-            else if (player.pokeFlashList.contains(parseInt(currentDisplay))) {
+            if ((player.options.flashRares && isRare(currentDisplay)) || player.pokeFlashList.contains(parseInt(currentDisplay))) {
                 sys.sendHtmlMessage(pid, toColor("<timestamp/><b>±Ping:</b> ", "#3daa68") + toFlashing(addFlashTag(sys.name(pid)) + ", " + an(poke(currentDisplay, true)) + " has spawned!", sys.name(pid)), safchan);
             }
+
             ballMacro(pid);
             player.spawnlessThrows = 0;
             safari.saveGame(player);
@@ -8457,7 +8459,7 @@ function Safari() {
                 safaribot.sendMessage(src, wildAbilityMessageList[msg], safchan);
             }
             else {
-                sendAll(wildAbilityMessageList[msg], false, false, false, mandatoryDisplay);
+                sendAll(wildAbilityMessageList[msg], true, false, false, mandatoryDisplay);
             }
         }
         for (var user in abilityMessageList) {
@@ -9894,7 +9896,7 @@ function Safari() {
             shinyChance = 1;
             legendaryChance = 1;
             eventChance = Math.max(0.75, eventChance);
-            if (isLegend || isShiny){
+            if (isRare(wild)) {
                 ballBonus = itemData[ball].bonusRate;
             } else {
                 typeBonus = 1;
@@ -10255,10 +10257,12 @@ function Safari() {
             return;
         }
 
-        if (cantBecause(src, reason, ["item", "auction", "battle", "event", "pyramid", "baking"], ball)) {
+        if (cantBecause(src, reason, ["item", "auction", "battle", "event", "pyramid", "baking"], ball, suppress)) {
             if (cantBecause(src, reason, ["battle"], ball, true) && (isRare(currentDisplay) || wildEvent) && player.options.autoForfeitThrow) { // if there's a rare spawn and you're in a battle
                 // you can throw, but at the cost of instantly forfeiting the match once the preparation phase is over
-                safaribot.sendHtmlMessage(src, "<b>You are forfeiting this battle to catch the wild " + poke(currentDisplay) + "!</b> " + (preparationPhase > 0 ? "[" + link("/" + ccatch + " cancel", "Cancel") + "]" : ""), safchan);
+                if (!suppress) {
+                    safaribot.sendHtmlMessage(src, "<b>You are forfeiting this battle to catch the wild " + poke(currentDisplay) + "!</b> " + (preparationPhase > 0 ? "[" + link("/" + ccatch + " cancel", "Cancel") + "]" : ""), safchan);
+                }
             }
             else { // otherwise, block the action
                 return;
@@ -10860,14 +10864,14 @@ function Safari() {
                 if (!player.burningAura && !player.brilliantAura) {
                     if (player.costume === "ninja") {
                         sys.sendMessage(src, "", safchan);
-                        safaribot.sendHtmlMessage(src, "After catching the Pokémon-of-the-Day, you were surrounded by a " + typeIcon("Fire", "Burning Aura") + "!", safchan);
+                        safaribot.sendHtmlMessage(src, "After catching the Pokémon-of-the-Day, the " + typeIcon("Fire", "Burning Aura") + " was transferred to you!", safchan);
                         if (amt > 1) {
                             sys.sendMessage(src, "", safchan);
                         }
                     }
                     else {
                         sys.sendAll("", safchan);
-                        safaribot.sendHtmlAll("After catching the Pokémon-of-the-Day, " + playerDisplayName + " was surrounded by a " + "<a href='po:send//burn " + playerDisplayName + "'>" + typeIcon("Fire", "Burning Aura") + "</a>" + "!", safchan);
+                        safaribot.sendHtmlAll("After catching the Pokémon-of-the-Day, the <a href='po:send//burn " + playerDisplayName + "'>" + typeIcon("Fire", "Burning Aura") + "</a>" + " was transferred to " + playerDisplayName + "!", safchan);
                         if (amt > 1) {
                             sys.sendAll("", safchan);
                         }
@@ -10875,6 +10879,22 @@ function Safari() {
                     player.burningAura = true;
                     safaribot.sendHtmlMessage(src, "The Burning Aura granted you the following bonuses: " + safari.describeAuraEffects(player) + "!", safchan);
                     sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||caught the Pokémon-of-the-Day (" + poke(currentPokemon) + ") and received a Burning Aura.\n");
+                }
+                else {
+                    if (player.costume === "ninja") {
+                        sys.sendMessage(src, "", safchan);
+                        safaribot.sendHtmlMessage(src, "The wild " + poke(currentPokemon, true) + "'s Burning Aura dissipated...", safchan);
+                        if (amt > 1) {
+                            sys.sendMessage(src, "", safchan);
+                        }
+                    }
+                    else {
+                        sys.sendAll("", safchan);
+                        safaribot.sendHtmlAll("The wild " + poke(currentPokemon, true) + "'s Burning Aura dissipated...", safchan);
+                        if (amt > 1) {
+                            sys.sendAll("", safchan);
+                        }
+                    }
                 }
             }
             if (amt < 1) {
@@ -12039,7 +12059,7 @@ function Safari() {
                 var activeSkills = getActiveSkills(player.party[i], player);
                 
                 activeSkills = activeSkills.map(function(e) {
-                    return link("/quest idol:charge:" + player.party[i] + ":" + skillData[e].name, skillData[e].name) + " [" + plural(player.pokeskills[player.party[i]][e].uses, "use") + "]";
+                    return link("/quest idol:charge:" + player.party[i] + (typeof player.party[i] === "string" ? "*" : "") + ":" + skillData[e].name, skillData[e].name) + " [" + plural(player.pokeskills[player.party[i]][e].uses, "use") + "]";
                 });
                 
                 if (activeSkills.length > 0) {
@@ -13908,7 +13928,7 @@ function Safari() {
         }
         return out;
     };
-    this.clearQuestNotifications = function(player, source) {
+    this.clearQuestNotifications = function(player, source, removeSource) {
         var out = 0, box = player.notifications;
         for (var e = 0; e < box.length; e++) {
             if (!(box[e].seen)) {
@@ -13916,6 +13936,9 @@ function Safari() {
                     box[e].seen = true;
                 }
             }
+        }
+        if (removeSource && player.notificationSources.contains(source)) {
+            player.notificationSources.splice(player.notificationSources.indexOf(source), 1);
         }
         safari.saveGame(player);
     };
@@ -14103,7 +14126,7 @@ function Safari() {
                     }
                 }
                 if (hit > 0) {
-                    out = "You can receive rewards from " + hit + " cleared " + link("/missions", "Missions") + "!";
+                    out = "You can receive rewards from " + hit + " cleared " + link("/missions", hit > 1 ? "Missions" : "Mission") + "!";
                     safari.notification(p, out, "Missions", true);
                     data.missionWaiting = false;
                     hitAny = true;
@@ -15122,7 +15145,7 @@ function Safari() {
             safaribot.sendMessage(src, "You can't throw " + baitName + " during a contest!", safchan);
             return;
         }
-        if (isPreparing) {
+        if (isPreparing && player.options.baitScramble) {
             safari.throwBall(src, commandData, false, false, (golden ? "g" : "")+"bait", true);
             return;
         }
@@ -16780,6 +16803,8 @@ function Safari() {
                 return;
             }
 
+            var gained = 0;
+            var totalPulled = 0;
             while (pulled > 0 && player.balls.gem > 0 && player.balls.permfinder < limit) {
                 var gemdata = itemData.gem.charges + this.getFortune(player, "extragem", 0),
                     pchars = player.balls.permfinder + gemdata;
@@ -16789,13 +16814,25 @@ function Safari() {
                 }
                 var tchars = chars + pchars;
 
-                safaribot.sendHtmlMessage(src, "The " + finishName("gem") + " begins to emit a soft baaing sound. Your Itemfinder then lights up and responds with a loud <b>BAA~!</b>", safchan);
-                safaribot.sendMessage(src, "Your Itemfinder gained " + gemdata + " charges. [Remaining Charges: " + tchars + " (Daily " + chars + " plus " + pchars + " bonus)].", safchan);
                 rewardCapCheck(player, "permfinder", gemdata);
+                gained += gemdata;
                 player.balls.gem -= 1;
                 player.records.gemsUsed += 1;
                 pulled -= 1;
+                totalPulled += 1;
+                if (player.balls.permfinder >= limit) {
+                    break;
+                }
             }
+
+            if (totalPulled === 1) {
+                safaribot.sendHtmlMessage(src, "The " + finishName("gem") + " begins to emit a soft baaing sound. Your Itemfinder then lights up and responds with a loud <b>BAA~!</b>", safchan);
+            }
+            else {
+                safaribot.sendHtmlMessage(src, "The " + plural(totalPulled, "gem") + " begin to emit a soft baaing sound. Your Itemfinder then lights up and responds with a loud <b>BAA~!</b>", safchan);
+            }
+            safaribot.sendMessage(src, "Your Itemfinder gained " + gained + " charges. [Remaining Charges: " + tchars + " (Daily " + chars + " plus " + pchars + " bonus)].", safchan);
+            
             this.updateShop(player, "gem");
             safaribot.sendMessage(src, itemsLeft(player, "gem"), safchan);
             this.saveGame(player);
@@ -18269,6 +18306,14 @@ function Safari() {
                     data
                 ]);
                 break;
+            case "baitscramble":
+                changeOption(dataInput, "baitScramble", [
+                    "You will now automatically prepare to throw a Ball if someone baits a Pokémon before you!",
+                    "You will no longer automatically prepare to throw a Ball if someone baits a Pokémon before you!",
+                    ["set to not throw a Ball if someone baits a Pokémon before you", "set to automatically throw a Ball if someone baits a Pokémon before you"],
+                    data
+                ]);
+                break;
             case "favorite": case "favourite": case "favoriteball": case "favouriteball":
                 safari.setFavoriteBall(src, dataInput);
                 break;
@@ -18318,6 +18363,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "View Consecutive Catch Combo: " + link("/options showcombo:", player.options.showConsecutiveCombo ? "View My Consecutive Catch Combo After Each Capture" : "Do Not View My Consecutive Catch Combo After Each Capture"), safchan);
                     safaribot.sendHtmlMessage(src, "Offset Android Input Lag: " + link("/options androidlag:", player.options.androidTextFlow ? "Receive Continuous Server Messages" : "Do Not Receive Continuous Server Messages"), safchan);
                     safaribot.sendHtmlMessage(src, "Text-Only Bag: " + link("/options textonly:", player.options.textViewOnly ? "View Text Version of Bag by Default" : "View Full Version of Bag by Default"), safchan);
+                    safaribot.sendHtmlMessage(src, "Bait Scramble: " + link("/options baitscramble:", player.options.baitScramble ? "Automatically Throw a Ball When Someone Baits Before You" : "Do Not Throw a Ball When Someone Baits Before You"), safchan);
                     var dexOptions = ["stats", "effectiveness", "trivia"];
                     safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
                         return player.options.dexOptional.contains(e) ? link("/options hidedex:" + e, cap(e)) + " <b>[Enabled]</b>" : link("/options showdex:" + e, cap(e)) + " <b>[Disabled]</b>";
@@ -20197,7 +20243,7 @@ function Safari() {
                 this.notification(player, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), "Login");
             }
 
-            safari.clearQuestNotifications(player, "Login");
+            safari.clearQuestNotifications(player, "Login", true);
             if (hasMaster && reward.hasOwnProperty("@fragment") && reward["@fragment"] > 0) {
                 safaribot.sendMessage(src, "As you try to put it away, the " + finishName("master") + " starts to glow very bright and then shatters in your hands. Sadly, all you could do was carefully grab a salvageable piece and stow it safely in your bag.", safchan);
             }
@@ -34038,11 +34084,11 @@ function Safari() {
                         break;
                         case 1:
                             rew = "gacha";
-                            amt = Math.floor(loop * 1.5 * cbonus);
+                            amt = Math.floor(loop * 1.2 * cbonus);
                         break;
                         case 2:
                             rew = "bait";
-                            amt = Math.floor(loop * 1.5 * cbonus);
+                            amt = Math.floor(loop * 1.2 * cbonus);
                         break;
                         case 3:
                             rew = "dust";
@@ -34054,7 +34100,7 @@ function Safari() {
                         break;
                         case 5:
                             rew = ["bluapricorn", "ylwapricorn", "grnapricorn", "blkapricorn"].random();
-                            amt = Math.floor(loop * 1.25 * cbonus);
+                            amt = Math.floor(loop * 1.3 * cbonus);
                         break;
                         case 6:
                             rew = "silver";
@@ -35708,7 +35754,7 @@ function Safari() {
                 if (pokeId <= 0 || pokeId >= highestDexNum)
                     continue;
                 out.answer.push(pokeId);
-                out.answer = removeDuplicates(out.answer);
+                out.answer = removeDuplicates(out.answer, true);
             }
             var firstFourOrder = [2 + 3 * Math.random(), 5 + 6 * Math.random(), 16 + 4 * Math.random(), 19 + 6 * Math.random()].shuffle(); //strength of first few clues
             var nextThreeOrder = [4 + 8 * Math.random(), 1 + 2 * Math.random(), 10 + 10 * Math.random()].shuffle(); //strength of next few clues
@@ -35920,7 +35966,7 @@ function Safari() {
                     safari.detectiveData[uid+""].solved = true;
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Congratulations! The combination was " + readable(guesses.map(function(x) {return poke(parseInt(x, 10))})) + "! Here is your prize!", safchan);
                     var today = getDay(now());
-                    var grandprize = false ? "@entry,3@prize,25@hdew,5@mail" : "3@prize,25@hdew,5@mail"; //set to true for future detective related raffles
+                    var grandprize = "3@prize,25@hdew,5@mail";
                     var g = giveStuff(player, toStuffObj(grandprize));
                     safaribot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "orangered"), safchan);
                     player.records.casesSolved += 1;
@@ -35941,7 +35987,7 @@ function Safari() {
                         }
                     }
                     strengthtotal = Math.floor(strengthtotal);
-                    sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues totaling " + strengthtotal + " strength in " + timeString(timeTaken/1000, true) + " after " + (safari.detectiveData[uid+""].wrongGuesses) + " wrong guess(es)|||Received " + readable(grandprize) + "\n");
+                    sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues totaling " + strengthtotal + " strength in " + timeString(timeTaken/1000, true) + " after " + (safari.detectiveData[uid+""].wrongGuesses) + " wrong guess(es)|||" + cap(g) + "\n");
                     player.notificationData.detectiveWaiting = true;
                     safari.missionProgress(player, "completeDetective", 1, 1);
                     safari.pendingNotifications(player.id);
@@ -38248,6 +38294,7 @@ function Safari() {
                     if (player.quests.league.badges.length >= 7) {
                         player.quests.league.eliteNext = true;
                         player.records.allGymsCleared += 1;
+                        player.notificationData.leagueWaiting = false;
                     }
                     if (safari.getFortune(player, "leagueheal", 0, null, true)) {
                         safari.useFortuneCharge(player, "leagueheal", 1);
@@ -55753,6 +55800,7 @@ function Safari() {
             "/viewers: Shows which users are currently spectating your battle/Pyramid run/Baking quest.",
             "/clearpending: Cancels any pending commands you have queued.",
             "/poketrack: To edit your Tracked Pokémon list. You will receive flashes when a Pokémon in the list spawns.",
+            "/showpokemon [Pokémon]: View the sprite and full images of the specified Pokémon.",
             //seasonal change
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
@@ -57053,7 +57101,7 @@ function Safari() {
                 if (themes.length > 0) {
                     safaribot.sendHtmlMessage(src, info.name + " can be found in the following " + plural(themes.length, "theme") + ": " + readable(themes.map(function(e) { return link("/themespawns " + e.replace(/(\[.+\])/, "").trim(), e) }), "and") + ".", safchan);
                 } else {
-                    safaribot.sendMessage(src, info.name + " cannot be found in any theme currently.", safchan);
+                    safaribot.sendMessage(src, info.name + " cannot currently be found in any theme.", safchan);
                 }
                 
                 if (SESSION.channels(safchan).isChannelOwner(src)) {
@@ -62099,7 +62147,7 @@ function Safari() {
                         if (list.length < 1) {
                             list.push("a prize");
                         }
-                        safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and " + (winners.length > 1 ? "have" : "has") + " won " + readable(list, "and")  + "!", safchan);
+                        safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest" + (!contestSaved ? "!" : "and " + (winners.length > 1 ? "have" : "has") + " won " + readable(list, "and")  + "!"), safchan);
                         contestInfo.winners = readable(fullWinners, "and");
                         contestInfo.caught = maxCaught;
                         contestInfo.bst = maxBST === 0 ? catchersBST[winners[0]] : maxBST;
