@@ -1188,7 +1188,7 @@ function Safari() {
             scale: {name: "scale", fullName: "Prism Scale", type: "consumable", icon: 232, price: 3000, duration: 10, aliases: ["scale", "prism", "prism scale", "prismscale"], tradable: false },
             mushroom: {name: "mushroom", fullName: "Big Mushroom", type: "consumable", icon: 47, price: 3000, duration: 10, aliases: ["mushroom", "big mushroom", "bigmushroom", "tiny mushroom", "tinymushroom", "shroom"], tradable: true },
             brush: {name: "brush", fullName: "Photo Brush", type: "consumable", icon: 175, price: 3000, aliases: ["brush", "photo brush", "photobrush"], tradable: false },
-            pokeblock: {name: "pokeblock", fullName: "Pokéblock", type: "consumable", icon: 53, price: 3000, aliases: ["block", "poke brush", "pokeblock", "noms"], tradable: false},
+            pokeblock: {name: "pokeblock", fullName: "Pokéblock", type: "consumable", icon: 53, price: 3000, aliases: ["block", "poke block", "noms", "pokéblock", "poké block"], tradable: false},
 
             //Consumables (for useItem)
             rare: {name: "rare", fullName: "Rare Candy", type: "consumable", icon: 117, price: 5000, charges: 230, minVar: 0, maxVar: 30, aliases:["rare", "rarecandy", "rare candy", "candy"], tradable: true},
@@ -10862,7 +10862,7 @@ function Safari() {
             }
             if (safari.isDailyBoost(currentPokemon)) {
                 if (!player.burningAura && !player.brilliantAura) {
-                    if (player.costume === "ninja") {
+                    if (player.costume === "ninja" || ball === "spy") {
                         sys.sendMessage(src, "", safchan);
                         safaribot.sendHtmlMessage(src, "After catching the Pokémon-of-the-Day, the " + typeIcon("Fire", "Burning Aura") + " was transferred to you!", safchan);
                         if (amt > 1) {
@@ -10881,7 +10881,7 @@ function Safari() {
                     sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||caught the Pokémon-of-the-Day (" + poke(currentPokemon) + ") and received a Burning Aura.\n");
                 }
                 else {
-                    if (player.costume === "ninja") {
+                    if (player.costume === "ninja" || ball === "spy") {
                         sys.sendMessage(src, "", safchan);
                         safaribot.sendHtmlMessage(src, "The wild " + poke(currentPokemon, true) + "'s Burning Aura dissipated...", safchan);
                         if (amt > 1) {
@@ -16275,7 +16275,7 @@ function Safari() {
             safaribot.sendMessage(src, "Your " + info.name + " " + verb + " " + poke(evolution) + "!", safchan);
             sys.sendMessage(src, "", safchan);
         } else {
-            var rareEvo = isRare(info.num, true) || isRare(evolution, true);
+            var rareEvo = (isRare(info.num, true) || isRare(evolution, true)) && !isMega(evolution) && !isMega(info.num);
             var canView = sys.playersOfChannel(safchan).filter(function(e) {
                 var p = getAvatar(e);
                 if (!p || rareEvo || p.options.showEvoMessages || e === src) {
@@ -19937,6 +19937,9 @@ function Safari() {
                 sys.sendMessage(sellerId, "", safchan);
             }
             else {
+                if (!seller.hasOwnProperty("offlineSales")) {
+                    seller.offlineSales = {};
+                }
                 if (!seller.offlineSales.hasOwnProperty(input.input)) {
                     seller.offlineSales[input.input] = 0;
                 }
@@ -20601,7 +20604,7 @@ function Safari() {
 
         var swapCost = mission.points * 3;
         if (!confirm) {
-            safaribot.sendHtmlMessage(src, "This mission (" + safari.describeMission(mission) + ") will cost " + plural(swapCost, "mission point") + " to swap. Type " + link("/swapmission " + index + ":confirm") + " to confirm.", safchan);
+            safaribot.sendHtmlMessage(src, "This mission [" + safari.describeMission(mission) + "] will cost " + plural(swapCost, "mission point") + " to swap. Type " + link("/swapmission " + index + ":confirm") + " to confirm.", safchan);
             return;
         }
         if (player.missionPoints < swapCost) {
@@ -20627,9 +20630,9 @@ function Safari() {
         var oldDesc = safari.describeMission(mission);
         var newDesc = safari.describeMission(newMission);
         
-        safaribot.sendHtmlMessage(src, "You used " + plural(swapCost, "mission point") + " and swapped out the old mission (" + oldDesc + ") for a new one (" + newDesc + ")!", safchan);
+        safaribot.sendHtmlMessage(src, "You used " + plural(swapCost, "mission point") + " and swapped out the old mission [" + oldDesc + "] for a new one [" + newDesc + "]!", safchan);
         player.missions.splice(index, 1, newMission);
-        sys.appendToFile(miscLog, now() + "|||" + player.id.toCorrectCase() + "|||used " + plural(swapCost, "mission point") + " and swapped out an old mission (" + oldDesc + ") for a new one (" + newDesc + ")\n");
+        sys.appendToFile(miscLog, now() + "|||" + player.id.toCorrectCase() + "|||used " + plural(swapCost, "mission point") + " and swapped out an old mission [" + oldDesc + "] for a new one [" + newDesc + "]\n");
         safari.saveGame(player);
     };
     this.renewMissions = function(player) {
@@ -62156,7 +62159,7 @@ function Safari() {
                         if (list.length < 1) {
                             list.push("a prize");
                         }
-                        safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest" + (!contestSaved ? "!" : "and " + (winners.length > 1 ? "have" : "has") + " won " + readable(list, "and")  + "!"), safchan);
+                        safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest" + (!contestSaved ? "!" : " and " + (winners.length > 1 ? "have" : "has") + " won " + readable(list, "and")  + "!"), safchan);
                         contestInfo.winners = readable(fullWinners, "and");
                         contestInfo.caught = maxCaught;
                         contestInfo.bst = maxBST === 0 ? catchersBST[winners[0]] : maxBST;
