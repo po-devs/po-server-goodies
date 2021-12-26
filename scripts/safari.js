@@ -7966,17 +7966,18 @@ function Safari() {
                         }
                         if ((this.validForTheme(id, cTheme) || includeContestVariations) && bst <= statCap && chance(extrabstChance)) {
                             list.push(id);
-                            if (isLegendary(id) && truebst >= 670) {
-                                for (i = 5; i--; ) {
-                                    list.push(id);
+                            if (isLegendary(id) && chance(0.9)) {
+                                var extras = 0;
+                                if (truebst >= 670) {
+                                    extras = 5;
                                 }
-                            }
-                            if (isLegendary(id) && truebst >= 660) {
-                                for (i = 5; i--; ) {
-                                    list.push(id);
+                                else if (truebst >= 660) {
+                                    extras = 7;
                                 }
-                            } else if (isLegendary(id) && truebst >= 600) {
-                                for (i = 3; i--; ) {
+                                else if (truebst >= 600) {
+                                    extras = 6;
+                                }
+                                for (i = extras; i--;) {
                                     list.push(id);
                                 }
                             }
@@ -15350,12 +15351,8 @@ function Safari() {
                 player.records.baitNothing += 1;
             }
         }
-        if (deluxe) {
-            safaribot.sendMessage(src, "You have " + plural(player.balls[item], baitName) + " remaining.", safchan);
-        }
-        else {
-            safaribot.sendMessage(src, "You have " + plural(player.balls[item], baitName) + " remaining." + (player.mushroomDeadline > 0 ? " ({0} remaining)".format(plural(player.mushroomDeadline, finishName("mushroom") + " spawn")) : ""), safchan);
-        }
+
+        safaribot.sendMessage(src, "You have " + plural(player.balls[item], baitName) + " remaining." + (player.mushroomDeadline > 0 ? " ({0} remaining)".format(plural(player.mushroomDeadline, finishName("mushroom") + " spawn")) : ""), safchan);
         this.saveGame(player);
         if (hax) {
             if (currentPokemon) {
@@ -27365,11 +27362,11 @@ function Safari() {
         }
         if ((this.select && this.select.leftovers) && (npc)) {
             user.hp = Math.min(Math.round(user.hp + (user.maxhp / 16)), user.maxhp);
-            this.sendToViewers(name + " restored some HP with its leftovers!");
+            this.sendToViewers(name + " restored some HP with its Leftovers!");
         }
         if ((this.select2 && this.select2.leftovers) && ((!npc))) {
             user.hp = Math.min(Math.round(user.hp + (user.maxhp / 16)), user.maxhp);
-            this.sendToViewers(name + " restored some HP with its leftovers!");
+            this.sendToViewers(name + " restored some HP with its Leftovers!");
         }
         if (((this.select && this.select.grassyterrain) || (this.select2 && this.select2.grassyterrain)) && (!(hasType(user.id, "Flying")))) {
             user.hp = Math.min(Math.round(user.hp + (user.maxhp / 16)), user.maxhp);
@@ -37395,9 +37392,9 @@ function Safari() {
                     args.index = next;
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> I have the great honor of saying that you have triumphed over all of the Celebrity Trainers today!", safchan);
                     sys.sendAll("", safchan);
-                    safaribot.sendHtmlAll("<b>Announcer: " + name + " has defeated all 13 Celebrity Trainers (Difficulty: " + level + ")! Please congratulate our champion!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Announcer: " + name + " has defeated all 13 Celebrity Trainers (Difficulty: " + level + ")! Please congratulate our Champion!</b>", safchan);
                     sys.sendAll("", safchan);
-                    sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity|||Difficulty: " + level + "|||Challenged with " + readable(player.party.map(poke)) + "|||" + (args.canReward ? "Received " + plural(reward[1], reward[0]) + " by defeating " + next + " Trainers" : "Was not eligible for prizes") + "\n");
+                    sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + level + "|||Challenged with " + readable(player.party.map(poke)) + " (Region: " + cap(player.celebrityRegion) + ")|||Defeated all " + next + " Trainers and " + (args.canReward ? " received " + plural(reward[1], reward[0]) : " was not eligible for prizes") + "\n");
                     var description = "Cleared " + player.celebrityRegion.toUpperCase() + " Celebrities on " + level.toUpperCase() + " (" + new Date(now()).toUTCString() + ")";
                     var ic = [253, 252, 251, 249, 258, 255][args.difficulty+1];
                     safari.awardMedal(
@@ -37628,7 +37625,7 @@ function Safari() {
                     break;
                 }
                 
-                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + (args.canReward ? " and was eligible for prizes" : " and was not eligible for prizes") + "\n");
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + level + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + " (Region: " + cap(player.celebrityRegion) + ")|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + (args.canReward ? " and was eligible for prizes" : " and was not eligible for prizes") + "\n");
                 
                 if (isPlaying(sys.name(id))) {
                     safari.revertMega(id, true);
@@ -46790,18 +46787,18 @@ function Safari() {
             case "sandstorm3": m = "A Sandstorm rages."; break;
             case "hail": m = "Hail begins to fall."; break;
             case "hail3": m = "Hail begins to fall."; break;
-            case "sun": m = "The sunlight is intense."; break;
-            case "rain": m = "There is a heavy downpour of rain."; break;
-            case "electricterrain": m = "The field surges with electric terrain."; break;
-            case "grassyterrain": m = "The field surges with grassy terrain."; break;
-            case "psychicterrain": m = "The field surges with psychic terrain."; break;
-            case "mistyterrain": m = "The field surges with misty terrain."; break;
-            case "powertrick": m = "All Pokémons' Atk and Def as well as their Special Atk and Special Def are swapped."; break;
+            case "sun": m = "The Sunlight is intense."; break;
+            case "rain": m = "There is a heavy downpour of Rain."; break;
+            case "electricterrain": m = "The field surges with Electric Terrain."; break;
+            case "grassyterrain": m = "The field surges with Grassy Terrain."; break;
+            case "psychicterrain": m = "The field surges with Psychic Terrain."; break;
+            case "mistyterrain": m = "The field surges with Misty Terrain."; break;
+            case "powertrick": m = "All Pokémons' Attack and Defense as well as their Special Attack and Special Defense are swapped."; break;
             case "statjumble": m = "Stats are shuffled."; break;
-            case "singlespecialstat": m = "All Pokémon use Special Attack as their Special Defense."; break;
-            case "spikes3": m = "The battle begins with three layers of spikes on challenger's side of the field."; break;
-            case "spikes2": m = "The battle begins with two layers of spikes on challenger's side of the field."; break;
-            case "spikes": m = "The battle begins with one layer of spikes on challenger's side of the field."; break;
+            case "singlespecialstat": m = "All Pokémon use their Special Attack stat as their Special Defense."; break;
+            case "spikes3": m = "The battle begins with three layers of Spikes on challenger's side of the field."; break;
+            case "spikes2": m = "The battle begins with two layers of Spikes on challenger's side of the field."; break;
+            case "spikes": m = "The battle begins with one layer of Spikes on challenger's side of the field."; break;
             case "hazardsetter": m = "The foe sets up a layer of Spikes every 5 turns."; break;
             case "stealthrock": m = "The battle begins with Stealth Rock on challenger's side of the field."; break;
             case "stealththunder": m = "The battle begins with Stealth Thunder on challenger's side of the field."; break;
@@ -46811,8 +46808,8 @@ function Safari() {
             case "quickSand": m = "The battle begins with Quicksand on challenger's side of the field."; break;
             case "harshWinds": m = "The battle begins with Harsh Winds on challenger's side of the field."; break;
             case "shellBurn": m = "Fire-type moves harm the user."; break;
-            case "SwiftSwim": m = "Water-type Pokémon have their speed doubled in Rain."; break;
-            case "sandBoostGround": m = "Ground-type Pokémon have their speed doubled and receive Special Defense boost from Sandstorm."; break;
+            case "SwiftSwim": m = "Water-type Pokémon have their Speed doubled in Rain."; break;
+            case "sandBoostGround": m = "Ground-type Pokémon have their Speed doubled and receive a Special Defense boost from Sandstorm."; break;
             case "initialReflect": m = "Reflect begins active on foe's side."; break;
             case "initialReflect2": m = "Reflect begins active on challenger's side."; break;
             case "initialLightScreen": m = "Light Screen begins active on foe's side."; break;
@@ -46826,46 +46823,46 @@ function Safari() {
             case "genesisshield": m = "The foe's team is surrounded with a Genesis Shield."; break;
             case "shellArmor": m = "Critical hits cannot occur."; break;
             case "criticalDouble": m = "Critical hits do increased damage."; break;
-            case "hyperBeamGlitch": m = "Recharge moves are stronger, and do not require recharge if they score a KO."; break;
+            case "hyperBeamGlitch": m = "Recharge moves are stronger, and do not require a recharge turn if they score a KO."; break;
             case "noncritexhaust": m = "Attacking stat lowered, while landing a critical hit removes nerfs in the attacking stat."; break;
-            case "boostDrain": m = "Drain moves restore a greater amount of HP."; break;
+            case "boostDrain": m = "Draining moves restore a greater amount of HP."; break;
             case "sabotage": m = "Landing super-effective attacks causes you to be sabotaged by the foe's fanclub."; break;
             case "solidRock": m = "The foe's Pokémon are slightly resistant to super-effective attacks."; break;
             case "expertBelt": m = "The foe's Pokémon are stronger when using super-effective attacks."; break;
-            case "hugePower": m = "One of the foe's Pokémon has their attack stat doubled."; break;
+            case "hugePower": m = "One of the foe's Pokémon has their Attack stat doubled."; break;
             case "researcher": m = "The foe's Pokémon have their stats doubled."; break;
             case "hpboost": m = "Foe's Pokémon have a greater amount of HP."; break;
-            case "fortress": m = "Foe's Pokémon begin with their defences boosted, but attacks reduced."; break;
+            case "fortress": m = "Foe's Pokémon begin with their Defense and Special Defense boosted, but with Attack and Special Attack reduced."; break;
             case "brawler": m = "Foe's Pokémon power up when hit with physical moves."; break;
             case "balloon": m = "Foe's Pokémon begin the game holding a Balloon."; break;
-            case "autopara": m = "Challenger's Pokémon begin paralyzed."; break;
-            case "autopoison": m = "Challenger's Pokémon begin poisoned."; break;
+            case "autopara": m = "Challenger's Pokémon begin Paralyzed."; break;
+            case "autopoison": m = "Challenger's Pokémon begin Poisoned."; break;
             case "heatproof": m = "Foe's Pokémon are resistant to Fire."; break;
             case "furcoat": m = "Foe's Pokémon take half damage from Physical moves."; break;
             case "switchHeal": m = "User's Pokémon heal when switched out."; break;
             case "regenerator": m = "Foe's Pokémon heal every 5 turns."; break;
             case "adaptability": m = "All STAB is increased in power."; break;
             case "multiscale": m = "Foe's Pokémon take reduced damage while at full HP."; break;
-            case "aurashield": m = "Foe's Pokémon take reduced damage from special attacks when above 50% HP."; break;
+            case "aurashield": m = "Foe's Pokémon take reduced damage from Special Attacks when above 50% HP."; break;
             case "dualscale": m = "All Pokémon take and deal reduced damage while at full HP."; break;
             case "shadowsBlade": m = "Shadow's Blade: Challenger's Pokémon lose half their remaining HP every 5 turns."; break;
             case "blueBoost": m = "Blue Pokémon receive a fighting boost."; break;
             case "pinkBoost": m = "Pink Pokémon receive a fighting boost."; break;
             case "skyBattle": m = "Sky Battle - Pokémon that cannot use Fly or Bounce suffer more damage and deal less damage."; break;
             case "arenaBattle": m = "Arena Battle - Pokémon that cannot use Seismic Toss suffer more damage and deal less damage."; break;
-            case "weightattack": m = "Heavier Pokémon take more damage from Grass- and Fighting- type attacks."; break;
+            case "weightattack": m = "Heavier Pokémon take more damage from Grass and Fighting-type attacks."; break;
             case "dragonslayer": m = "Foe's Fighting-type moves deal double damage to Dragon-type Pokémon."; break;
             case "freezedry": m = "Foe's Ice-type moves are quadruply effective against Water."; break;
             case "thickFat": m = "Foe's Pokémon are more resistant to Fire and Ice."; break;
             case "corrosion": m = "Poison type moves are super-effective on Steel types and Steel types may be poisoned."; break;
             case "overheated": m = "Foe's Fire-type Pokémon resist Water, but are weaker to Fire."; break;
-            case "retaliate": m = "Foe's attack power is doubled until the end of the turn if hit with a Special Attack."; break;
+            case "retaliate": m = "Foe's attack power is doubled until the end of the turn if hit with a special attack."; break;
             case "nerfBestStat": m = "All Pokémon's best stat(s) begin with a debuff."; break;
-            case "intimidate": m = "Challenger's Pokémon begin the game with debuffed attack."; break;
+            case "intimidate": m = "Challenger's Pokémon begin the game with debuffed Attack."; break;
             case "speedcrit": m = "Pokémon with a speed advantage score critical hits more easily."; break;
             case "frenzy": m = "KO-ing a Pokémon restores HP to the Pokémon that gave the final blow."; break;
             case "grudge": m = "KO-ing a Pokémon damages the Pokémon that gave the final blow."; break;
-            case "faintTrap": m = "KO-ing a Pokémon weakens the defenses and speed of the Pokémon that gave the final blow."; break;
+            case "faintTrap": m = "KO-ing a Pokémon weakens the Defense, Special Defense and Speed of the Pokémon that gave the final blow."; break;
             case "naturalcure": m = "Grass and Water-type moves cure the user's status."; break;
             case "poweruppunch": m = "Foe's Pokémon power up when using Physical Attacks."; break;
             case "chargebeam": m = "Foe's Pokémon power up when using Special Attacks."; break;
@@ -46875,20 +46872,20 @@ function Safari() {
             case "waterfall": m = "Every three to six turns, both Pokémon on the field are struck with a Waterfall."; break;
             case "topsyturvy": m = "Every seven turns, all stat changes are inverted."; break;
             case "statshift": m = "Every three turns, all stat changes shifted over."; break;
-            case "dancer": m = "Every six turns, foe's SATK SDEF SPE +1."; break;
-            case "dancer2": m = "Every six turns, foe's ATK SPE +1."; break;
-            case "smasher": m = "Every six turns, foe's ATK SATK SPE +2 and DEF SDEF -1."; break;
-            case "speedboost": m = "Foe's speed increases at the end of every turn."; break;
-            case "lastStand": m = "Foe's last Pokémon's ATK SATK SPE +2."; break;
+            case "dancer": m = "Every six turns, foe's Special Attack, Special Defense and Speed +1."; break;
+            case "dancer2": m = "Every six turns, foe's Attack and Speed +1."; break;
+            case "smasher": m = "Every six turns, foe's Attack, Special Attack and Speed +2, and Defense and Special Defense -1."; break;
+            case "speedboost": m = "Foe's Speed increases at the end of every turn."; break;
+            case "lastStand": m = "Foe's last Pokémon's Attack, Special Attack and Speed +2."; break;
             case "retaliate2": m = "Next attack after a teammate faints has its power doubled."; break;
             case "rollout": m = "Attacking with the same Pokémon consecutively boosts its attack power."; break;
             case "categorySplit": m = "Move category is determined by type."; break;
             case "specBan": m = "Special moves cannot be used."; break;
             case "physBan": m = "Physical moves cannot be used."; break;
-            case "normalcy": m = "All Pokémon gain NORMAL type."; break;
-            case "draconian": m = "All Pokémon gain DRAGON type."; break;
-            case "mechanical": m = "All Pokémon gain STEEL type."; break;
-            case "classicTypes": m = "DARK, STEEL, or FAIRY types are not accounted for."; break;
+            case "normalcy": m = "All Pokémon gain Normal-type."; break;
+            case "draconian": m = "All Pokémon gain Dragon-type."; break;
+            case "mechanical": m = "All Pokémon gain Steel-type."; break;
+            case "classicTypes": m = "Dark, Steel, and Fairy-types are not accounted for."; break;
             case "lightClay": m = "Foe's Reflect and Light Screen are extended."; break;
             case "inverted": m = "Inverted Battle."; break;
             case "resistMode": m = "Move's type effectiveness is determined by its resistance to the foe's typing."; break;
@@ -46896,34 +46893,34 @@ function Safari() {
             case "powerUnknown": m = "Move damage may be hidden."; break;
             case "simple": m = "All stat changes are doubly influential."; break;
             case "noStatBoost": m = "Stat changes cannot occur."; break;
-            case "reversal": m = "Pokémon near fainting receive extreme power boost."; break;
+            case "reversal": m = "Pokémon near fainting receive an extreme power boost."; break;
             case "overgrowblazetorrent": m = "Pokémon's Grass/Fire/Water STAB increases when below 33%."; break;
             case "brine": m = "Pokémon near fainting suffer more damage."; break;
             case "analytic": m = "Foe's attacks adapt to their target's type over consecutive hits."; break;
             case "slowStart": m = "Foe damage output is halved for the first 5 turns."; break;
-            case "guts": m = "All Pokémon have increased attack stat while inflicted with a status condition. The ATK reduction from burns is ignored."; break;
-            case "defiant": m = "Foe's Pokémon Atk +2 when stat is nerfed."; break;
+            case "guts": m = "All Pokémon have increased Attack stat while inflicted with a status condition. The Attack reduction from burns is ignored."; break;
+            case "defiant": m = "Foe's Pokémon's Attack +2 when any of its stats are decreased."; break;
             case "hex": m = "All Pokémon suffer double damage while afflicted with a status condition."; break;
             case "weakSTAB": m = "There is no bonus for STAB moves."; break;
             case "nostab": m = "Pokémon cannot use any STAB moves."; break;
-            case "thickPollen": m = "All non-Grass non-Bug Pokémon suffer reduced SPE from pollen."; break;
+            case "thickPollen": m = "All non-Grass and non-Bug Pokémon suffer reduced Speed from pollen."; break;
             case "galeWings": m = "All Flying-type moves have increased priority."; break;
-            case "bodypress": m = "All physical moves use the higher of attack and defense stat to deal damage."; break;
-            case "electroball": m = "All physical moves use the higher of attack and speed stat to deal damage."; break;
-            case "psystrike": m = "All Psychic-type moves target the lower defense stat."; break;
-            case "fairystrike": m = "All Fairy-type moves target the lower of defense and attack when doing damage."; break;
-            case "inferno": m = "All Fire-type moves have a 25% chance to burn."; break;
-            case "scald": m = "All Water-type moves have a 30% chance to burn and thaw the user."; break;
-            case "zapcannon": m = "All Electric-type moves have a 50% chance to paralyze."; break;
-            case "toxic": m = "All Poison-type moves have a 75% chance to inflict poison."; break;
+            case "bodypress": m = "All physical moves use the higher value between its Attack and Defense to deal damage."; break;
+            case "electroball": m = "All physical moves use the higher value between its Attack and Speed stat to deal damage."; break;
+            case "psystrike": m = "All Psychic-type moves target the lower defensive stat."; break;
+            case "fairystrike": m = "All Fairy-type moves target the lower of Defense and Attack when doing damage."; break;
+            case "inferno": m = "All Fire-type moves have a 25% chance to Burn."; break;
+            case "scald": m = "All Water-type moves have a 30% chance to Burn and thaw the user."; break;
+            case "zapcannon": m = "All Electric-type moves have a 50% chance to Paralyze."; break;
+            case "toxic": m = "All Poison-type moves have a 75% chance to inflict Poison."; break;
             case "strongJaw": m = "All physical moves where the user has a bite move of its type are 50% stronger."; break;
-            case "dynamicPunch": m = "All Fighting-type moves inflict confusion."; break;
-            case "chillPhysical": m = "All Dragon-type moves lower target's speed and attack unless the target is a Dragon type Pokémon."; break;
-            case "chillSpecial": m = "All Ice-type moves lower target's speed and special attack unless the target is an Ice type Pokémon."; break;
-            case "psyDrop": m = "All Psychic-type moves lower have a 50% chance to drop the target's Special Attack and Special Defense."; break;
-            case "pixelate": m = "All Normal type moves become Fairy type moves and are increased in damage by 20%."; break;
-            case "sweltering": m = "All Water- and Ice- type moves becomes Normal type moves."; break;
-            case "ashes": m = "All Normal type moves becomes Ghost type moves, while all Fire type moves become Rock type moves."; break;
+            case "dynamicPunch": m = "All Fighting-type moves inflict Confusion."; break;
+            case "chillPhysical": m = "All Dragon-type moves lower the target's Speed and Attack unless the target is a Dragon-type Pokémon."; break;
+            case "chillSpecial": m = "All Ice-type moves lower target's Speed and Special Attack unless the target is an Ice-type Pokémon."; break;
+            case "psyDrop": m = "All Psychic-type moves have a 50% chance to drop the target's Special Attack and Special Defense."; break;
+            case "pixelate": m = "All Normal-type moves become Fairy-type moves and are receive a 20% damage increase."; break;
+            case "sweltering": m = "All Water and Ice-type moves becomes Normal-type moves."; break;
+            case "ashes": m = "All Normal-type moves become Ghost-type moves, while all Fire-type moves become Rock-type moves."; break;
             case "extendedSleep": m = "All Pokémon are deep sleepers."; break;
             case "leftovers": m = "The foe's team restores HP gradually."; break;
             case "shedSkin": m = "The foe's team can cure itself of status (25% chance)."; break;
@@ -54394,9 +54391,9 @@ function Safari() {
         if (player.medals.length >= medalCap) {
             //player.medals = player.medals.slice(0, medalCap);
             if (isPlaying(player.id))
-                safaribot.sendMessage(sys.id(player.id), "You were unable to receive the medal " + medal.desc + " as your medal collection was full!", safchan);
+                safaribot.sendMessage(sys.id(player.id), "You were unable to receive the medal [" + medal.desc + "] as your medal collection was full!", safchan);
             else
-                safari.inboxMessage(player, "You were unable to receive the medal " + medal.desc + " as your medal collection was full!", isPlaying(player.id));
+                safari.inboxMessage(player, "You were unable to receive the medal [" + medal.desc + "] as your medal collection was full!", isPlaying(player.id));
             return false;
         }
         else {
@@ -61751,7 +61748,7 @@ function Safari() {
                     needsUpdate = true;
                 }
             }
-            if (p.options.androidTextFlow && sys.os(pid) === "android") {
+            if (p.options.androidTextFlow && sys.playersOfChannel(sys.channelId("Safari Android Spam")).contains(pid)) {
                 var spamChan = sys.channelId("Safari Android Spam") || safchan;
                 sys.sendMessage(pid, "", spamChan);
             }
