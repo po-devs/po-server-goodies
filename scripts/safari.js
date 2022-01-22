@@ -6556,7 +6556,261 @@ function Safari() {
             "height": 2.4,
             "weight": 53.6,
             "moves": [movenum("Pound"), movenum("Mega Drain"), movenum("Confusion"), movenum("Growth"), movenum("Life Dew"), movenum("Giga Drain"), movenum("Psyshock"), movenum("Helping Hand"), movenum("Aromatherapy"), movenum("Energy Ball"), movenum("Psychic"), movenum("Leech Seed"), movenum("Heal Pulse"), movenum("Solar Beam"), movenum("Future Sight"), movenum("Tackle"), movenum("Tail Whip"), movenum("Double Kick"), movenum("Stomp"), movenum("Take Down"), movenum("Thrash"), movenum("Taunt"), movenum("Double-Edge"), movenum("Astral Barrage"), movenum("Hex"), movenum("Confuse Ray"), movenum("Haze"), movenum("Shadow Ball"), movenum("Agility"), movenum("Disable"), movenum("Nasty Plot"), movenum("Pay Day"), movenum("Hyper Beam"), movenum("Giga Impact"), movenum("Magical Leaf"), movenum("Solar Blade"), movenum("Light Screen"), movenum("Reflect"), movenum("Safeguard"), movenum("Rest"), movenum("Snore"), movenum("Protect"), movenum("Scary Face"), movenum("Sunny Day"), movenum("Will-O-Wisp"), movenum("Facade"), movenum("Swift"), movenum("Imprison"), movenum("Bullet Seed"), movenum("Mud Shot"), movenum("Payback"), movenum("Assurance"), movenum("Power Swap"), movenum("Guard Swap"), movenum("Speed Swap"), movenum("Psycho Cut"), movenum("Trick Room"), movenum("Wonder Room"), movenum("Magic Room"), movenum("Round"), movenum("Bulldoze"), movenum("Snarl"), movenum("Phantom Force"), movenum("Draining Kiss"), movenum("Grassy Terrain"), movenum("Psychic Terrain"), movenum("Stomping Tantrum"), movenum("Body Slam"), movenum("Metronome"), movenum("Tri Attack"), movenum("Substitute"), movenum("Endure"), movenum("Sleep Talk"), movenum("Baton Pass"), movenum("Encore"), movenum("Crunch"), movenum("Uproar"), movenum("Trick"), movenum("Skill Swap"), movenum("Calm Mind"), movenum("Dark Pulse"), movenum("Seed Bomb"), movenum("Zen Headbutt"), movenum("Leaf Storm"), movenum("Grass Knot"), movenum("Foul Play"), movenum("Stored Power"), movenum("Ally Switch"), movenum("Pollen Puff")]
+        },
+        /* Legends: Arceus
+        "65594": {
+            "types": ["Fire", "Rock"],
+            "name": "Hisuian Growlithe",
+            "stats": [60, 75, 45, 65, 50, 55],
+            "abilities": [ "Intimidate", "Flash Fire", "Justified" ],
+            "tier": "SM LC",
+            "height": 0,
+            "weight": 0
+        },
+        "65595": {
+            "types": ["Fire", "Rock"],
+            "name": "Hisuian Arcanine",
+            "stats": [95, 115, 80, 95, 80, 90],
+            "abilities": [ "Intimidate", "Flash Fire", "Justified" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "65636": {
+            "types": ["Electric", "Grass"],
+            "name": "Hisuian Voltorb",
+            "stats": [40, 30, 50, 55, 55, 100],
+            "abilities": [ "Soundproof", "Static", "Aftermath" ],
+            "tier": "SM LC",
+            "height": 0,
+            "weight": 0
+        },
+        "65637": {
+            "types": ["Electric", "Grass"],
+            "name": "Hisuian Electrode",
+            "stats": [60, 50, 70, 80, 80, 150],
+            "abilities": [ "Soundproof", "Static", "Aftermath" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "65693": {
+            "types": ["Fire", "Ghost"],
+            "name": "Hisuian Typhlosion",
+            "stats": [73, 84, 78, 119, 85, 95],
+            "abilities": [ "Blaze", "Flash Fire" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "65747": {
+            "types": ["Dark", "Poison"],
+            "name": "Hisuian Qwilfish",
+            "stats": [65, 95, 85, 55, 55, 85],
+            "abilities": [ "Poison Point", "Swift Swim", "Intimidate" ],
+            "tier": "SM LC",
+            "height": 0,
+            "weight": 0
+        },
+        "65751": {
+            "types": ["Poison", "Fighting"],
+            "name": "Hisuian Sneasel",
+            "stats": [55, 95, 55, 35, 75, 115],
+            "abilities": [ "Inner Focus", "Keen Eye", "Poison Touch" ],
+            "tier": "SM LC",
+            "height": 0,
+            "weight": 0
+        },
+        "66019": {
+            "types": ["Steel", "Dragon"],
+            "name": "Dialga-Origin",
+            "stats": [100, 100, 120, 150, 120, 90],
+            "abilities": [ "Pressure", "Telepathy" ],
+            "tier": "SM Ubers",
+            "height": 0,
+            "weight": 0
+        },
+        "66020": {
+            "types": ["Water", "Dragon"],
+            "name": "Palkia-Origin",
+            "stats": [90, 100, 100, 150, 120, 120],
+            "abilities": [ "Pressure", "Telepathy" ],
+            "tier": "SM Ubers",
+            "height": 0,
+            "weight": 0
+        },
+        "66039": {
+            "types": ["Water", "Dark"],
+            "name": "Hisuian Samurott",
+            "stats": [90, 108, 80, 100, 65, 85],
+            "abilities": [ "Torrent", "Shell Armor"],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "66085": {
+            "types": ["Grass", "Fighting"],
+            "name": "Hisuian Lilligant",
+            "stats": [70, 105, 75, 50, 75, 105],
+            "abilities": [ "Chlorophyll", "Hustle", "Leaf Guard" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "131622": {
+            "types": ["Water", "???"],
+            "name": "Basculin-White Striped",
+            "stats": [70, 92, 65, 80, 55, 98],
+            "abilities": [ "Rattled", "Adaptability", "Mold Breaker" ],
+            "tier": "SM LC",
+            "height": 0,
+            "weight": 0
+        },
+        "66106": {
+            "types": ["Normal", "Ghost"],
+            "name": "Hisuian Zorua",
+            "stats": [35, 60, 40, 85, 40, 70],
+            "abilities": [ "Illusion" ],
+            "tier": "SM LC",
+            "height": 0,
+            "weight": 0
+        },
+        "66107": {
+            "types": ["Normal", "Ghost"],
+            "name": "Hisuian Zoroark",
+            "stats": [55, 100, 60, 125, 60, 110],
+            "abilities": [ "Illusion" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "66164": {
+            "types": ["Psychic", "Flying"],
+            "name": "Hisuian Braviary",
+            "stats": [110, 83, 70, 112, 70, 65],
+            "abilities": [ "Keen Eye", "Sheer Force", "Defiant" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "66241": {
+            "types": ["Dragon", "Steel"],
+            "name": "Hisuian Sliggoo",
+            "stats": [58, 75, 83, 83, 113, 40],
+            "abilities": [ "Sap Sipper", "Overcoat", "Gooey" ],
+            "tier": "SM PU",
+            "height": 0,
+            "weight": 0
+        },
+        "66242": {
+            "types": ["Dragon", "Steel"],
+            "name": "Hisuian Goodra",
+            "stats": [80, 100, 100, 110, 150, 60],
+            "abilities": [ "Sap Sipper", "Overcoat", "Gooey" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "66249": {
+            "types": ["Ice", "Rock"],
+            "name": "Hisuian Avalugg",
+            "stats": [95, 127, 184, 34, 36, 38],
+            "abilities": [ "Strong Jaw", "Ice Body", "Sturdy" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "66260": {
+            "types": ["Grass", "Fighting"],
+            "name": "Hisuian Decidueye",
+            "stats": [88, 112, 80, 95, 95, 60],
+            "abilities": [ "Overgrow", "Long Reach" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "": {
+            "types": ["Normal", "Psychic"],
+            "name": "Wyrdeer",
+            "stats": [103, 105, 72, 105, 75, 65],
+            "abilities": [ "Intimidate", "Frisk", "Sap Sipper" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "": {
+            "types": ["Bug", "Rock"],
+            "name": "Kleavor",
+            "stats": [70, 135, 95, 45, 70, 85],
+            "abilities": [ "Swarm", "Sheer Force", "Steadfast" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "": {
+            "types": ["Normal", "Ground"],
+            "name": "Ursaluna",
+            "stats": [130, 140, 105, 45, 80, 50],
+            "abilities": [ "Guts", "Bulletproof", "Unnerve" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "": {
+            "types": ["Water", "Ghost"],
+            "name": "Basculegion",
+            "stats": [120, 112, 65, 80, 75, 78],
+            "abilities": [ "Rattled", "Adaptability", "Mold Breaker" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "": {
+            "types": ["Water", "Ghost"],
+            "name": "Basculegion-F",
+            "stats": [120, 92, 65, 100, 75, 78],
+            "abilities": [ "Rattled", "Adaptability", "Mold Breaker" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "": {
+            "types": ["Poison", "Fighting"],
+            "name": "Sneasler",
+            "stats": [80, 130, 60, 40, 80, 120],
+            "abilities": [ "Pressure", "Poison Touch" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "": {
+            "types": ["Dark", "Poison"],
+            "name": "Overqwil",
+            "stats": [85, 115, 95, 65, 65, 85],
+            "abilities": [ "Poison Point", "Swift Swim", "Intimidate" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "": {
+            "types": ["Fairy", "Flying"],
+            "name": "Enamorus",
+            "stats": [74, 115, 70, 135, 80, 106],
+            "abilities": [ "Healer", "Contrary" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "": {
+            "types": ["Fairy", "Flying"],
+            "name": "Enamorus-Therian",
+            "stats": [74, 115, 110, 135, 100, 46],
+            "abilities": [ "Overcoat" ],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
         }
+        */
         /* template
         "": {
             "types": ["", ""],
@@ -6987,10 +7241,14 @@ function Safari() {
     function generation(pokeNum, wordy) {
         var num = pokeInfo.species(pokeNum);
         var ret = 1;
+        var useAlt = false;
         if (isAlolanForm(pokeNum)) {
             ret = 7;
         } else if (isGalarianForm(pokeNum)) {
             ret = 8;
+        } else if (isHisuianForm(pokeNum)) {
+            ret = 4;
+            useAlt = true;
         } else if (inclusive(num, 152, 251)) {
             ret = 2;
         } else if (inclusive(num, 252, 386)) {
@@ -7006,8 +7264,13 @@ function Safari() {
         } else if (inclusive(num, 810, 898)) {
             ret = 8;
         }
+        else if (inclusive(num, 899, 900)) { // New Hisui region Pokémon from Legends: Arceus
+            ret = 4;
+            useAlt = true;
+        }
         if (wordy) {
-            return generations[ret];
+            var altRegions = ["", "", "", "Hisui", "", "", "", ""];
+            return useAlt && altRegions[ret] ? altRegions[ret] : generations[ret];
         } else {
             return ret;
         }
@@ -7017,6 +7280,9 @@ function Safari() {
     }
     function isGalarianForm(pokeNum) {
         return [131124, 65613, 65614, 65619, 65646, 65658, 65758, 65799, 65800, 66090, 131627, 197163, 66098, 66154, 65680, 65681, 65682, 65615, 131152, 65735].contains(parseInt(pokeNum, 10));
+    }
+    function isHisuianForm(pokeNum) {
+        return [65594, 65595, 65636, 65637, 65693, 65747, 65751, 66019, 66020, 66039, 66085, 131622, 66106, 66107, 66164, 66241, 66242, 66249, 66260].contains(parseInt(pokeNum, 10));
     }
     function getPokeColor(pokeNum) {
         var c, id = parseInt(pokeNum, 10);
@@ -8126,7 +8392,7 @@ function Safari() {
                 //At this point changing shiny is purely aesthetic and won't affect the caught pokemon
                 shiny = appearAs.shiny;
             } else {
-                disguise = [132, 151, 185, 570, 571, 778].contains(num); // Ditto, Mew, Sudowoodo, Zorua, Zoroark, Mimikyu
+                disguise = [132, 151, 185, 570, 571, 778, 66106, 66107].contains(num); // Ditto, Mew, Sudowoodo, Zorua, Zoroark, Mimikyu, Hisuian Zorua, Hisuian Zoroark
                 if (disguise && chance(0.6)) {
                     switch (num) {
                         case 778: // Mimikyu
@@ -8958,10 +9224,10 @@ function Safari() {
             if (theme == "asia") {
                 var festivalItem = [
                     "moonshard",
-                    "fortune",
+                    "cookie",
                     "hdew",
                     "mushroom",
-                    "cashbonus",
+                    "nugget",
                     "starpiece",
                     "sunshard"
                 ][currentDay - 1];
@@ -8970,7 +9236,7 @@ function Safari() {
                     1,
                     10,
                     1,
-                    0,
+                    1,
                     1,
                     1
                 ][currentDay - 1];
@@ -10390,9 +10656,11 @@ function Safari() {
                 playerDisplayMon = "well-trained ninja Pokémon";
             }
             if (ball == "spy") {
-                safaribot.sendHtmlAll("Some stealthy person " + catchVerb + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
+                playerDisplayName = "Some stealthy person";
+                playerDisplayMon = "well-trained spy Pokémon";
                 player.records.catchSpy += 1;
-            } else if (ball == "spirit") {
+            }
+            if (ball == "spirit") {
                 safari.catchSpiritMon(player, currentPokemon, wildSpirit);
                 player.records.catchSpirit += 1;
                 var team = player.spiritDuels.team;
@@ -12064,7 +12332,7 @@ function Safari() {
                 });
                 
                 if (activeSkills.length > 0) {
-                    safaribot.sendHtmlMessage(src, "<b>{0}'s Active Skills:</b> {1}".format(poke(player.party[i], true), readable(activeSkills)), safchan);
+                    safaribot.sendHtmlMessage(src, "<b>{0}'s Active Skills:</b> {1} {2}".format(poke(player.party[i], true), readable(activeSkills), (player.options.pokeskillsDisabled ? "(Idol skills are currently disabled)" : "")), safchan);
                 }
             }
             if (player.fortune.deadline > n || player.fortune.limit > 0) {
@@ -14204,6 +14472,9 @@ function Safari() {
         player.unreadInbox.push(asRead ? false : true);
         while (player.inbox.length > 30) {
             player.inbox.shift();
+            player.unreadInbox.shift();
+        }
+        while (player.unreadInbox.length > player.inbox.length) {
             player.unreadInbox.shift();
         }
         this.saveGame(player);
@@ -29599,7 +29870,7 @@ function Safari() {
         if (!fainted && move.flinch && chance(move.flinch)) {
             target.flinch = true;
         }
-        if (!this.fullNPC && this.npcBattle && targetSide !== 1) {
+        if (!this.fullNPC && this.npcBattle && (isP1 || isP3)) {
             var stats = ["atk", "def", "spe", "satk", "sdef"];
             
             if (user.boosts["atk"] < 6 || user.boosts["def"] < 6 || user.boosts["satk"] < 6 || user.boosts["sdef"] < 6 || user.boosts["spe"] < 6 && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
@@ -36906,6 +37177,10 @@ function Safari() {
             var rew = giveStuff(player, reward, true);
             safaribot.sendMessage(src, "A bright circle appears in the room. The room starts to fill with a sparkling mist but it quickly dissipates to reveal " + readable(rew.gained) + ".", safchan);
             safaribot.sendMessage(src, "You received " + readable(rew.gained) + ".", safchan);
+            if (mythReward.length > 0) {
+                safaribot.sendHtmlAll("<b>Wow!</b> {0} received {1} from the Alchemist!".format(sys.name(src), readable(mythReward.map(function(e) { return pokeInfo.icon(getInputPokemon(e.slice(e.indexOf(" ") + 1)).id, true) + " " + e }))), safchan);
+                sys.appendToFile(mythLog, now() + "|||" + readable(mythReward) + "::have been received from the Alchemist by " + sys.name(src) + " via the " + cap(item, true) + " recipe::\n");
+            }
             player.records.transmutationsMade += rec.transmutation || 0;
             if (rec.cooldown > 0) {
                 player.quests.alchemist.cooldown = Math.max(
@@ -36924,9 +37199,6 @@ function Safari() {
                 if (lostRare.length > 0) {
                     sys.appendToFile(mythLog, now() + "|||" + readable(lostRare) + "::have been given to the Alchemist by " + sys.name(src) + "::\n");
                 }
-            }
-            if (mythReward.length > 0) {
-                sys.appendToFile(mythLog, now() + "|||" + readable(mythReward) + "::have been received from the Alchemist by " + sys.name(src) + " via the " + cap(item, true) + " recipe::\n");
             }
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Alchemist|||Gave " + translateStuff(rec.ingredients) + "|||Received " + readable(rew.gained) + "\n");
         }
@@ -37395,7 +37667,7 @@ function Safari() {
                     safaribot.sendHtmlAll("<b>Announcer: " + name + " has defeated all 13 Celebrity Trainers (Difficulty: " + level + ")! Please congratulate our Champion!</b>", safchan);
                     sys.sendAll("", safchan);
                     sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + level + "|||Challenged with " + readable(player.party.map(poke)) + " (Region: " + cap(player.celebrityRegion) + ")|||Defeated all " + next + " Trainers and " + (args.canReward ? " received " + plural(reward[1], reward[0]) : " was not eligible for prizes") + "\n");
-                    var description = "Cleared " + player.celebrityRegion.toUpperCase() + " Celebrities on " + level.toUpperCase() + " (" + new Date(now()).toUTCString() + ")";
+                    var description = "Cleared " + cap(player.celebrityRegion) + " Celebrities on " + level + " (" + new Date(now()).toUTCString() + ")";
                     var ic = [253, 252, 251, 249, 258, 255][args.difficulty+1];
                     safari.awardMedal(
                         player,
@@ -38071,10 +38343,10 @@ function Safari() {
         var cost = 5000;
         if (opt === "help") {
             sys.sendMessage(src, "", safchan);
-            safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: Welcome to the Pokémon League! The goal here is to defeat the 7 gyms to obtain their badges, which grants you a chance to challenge the Elite Four!", safchan);
-            safaribot.sendMessage(src, "League Guide: To be eligible to challenge the gyms, you must first pay a registration fee of $" + addComma(cost) + ", which is valid for the current period only.", safchan);
-            safaribot.sendMessage(src, "League Guide: Each period lasts for one week, starting on Sunday. Once it finishes, all previous badges are void, and the gyms are renewed.", safchan);
-            safaribot.sendHtmlMessage(src, "League Guide: If you clear all the 7 gyms within a single period, you get a chance to challenge the Elite Four during the next period by using " + link("/quest league:elite") + ".", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: Welcome to the Pokémon League! The goal here is to defeat the 7 Gyms to obtain their badges, which grants you a chance to challenge the Elite Four!", safchan);
+            safaribot.sendMessage(src, "League Guide: To be eligible to challenge the Gyms, you must first pay a registration fee of $" + addComma(cost) + ", which is valid for the current period only.", safchan);
+            safaribot.sendMessage(src, "League Guide: Each period lasts for one week, starting on Sunday. Once it finishes, all previous badges are void, and the Gyms are renewed.", safchan);
+            safaribot.sendHtmlMessage(src, "League Guide: If you clear all the 7 Gyms within a single period, you get a chance to challenge the Elite Four during the next period by using " + link("/quest league:elite") + ".", safchan);
             safaribot.sendHtmlMessage(src, "League Guide: You can see the Hall of Fame of all players who defeated the Elite Four by typing " + link("/quest league:hall") + ".", safchan);
             sys.sendMessage(src, "", safchan);
             return;
@@ -38121,17 +38393,17 @@ function Safari() {
         }
         else if (["elite", "elite 4", "elite four", "elitefour", "elite4", "e4", "e 4"].contains(opt)) {
             if (opt2 !== "start") {
-                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You can challenge the Elite Four if you cleared all gyms during the previous week.", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You can challenge the Elite Four if you cleared all Gyms during the previous week.", safchan);
                 safaribot.sendHtmlMessage(src, "League Guide: You can start the challenge with " + link("/quest league:elite:start") + ". Once you do, you will fight all 4 members in a row. If you win, you will receive a rare Philosopher's Stone.", safchan);
-                safaribot.sendHtmlMessage(src, "League Guide: You can only challenge the Elite Four once per week, and only if you obtained all badges from the gyms during the previous week.", safchan);
+                safaribot.sendHtmlMessage(src, "League Guide: You can only challenge the Elite Four once per week, and only if you obtained all badges from the Gyms during the previous week.", safchan);
                 return;
             }
             if (quest.eliteCurrentUsed) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You already challenged the Elite Four during the current period! Clear the 7 gyms again during this period to get a new chance next week!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You already challenged the Elite Four during the current period! Clear the 7 Gyms again during this period to get a new chance next week!", safchan);
                 return;
             }
             if (!quest.eliteCurrent) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You didn't obtain the 7 badges during the last period, so you cannot challenge the Elite Four! Clear the 7 gyms during this period to get a chance next week!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You didn't obtain the 7 badges during the last period, so you cannot challenge the Elite Four! Clear the 7 Gyms during this period to get a chance next week!", safchan);
                 return;
             }
             if (stopQuests.league) {
@@ -38141,8 +38413,8 @@ function Safari() {
             if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid", "baking"])) {
                 return;
             }
-            if (player.party.length < 3) {
-                safaribot.sendMessage(src, "League Guide: You need at least 3 Pokémon in your party to challenge the Elite Four!", safchan);
+            if (player.party.length < 6) {
+                safaribot.sendMessage(src, "League Guide: You need at least 6 Pokémon in your party to challenge the Elite Four!", safchan);
                 return;
             }
 
@@ -38157,21 +38429,21 @@ function Safari() {
                     safari.updateEconomyData(-cost, "questFee");
                     quest.registered = true;
                     this.saveGame(player);
-                    safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: Great, you paid $" + addComma(cost) + ", so you are now registered! You can now use " + link("/quest league") + " to challenge the gyms until the end of the week, when your registration expires!", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: Great, you paid $" + addComma(cost) + ", so you are now registered! You can now use " + link("/quest league") + " to challenge the Gyms until the end of the week, when your registration expires!", safchan);
                 } else {
                     safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You do not have $" + addComma(cost) + " to register!", safchan);
                 }
             } else {
-                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: Do you wish to battle in the Pokémon League? Then you first need to register for the current week to be able to challenge the seven gyms!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: Do you wish to battle in the Pokémon League? Then you first need to register for the current week to be able to challenge the seven Gyms!", safchan);
                 safaribot.sendHtmlMessage(src, "League Guide: Registration costs $" + addComma(cost) + " and is valid until Saturday, 23:59 GMT. To register, type " + link("/quest league:register") + ". For more information, type " + link("/quest league:help") + ". ", safchan);
                 if (quest.eliteCurrent && !quest.eliteCurrentUsed) {
-                    safaribot.sendHtmlMessage(src, "League Guide: It seems that you cleared all gyms during the last period, so you can challenge the Elite Four by typing " + link("/quest league:elite") + "!", safchan);
+                    safaribot.sendHtmlMessage(src, "League Guide: It seems that you cleared all Gyms during the last period, so you can challenge the Elite Four by typing " + link("/quest league:elite") + "!", safchan);
                 }
             }
             return;
         }
         if (opt === "*") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You are currently registered for the League, so you can challenge the gyms!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You are currently registered for the League, so you can challenge the Gyms!", safchan);
             var legitBadges = [];
             for (var n in gymData) {
                 var opp = gymData[n];
@@ -38200,7 +38472,7 @@ function Safari() {
             return;
         }
         if (stopQuests.league) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: I'm terribly sorry, but all gyms are currently closed due to an important event at the Pokémon League Headquarters!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: I'm terribly sorry, but all Gyms are currently closed due to an important event at the Pokémon League Headquarters!", safchan);
             return;
         }
         if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid", "baking"])) {
@@ -38212,15 +38484,15 @@ function Safari() {
         }
         var gym = gymData[opt];
         if (!gym) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: There's no gym with that name!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: There's no Gym with that name!", safchan);
             return;
         }
         if (quest.badges.contains(gym.badge.toLowerCase())) {
-            safaribot.sendMessage(src, "League Guide: You already cleared this gym!", safchan);
+            safaribot.sendMessage(src, "League Guide: You already cleared this Gym!", safchan);
             return;
         }
-        if (player.party.length < 3) {
-            safaribot.sendMessage(src, "League Guide: You need at least 3 Pokémon in your party to challenge a gym!", safchan);
+        if (player.party.length < 6) {
+            safaribot.sendMessage(src, "League Guide: You need at least 6 Pokémon in your party to challenge a Gym!", safchan);
             return;
         }
         
@@ -38412,7 +38684,7 @@ function Safari() {
                     player.quests.league.eliteCurrentUsed = true;
                     player.quests.league.eliteCurrent = false;
                     player.records.eliteCleared += 1;
-                    var description = ("Cleared the League Elite 4 (" + new Date(now()).toUTCString() + ")");
+                    var description = ("Cleared the League Elite Four (" + new Date(now()).toUTCString() + ")");
                     safari.awardMedal(
                         player,
                         {
@@ -61609,7 +61881,7 @@ function Safari() {
                 for (var i = 0; i < currentPokemonCount; i++) {
                     sprite += pokeInfo.sprite(currentDisplay);
                 }
-                sys.sendHtmlMessage(src, "<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + ((wildEvent || (isRare(currentDisplay) && contestCount > 0)) ? "<br/><b>All ball cooldowns were reset!</b>" : "") + "</center><hr>", safchan);
+                sys.sendHtmlMessage(src, "<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + ((wildEvent || (isRare(currentDisplay) && contestCount > 0)) ? "<br/>All ball cooldowns were reset!" : "") + "</center><hr>", safchan);
                 safari.afterSpawnDisplay(src, true);
             }
             else {
