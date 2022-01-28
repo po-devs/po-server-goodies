@@ -2411,7 +2411,8 @@ function Safari() {
         "745": 1,
         "849": 1,
         "869": 62,
-        "876": 1
+        "876": 1,
+        "902": 1
     };
     var noShinySprite = [ // These Pokemon have no shiny sprites at all, so they should not be allowed to be shiny. This list includes Pikachu forms (except Pikachu-Cosplay), Castform forms, Rotom-Pokedex, Alcremie forms, and Eternamax Eternatus
         65561,131097,196633,262169,327705,458777,524313,589849,655385,720921,786457,851993,65887,131423,262495,393695,66405,131941,197477,263013,328549,394085,459621,525157,590693,656229,721765,787301,852837,918373,983909,1049445,1114981,1180517,1246053,1311589,1377125,1442661,1508197,1573733,1639269,1704805,1770341,1835877,1901413,1966949,2032485,2098021,2163557,2229093,2294629,2360165,2425701,2491237,2556773,2622309,2687845,2753381,2818917,2884453,2949989,3015525,3081061,3146597,3212133,3277669,3343205,3408741,3474277,3539813,3605349,3670885,3736421,3801957,3867493,3933029,3998565,4064101,66426
@@ -2431,13 +2432,13 @@ function Safari() {
     ];
     var eggdata = {1:["Monster","Grass"],2:["Monster","Grass"],3:["Monster","Grass"],4:["Monster","Dragon"],5:["Monster","Dragon"],6:["Monster","Dragon"],7:["Monster","Water1"],8:["Monster","Water1"],9:["Monster","Water1"],10:["Bug"],11:["Bug"],12:["Bug"],13:["Bug"],14:["Bug"],15:["Bug"],16:["Flying"],17:["Flying"],18:["Flying"],19:["Field"],20:["Field"],21:["Flying"],22:["Flying"],23:["Field"],24:["Field"],25:["Field","Fairy"],26:["Field","Fairy"],27:["Field"],28:["Field"],29:["Monster","Field"],30:["Undiscovered"],31:["Undiscovered"],32:["Monster","Field"],33:["Monster","Field"],34:["Monster","Field"],35:["Fairy"],36:["Fairy"],37:["Field"],38:["Field"],39:["Fairy"],40:["Fairy"],41:["Flying"],42:["Flying"],43:["Grass"],44:["Grass"],45:["Grass"],46:["Bug","Grass"],47:["Bug","Grass"],48:["Bug"],49:["Bug"],50:["Field"],51:["Field"],52:["Field"],53:["Field"],54:["Water1","Field"],55:["Water1","Field"],56:["Field"],57:["Field"],58:["Field"],59:["Field"],60:["Water1"],61:["Water1"],62:["Water1"],63:["Human-Like"],64:["Human-Like"],65:["Human-Like"],66:["Human-Like"],67:["Human-Like"],68:["Human-Like"],69:["Grass"],70:["Grass"],71:["Grass"],72:["Water3"],73:["Water3"],74:["Mineral"],75:["Mineral"],76:["Mineral"],77:["Field"],78:["Field"],79:["Monster","Water1"],80:["Monster","Water1"],81:["Mineral"],82:["Mineral"],83:["Flying","Field"],84:["Flying"],85:["Flying"],86:["Water1","Field"],87:["Water1","Field"],88:["Amorphous"],89:["Amorphous"],90:["Water3"],91:["Water3"],92:["Amorphous"],93:["Amorphous"],94:["Amorphous"],95:["Mineral"],96:["Human-Like"],97:["Human-Like"],98:["Water3"],99:["Water3"],100:["Mineral"],101:["Mineral"],102:["Grass"],103:["Grass"],104:["Monster"],105:["Monster"],106:["Human-Like"],107:["Human-Like"],108:["Monster"],109:["Amorphous"],110:["Amorphous"],111:["Monster","Field"],112:["Monster","Field"],113:["Fairy"],114:["Grass"],115:["Monster"],116:["Water1","Dragon"],117:["Water1","Dragon"],118:["Water2"],119:["Water2"],120:["Water3"],121:["Water3"],122:["Human-Like"],123:["Bug"],124:["Human-Like"],125:["Human-Like"],126:["Human-Like"],127:["Bug"],128:["Field"],129:["Water2","Dragon"],130:["Water2","Dragon"],131:["Monster","Water1"],132:["Ditto"],133:["Field"],134:["Field"],135:["Field"],136:["Field"],137:["Mineral"],138:["Water1","Water3"],139:["Water1","Water3"],140:["Water1","Water3"],141:["Water1","Water3"],142:["Flying"],143:["Monster"],144:["Undiscovered"],145:["Undiscovered"],146:["Undiscovered"],147:["Water1","Dragon"],148:["Water1","Dragon"],149:["Water1","Dragon"],150:["Undiscovered"],151:["Undiscovered"],152:["Grass"],153:["Grass"],154:["Grass"],155:["Field"],156:["Field"],157:["Field"],158:["Monster"],159:["Monster"],160:["Monster"],161:["Field"],162:["Field"],163:["Flying"],164:["Flying"],165:["Bug"],166:["Bug"],167:["Bug"],168:["Bug"],169:["Flying"],170:["Water2"],171:["Water2"],172:["Undiscovered"],173:["Undiscovered"],174:["Undiscovered"],175:["Undiscovered"],176:["Fairy","flying"],177:["Flying"],178:["Flying"],179:["Monster","Field"],180:["Monster","Field"],181:["Monster","Field"],182:["Grass"],183:["Water1","Fairy"],184:["Water1","Fairy"],185:["Mineral"],186:["Water1"],187:["Fairy","Grass"],188:["Fairy","Grass"],189:["Fairy","Grass"],190:["Field"],191:["Grass"],192:["Grass"],193:["Bug"],194:["Water1","Field"],195:["Water1","Field"],196:["Field"],197:["Field"],198:["Flying"],199:["Monster","Water1"],200:["Amorphous"],201:["Undiscovered"],202:["Amorphous"],203:["Field"],204:["Bug"],205:["Bug"],206:["Field"],207:["Bug"],208:["Mineral"],209:["Field","Fairy"],210:["Field","Fairy"],211:["Water2"],212:["Bug"],213:["Bug"],214:["Bug"],215:["Field"],216:["Field"],217:["Field"],218:["Amorphous"],219:["Amorphous"],220:["Field"],221:["Field"],222:["Water1","Water3"],223:["Water1","Water2"],224:["Water1","Water2"],225:["Water1","Field"],226:["Water1"],227:["Flying"],228:["Field"],229:["Field"],230:["Water1","Dragon"],231:["Field"],232:["Field"],233:["Mineral"],234:["Field"],235:["Field"],236:["Undiscovered"],237:["Human-Like"],238:["Undiscovered"],239:["Undiscovered"],240:["Undiscovered"],241:["Field"],242:["Fairy"],243:["Undiscovered"],244:["Undiscovered"],245:["Undiscovered"],246:["Monster"],247:["Monster"],248:["Monster"],249:["Undiscovered"],250:["Undiscovered"],251:["Undiscovered"],252:["Monster","Dragon"],253:["Monster","Dragon"],254:["Monster","Dragon"],255:["Field"],256:["Field"],257:["Field"],258:["Monster","Water1"],259:["Monster","Water1"],260:["Monster","Water1"],261:["Field"],262:["Field"],263:["Field"],264:["Field"],265:["Bug"],266:["Bug"],267:["Bug"],268:["Bug"],269:["Bug"],270:["Water1","Grass"],271:["Water1","Grass"],272:["Water1","Grass"],273:["Grass","Field"],274:["Grass","Field"],275:["Grass","Field"],276:["Flying"],277:["Flying"],278:["Water1","Flying"],279:["Water1","Flying"],280:["Amorphous","Human-Like"],281:["Amorphous","Human-Like"],282:["Amorphous","Human-Like"],283:["Water1","bug"],284:["Water1","bug"],285:["Fairy","Grass"],286:["Fairy","Grass"],287:["Field"],288:["Field"],289:["Field"],290:["Bug"],291:["Bug"],292:["Mineral"],293:["Monster","Field"],294:["Monster","Field"],295:["Monster","Field"],296:["Human-Like"],297:["Human-Like"],298:["Undiscovered"],299:["Mineral"],300:["Field","Fairy"],301:["Field","Fairy"],302:["Human-Like"],303:["Field","Fairy"],304:["Monster"],305:["Monster"],306:["Monster"],307:["Human-Like"],308:["Human-Like"],309:["Field"],310:["Field"],311:["Fairy"],312:["Fairy"],313:["Grass","Human-Like"],314:["Grass","Human-Like"],315:["Fairy","Grass"],316:["Amorphous"],317:["Amorphous"],318:["Water2"],319:["Water2"],320:["Water2","Field"],321:["Water2","Field"],322:["Field"],323:["Field"],324:["Field"],325:["Field"],326:["Field"],327:["Field","Human-Like"],328:["Bug","Dragon"],329:["Bug","Dragon"],330:["Bug","Dragon"],331:["Grass","Human-Like"],332:["Grass","Human-Like"],333:["Flying","Dragon"],334:["Flying","Dragon"],335:["Field"],336:["Field","Dragon"],337:["Mineral"],338:["Mineral"],339:["Water2"],340:["Water2"],341:["Water1","Water3"],342:["Water1","Water3"],343:["Mineral"],344:["Mineral"],345:["Water3"],346:["Water3"],347:["Water3"],348:["Water3"],349:["Water1","Dragon"],350:["Water1","Dragon"],351:["Fairy","Amorphous"],352:["Field"],353:["Amorphous"],354:["Amorphous"],355:["Amorphous"],356:["Amorphous"],357:["Grass","Monster"],358:["Amorphous"],359:["Field"],360:["Undiscovered"],361:["Fairy","Mineral"],362:["Fairy","Mineral"],363:["Water1","Field"],364:["Water1","Field"],365:["Water1","Field"],366:["Water1"],367:["Water1"],368:["Water1"],369:["Water1","Water2"],370:["Water2"],371:["Dragon"],372:["Dragon"],373:["Dragon"],374:["Mineral"],375:["Mineral"],376:["Mineral"],377:["Undiscovered"],378:["Undiscovered"],379:["Undiscovered"],380:["Undiscovered"],381:["Undiscovered"],382:["Undiscovered"],383:["Undiscovered"],384:["Undiscovered"],385:["Undiscovered"],386:["Undiscovered"],387:["Grass","Monster"],388:["Grass","Monster"],389:["Grass","Monster"],390:["Field","Human-Like"],391:["Field","Human-Like"],392:["Field","Human-Like"],393:["Water1","Field"],394:["Water1","Field"],395:["Water1","Field"],396:["Flying"],397:["Flying"],398:["Flying"],399:["Water1","Field"],400:["Water1","Field"],401:["Bug"],402:["Bug"],403:["Field"],404:["Field"],405:["Field"],406:["Undiscovered"],407:["Fairy","Grass"],408:["Monster"],409:["Monster"],410:["Monster"],411:["Monster"],412:["Bug"],413:["Bug"],414:["Bug"],415:["Bug"],416:["Bug"],417:["Field","Fairy"],418:["Water1","Field"],419:["Water1","Field"],420:["Fairy","Grass"],421:["Fairy","Grass"],422:["Water1","Amorphous"],423:["Water1","Amorphous"],424:["Field"],425:["Amorphous"],426:["Amorphous"],427:["Field","Human-Like"],428:["Field","Human-Like"],429:["Amorphous"],430:["Flying"],431:["Field"],432:["Field"],433:["Undiscovered"],434:["Field"],435:["Field"],436:["Mineral"],437:["Mineral"],438:["Undiscovered"],439:["Undiscovered"],440:["Undiscovered"],441:["Flying"],442:["Amorphous"],443:["Monster","Dragon"],444:["Monster","Dragon"],445:["Monster","Dragon"],446:["Undiscovered"],447:["Undiscovered"],448:["Field","Human-Like"],449:["Field"],450:["Field"],451:["Bug","Water3"],452:["Bug","Water3"],453:["Human-Like"],454:["Human-Like"],455:["Grass"],456:["Water2"],457:["Water2"],458:["Undiscovered"],459:["Monster","Grass"],460:["Monster","Grass"],461:["Field"],462:["Mineral"],463:["Monster"],464:["Monster","Field"],465:["Grass"],466:["Human-Like"],467:["Human-Like"],468:["Flying","Fairy"],469:["Bug"],470:["Field"],471:["Field"],472:["Bug"],473:["Field"],474:["Mineral"],475:["Amorphous","Human-Like"],476:["Mineral"],477:["Amorphous"],478:["Fairy","Mineral"],479:["Amorphous"],480:["Undiscovered"],481:["Undiscovered"],482:["Undiscovered"],483:["Undiscovered"],484:["Undiscovered"],485:["Undiscovered"],486:["Undiscovered"],487:["Undiscovered"],488:["Undiscovered"],489:["Water1","Fairy"],490:["Water1","Fairy"],491:["Undiscovered"],492:["Undiscovered"],493:["Undiscovered"],494:["Undiscovered"],495:["Field","Grass"],496:["Field","Grass"],497:["Field","Grass"],498:["Field"],499:["Field"],500:["Field"],501:["Field"],502:["Field"],503:["Field"],504:["Field"],505:["Field"],506:["Field"],507:["Field"],508:["Field"],509:["Field"],510:["Field"],511:["Field"],512:["Field"],513:["Field"],514:["Field"],515:["Field"],516:["Field"],517:["Field"],518:["Field"],519:["Flying"],520:["Flying"],521:["Flying"],522:["Field"],523:["Field"],524:["Mineral"],525:["Mineral"],526:["Mineral"],527:["Field","Flying"],528:["Field","Flying"],529:["Field"],530:["Field"],531:["Fairy"],532:["Human-Like"],533:["Human-Like"],534:["Human-Like"],535:["Water1"],536:["Water1"],537:["Water1"],538:["Human-Like"],539:["Human-Like"],540:["Bug"],541:["Bug"],542:["Bug"],543:["Bug"],544:["Bug"],545:["Bug"],546:["Grass","Fairy"],547:["Grass","Fairy"],548:["Grass"],549:["Grass"],550:["Water2"],551:["Field"],552:["Field"],553:["Field"],554:["Field"],555:["Field"],556:["Grass"],557:["Bug","Mineral"],558:["Bug","Mineral"],559:["Field","Dragon"],560:["Field","Dragon"],561:["Flying"],562:["Mineral","Amorphous"],563:["Mineral","Amorphous"],564:["Water1","Water3"],565:["Water1","Water3"],566:["Flying","Water3"],567:["Flying","Water3"],568:["Mineral"],569:["Mineral"],570:["Field"],571:["Field"],572:["Field"],573:["Field"],574:["Human-Like"],575:["Human-Like"],576:["Human-Like"],577:["Amorphous"],578:["Amorphous"],579:["Amorphous"],580:["Water1","Flying"],581:["Water1","Flying"],582:["Mineral"],583:["Mineral"],584:["Mineral"],585:["Field"],586:["Field"],587:["Field"],588:["Bug"],589:["Bug"],590:["Grass"],591:["Grass"],592:["Amorphous"],593:["Amorphous"],594:["Water1","Water2"],595:["Bug"],596:["Bug"],597:["Grass","Mineral"],598:["Grass","Mineral"],599:["Mineral"],600:["Mineral"],601:["Mineral"],602:["Amorphous"],603:["Amorphous"],604:["Amorphous"],605:["Human-Like"],606:["Human-Like"],607:["Amorphous"],608:["Amorphous"],609:["Amorphous"],610:["Monster","Dragon"],611:["Monster","Dragon"],612:["Monster","Dragon"],613:["Field"],614:["Field"],615:["Mineral"],616:["Bug"],617:["Bug"],618:["Water1","Amorphous"],619:["Field","Human-Like"],620:["Field","Human-Like"],621:["Dragon","Monster"],622:["Mineral"],623:["Mineral"],624:["Human-Like"],625:["Human-Like"],626:["Field"],627:["Flying"],628:["Flying"],629:["Flying"],630:["Flying"],631:["Field"],632:["Bug"],633:["Dragon"],634:["Dragon"],635:["Dragon"],636:["Bug"],637:["Bug"],638:["Undiscovered"],639:["Undiscovered"],640:["Undiscovered"],641:["Undiscovered"],642:["Undiscovered"],643:["Undiscovered"],644:["Undiscovered"],645:["Undiscovered"],646:["Undiscovered"],647:["Undiscovered"],648:["Undiscovered"],649:["Undiscovered"],650:["Field"],651:["Field"],652:["Field"],653:["Field"],654:["Field"],655:["Field"],656:["Water1"],657:["Water1"],658:["Water1"],659:["Field"],660:["Field"],661:["Flying"],662:["Flying"],663:["Flying"],664:["Bug"],665:["Bug"],666:["Bug"],667:["Field"],668:["Field"],669:["Fairy"],670:["Fairy"],671:["Fairy"],672:["Field"],673:["Field"],674:["Field","Human-Like"],675:["Field","Human-Like"],676:["Field"],677:["Field"],678:["Field"],679:["Mineral"],680:["Mineral"],681:["Mineral"],682:["Fairy"],683:["Fairy"],684:["Fairy"],685:["Fairy"],686:["Water1","Water2"],687:["Water1","Water2"],688:["Water3"],689:["Water3"],690:["Water1","Dragon"],691:["Water1","Dragon"],692:["Water1","Water3"],693:["Water1","Water3"],694:["Monster","Dragon"],695:["Monster","Dragon"],696:["Monster","Dragon"],697:["Monster","Dragon"],698:["Monster"],699:["Monster"],700:["Field"],701:["Human-Like","Flying"],702:["Field","Fairy"],703:["Fairy","Mineral"],704:["Dragon"],705:["Dragon"],706:["Dragon"],707:["Mineral"],708:["Grass","Amorphous"],709:["Grass","Amorphous"],710:["Amorphous"],711:["Amorphous"],712:["Monster","Mineral"],713:["Monster","Mineral"],714:["Flying","Dragon"],715:["Flying","Dragon"],716:["Undiscovered"],717:["Undiscovered"],718:["Undiscovered"],719:["Undiscovered"],720:["Undiscovered"],721:["Undiscovered"],722:["Flying"],723:["Flying"],724:["Flying"],725:["Field"],726:["Field"],727:["Field"],728:["Water1","Field"],729:["Water1","Field"],730:["Water1","Field"],731:["Flying"],732:["Flying"],733:["Flying"],734:["Field"],735:["Field"],736:["Bug"],737:["Bug"],738:["Bug"],739:["Water3"],740:["Water3"],741:["Flying"],742:["Bug","Fairy"],743:["Bug","Fairy"],744:["Field"],745:["Field"],746:["Water2"],747:["Water1"],748:["Water1"],749:["Field"],750:["Field"],751:["Water1","Bug"],752:["Water1","Bug"],753:["Grass"],754:["Grass"],755:["Grass"],756:["Grass"],757:["Monster","Dragon"],758:["Monster","Dragon"],759:["Field"],760:["Field"],761:["Grass"],762:["Grass"],763:["Grass"],764:["Grass"],765:["Field"],766:["Field"],767:["Bug","Water3"],768:["Bug","Water3"],769:["Amorphous"],770:["Amorphous"],771:["Water1"],772:["Undiscovered"],773:["Undiscovered"],774:["Mineral"],775:["Field"],776:["Monster","Dragon"],777:["Field","Fairy"],778:["Amorphous"],779:["Water2"],780:["Monster","Dragon"],781:["Mineral"],782:["Dragon"],783:["Dragon"],784:["Dragon"],785:["Undiscovered"],786:["Undiscovered"],787:["Undiscovered"],788:["Undiscovered"],789:["Undiscovered"],790:["Undiscovered"],791:["Undiscovered"],792:["Undiscovered"],793:["Undiscovered"],794:["Undiscovered"],795:["Undiscovered"],796:["Undiscovered"],797:["Undiscovered"],798:["Undiscovered"],799:["Undiscovered"],800:["Undiscovered"],801:["Undiscovered"],802:["Undiscovered"],803:["Undiscovered"],804:["Undiscovered"],805:["Undiscovered"],806:["Undiscovered"],807:["Undiscovered"],808:["Undiscovered"],809:["Undiscovered"],810:["Field","Grass"],811:["Field","Grass"],812:["Field","Human-Like"],813:["Field","Human-Like"],814:["Field","Human-Like"],815:["Field","Human-Like"],816:["Field","Water1"],817:["Field","Water1"],818:["Field","Water1"],819:["Field"],820:["Field"],821:["Flying"],822:["Flying"],823:["Flying"],824:["Bug"],825:["Bug"],826:["Bug"],827:["Field"],828:["Field"],829:["Grass"],830:["Grass"],831:["Field"],832:["Field"],833:["Monster","Water1"],834:["Monster","Water1"],835:["Field"],836:["Field"],837:["Mineral"],838:["Mineral"],839:["Mineral"],840:["Grass","Dragon"],841:["Grass","Dragon"],842:["Grass","Dragon"],843:["Field","Dragon"],844:["Field","Dragon"],845:["Water1","Flying"],846:["Water2"],847:["Water2"],848:["Undiscovered"],849:["Human-Like"],850:["Bug"],851:["Bug"],852:["Water1","Human-Like"],853:["Water1","Human-Like"],854:["Mineral","Amorphous"],855:["Mineral","Amorphous"],856:["Fairy"],857:["Fairy"],858:["Fairy"],859:["Fairy","Human-Like"],860:["Fairy","Human-Like"],861:["Fairy","Human-Like"],862:["Field"],863:["Field"],864:["Water1","Water3"],865:["Flying","Field"],866:["Human-Like"],867:["Mineral","Amorphous"],868:["Fairy","Amorphous"],869:["Fairy","Amorphous"],870:["Fairy","Mineral"],871:["Water1","Amorphous"],872:["Bug"],873:["Bug"],874:["Mineral"],875:["Water1","Field"],876:["Fairy"],877:["Field","Fairy"],878:["Field","Mineral"],879:["Field","Mineral"],880:["Undiscovered"],881:["Undiscovered"],882:["Undiscovered"],883:["Undiscovered"],884:["Mineral","Dragon"],885:["Amorphous","Dragon"],886:["Amorphous","Dragon"],887:["Amorphous","Dragon"],888:["Undiscovered"],889:["Undiscovered"],890:["Undiscovered"],891:["Undiscovered"],892:["Undiscovered"],893:["Undiscovered"],894:["Undiscovered"],895:["Undiscovered"],896:["Undiscovered"],897:["Undiscovered"],898:["Undiscovered"]};
     var legendaries = [
-        144,145,146,150,151,243,244,245,249,250,251,377,378,379,380,381,382,383,384,385,386,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,638,639,640,641,642,643,644,645,646,647,648,649,716,717,718,719,720,721,785,786,787,788,789,790,791,792,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809,888,889,890,891,892,893,894,895,896,897,898
+        144,145,146,150,151,243,244,245,249,250,251,377,378,379,380,381,382,383,384,385,386,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,638,639,640,641,642,643,644,645,646,647,648,649,716,717,718,719,720,721,785,786,787,788,789,790,791,792,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809,888,889,890,891,892,893,894,895,896,897,898,905
     ];
     var ultraBeasts = [ // Have their BST set to 600
         773,772,785,786,787,788,790,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809
     ];
-    var galarFormEvos = [ // Have their BST set to 560
-        862,863,864,865,866,867
+    var regionalEvos = [ // Have their BST set to 560
+        862,863,864,865,866,867,899,900,901,902,903,904
     ];
     var pokeColors = {
         "red": [4, 5, 6, 45, 46, 47, 98, 99, 100, 101, 118, 119, 124, 126, 129, 136, 165, 166, 168, 193, 212, 218, 219, 224, 225, 233, 240, 250, 255, 256, 257, 265, 308, 318, 323, 338, 341, 342, 262495, 380, 383, 386, 401, 402, 131485, 467, 474, 479, 498, 499, 500, 513, 514, 538, 543, 545, 553, 554, 555, 557, 558, 560, 616, 617, 621, 624, 625, 628, 631, 653, 654, 655, 661, 662, 663, 697, 717, 725, 726, 727, 741, 66281, 66310, 131846, 776, 787, 794, 66337, 826, 850, 851, 889, 131484, 131657, 590490, 1049242, 721562, 1245850, 65682],
@@ -3458,9 +3459,9 @@ function Safari() {
         return str.charAt(0).toUpperCase() + str.substring(1);
     }
     function an(string) {
-        var vowels = "aeioux";
+        var vowels = "aeiou";
         string = string + ""; //For the numbers
-        if (vowels.indexOf(string.charAt(0).toLowerCase()) > -1 || string.charAt(0) === "8" || string === "11" || string === "18") {
+        if (vowels.indexOf(string.charAt(0).toLowerCase()) > -1 || string.charAt(0) === "8" || string === "11" || string === "18" || string.toLowerCase().indexOf("x ") === 0) {
             string = "an " + string;
         } else {
             string = "a " + string;
@@ -4528,6 +4529,150 @@ function Safari() {
             "name": "Jungle Healing",
             "learned": [893],
             "type": "Grass",
+            "power": "---"
+        },
+        "771": {
+            "name": "Dire Claw",
+            "learned": [903],
+            "type": "Poison",
+            "power": 60
+        },
+        "772": {
+            "name": "Psyshield Bash",
+            "learned": [234, 899],
+            "type": "Psychic",
+            "power": 70
+        },
+        "773": {
+            "name": "Power Shift",
+            "learned": [],
+            "type": "Normal",
+            "power": "---"
+        },
+        "774": {
+            "name": "Stone Axe",
+            "learned": [900],
+            "type": "Rock",
+            "power": 65
+        },
+        "775": {
+            "name": "Mystical Power",
+            "learned": [480, 481, 482],
+            "type": "Normal", // UNCONFIRMED
+            "power": 70
+        },
+        "776": {
+            "name": "Raging Fury",
+            "learned": [65595],
+            "type": "Fire",
+            "power": 90
+        },
+        "777": {
+            "name": "Wave Crash",
+            "learned": [902, 66438],
+            "type": "Water",
+            "power": 75
+        },
+        "778": {
+            "name": "Chloroblast",
+            "learned": [65637],
+            "type": "Grass",
+            "power": 120
+        },
+        "779": {
+            "name": "Mountain Gale",
+            "learned": [66249],
+            "type": "Ice",
+            "power": 100
+        },
+        "780": {
+            "name": "Victory Dance",
+            "learned": [66085],
+            "type": "Normal", // UNCONFIRMED
+            "power": "---"
+        },
+        "781": {
+            "name": "Headlong Rush",
+            "learned": [389, 901],
+            "type": "Ground",
+            "power": 100
+        },
+        "782": {
+            "name": "Barb Barrage",
+            "learned": [65747, 904],
+            "type": "Poison",
+            "power": 60
+        },
+        "783": {
+            "name": "Esper Wing",
+            "learned": [66164],
+            "type": "Psychic",
+            "power": 75
+        },
+        "784": {
+            "name": "Bitter Malice",
+            "learned": [66106, 66107],
+            "type": "Ghost",
+            "power": 60
+        },
+        "785": {
+            "name": "Shelter",
+            "learned": [704, 705, 706, 66241, 66242],
+            "type": "Steel",
+            "power": "---"
+        },
+        "786": {
+            "name": "Triple Arrows",
+            "learned": [66260],
+            "type": "Fighting",
+            "power": 50
+        },
+        "787": {
+            "name": "Infernal Parade",
+            "learned": [65693],
+            "type": "Ghost",
+            "power": 60
+        },
+        "788": {
+            "name": "Ceaseless Edge",
+            "learned": [66039],
+            "type": "Dark",
+            "power": 65
+        },
+        "789": {
+            "name": "Springtide Storm",
+            "learned": [905, 66441],
+            "type": "Fairy",
+            "power": 95
+        },
+        "790": {
+            "name": "Bleakwind Storm",
+            "learned": [641, 66177],
+            "type": "Flying",
+            "power": 95
+        },
+        "791": {
+            "name": "Wildbolt Storm",
+            "learned": [642, 66178],
+            "type": "Electric",
+            "power": 95
+        },
+        "792": {
+            "name": "Sandsear Storm",
+            "learned": [645, 66181],
+            "type": "Ground",
+            "power": 95
+        },
+        "793": {
+            "name": "Lunar Blessing",
+            "learned": [488],
+            "type": "Normal", // UNCONFIRMED
+            "power": "---"
+        },
+        "794": {
+            "name": "Take Heart",
+            "learned": [489, 490],
+            "type": "Normal", // UNCONFIRMED
             "power": "---"
         }
         /* template
@@ -6557,7 +6702,6 @@ function Safari() {
             "weight": 53.6,
             "moves": [movenum("Pound"), movenum("Mega Drain"), movenum("Confusion"), movenum("Growth"), movenum("Life Dew"), movenum("Giga Drain"), movenum("Psyshock"), movenum("Helping Hand"), movenum("Aromatherapy"), movenum("Energy Ball"), movenum("Psychic"), movenum("Leech Seed"), movenum("Heal Pulse"), movenum("Solar Beam"), movenum("Future Sight"), movenum("Tackle"), movenum("Tail Whip"), movenum("Double Kick"), movenum("Stomp"), movenum("Take Down"), movenum("Thrash"), movenum("Taunt"), movenum("Double-Edge"), movenum("Astral Barrage"), movenum("Hex"), movenum("Confuse Ray"), movenum("Haze"), movenum("Shadow Ball"), movenum("Agility"), movenum("Disable"), movenum("Nasty Plot"), movenum("Pay Day"), movenum("Hyper Beam"), movenum("Giga Impact"), movenum("Magical Leaf"), movenum("Solar Blade"), movenum("Light Screen"), movenum("Reflect"), movenum("Safeguard"), movenum("Rest"), movenum("Snore"), movenum("Protect"), movenum("Scary Face"), movenum("Sunny Day"), movenum("Will-O-Wisp"), movenum("Facade"), movenum("Swift"), movenum("Imprison"), movenum("Bullet Seed"), movenum("Mud Shot"), movenum("Payback"), movenum("Assurance"), movenum("Power Swap"), movenum("Guard Swap"), movenum("Speed Swap"), movenum("Psycho Cut"), movenum("Trick Room"), movenum("Wonder Room"), movenum("Magic Room"), movenum("Round"), movenum("Bulldoze"), movenum("Snarl"), movenum("Phantom Force"), movenum("Draining Kiss"), movenum("Grassy Terrain"), movenum("Psychic Terrain"), movenum("Stomping Tantrum"), movenum("Body Slam"), movenum("Metronome"), movenum("Tri Attack"), movenum("Substitute"), movenum("Endure"), movenum("Sleep Talk"), movenum("Baton Pass"), movenum("Encore"), movenum("Crunch"), movenum("Uproar"), movenum("Trick"), movenum("Skill Swap"), movenum("Calm Mind"), movenum("Dark Pulse"), movenum("Seed Bomb"), movenum("Zen Headbutt"), movenum("Leaf Storm"), movenum("Grass Knot"), movenum("Foul Play"), movenum("Stored Power"), movenum("Ally Switch"), movenum("Pollen Puff")]
         },
-        /* Legends: Arceus
         "65594": {
             "types": ["Fire", "Rock"],
             "name": "Hisuian Growlithe",
@@ -6729,7 +6873,7 @@ function Safari() {
             "height": 0,
             "weight": 0
         },
-        "": {
+        "899": {
             "types": ["Normal", "Psychic"],
             "name": "Wyrdeer",
             "stats": [103, 105, 72, 105, 75, 65],
@@ -6738,7 +6882,7 @@ function Safari() {
             "height": 0,
             "weight": 0
         },
-        "": {
+        "900": {
             "types": ["Bug", "Rock"],
             "name": "Kleavor",
             "stats": [70, 135, 95, 45, 70, 85],
@@ -6747,7 +6891,7 @@ function Safari() {
             "height": 0,
             "weight": 0
         },
-        "": {
+        "901": {
             "types": ["Normal", "Ground"],
             "name": "Ursaluna",
             "stats": [130, 140, 105, 45, 80, 50],
@@ -6756,7 +6900,7 @@ function Safari() {
             "height": 0,
             "weight": 0
         },
-        "": {
+        "902": {
             "types": ["Water", "Ghost"],
             "name": "Basculegion",
             "stats": [120, 112, 65, 80, 75, 78],
@@ -6765,7 +6909,7 @@ function Safari() {
             "height": 0,
             "weight": 0
         },
-        "": {
+        "66438": {
             "types": ["Water", "Ghost"],
             "name": "Basculegion-F",
             "stats": [120, 92, 65, 100, 75, 78],
@@ -6774,7 +6918,7 @@ function Safari() {
             "height": 0,
             "weight": 0
         },
-        "": {
+        "903": {
             "types": ["Poison", "Fighting"],
             "name": "Sneasler",
             "stats": [80, 130, 60, 40, 80, 120],
@@ -6783,7 +6927,7 @@ function Safari() {
             "height": 0,
             "weight": 0
         },
-        "": {
+        "904": {
             "types": ["Dark", "Poison"],
             "name": "Overqwil",
             "stats": [85, 115, 95, 65, 65, 85],
@@ -6792,7 +6936,7 @@ function Safari() {
             "height": 0,
             "weight": 0
         },
-        "": {
+        "905": {
             "types": ["Fairy", "Flying"],
             "name": "Enamorus",
             "stats": [74, 115, 70, 135, 80, 106],
@@ -6801,7 +6945,7 @@ function Safari() {
             "height": 0,
             "weight": 0
         },
-        "": {
+        "66441": {
             "types": ["Fairy", "Flying"],
             "name": "Enamorus-Therian",
             "stats": [74, 115, 110, 135, 100, 46],
@@ -6810,7 +6954,6 @@ function Safari() {
             "height": 0,
             "weight": 0
         }
-        */
         /* template
         "": {
             "types": ["", ""],
@@ -7191,7 +7334,7 @@ function Safari() {
         if (isLegendary(id)) {
             return true;
         }
-        if (galarFormEvos.contains(id)) {
+        if (regionalEvos.contains(id)) {
             return true;
         }
         var base = pokeInfo.species(id), form = pokeInfo.forme(id);
@@ -7246,7 +7389,7 @@ function Safari() {
             ret = 7;
         } else if (isGalarianForm(pokeNum)) {
             ret = 8;
-        } else if (isHisuianForm(pokeNum)) {
+        } else if (isHisuianForm(pokeNum) || [66019, 66020].contains(pokeNum)) { // Dialga & Palkia Origin
             ret = 4;
             useAlt = true;
         } else if (inclusive(num, 152, 251)) {
@@ -7264,12 +7407,12 @@ function Safari() {
         } else if (inclusive(num, 810, 898)) {
             ret = 8;
         }
-        else if (inclusive(num, 899, 900)) { // New Hisui region Pokémon from Legends: Arceus
+        else if (inclusive(num, 899, 905)) { // New Hisui region Pokémon from Legends: Arceus
             ret = 4;
             useAlt = true;
         }
         if (wordy) {
-            var altRegions = ["", "", "", "Hisui", "", "", "", ""];
+            var altRegions = ["None", "", "", "", "Hisui", "", "", "", ""];
             return useAlt && altRegions[ret] ? altRegions[ret] : generations[ret];
         } else {
             return ret;
@@ -10455,6 +10598,7 @@ function Safari() {
             contestActivity[player.id] = [];
         }
 
+        data = data.toLowerCase();
         if (data === "cancel") {
             if (preparationPhase > 0 && preparationThrows.hasOwnProperty(name.toLowerCase())) {
                 safaribot.sendMessage(src, "You cancelled your " + (preparationThrows[name.toLowerCase()] === "takephoto" ? "photo" : "throw") + "!", safchan);
@@ -33348,7 +33492,7 @@ function Safari() {
                 while (request.length < amount) {
                     var randomNum = sys.rand(1, highestDexNum);
 
-                    if (galarFormEvos.concat([772, 773]).contains(randomNum)) { // [type: null, silvally]
+                    if (regionalEvos.concat([772, 773]).contains(randomNum)) { // [type: null, silvally]
                         continue;
                     }
                     var bst = getBST(randomNum);
@@ -41261,6 +41405,9 @@ function Safari() {
                         if (!(chance(0.2 * this.secretFlavor))) {
                             continue;
                         }
+                        if (isHisuianForm(mon.num) || [66019, 66020].contains(mon.num)) {
+                            continue;
+                        }
                         rareForm = true;
                     } else {
                         if (wildForms[j+""] <= i) {
@@ -41275,7 +41422,7 @@ function Safari() {
                 if (ultraBeasts.concat([892, 66428, 898]).contains(mon.num)) { // [urshifu, urshifu-rapid strike, calyrex]
                     bst = 600;
                 }
-                if (galarFormEvos.concat([789, 891]).contains(mon.num)) { // [cosmog, kubfu]
+                if (regionalEvos.concat([789, 891]).contains(mon.num)) { // [cosmog, kubfu]
                     bst = Math.max(bst, 510);
                     rareForm = true;
                 }
