@@ -6709,7 +6709,8 @@ function Safari() {
             "abilities": [ "Intimidate", "Flash Fire", "Justified" ],
             "tier": "SM LC",
             "height": 0.8,
-            "weight": 22.7
+            "weight": 22.7,
+            "moves": []
         },
         "65595": {
             "types": ["Fire", "Rock"],
@@ -6718,7 +6719,8 @@ function Safari() {
             "abilities": [ "Intimidate", "Flash Fire", "Justified" ],
             "tier": "SM OU",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "65636": {
             "types": ["Electric", "Grass"],
@@ -6727,7 +6729,8 @@ function Safari() {
             "abilities": [ "Soundproof", "Static", "Aftermath" ],
             "tier": "SM LC",
             "height": 0.5,
-            "weight": 13.0
+            "weight": 13.0,
+            "moves": []
         },
         "65637": {
             "types": ["Electric", "Grass"],
@@ -6736,7 +6739,8 @@ function Safari() {
             "abilities": [ "Soundproof", "Static", "Aftermath" ],
             "tier": "SM OU",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "65693": {
             "types": ["Fire", "Ghost"],
@@ -6745,7 +6749,8 @@ function Safari() {
             "abilities": [ "Blaze", "Flash Fire" ],
             "tier": "SM OU",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "65747": {
             "types": ["Dark", "Poison"],
@@ -6754,7 +6759,8 @@ function Safari() {
             "abilities": [ "Poison Point", "Swift Swim", "Intimidate" ],
             "tier": "SM LC",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "65751": {
             "types": ["Poison", "Fighting"],
@@ -6763,7 +6769,8 @@ function Safari() {
             "abilities": [ "Inner Focus", "Keen Eye", "Poison Touch" ],
             "tier": "SM LC",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "66019": {
             "types": ["Steel", "Dragon"],
@@ -6772,7 +6779,8 @@ function Safari() {
             "abilities": [ "Pressure", "Telepathy" ],
             "tier": "SM Ubers",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "66020": {
             "types": ["Water", "Dragon"],
@@ -6781,7 +6789,8 @@ function Safari() {
             "abilities": [ "Pressure", "Telepathy" ],
             "tier": "SM Ubers",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "66039": {
             "types": ["Water", "Dark"],
@@ -6790,7 +6799,8 @@ function Safari() {
             "abilities": [ "Torrent", "Shell Armor"],
             "tier": "SM OU",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "66085": {
             "types": ["Grass", "Fighting"],
@@ -6799,7 +6809,8 @@ function Safari() {
             "abilities": [ "Chlorophyll", "Hustle", "Leaf Guard" ],
             "tier": "SM OU",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "131622": {
             "types": ["Water", "???"],
@@ -6808,7 +6819,8 @@ function Safari() {
             "abilities": [ "Rattled", "Adaptability", "Mold Breaker" ],
             "tier": "SM LC",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "66106": {
             "types": ["Normal", "Ghost"],
@@ -6817,7 +6829,8 @@ function Safari() {
             "abilities": [ "Illusion" ],
             "tier": "SM LC",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "66107": {
             "types": ["Normal", "Ghost"],
@@ -6826,7 +6839,8 @@ function Safari() {
             "abilities": [ "Illusion" ],
             "tier": "SM OU",
             "height": 1.6,
-            "weight": 73.0
+            "weight": 73.0,
+            "moves": []
         },
         "66164": {
             "types": ["Psychic", "Flying"],
@@ -6835,7 +6849,8 @@ function Safari() {
             "abilities": [ "Keen Eye", "Sheer Force", "Defiant" ],
             "tier": "SM OU",
             "height": 1.7,
-            "weight": 43.4
+            "weight": 43.4,
+            "moves": []
         },
         "66241": {
             "types": ["Dragon", "Steel"],
@@ -6844,7 +6859,8 @@ function Safari() {
             "abilities": [ "Sap Sipper", "Overcoat", "Gooey" ],
             "tier": "SM PU",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "66242": {
             "types": ["Dragon", "Steel"],
@@ -6853,7 +6869,8 @@ function Safari() {
             "abilities": [ "Sap Sipper", "Overcoat", "Gooey" ],
             "tier": "SM OU",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "66249": {
             "types": ["Ice", "Rock"],
@@ -6862,7 +6879,8 @@ function Safari() {
             "abilities": [ "Strong Jaw", "Ice Body", "Sturdy" ],
             "tier": "SM OU",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "66260": {
             "types": ["Grass", "Fighting"],
@@ -6871,7 +6889,8 @@ function Safari() {
             "abilities": [ "Overgrow", "Long Reach" ],
             "tier": "SM OU",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         },
         "899": {
             "types": ["Normal", "Psychic"],
@@ -6880,7 +6899,8 @@ function Safari() {
             "abilities": [ "Intimidate", "Frisk", "Sap Sipper" ],
             "tier": "SM OU",
             "height": 1.8,
-            "weight": 95.1
+            "weight": 95.1,
+            "moves": []
         },
         "900": {
             "types": ["Bug", "Rock"],
@@ -6889,7 +6909,8 @@ function Safari() {
             "abilities": [ "Swarm", "Sheer Force", "Steadfast" ],
             "tier": "SM OU",
             "height": 1.8,
-            "weight": 89.0
+            "weight": 89.0,
+            "moves": []
         },
         "901": {
             "types": ["Normal", "Ground"],
@@ -6898,7 +6919,8 @@ function Safari() {
             "abilities": [ "Guts", "Bulletproof", "Unnerve" ],
             "tier": "SM OU",
             "height": 2.4,
-            "weight": 290.0
+            "weight": 290.0,
+            "moves": []
         },
         "902": {
             "types": ["Water", "Ghost"],
@@ -6907,7 +6929,8 @@ function Safari() {
             "abilities": [ "Rattled", "Adaptability", "Mold Breaker" ],
             "tier": "SM OU",
             "height": 3.0,
-            "weight": 110.0
+            "weight": 110.0,
+            "moves": []
         },
         "66438": {
             "types": ["Water", "Ghost"],
@@ -6916,7 +6939,8 @@ function Safari() {
             "abilities": [ "Rattled", "Adaptability", "Mold Breaker" ],
             "tier": "SM OU",
             "height": 3.0, // UNCONFIRMED
-            "weight": 110.0 // UNCONFIRMED
+            "weight": 110.0,
+            "moves": [] // UNCONFIRMED
         },
         "903": {
             "types": ["Poison", "Fighting"],
@@ -6925,7 +6949,8 @@ function Safari() {
             "abilities": [ "Pressure", "Poison Touch" ],
             "tier": "SM OU",
             "height": 1.3,
-            "weight": 43.0
+            "weight": 43.0,
+            "moves": []
         },
         "904": {
             "types": ["Dark", "Poison"],
@@ -6934,7 +6959,8 @@ function Safari() {
             "abilities": [ "Poison Point", "Swift Swim", "Intimidate" ],
             "tier": "SM OU",
             "height": 2.5,
-            "weight": 60.5
+            "weight": 60.5,
+            "moves": []
         },
         "905": {
             "types": ["Fairy", "Flying"],
@@ -6943,7 +6969,8 @@ function Safari() {
             "abilities": [ "Healer", "Contrary" ],
             "tier": "SM OU",
             "height": 1.6,
-            "weight": 48.0
+            "weight": 48.0,
+            "moves": []
         },
         "66441": {
             "types": ["Fairy", "Flying"],
@@ -6952,7 +6979,8 @@ function Safari() {
             "abilities": [ "Overcoat" ],
             "tier": "SM OU",
             "height": 0, // UNCONFIRMED
-            "weight": 0 // UNCONFIRMED
+            "weight": 0,
+            "moves": [] // UNCONFIRMED
         }
         /* template
         "": {
