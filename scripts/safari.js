@@ -4588,7 +4588,7 @@ function Safari() {
         "780": {
             "name": "Victory Dance",
             "learned": [66085],
-            "type": "Normal", // UNCONFIRMED
+            "type": "Fighting",
             "power": "---"
         },
         "781": {
@@ -6758,9 +6758,9 @@ function Safari() {
             "stats": [65, 95, 85, 55, 55, 85],
             "abilities": [ "Poison Point", "Swift Swim", "Intimidate" ],
             "tier": "SM LC",
-            "height": 0, // UNCONFIRMED
-            "weight": 0,
-            "moves": [] // UNCONFIRMED
+            "height": 0.5,
+            "weight": 3.9,
+            "moves": []
         },
         "65751": {
             "types": ["Poison", "Fighting"],
@@ -6768,9 +6768,9 @@ function Safari() {
             "stats": [55, 95, 55, 35, 75, 115],
             "abilities": [ "Inner Focus", "Keen Eye", "Poison Touch" ],
             "tier": "SM LC",
-            "height": 0, // UNCONFIRMED
-            "weight": 0,
-            "moves": [] // UNCONFIRMED
+            "height": 0.9,
+            "weight": 28.0,
+            "moves": []
         },
         "66019": {
             "types": ["Steel", "Dragon"],
@@ -6798,8 +6798,8 @@ function Safari() {
             "stats": [90, 108, 80, 100, 65, 85],
             "abilities": [ "Torrent", "Shell Armor"],
             "tier": "SM OU",
-            "height": 0, // UNCONFIRMED
-            "weight": 0,
+            "height": 1.5,
+            "weight": 94.6,
             "moves": []
         },
         "66085": {
@@ -6808,9 +6808,9 @@ function Safari() {
             "stats": [70, 105, 75, 50, 75, 105],
             "abilities": [ "Chlorophyll", "Hustle", "Leaf Guard" ],
             "tier": "SM OU",
-            "height": 0, // UNCONFIRMED
-            "weight": 0,
-            "moves": [] // UNCONFIRMED
+            "height": 1.3,
+            "weight": 20.0,
+            "moves": []
         },
         "131622": {
             "types": ["Water", "???"],
@@ -6818,9 +6818,9 @@ function Safari() {
             "stats": [70, 92, 65, 80, 55, 98],
             "abilities": [ "Rattled", "Adaptability", "Mold Breaker" ],
             "tier": "SM LC",
-            "height": 0, // UNCONFIRMED
-            "weight": 0,
-            "moves": [] // UNCONFIRMED
+            "height": 1.0,
+            "weight": 18.0,
+            "moves": []
         },
         "66106": {
             "types": ["Normal", "Ghost"],
@@ -6828,9 +6828,9 @@ function Safari() {
             "stats": [35, 60, 40, 85, 40, 70],
             "abilities": [ "Illusion" ],
             "tier": "SM LC",
-            "height": 0, // UNCONFIRMED
-            "weight": 0,
-            "moves": [] // UNCONFIRMED
+            "height": 0.7,
+            "weight": 12.5,
+            "moves": []
         },
         "66107": {
             "types": ["Normal", "Ghost"],
@@ -6978,9 +6978,9 @@ function Safari() {
             "stats": [74, 115, 110, 135, 100, 46],
             "abilities": [ "Overcoat" ],
             "tier": "SM OU",
-            "height": 0, // UNCONFIRMED
-            "weight": 0,
-            "moves": [] // UNCONFIRMED
+            "height": 1.6, // UNCONFIRMED
+            "weight": 48.0, // UNCONFIRMED
+            "moves": []
         }
         /* template
         "": {
