@@ -20945,10 +20945,10 @@ function Safari() {
             return;
         }
         if (!index) {
-            safaribot.sendMessage(src, "That's not a number!", safchan);
+            safaribot.sendMessage(src, "That's not a valid number!", safchan);
             return;
         }
-        if (index - 1 >= player.medals.length || index < 1) {
+        if (!player.medals[index - 1]) {
             safaribot.sendMessage(src, "Index out of range!", safchan);
             return;
         } 
@@ -20962,8 +20962,7 @@ function Safari() {
             return;
         }
         m = player.medals[index - 1];
-        ls = player.medals;
-        ls.splice(index - 1, 1);
+        player.medals.splice(index - 1, 1);
         safaribot.sendHtmlMessage(src, "You discarded your medal: " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + ".", safchan);
         
         //band-aid fix since im not sure what causes this yet, but it just happened and i can't replicate it
@@ -30067,11 +30066,15 @@ function Safari() {
                 }
             }
             if (move.type === "Flying" && user.boosts["spe"] < 6) {
-                var speedBoostSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFlying");
-                if (speedBoostSkill) {
-                    user.boosts["spe"] += speedBoostSkill.rate2;
-                    user.boosts["spe"] = Math.min(6, user.boosts["spe"]);
-                    out.push("<b>[{0}'s {1}]</b> {2}'s Flying-type attack boosted its speed by {3}!".format(poke(speedBoostSkill.id), speedBoostSkill.name, poke(user.id), plural(speedBoostSkill.rate2, "stage")));
+                var valid = this.team1.filter(function(e) { return e.boosts["spe"] < 6; });
+                if (valid.length > 0) {
+                    var speedBoostSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFlying");
+                    var recipient = valid.random();
+                    if (speedBoostSkill) {
+                        recipient.boosts["spe"] += speedBoostSkill.rate2;
+                        recipient.boosts["spe"] = Math.min(6, recipient.boosts["spe"]);
+                        out.push("<b>[{0}'s {1}]</b> {2}'s Flying-type attack boosted {3}'s speed by {4}!".format(poke(speedBoostSkill.id), speedBoostSkill.name, poke(user.id), poke(recipient.id), plural(speedBoostSkill.rate2, "stage")));
+                    }
                 }
             }
             if (move.type === "Grass") {
