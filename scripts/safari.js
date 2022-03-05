@@ -12103,7 +12103,7 @@ function Safari() {
             safaribot.sendMessage(src, "You can still take " + plural(20-player.photos.length, "photo", false, true) + "!", safchan);
         }
         player.cooldowns.ball = currentTime + cooldown;
-        this.missionProgress(player, "photo", currentPokemon, 1, { photo: photo });
+        this.missionProgress(player, "photo", currentDisplay, 1, { photo: photo });
         lastWildAction = now();
         this.saveGame(player);
         if (contestCount > 0 && !contestActivity[player.id].contains(lastWild)) {
@@ -30066,7 +30066,7 @@ function Safari() {
                 }
             }
             if (move.type === "Flying" && user.boosts["spe"] < 6) {
-                var valid = this.team1.filter(function(e) { return e.boosts["spe"] < 6; });
+                var valid = this.team1.filter(function(e) { return e.boosts["spe"] < 6 && e.hp > 0; });
                 if (valid.length > 0) {
                     var speedBoostSkill = safari.pokeSkillActivated(this.name1, this.originalTeam1, "basicFlying");
                     var recipient = valid.random();
