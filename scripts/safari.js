@@ -40188,7 +40188,7 @@ function Safari() {
                     ret.push(skill);
                 }
             }
-            else if (skillData[skill].eligible && skillData[skill].eligible.contains(pokeId)) {
+            else if (skillData[skill].eligible && skillData[skill].eligible.contains(parseInt(pokeId))) {
                 ret.push(skill);
             }
         }
