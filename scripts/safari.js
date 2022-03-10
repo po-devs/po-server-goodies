@@ -6710,7 +6710,7 @@ function Safari() {
             "tier": "SM LC",
             "height": 0.8,
             "weight": 22.7,
-            "moves": []
+            "moves": [movenum("Tackle"), movenum("Ember"), movenum("Bite"), movenum("Fire Fang"), movenum("Rock Slide"), movenum("Crunch"), movenum("Double-Edge"), movenum("Flare Blitz"), movenum("Rock Smash"), movenum("Aerial Ace"), movenum("Swift"), movenum("Rest"), movenum("Iron Tail"), movenum("Snarl"), movenum("Wild Charge"), movenum("Outrage"), movenum("Play Rough"), movenum("Flamethrower")]
         },
         "65595": {
             "types": ["Fire", "Rock"],
@@ -6720,7 +6720,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 2.2,
             "weight": 182.9,
-            "moves": []
+            "moves": [movenum("Tackle"), movenum("Ember"), movenum("Bite"), movenum("Fire Fang"), movenum("Rock Slide"), movenum("Raging Fury"), movenum("Crunch"), movenum("Double-Edge"), movenum("Flare Blitz"), movenum("Thunder Fang"), movenum("Rock Smash"), movenum("Bulldoze"), movenum("Aerial Ace"), movenum("Swift"), movenum("Rest"), movenum("Iron Head"), movenum("Iron Tail"), movenum("Snarl"), movenum("Giga Impact"), movenum("Wild Charge"), movenum("Stone Edge"), movenum("Outrage"), movenum("Play Rough"), movenum("Hyper Beam"), movenum("Flamethrower")]
         },
         "65636": {
             "types": ["Electric", "Grass"],
@@ -6730,7 +6730,8 @@ function Safari() {
             "tier": "SM LC",
             "height": 0.5,
             "weight": 13.0,
-            "moves": []
+            "moves": [movenum("Thunder Shock"), movenum("Tackle"), movenum("Thunder Wave"), movenum("Spark"), movenum("Energy Ball"), movenum("Thunderbolt"), movenum("Thunder"), movenum("Self-Destruct"), movenum("Ice Ball"), movenum("Swift"), movenum("Magical Leaf"), movenum("Rest"), movenum("Charge Beam"), movenum("Wild Charge")]
+
         },
         "65637": {
             "types": ["Electric", "Grass"],
@@ -6740,7 +6741,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.2,
             "weight": 74.3,
-            "moves": []
+            "moves": [movenum("Thunder Shock"), movenum("Tackle"), movenum("Thunder Wave"), movenum("Spark"), movenum("Energy Ball"), movenum("Thunderbolt"), movenum("Thunder"), movenum("Chloroblast"), movenum("Self-Destruct"), movenum("Ice Ball"), movenum("Swift"), movenum("Magical Leaf"), movenum("Rest"), movenum("Charge Beam"), movenum("Giga Impact"), movenum("Wild Charge"), movenum("Hyper Beam")]
         },
         "65693": {
             "types": ["Fire", "Ghost"],
@@ -6750,7 +6751,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.6,
             "weight": 69.7,
-            "moves": []
+            "moves": [movenum("Quick Attack"), movenum("Hex"), movenum("Ember"), movenum("Rollout"), movenum("Flame Wheel"), movenum("Swift"), movenum("Flamethrower"), movenum("Infernal Parade"), movenum("Shadow Ball"), movenum("Overheat"), movenum("Rock Smash"), movenum("Bulldoze"), movenum("Aerial Ace"), movenum("Ominous Wind"), movenum("Calm Mind"), movenum("Rest"), movenum("Fire Punch"), movenum("Thunder Punch"), movenum("Drain Punch"), movenum("Rock Slide"), movenum("Shadow Claw"), movenum("Iron Tail"), movenum("Mystical Fire"), movenum("Giga Impact"), movenum("Wild Charge"), movenum("Hyper Beam")]
         },
         "65747": {
             "types": ["Dark", "Poison"],
@@ -6760,7 +6761,7 @@ function Safari() {
             "tier": "SM LC",
             "height": 0.5,
             "weight": 3.9,
-            "moves": []
+            "moves": [movenum("Poison Sting"), movenum("Spikes"), movenum("Pin Missile"), movenum("Barb Barrage"), movenum("Water Pulse"), movenum("Dark Pulse"), movenum("Poison Jab"), movenum("Aqua Tail"), movenum("Double-Edge"), movenum("Self-Destruct"), movenum("Ice Ball"), movenum("Swift"), movenum("Rest"), movenum("Icy Wind"), movenum("Sludge Bomb"), movenum("Shadow Ball"), movenum("Ice Beam")]
         },
         "65751": {
             "types": ["Poison", "Fighting"],
@@ -6770,7 +6771,7 @@ function Safari() {
             "tier": "SM LC",
             "height": 0.9,
             "weight": 28.0,
-            "moves": []
+            "moves": [movenum("Quick Attack"), movenum("Rock Smash"), movenum("Swift"), movenum("Slash"), movenum("Poison Jab"), movenum("Swords Dance"), movenum("Close Combat"), movenum("False Swipe"), movenum("Aerial Ace"), movenum("Focus Energy"), movenum("Bulk Up"), movenum("Calm Mind"), movenum("Rest"), movenum("Drain Punch"), movenum("X-Scissor"), movenum("Shadow Claw"), movenum("Iron Tail"), movenum("Shadow Ball"), movenum("Snarl")]
         },
         "66019": {
             "types": ["Steel", "Dragon"],
@@ -6780,7 +6781,7 @@ function Safari() {
             "tier": "SM Ubers",
             "height": 7.0,
             "weight": 848.7,
-            "moves": []
+            "moves": [movenum("Twister"), movenum("Ancient Power"), movenum("Slash"), movenum("Dragon Claw"), movenum("Power Gem"), movenum("Dragon Pulse"), movenum("Earth Power"), movenum("Iron Tail"), movenum("Flash Cannon"), movenum("Roar of Time"), movenum("Rock Smash"), movenum("Bulldoze"), movenum("Aerial Ace"), movenum("Stealth Rock"), movenum("Swift"), movenum("Bulk Up"), movenum("Rest"), movenum("Rock Slide"), movenum("Shadow Claw"), movenum("Iron Head"), movenum("Giga Impact"), movenum("Stone Edge"), movenum("Outrage"), movenum("Hyper Beam"), movenum("Flamethrower"), movenum("Thunderbolt"), movenum("Ice Beam"), movenum("Draco Meteor"), movenum("Steel Beam")]
         },
         "66020": {
             "types": ["Water", "Dragon"],
@@ -6790,7 +6791,7 @@ function Safari() {
             "tier": "SM Ubers",
             "height": 6.3,
             "weight": 659.0,
-            "moves": []
+            "moves": [movenum("Twister"), movenum("Ancient Power"), movenum("Slash"), movenum("Dragon Claw"), movenum("Power Gem"), movenum("Dragon Pulse"), movenum("Earth Power"), movenum("Aqua Tail"), movenum("Hydro Pump"), movenum("Spacial Rend"), movenum("Rock Smash"), movenum("Bulldoze"), movenum("Aerial Ace"), movenum("Swift"), movenum("Bulk Up"), movenum("Rest"), movenum("Rock Slide"), movenum("Shadow Claw"), movenum("Water Pulse"), movenum("Giga Impact"), movenum("Stone Edge"), movenum("Outrage"), movenum("Hyper Beam"), movenum("Flamethrower"), movenum("Thunderbolt"), movenum("Ice Beam"), movenum("Draco Meteor")]
         },
         "66039": {
             "types": ["Water", "Dark"],
@@ -6800,7 +6801,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.5,
             "weight": 94.6,
-            "moves": []
+            "moves": [movenum("Night Slash"), movenum("Tackle"), movenum("Aqua Jet"), movenum("Swords Dance"), movenum("Water Pulse"), movenum("Ceaseless Edge"), movenum("Slash"), movenum("Aqua Tail"), movenum("Dark Pulse"), movenum("Hydro Pump"), movenum("False Swipe"), movenum("Rock Smash"), movenum("Aerial Ace"), movenum("Focus Energy"), movenum("Rest"), movenum("Poison Jab"), movenum("Psycho Cut"), movenum("X-Scissor"), movenum("Iron Tail"), movenum("Icy Wind"), movenum("Giga Impact"), movenum("Megahorn"), movenum("Hyper Beam"), movenum("Ice Beam")]
         },
         "66085": {
             "types": ["Grass", "Fighting"],
@@ -6810,7 +6811,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.3,
             "weight": 20.0,
-            "moves": []
+            "moves": [movenum("Absorb"), movenum("Rock Smash"), movenum("Leafage"), movenum("Stun Spore"), movenum("Poison Powder"), movenum("Energy Ball"), movenum("Sleep Powder"), movenum("Drain Punch"), movenum("Recover"), movenum("Leaf Blade"), movenum("Victory Dance"), movenum("Leaf Storm"), movenum("Petal Dance"), movenum("Close Combat"), movenum("Aerial Ace"), movenum("Magical Leaf"), movenum("Focus Energy"), movenum("Rest"), movenum("Baby-Doll Eyes"), movenum("Poison Jab"), movenum("Giga Impact"), movenum("Hyper Beam")]
         },
         "131622": {
             "types": ["Water", "???"],
@@ -6820,7 +6821,7 @@ function Safari() {
             "tier": "SM LC",
             "height": 1.0,
             "weight": 18.0,
-            "moves": []
+            "moves": [movenum("Tackle"), movenum("Aqua Jet"), movenum("Bite"), movenum("Zen Headbutt"), movenum("Crunch"), movenum("Wave Crash"), movenum("Double-Edge"), movenum("Ice Fang"), movenum("Swift"), movenum("Rest"), movenum("Icy Wind"), movenum("Aqua Tail"), movenum("Ice Beam")]
         },
         "66106": {
             "types": ["Normal", "Ghost"],
@@ -6830,7 +6831,7 @@ function Safari() {
             "tier": "SM LC",
             "height": 0.7,
             "weight": 12.5,
-            "moves": []
+            "moves": [movenum("Shadow Sneak"), movenum("Snarl"), movenum("Swift"), movenum("Bitter Malice"), movenum("Slash"), movenum("Shadow Claw"), movenum("Nasty Plot"), movenum("Aerial Ace"), movenum("Calm Mind"), movenum("Rest"), movenum("Sludge Bomb"), movenum("Shadow Ball"), movenum("Dark Pulse")]
         },
         "66107": {
             "types": ["Normal", "Ghost"],
@@ -6840,7 +6841,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.6,
             "weight": 73.0,
-            "moves": []
+            "moves": [movenum("Shadow Sneak"), movenum("Snarl"), movenum("Swift"), movenum("Bitter Malice"), movenum("Slash"), movenum("Shadow Claw"), movenum("Shadow Ball"), movenum("Nasty Plot"), movenum("Extrasensory"), movenum("Rock Smash"), movenum("Aerial Ace"), movenum("Ominous Wind"), movenum("Calm Mind"), movenum("Rest"), movenum("Sludge Bomb"), movenum("Giga Impact"), movenum("Hyper Beam"), movenum("Flamethrower"), movenum("Dark Pulse")]
         },
         "66164": {
             "types": ["Psychic", "Flying"],
@@ -6850,7 +6851,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.7,
             "weight": 43.4,
-            "moves": []
+            "moves": [movenum("Quick Attack"), movenum("Aerial Ace"), movenum("Twister"), movenum("Slash"), movenum("Air Slash"), movenum("Esper Wing"), movenum("Roost"), movenum("Double-Edge"), movenum("Brave Bird"), movenum("Hurricane"), movenum("Rock Smash"), movenum("Swift"), movenum("Ominous Wind"), movenum("Power Shift"), movenum("Bulk Up"), movenum("Rest"), movenum("Zen Headbutt"), movenum("Rock Slide"), movenum("Shadow Claw"), movenum("Mystical Fire"), movenum("Dazzling Gleam"), movenum("Giga Impact"), movenum("Hyper Beam"), movenum("Psychic")]
         },
         "66241": {
             "types": ["Dragon", "Steel"],
@@ -6860,7 +6861,7 @@ function Safari() {
             "tier": "SM PU",
             "height": 0.7,
             "weight": 76.8,
-            "moves": []
+            "moves": [movenum("Bubble"), movenum("Acid Spray"), movenum("Acid Armor"), movenum("Water Pulse"), movenum("Iron Head"), movenum("Dragon Pulse"), movenum("Shelter"), movenum("Hydro Pump"), movenum("Rest"), movenum("Rock Slide"), movenum("Iron Tail"), movenum("Sludge Bomb"), movenum("Outrage"), movenum("Thunderbolt"), movenum("Ice Beam"), movenum("Draco Meteor"), movenum("Steel Beam")]
         },
         "66242": {
             "types": ["Dragon", "Steel"],
@@ -6870,7 +6871,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 2.7,
             "weight": 641.5,
-            "moves": []
+            "moves": [movenum("Bubble"), movenum("Acid Spray"), movenum("Acid Armor"), movenum("Water Pulse"), movenum("Iron Head"), movenum("Dragon Pulse"), movenum("Shelter"), movenum("Hydro Pump"), movenum("Rock Smash"), movenum("Bulldoze"), movenum("Rest"), movenum("Fire Punch"), movenum("Thunder Punch"), movenum("Rock Slide"), movenum("Iron Tail"), movenum("Sludge Bomb"), movenum("Giga Impact"), movenum("Outrage"), movenum("Hyper Beam"), movenum("Flamethrower"), movenum("Thunderbolt"), movenum("Ice Beam"), movenum("Draco Meteor"), movenum("Steel Beam")]
         },
         "66249": {
             "types": ["Ice", "Rock"],
@@ -6880,7 +6881,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.4,
             "weight": 278.6,
-            "moves": []
+            "moves": [movenum("Tackle"), movenum("Rock Slide"), movenum("Powder Snow"), movenum("Ice Shard"), movenum("Bite"), movenum("Iron Defense"), movenum("Crunch"), movenum("Earth Power"), movenum("Mountain Gale"), movenum("Blizzard"), movenum("Double-Edge"), movenum("Ice Fang"), movenum("Ice Ball"), movenum("Rock Smash"), movenum("Bulldoze"), movenum("Stealth Rock"), movenum("Power Shift"), movenum("Rest"), movenum("Iron Head"), movenum("Water Pulse"), movenum("Icy Wind"), movenum("Flash Cannon"), movenum("Giga Impact"), movenum("High Horsepower"), movenum("Stone Edge"), movenum("Hyper Beam"), movenum("Ice Beam")]
         },
         "66260": {
             "types": ["Grass", "Fighting"],
@@ -6890,7 +6891,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.6,
             "weight": 36.9,
-            "moves": []
+            "moves": [movenum("Gust"), movenum("Rock Smash"), movenum("Leafage"), movenum("Roost"), movenum("Aerial Ace"), movenum("Magical Leaf"), movenum("Air Slash"), movenum("Aura Sphere"), movenum("Leaf Blade"), movenum("Triple Arrows"), movenum("Brave Bird"), movenum("Leaf Storm"), movenum("False Swipe"), movenum("Spikes"), movenum("Swift"), movenum("Focus Energy"), movenum("Bulk Up"), movenum("Rest"), movenum("Psycho Cut"), movenum("Shadow Claw"), movenum("Energy Ball"), movenum("Giga Impact"), movenum("Hyper Beam")]
         },
         "899": {
             "types": ["Normal", "Psychic"],
@@ -6900,7 +6901,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.8,
             "weight": 95.1,
-            "moves": []
+            "moves": [movenum("Tackle"), movenum("Confusion"), movenum("Hypnosis"), movenum("Calm Mind"), movenum("Psyshield Bash"), movenum("Extrasensory"), movenum("Zen Headbutt"), movenum("Double-Edge"), movenum("Bulldoze"), movenum("Swift"), movenum("Rest"), movenum("Iron Tail"), movenum("Charge Beam"), movenum("Energy Ball"), movenum("Shadow Ball"), movenum("Giga Impact"), movenum("Wild Charge"), movenum("High Horsepower"), movenum("Megahorn"), movenum("Hyper Beam"), movenum("Thunderbolt"), movenum("Psychic")]
         },
         "900": {
             "types": ["Bug", "Rock"],
@@ -6910,7 +6911,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.8,
             "weight": 89.0,
-            "moves": []
+            "moves": [movenum("Quick Attack"), movenum("Silver Wind"), movenum("Aerial Ace"), movenum("Double Hit"), movenum("Stealth Rock"), movenum("Air Slash"), movenum("Swords Dance"), movenum("Stone Axe"), movenum("X-Scissor"), movenum("Close Combat"), movenum("False Swipe"), movenum("Rock Smash"), movenum("Swift"), movenum("Ominous Wind"), movenum("Focus Energy"), movenum("Calm Mind"), movenum("Rest"), movenum("Psycho Cut"), movenum("Rock Slide"), movenum("Giga Impact"), movenum("Stone Edge"), movenum("Hyper Beam")]
         },
         "901": {
             "types": ["Normal", "Ground"],
@@ -6920,7 +6921,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 2.4,
             "weight": 290.0,
-            "moves": []
+            "moves": [movenum("Tackle"), movenum("Baby-Doll Eyes"), movenum("Bulldoze"), movenum("Slash"), movenum("Play Rough"), movenum("High Horsepower"), movenum("Double-Edge"), movenum("Headlong Rush"), movenum("Rock Smash"), movenum("Aerial Ace"), movenum("Swift"), movenum("Focus Energy"), movenum("Bulk Up"), movenum("Rest"), movenum("Fire Punch"), movenum("Thunder Punch"), movenum("Ice Punch"), movenum("Rock Slide"), movenum("Shadow Claw"), movenum("Earth Power"), movenum("Giga Impact"), movenum("Stone Edge"), movenum("Hyper Beam")]
         },
         "902": {
             "types": ["Water", "Ghost"],
@@ -6930,7 +6931,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 3.0,
             "weight": 110.0,
-            "moves": []
+            "moves": [movenum("Tackle"), movenum("Aqua Jet"), movenum("Bite"), movenum("Hex"), movenum("Zen Headbutt"), movenum("Crunch"), movenum("Shadow Ball"), movenum("Wave Crash"), movenum("Double-Edge"), movenum("Ice Fang"), movenum("Swift"), movenum("Ominous Wind"), movenum("Calm Mind"), movenum("Rest"), movenum("Water Pulse"), movenum("Icy Wind"), movenum("Giga Impact"), movenum("Aqua Tail"), movenum("Hyper Beam"), movenum("Ice Beam"), movenum("Psychic")]
         },
         "66438": {
             "types": ["Water", "Ghost"],
@@ -6940,7 +6941,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 3.0,
             "weight": 110.0,
-            "moves": []
+            "moves": [movenum("Tackle"), movenum("Aqua Jet"), movenum("Bite"), movenum("Hex"), movenum("Zen Headbutt"), movenum("Crunch"), movenum("Shadow Ball"), movenum("Wave Crash"), movenum("Double-Edge"), movenum("Ice Fang"), movenum("Swift"), movenum("Ominous Wind"), movenum("Calm Mind"), movenum("Rest"), movenum("Water Pulse"), movenum("Icy Wind"), movenum("Giga Impact"), movenum("Aqua Tail"), movenum("Hyper Beam"), movenum("Ice Beam"), movenum("Psychic")]
         },
         "903": {
             "types": ["Poison", "Fighting"],
@@ -6950,7 +6951,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.3,
             "weight": 43.0,
-            "moves": []
+            "moves": [movenum("Quick Attack"), movenum("Rock Smash"), movenum("Swift"), movenum("Dire Claw"), movenum("Slash"), movenum("Poison Jab"), movenum("Swords Dance"), movenum("Close Combat"), movenum("False Swipe"), movenum("Aerial Ace"), movenum("Power Shift"), movenum("Focus Energy"), movenum("Bulk Up"), movenum("Calm Mind"), movenum("Rest"), movenum("Drain Punch"), movenum("X-Scissor"), movenum("Shadow Claw"), movenum("Iron Tail"), movenum("Shadow Ball"), movenum("Snarl"), movenum("Giga Impact"), movenum("Hyper Beam")]
         },
         "904": {
             "types": ["Dark", "Poison"],
@@ -6960,7 +6961,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 2.5,
             "weight": 60.5,
-            "moves": []
+            "moves": [movenum("Poison Sting"), movenum("Spikes"), movenum("Pin Missile"), movenum("Barb Barrage"), movenum("Water Pulse"), movenum("Dark Pulse"), movenum("Poison Jab"), movenum("Aqua Tail"), movenum("Double-Edge"), movenum("Self-Destruct"), movenum("Ice Ball"), movenum("Swift"), movenum("Rest"), movenum("Icy Wind"), movenum("Sludge Bomb"), movenum("Shadow Ball"), movenum("Giga Impact"), movenum("Hyper Beam"), movenum("Ice Beam")]
         },
         "905": {
             "types": ["Fairy", "Flying"],
@@ -6970,7 +6971,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.6,
             "weight": 48.0,
-            "moves": []
+            "moves": [movenum("Tackle"), movenum("Bite"), movenum("Twister"), movenum("Draining Kiss"), movenum("Iron Defense"), movenum("Extrasensory"), movenum("Crunch"), movenum("Moonblast"), movenum("Springtide Storm"), movenum("Rock Smash"), movenum("Power Shift"), movenum("Calm Mind"), movenum("Rest"), movenum("Zen Headbutt"), movenum("Mystical Fire"), movenum("Sludge Bomb"), movenum("Earth Power"), movenum("Dazzling Gleam"), movenum("Giga Impact"), movenum("Play Rough"), movenum("Hyper Beam"), movenum("Psychic")]
         },
         "66441": {
             "types": ["Fairy", "Flying"],
@@ -6980,7 +6981,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.6, // UNCONFIRMED
             "weight": 48.0, // UNCONFIRMED
-            "moves": []
+            "moves": [movenum("Tackle"), movenum("Bite"), movenum("Twister"), movenum("Draining Kiss"), movenum("Iron Defense"), movenum("Extrasensory"), movenum("Crunch"), movenum("Moonblast"), movenum("Springtide Storm"), movenum("Rock Smash"), movenum("Power Shift"), movenum("Calm Mind"), movenum("Rest"), movenum("Zen Headbutt"), movenum("Mystical Fire"), movenum("Sludge Bomb"), movenum("Earth Power"), movenum("Dazzling Gleam"), movenum("Giga Impact"), movenum("Play Rough"), movenum("Hyper Beam"), movenum("Psychic")]
         }
         /* template
         "": {
