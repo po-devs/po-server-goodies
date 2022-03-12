@@ -41436,9 +41436,6 @@ function Safari() {
                         if (!(chance(0.2 * this.secretFlavor))) {
                             continue;
                         }
-                        if (isHisuianForm(mon.num) || [66019, 66020].contains(mon.num)) {
-                            continue;
-                        }
                         rareForm = true;
                     } else {
                         if (wildForms[j+""] <= i) {
