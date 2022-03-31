@@ -11274,7 +11274,7 @@ function Safari() {
                 }
             }
             if (player.options.sellPrompt && !isRare(currentPokemon)) {
-                safaribot.sendHtmlMessage(src, "«{0}» ({1})".format(link("/sell " + poke(currentPokemon, true) + ":confirm", "Click here to sell the " + poke(currentPokemon, true) + " you just caught"), "You now have " + countRepeated(player.pokemon, currentPokemon) + " " + poke(currentPokemon, true)), safchan);
+                safaribot.sendHtmlMessage(src, "«{0}» ({1})".format(link("/sell " + poke(currentPokemon) + ":confirm", "Click here to sell the " + poke(currentPokemon, true) + " you just caught"), "You now have " + countRepeated(player.pokemon, currentPokemon) + " " + poke(currentPokemon, true)), safchan);
             }
             if (contestCount > 0) {
                 var nameLower = name.toLowerCase();
