@@ -11600,7 +11600,7 @@ function Safari() {
             if ((bst >= 450 || isRare(currentPokemon)) && bst <= 600) {
                 lastEscapedMons.push({
                     poke: currentPokemon,
-                    price: getPrice(currentPokemon, typeof currentPokemon === "string") * (isRare(currentPokemon) ? 7 : 1.5)
+                    price: Math.round(getPrice(currentPokemon, typeof currentPokemon === "string") * (isRare(currentPokemon) ? 7 : 1.5))
                 });
             }
             while (lastEscapedMons.length > 100) {
