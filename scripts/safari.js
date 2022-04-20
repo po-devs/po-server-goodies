@@ -25416,8 +25416,8 @@ function Safari() {
             this.biasNPC0 = null;
         }
         if (typeof p2 !== "object") {
-            this.whitelist.push(this.name2.toLowerCase());
             this.name2 = sys.name(p2);
+            this.whitelist.push(this.name2.toLowerCase());
             this.idnum2 = getAvatar(p2).idnum;
             this.viewers.push(this.name2.toLowerCase());
         }
