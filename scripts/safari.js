@@ -66,6 +66,8 @@ function Safari() {
     var cookedPlayers;
     var rafflePlayers;
     var mAuctionsData;
+    var mAuctionsMarket;
+    var lastEscapedMons;
     var npcShop;
     var idnumList;
     var lastIdAssigned;
@@ -768,6 +770,10 @@ function Safari() {
             },
             arborist: {
                 cooldown: 0
+            },
+            detective: {
+                cooldown: 0,
+                lastGuesses: []
             }
         },
         altTimeline: {
@@ -1188,7 +1194,7 @@ function Safari() {
             scale: {name: "scale", fullName: "Prism Scale", type: "consumable", icon: 232, price: 3000, duration: 10, aliases: ["scale", "prism", "prism scale", "prismscale"], tradable: false },
             mushroom: {name: "mushroom", fullName: "Big Mushroom", type: "consumable", icon: 47, price: 3000, duration: 10, aliases: ["mushroom", "big mushroom", "bigmushroom", "tiny mushroom", "tinymushroom", "shroom"], tradable: true },
             brush: {name: "brush", fullName: "Photo Brush", type: "consumable", icon: 175, price: 3000, aliases: ["brush", "photo brush", "photobrush"], tradable: false },
-            pokeblock: {name: "pokeblock", fullName: "Pokéblock", type: "consumable", icon: 53, price: 3000, aliases: ["block", "poke block", "noms", "pokéblock", "poké block"], tradable: false},
+            pokeblock: {name: "pokeblock", fullName: "Pokéblock", type: "consumable", icon: 53, price: 3000, aliases: ["block", "poke block", "noms", "pokéblock", "poké block", "pokeblock"], tradable: false},
 
             //Consumables (for useItem)
             rare: {name: "rare", fullName: "Rare Candy", type: "consumable", icon: 117, price: 5000, charges: 230, minVar: 0, maxVar: 30, aliases:["rare", "rarecandy", "rare candy", "candy"], tradable: true},
@@ -1420,11 +1426,11 @@ function Safari() {
                 extraScientistSilver: [2, 3],
                 spyBallBoost: [4, 5],
                 extraMafiaShady: [5, 6],
-                catchThief: [7, 9],
+                ninjaSniper: [7, 9],
                 catchDark: [9, 12],
                 betterGacha: [13, 16],
-                extraTourRare: [15, 19],
-                rocketPack: [20, 20],
+                extraSellProfit: [15, 19],
+                blackMarketAccess: [20, 20],
             }
         },
         flower: {
@@ -1594,11 +1600,12 @@ function Safari() {
         decor: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACpQTFRFAAAARi1GbUtQLy4v98+2iXVrz5Zv7HV1rUxLcUgt7u73o8nIbS8rAAAARr4BKgAAAA50Uk5T/////////////////wBFwNzIAAAA70lEQVR42pyTgXLEIAhEV1Eiav7/d7vYa3s34nXaHaNkeAOSAO5fhL8BWDoCQMpUekGebLprTmtDBECWfxGCCEg/QAoASJL6maLSRAB4iCUGiAB49CUa2ABT8fxJHodaDEgp8gYQ+klIBPhX1g4H0BX7HW6BlC+gyA54lVYesqc6v08vzbQol3nJEeC3NPM7xoBgtKHKDbIDJNAz2hgNoyMh+JsjDzQK6B0WAD13tOtqoKnFdkBznxc1SZQQUMxrcnkMRD3JBAwxPcmhq3PzFC2fgcpX1CNAX4U/x8liVwIvU7GP3n2/Gb3/TfeHAAMAaGMlUpM6VNUAAAAASUVORK5CYII=",
         league: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAC1QTFRF////AAAASTAoZi4PaVBpamqObS8rcUgtjImvkIhztKbDw4tQyMjUzOPR47OPqukgZwAAAAF0Uk5TAEDm2GYAAADqSURBVCjPY2DADhglJQVQ+WfOHEQWAfLPnJmIpGDmmTlz5sxEKGGcM3GipORJhIDkTOnduzfOROiRnL7v3bvXlXABxi2z3wHBTm8B3AL7QAIv4QIM0nWh796FPt+IsHa7IBBUIzlVTlB6o+BDJKdLg8zYiOy5fTNnvkb2HKP4632FyAKyCwUFpS4iKVi79Jpt1C2EEtlbrYutItYilEjdEF1mFdi7EGHrQpCAFNxexucCooutAhnr4J57JyC6dFUgkIIpEWQ0XLpKWEAQyV6ztLRkFJemJYqloQoIMKIKKAkAEXJcCoIRcQAA4RtXiYv0j40AAAAASUVORK5CYII=",
         celebrity: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAEXRFWHRTb2Z0d2FyZQBKVEwtRGV2J4CxQ84AAAAGYktHRAAAAAAAAPlDu38AAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAIySURBVHic7VctlKNADA6rkJVI1lWOHImsRCI5xzlWHe4411OH3FNbiURWIpFI3FWOrMT15hs6lJ9tly28t/febd7Lg2Qy+ZJMMqXG6XSij6QH+mD6DOBqDzz++LIo0J/vL9Mr8PTzNjjLD6ch37J3zYWOoAW0VjTiCYHMCuAQ71rgV4M7r8Fu8QDgNPbcSQ5h954gHpYEvyeIf/seQBau41ApjqO1MLZbHhLssW9KFSZXAE7BjIkRKGTosR4wb/5FhHsgiZrsu+RvavXc7ceDjTVOYSsH+2f1zPKcwq1v/Pr2Mq8CAADwa+A6KA2qn3f3wFpcQIQQvay1PCSt1+BdO/j7/fT1fRWwY99A+SJ/1QMJ44x8i/WrI2Xou6DYh/3wM6sJkTkcg3fhhhzHJjdNKE2iliFDj/XWdm/OH0NdhS6tRE51ue/pIEPfpSnZXw2gsupeEEVVNdVISzoUF/DhO9ZBsJ8CfnMMs7p/IQnRKCzLpEiOp+9d+gDAW5lx16YbAH6O7x5DgAPwmEVKTtOKuGy6SlZcM2ToFZjDVICL/hbobJFZ+Ryod854y+qmlHqsoxG71ZkVgCc/MNBgNt+054tsC1FSIuddM2R+Hk3YwR77vAkfKG/2gHaCM0aZzex8y7GCHJdTnhUy/aYKtRuQ563VEajjcmxjdg/AiXZ0+fxpwEHqKeU398yZguE0FGE0WuPJdtT9i0zB8GICCG6+cH00NEO+Bn73/4LPv2b/TQB/AZGta/TPiHWYAAAAAElFTkSuQmCC",
-        journal: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QkXACELuedkbQAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAALVBMVEUAAAAAAAAvLi9GLUZJSU1KKRJxSC2LZjGQcUiRU2qwxuDPlm/u7vf3z7b///+TrKvBAAAAAXRSTlMAQObYZgAAAAFiS0dEDm+9ME8AAADrSURBVCjPY2DADpiUlJRQ+CouLi7IIkpAvouTAqoCZCUQPkKAyQUqIICiwslJSQGhQkVFRRshoOIEAnu1lbbBXaWira19dzdcgCFbae/evXdvJ8EFGNW23b17NzsJbguD9h7tu5tOb0I4nW2P7N2LpxMQAox7gVpuCyD5ThoosBHZ+4W5u6+JKyAJtAumCVYgCYhHNK6SaC1EKCiXEJ0Z2FgOV8JUppg6M0woHS4gnciYahwmIAa3R3ajGFAgUfoi3F0CYqHGoYmMCJcxioUqhSYiuZRRKVUpTAlFQFFQCEUgVACMEUAQiokBAKcRQwoZaIiAAAAAAElFTkSuQmCC",
+        journal: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAC0UlEQVR42sRXTUgbQRT+RqIQWKkIC7G6lKZgvDSrPVVy8O+giLQ3b7aFQsFjQSgUeuilUih4FDxVKzkIHhqkxEuMB2sthWq8mEACZVMUAouHgAdDXw+bGWej1tlkre802fdmv2++9968LCMi3KQF6tnEGLuQNRGxayXAgaPhdjDNcIOXLeH3QiTgBZwDd+kVFEsOKAAwzYBxtwNMMwQRVRJNquCmrkngAQHOT18sBdClV8A0A6auXZqmuggAALW24Dpim1RPLxs/qYipKiObqgreuuAwjyLuoUuvOIB6R9XhgBdLAeAwD3hQQJlApmDD1DUn3zBE7mUVqGyBSbG+1cBeqeyAV09GZUuA76wuY6S7U/ym1haYuoa9Utk/AjK4bDurywCAd7PvMdLd6SpCXxX4+Pb5OWAOzq2WRO2ehtsQABZnppD+8RvBvvFzvmDfON7Ev7tIKN0xKsOI34KLM1Po6R/9Z+zB9jqefviETMFWupKVFCAilinYWEqkroxdSqSUwT21IREx52J5hSePhtHTP4qD7XUAEOulRApzyX1Pw4ip/h9gjJEZNZ22zOwBAF6O3QcAzCX3nW6R/L4qwMGNWEQ820h/w4PXnwEAtv0YQ4MPXX7ViajcBfzl1lYWAJDL5XG8m8TxbhK5XN7lk4n4MowmpicFAJc/Hl9AW+8Y2nrHEI8vCOk5iYnpSaVh5Oke4OAAsJneBADc+jqLwunRhTEN1wBjjE5+fsHJnSG0twdFJxixCMLNIWymZ8HXiJ0VH2OMbPsEwRfPrqwFJQWCvzbOpYNbuDkk1rLsfE9DCpz1/tna2speWmQ8/7X7GkqBGTVdeTViEVhbWVjIumqB+3is7zehbAODAyicHmFtfkVIH24OuYrRtza8rKrX5ldARIyIGCfyX76MZPllk1NxrQSGb/+pKqP23LdhVPt5Vltk9XyW1UXAb2vCDdvfAQBACm6irmjgEAAAAABJRU5ErkJggg==",
         monger: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAEXRFWHRTb2Z0d2FyZQBKVEwtRGV2J4CxQ84AAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAAnUExURQCAQIigcP///wAAACgwMEBQYFhgeGhwcHhAQICAgIiQkNiYcPjQuP/pZaEAAAADdFJOUwAAAPp2xN4AAAABYktHRAMRDEzyAAAA50lEQVQoz53RMW7CQBAFUJIq7bC5ALmBZaNYSWV59gTeDwS3xBcgyFI6RINETZEDIA5gCqRNSYHwHiominc3KVDEL59mNF+azsOfdP4FPSJmTohauCEuimKS0G0L98U5kwsgv+E1sdAfnAGBA+BjDQ8ivKxLqBZ6tGCUM5XOuz8TokJTTGaVhX0EQMUWKM7CJqPAgshzrfPMFRP6YA515YCejTF14EH0WZudB2LGeienDp4gtxs5ttXvTm8YQ70fLehFA9lqb1eWkRyC47m70lfM8M+GUiH14XHKaemDCIhCsnDFb3/lCyD4aJ/LXtT8AAAAAElFTkSuQmCC",
         baking: "data:image/png;base64,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",
         idol: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QAIABgAFL1MG+DAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5AUBFwog6bVmlgAAACZpVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVAgb24gYSBNYWOV5F9bAAADzklEQVRYw+2XX2hbdRTHP5mdZFGsoctY3Zx58GUxaR1JCaQ0TbaXOERKhJWwDbOtD1aWIWGla9gm64NF3epDxL4s0mn9E5A0lOEKHaSLLqWsZbaJrT6IoWwV22JapnfSrrs+9N5LsnYuN7aC6Hm5957zze+c3/d3ft/8fvC//ddNU8qPjH6vuJY/2x1TPV5ZKYnNxxofBhHVFqJRk1xvs+BxukgvzHB7bKIgvqPahKV8G/3JQXIj6aKLKFuP5MCKrxo8Thf9EhvFFLGpWAZ2VJvYCOymYmd/e2yC9MIMmUgUj9OFx+lSMPJ3JhJVGNLbLA9t1pKbMBOJ4gsGChLnmy8Y4PPOMHqbZX0YkGcPkBtJ4wsGqN26E4D0wgytZXdoLbtDemEGgNqtO/EFA+RG0vljmNalB+QEAP3JQXoqtij+noot9CcHCzDArPT85W8XIM8e4Eysh8Re6ypMYq+VM7EeZJ3IjaQNUkgoqYB8+mW7PncLgOlryVV42SdjZLHS2yz3jH7vEyU3Yf7s+5ODXD/aik6nY37CWYAzNZ9HEARqP3rnwW24DNwraQkkRSv4Btgden0VVvZZP/n0wTHuS0WoZyA/uWyL2asMHdq/yj90aD+L2asAWMq3KTtDUkONKgbyBaRtPAGg7O+TR4KM9V1R1l1e+7G+K5w8EmT08EFFM6SxtG3jCQ2gVcVAtjtWkBzg4vQS7DuA9dTbcKqLJvvzK/7m83IyfNL/hdSI2kwkutRR5Qa4X3QBEm1i/swvTi8p8dFQCIDfnsoB0LzvAABNz2wG4HJd4+zLX0cdwKLE8rLaJhTbxhN0VLnR2yyc/fKaEphKpTDY7RjsdmpOXKDmxAUMdjuvTn+Px+mio8rNaChkyESis8Cz2e7Ycik6oOmocrPng7fWDM4ODwMwNzDA3MAAzt5L+IIBOTkA72d/jV6ua5wq6UAiN6HeZuHm8XPMT/SReKOTXQ4HU6kUuxyOla13+jQAOp0OgF6XS8G4PwzytOmVRx56NI9SwJvHzwEw2dXC7ub3MIfbufTzH2sO9lqlls2aZT57TKCyvk59AWvJryw+2e4Y9d/0sl2r47uhYSr2WOj86gYA73rr+f3uvLL9zMcayX77A5nAWY3qJfiLEy9Gv5fnmg4rvu3aFep9t+4C0NDQgNHvBeBJ64tFFaDG9EANIE52tYiTXS2iOdwumsPtoiAIoiAIIiAa/V6bhMUcbi/fiLvEC3IBgBOojMfjYjweFyXt0G3YvUCyn14a/lF+TwGPvxn/OD8u/BM3qi9kpcy7kIj8G+1P0GOYn/wsWwkAAAAASUVORK5CYII=",
-        detective: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAArCAYAAAAZvYo3AAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpSoVBzuIKGSoThZERRy1CkWoEGqFVh1MXvoHTRqSFBdHwbXg4M9i1cHFWVcHV0EQ/AFxc3NSdJES70sKLWK88Hgf591zeO8+QKiXmWZ1jAOabpupRFzMZFfF0CsCGEYI3RBkZhlzkpSEb33dUzfVXYxn+ff9Wb1qzmJAQCSeZYZpE28QT2/aBud94ggryirxOfGYSRckfuS64vEb54LLAs+MmOnUPHGEWCy0sdLGrGhqxFPEUVXTKV/IeKxy3uKslauseU/+wnBOX1nmOq0hJLCIJUgQoaCKEsqwEaNdJ8VCis7jPv5B1y+RSyFXCYwcC6hAg+z6wf/g92yt/OSElxSOA50vjvMxAoR2gUbNcb6PHadxAgSfgSu95a/UgZlP0mstLXoE9G0DF9ctTdkDLneAgSdDNmVXCtIS8nng/Yy+KQv03wI9a97cmuc4fQDSNKvkDXBwCIwWKHvd591d7XP7t6c5vx/k63JuaqyPYQAAAAZiS0dEAAAA/wAAR9uPkgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB+UBHQcJHjvMFswAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAACfElEQVRYw92YTWgTQRTHf1NUFBTbSvxIUaEXtwdLEOlBD8aKkAqCN3vxJNUoKOqpx9wsguAHaGjxopd4FFEDgtGDHoqYj4ONgsUUUqqlNkVFvWQ9bJ50hs3HQiFT321mZ97u//fevJlZ5bou7TQ1EokEmjBZbfzFAx1KteJnPJsFoIM225qgisM9uxqPL8+4QYjYRyCoYtPM8UKkHgl7CIjyoIpbtYlczgUYiUSUnQQkRhKzlSLRzM//lwOz5RlNubTNXBgHZQeBesrrKWnWfnj+MACXH31q6QPaT8DMfjN7TWUn72R8269undMJ1vrFZLwTz9tFoO55QHJDlI0lUgAkkqMNHSbiYwCMJoYBOHTxLgBD3V3/3nk1k7F4NxTLF/RYiaL1TgyA38W09lz6Ky+Tvn6GolHLd8N6NlcsArDdcTwS0ahHYO6zTqjWb84TWx53u1eB1Orbpw4AcOHBGwCKyUuBHDvxG/j5cV1X2Umg/MerhHt29wDQG9qkDXz21ovp06lvDR0e6+v2sn6/o/VPz38H4EOpDMCT9wvKzlVw9sQRAJ6/ntSUCxmxM/fe6Ted0/u0cTJPSIjfKzfvW1oH+rf1aw+OHhwAIPtxWsuJ3pCnqHT9mjbejPnS4jrNT7332FcHtnR2aueCr7+8WG7uCmkkHuc2avOOR35o2b60OA/A1g2OWREtvReILVQqyq8umOv5i/pp9Fe1thArlAraul89u6FUvPLanQAMhqsNzwuD4b1a+8Wspy3fpHLafx7YEe4DYKrWTqdTvruaUsoFiMWGa/P8Sa0eAnKPn0inXL9+04SIkDD7rSWg5Eelau333nJlK/IBbSfwF++WDDjFt6YdAAAAAElFTkSuQmCC"
+        //detective: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAArCAYAAAAZvYo3AAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpSoVBzuIKGSoThZERRy1CkWoEGqFVh1MXvoHTRqSFBdHwbXg4M9i1cHFWVcHV0EQ/AFxc3NSdJES70sKLWK88Hgf591zeO8+QKiXmWZ1jAOabpupRFzMZFfF0CsCGEYI3RBkZhlzkpSEb33dUzfVXYxn+ff9Wb1qzmJAQCSeZYZpE28QT2/aBud94ggryirxOfGYSRckfuS64vEb54LLAs+MmOnUPHGEWCy0sdLGrGhqxFPEUVXTKV/IeKxy3uKslauseU/+wnBOX1nmOq0hJLCIJUgQoaCKEsqwEaNdJ8VCis7jPv5B1y+RSyFXCYwcC6hAg+z6wf/g92yt/OSElxSOA50vjvMxAoR2gUbNcb6PHadxAgSfgSu95a/UgZlP0mstLXoE9G0DF9ctTdkDLneAgSdDNmVXCtIS8nng/Yy+KQv03wI9a97cmuc4fQDSNKvkDXBwCIwWKHvd591d7XP7t6c5vx/k63JuaqyPYQAAAAZiS0dEAAAA/wAAR9uPkgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB+UBHQcJHjvMFswAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAACfElEQVRYw92YTWgTQRTHf1NUFBTbSvxIUaEXtwdLEOlBD8aKkAqCN3vxJNUoKOqpx9wsguAHaGjxopd4FFEDgtGDHoqYj4ONgsUUUqqlNkVFvWQ9bJ50hs3HQiFT321mZ97u//fevJlZ5bou7TQ1EokEmjBZbfzFAx1KteJnPJsFoIM225qgisM9uxqPL8+4QYjYRyCoYtPM8UKkHgl7CIjyoIpbtYlczgUYiUSUnQQkRhKzlSLRzM//lwOz5RlNubTNXBgHZQeBesrrKWnWfnj+MACXH31q6QPaT8DMfjN7TWUn72R8269undMJ1vrFZLwTz9tFoO55QHJDlI0lUgAkkqMNHSbiYwCMJoYBOHTxLgBD3V3/3nk1k7F4NxTLF/RYiaL1TgyA38W09lz6Ky+Tvn6GolHLd8N6NlcsArDdcTwS0ahHYO6zTqjWb84TWx53u1eB1Orbpw4AcOHBGwCKyUuBHDvxG/j5cV1X2Umg/MerhHt29wDQG9qkDXz21ovp06lvDR0e6+v2sn6/o/VPz38H4EOpDMCT9wvKzlVw9sQRAJ6/ntSUCxmxM/fe6Ted0/u0cTJPSIjfKzfvW1oH+rf1aw+OHhwAIPtxWsuJ3pCnqHT9mjbejPnS4jrNT7332FcHtnR2aueCr7+8WG7uCmkkHuc2avOOR35o2b60OA/A1g2OWREtvReILVQqyq8umOv5i/pp9Fe1thArlAraul89u6FUvPLanQAMhqsNzwuD4b1a+8Wspy3fpHLafx7YEe4DYKrWTqdTvruaUsoFiMWGa/P8Sa0eAnKPn0inXL9+04SIkDD7rSWg5Eelau333nJlK/IBbSfwF++WDDjFt6YdAAAAAElFTkSuQmCC"
+        detective: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QkXACELuedkbQAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAALVBMVEUAAAAAAAAvLi9GLUZJSU1KKRJxSC2LZjGQcUiRU2qwxuDPlm/u7vf3z7b///+TrKvBAAAAAXRSTlMAQObYZgAAAAFiS0dEDm+9ME8AAADrSURBVCjPY2DADpiUlJRQ+CouLi7IIkpAvouTAqoCZCUQPkKAyQUqIICiwslJSQGhQkVFRRshoOIEAnu1lbbBXaWira19dzdcgCFbae/evXdvJ8EFGNW23b17NzsJbguD9h7tu5tOb0I4nW2P7N2LpxMQAox7gVpuCyD5ThoosBHZ+4W5u6+JKyAJtAumCVYgCYhHNK6SaC1EKCiXEJ0Z2FgOV8JUppg6M0woHS4gnciYahwmIAa3R3ajGFAgUfoi3F0CYqHGoYmMCJcxioUqhSYiuZRRKVUpTAlFQFFQCEUgVACMEUAQiokBAKcRQwoZaIiAAAAAAElFTkSuQmCC"
     };
     var base64acetrainer = {
         "f": {
@@ -7288,8 +7295,8 @@ function Safari() {
     function getBST(pokeNum) {
         return add(getStats(pokeNum));
     }
-    function getPrice(pokeNum, shiny, perkBonus, fortuneBonus) {
-        return Math.round(getBST(pokeNum) * (getBST(pokeNum) >= 600 ? 2 : 1) * (getBST(pokeNum) >= 660 ? 4 : 1) * (shiny ? 5 : 1) * (isLegendary(pokeNum) ? 10 : 1) * (perkBonus ? perkBonus : 1) * (fortuneBonus ? fortuneBonus : 1));
+    function getPrice(pokeNum, shiny, perkBonus, fortuneBonus, costumeBonus) {
+        return Math.round(getBST(pokeNum) * (getBST(pokeNum) >= 600 ? 2 : 1) * (getBST(pokeNum) >= 660 ? 4 : 1) * (shiny ? 5 : 1) * (isLegendary(pokeNum) ? 10 : 1) * (perkBonus ? perkBonus : 1) * (fortuneBonus ? fortuneBonus : 1) * (costumeBonus ? costumeBonus : 1));
     }
     function isMega(num) {
         return megaPokemon.indexOf(parseInt(num)) !== -1;
@@ -8617,7 +8624,7 @@ function Safari() {
             } else {
                 appmsg = wildPokemonMessage.format(displayId, displayBST, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
             }
-            var sprite = (cageMode ? cage : pokeInfo.sprite(currentPokemonDisplay));
+            var sprite = "<a href='po:send//bst " + currentPokemonDisplay + "'>" + (cageMode ? cage : pokeInfo.sprite(currentPokemonDisplay)) + "</a>";
 
             /*var cTheme = currentTheme;
             var isGhost = false;
@@ -8745,9 +8752,10 @@ function Safari() {
             var leader = this.getEffectiveLead(player, true);
             var ignore = ignoresWildAbilities(player);
             if (this.hasCostumeSkill(player, "typeMatchupHelper")) {
+                var matchupLeader = this.getEffectiveLead(player);
                 var typeEffectiveness = 0;
                 var wild = currentDisplay;
-                var pType1 = type1(leader), pType2 = type2(leader), wType1 = type1(wild), wType2 = type2(wild);
+                var pType1 = type1(matchupLeader), pType2 = type2(matchupLeader), wType1 = type1(wild), wType2 = type2(wild);
                 var pType3 = canHaveAbility(leader, abilitynum("Steelworker")) && !hasType(leader, "Steel") ? "Steel" : null;
                 if (currentTypeOverride) {
                     wType1 = currentTypeOverride;
@@ -11587,6 +11595,19 @@ function Safari() {
         if (customFlee) {
             runmsgs = [customFlee];
         }
+        if (lastEscapedMons) {
+            var bst = getBST(currentPokemon);
+            if ((bst >= 450 || isRare(currentPokemon)) && bst <= 600) {
+                lastEscapedMons.push({
+                    poke: currentPokemon,
+                    price: getPrice(currentPokemon, typeof currentPokemon === "string") * (isRare(currentPokemon) ? 7 : 1.5)
+                });
+            }
+            while (lastEscapedMons.length > 100) {
+                lastEscapedMons.shift();
+            }
+            permObj.add("lastEscapedMons", JSON.stringify(lastEscapedMons));
+        }
         sys.sendAll("", safchan);
         safaribot.sendAll(runmsgs.random().format(pokeName), safchan);
         sys.sendAll("", safchan);
@@ -13372,7 +13393,7 @@ function Safari() {
         if (commandData === "*") {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "How to use /find:", safchan);
-            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Color, Move, Ability, Shiny, NotEvolved, CanEvolve, HasEvolved, FinalForm, CanMega, Duplicate, Duplicate+, Region or Tier) and a value to find Pokémon in your box. Examples: ", safchan);
+            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Color, Move, Ability, Shiny, NotEvolved, CanEvolve, HasEvolved, FinalForm, CanMega, IsMyth, IsRare, Duplicate, Duplicate+, Region or Tier) and a value to find Pokémon in your box. Examples: ", safchan);
             safaribot.sendMessage(src, "For Name: Type any part of the Pokémon's name. e.g.: /find name LUG (both Lugia and Slugma will be displayed, among others with LUG on the name)", safchan);
             safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
             safaribot.sendMessage(src, "For Move: Type any move. e.g.: /find move tackle (will show all Pokémon that can learn Tackle)", safchan);
@@ -13388,7 +13409,7 @@ function Safari() {
             safaribot.sendMessage(src, "-Greater than. e.g.: /find bst 400 > (displays all Pokémon with BST of 400 or more)", safchan);
             safaribot.sendMessage(src, "-Less than. e.g.: /find bst 350 < (displays all Pokémon with BST of 350 or less)", safchan);
             safaribot.sendMessage(src, "-Range. e.g.: /find number 1 150 (displays all Pokémon with pokédex number between 1 and 150)", safchan);
-            safaribot.sendMessage(src, "For Shiny, NotEvolved, CanEvolve, HasEvolved, FinalForm and CanMega: No additional parameter required.", safchan);
+            safaribot.sendMessage(src, "For Shiny, NotEvolved, CanEvolve, HasEvolved, FinalForm, IsMyth, IsRare and CanMega: No additional parameter required.", safchan);
             safaribot.sendMessage(src, "To look for more than one parameter, use && (e.g.: '/find region johto && duplicate 3' to look for Pokémon from Johto that you have 3 copies of)", safchan);
             safaribot.sendMessage(src, "To look for any of more than one parameter, use or (e.g.: '/find type steel or color green' to look for Pokémon that's Steel type or green.)", safchan);
             sys.sendMessage(src, "", safchan);
@@ -13464,7 +13485,7 @@ function Safari() {
         }
     };
     function applyFilterCriteria(src, info, crit, val, list, current, commandData, box) {
-        var noparam = ["shiny", "canevolve", "finalform", "canmega", "hasevolved", "notevolved"], def;
+        var noparam = ["shiny", "canevolve", "finalform", "canmega", "hasevolved", "notevolved", "legendary", "islegendary", "islegend", "mythical", "ismythical", "ismyth", "israre"], def;
 
         if (info.length >= 2) {
             switch (crit) {
@@ -13644,7 +13665,23 @@ function Safari() {
                     list.push(x);
                 }
             });
-            return "shiny";
+            return "that are Shiny";
+        }
+        else if (["legendary", "islegendary", "islegend", "mythical", "ismythical", "ismyth"].contains(crit)) {
+            current.forEach(function(x) {
+                if (isLegendary(x)) {
+                    list.push(x);
+                }
+            });
+            return "that are Legendary";
+        }
+        else if (crit == "israre") {
+            current.forEach(function(x) {
+                if (isRare(x)) {
+                    list.push(x);
+                }
+            });
+            return "that are rare";
         }
         else if (crit == "duplicate") {
             var pokeList = current.concat().sort();
@@ -19214,7 +19251,9 @@ function Safari() {
         ninjaSniper: "Increased catch rate when catching Pokémon baited by other people",
         permanentStealthThrow: "All your baiting, throwing, and catching actions are stealthy",
         ninjaDoubleThrow: "Create a copy of yourself to throw 2 Poké Balls at once at a 50% chance (does not work with " + readable(allBalls.filter(function(e) { return itemData[e].special }).map(finishName).map(es), "or") + "). Cannot double throw if there is more than 1 wild Pokémon.",
-        reelOtherPokeballs: "Grants a 50% chance to reel in a failed Poké Ball thrown by other players whenever you catch a Pokémon (cannot reel in " + readable(allBalls.filter(function(e) { return itemData[e].special }).map(finishName).map(es), "or") + ")."
+        reelOtherPokeballs: "Grants a 50% chance to reel in a failed Poké Ball thrown by other players whenever you catch a Pokémon (cannot reel in " + readable(allBalls.filter(function(e) { return itemData[e].special }).map(finishName).map(es), "or") + ").",
+        extraSellProfit: "Increases the amount of money you receive from selling Pokémon and pawning items to the NPC",
+        blackMarketAccess: "Allows you to access various black market deals from the NPC Shop and Monger quest"
     };
     this.showCostumeInfo = function(src, commandData) {
         var player = getAvatar(src);
@@ -19535,10 +19574,11 @@ function Safari() {
 
         var perkBonus = 1 + getPerkBonus(player, "crown");
         var fortuneBonus = 1 + this.getFortune(player, "crown", 0, null, true);
+        var costumeBonus = (safari.hasCostumeSkill(player, "extraSellProfit") ? 1.5 : 1);
         if (data === "*") {
             safaribot.sendMessage(src, "You can sell the following items:", safchan);
             for (var i = 0; i < validItems.length; i++) {
-                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + addComma(Math.floor(itemData[validItems[i]].price/2 * perkBonus * fortuneBonus)), safchan);
+                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + addComma(Math.floor(itemData[validItems[i]].price/2 * perkBonus * fortuneBonus * costumeBonus)), safchan);
             }
             sys.sendMessage(src, "", safchan);
             var valuables = [];
@@ -19600,7 +19640,7 @@ function Safari() {
                 if (pawnAll) {
                     amount = player.balls[item];
                 }
-                cost = Math.floor(itemData[item].price/2 * perkBonus * fortuneBonus) * amount;
+                cost = Math.floor(itemData[item].price/2 * perkBonus * fortuneBonus * costumeBonus) * amount;
                 if (player.money + cost > moneyCap) {
                     skipped.push(plural(amount, item));
                 } else {
@@ -19697,7 +19737,7 @@ function Safari() {
                 }
             }
             else { // simulate sales and output the total payment
-                totalPayment += getPrice(info.num, info.shiny, 1 + getPerkBonus(player, "amulet"), 1 + safari.getFortune(player, "amulet", 0, null, true));
+                totalPayment += getPrice(info.num, info.shiny, 1 + getPerkBonus(player, "amulet"), 1 + safari.getFortune(player, "amulet", 0, null, true), (safari.hasCostumeSkill(player, "extraSellProfit") ? 1.5 : 1));
             }
         }
         
@@ -19777,7 +19817,7 @@ function Safari() {
 
         var perkBonus = 1 + getPerkBonus(player, "amulet");
         var fortuneBonus = 1 + this.getFortune(player, "amulet", 0, null, true);
-        var price = getPrice(info.num, info.shiny, perkBonus, fortuneBonus);
+        var price = getPrice(info.num, info.shiny, perkBonus, fortuneBonus, (safari.hasCostumeSkill(player, "extraSellProfit") ? 1.5 : 1));
         
         if (player.tradeBlacklist.contains(info.input)) {
             safaribot.sendHtmlMessage(src, "You cannot sell " + info.name + " because it's in your Tradeblocked list. If you really wish to sell it, use /tradeblock to remove it from your tradeblock list.", safchan);
@@ -19899,13 +19939,15 @@ function Safari() {
         this.saveGame(player);
     };
     this.showPrices = function(src, shop, command, seller) {
-        var i, info, input, price, player = getAvatar(src), pokemon = [], items = [], silverPokemon = [], silverItems = [], displayprice, discmsg, disc = false;
+        var i, info, input, price, player = getAvatar(src), pokemon = [], items = [], silverPokemon = [], silverItems = [], displayprice, discmsg, disc = false, blackMarket = false, blackMarketMsg;
         var fullCommand = "/" + command + " " + (seller ? seller + ":" : "");
         var silverName = finishName("silver"), discount = (seller ? 1 : 1 - this.getFortune(player, "discount", 0, null, true));
         for (i in shop) {
             info = shop[i];
             disc = ((shop[i].discount ? shop[i].discount : false) || (shop[i].discount2 && this.hasCostumeSkill(player, "haggler")));
             discmsg = disc ? "<font color=#e5981d><b> [Discount]</b></font>" : "";
+            blackMarket = info.blackMarket;
+            blackMarketMsg = blackMarket ? "<font color=#604E82><b> [Black Market]</b></font>" : "";
             displayprice = disc ? info.discountprice : info.price;
             var lim = info.limit;
             var playerlim = info.playerLimit ? info.playerLimit : lim;
@@ -19916,23 +19958,26 @@ function Safari() {
             }
             lim = Math.min(lim, playerlim);
             input = getInputPokemon(i);
+            if (blackMarket && !safari.hasCostumeSkill(player, "blackMarketAccess")) {
+                continue;
+            }
             if (info.silver) {
                 if (input.num) {
-                    silverPokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + "\">" + input.name + "</a>: " + plural(displayprice, silverName) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg, sort: info.price});
+                    silverPokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + "\">" + input.name + "</a>: " + plural(displayprice, silverName) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg + blackMarketMsg, sort: info.price});
                 }
                 else if (i[0] == "@") {
                     input = i.substr(1);
                     price = input == "box" ? itemData.box.price[Math.min(player.balls.box, itemData.box.price.length - 1)] : displayprice;
-                    silverItems.push({string: "<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: " + plural(displayprice, silverName) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg, sort: info.price});
+                    silverItems.push({string: "<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: " + plural(displayprice, silverName) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg + blackMarketMsg, sort: info.price});
                 }
             } else {
                 if (input.num) {
-                    pokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + "\">" + input.name + "</a>: $" + addComma(Math.ceil(displayprice * discount)) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg, sort: info.price});
+                    pokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + "\">" + input.name + "</a>: $" + addComma(Math.ceil(displayprice * discount)) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg + blackMarketMsg, sort: info.price});
                 }
                 else if (i[0] == "@") {
                     input = i.substr(1);
                     price = input == "box" ? itemData.box.price[Math.min(player.balls.box, itemData.box.price.length - 1)] : Math.ceil(displayprice * discount);
-                    items.push({string: "<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: $" + addComma(price) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg, sort: price});
+                    items.push({string: "<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: $" + addComma(price) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg + blackMarketMsg, sort: price});
                 }
             }
         }
@@ -20161,6 +20206,10 @@ function Safari() {
             }
             return;
         }
+        if (shop[input.input].blackMarket && !safari.hasCostumeSkill(player, "blackMarketAccess")) {
+            safaribot.sendMessage(src, "H-huh? " + input.name + "? I-I don't know what you're talking about! There's nothing like that here!", safchan);
+            return;
+        }
         var lim = shop[input.input].limit;
         var playerlim = shop[input.input].playerLimit ? shop[input.input].playerLimit : lim;
         playerlim = Math.min(lim, playerlim);
@@ -20367,7 +20416,7 @@ function Safari() {
             if (!isSilver) {
                 safari.updateEconomyData(-cost, "npcShop");
             }
-            sys.appendToFile(shopLog, now() + "|||NPC::" + amount + "::" + input.name + "::" + shop[input.input].price + "::" + cost + "::" + isSilver + "|||" + sys.name(src) + "\n");
+            sys.appendToFile(shopLog, now() + "|||NPC::" + amount + "::" + input.name + (shop[input.input].blackMarket ? " [Black Market]" : "") + "::" + shop[input.input].price + "::" + cost + "::" + isSilver + "|||" + sys.name(src) + "\n");
         }
         if (seller) {
             if (isSilver) {
@@ -21024,7 +21073,7 @@ function Safari() {
         }
 
         sys.sendMessage(src, "", safchan);
-        safaribot.sendMessage(src, (clearedAny ? "You now have " : "You currently have ") + plural(player.missionPoints, "mission point") + "! (Total: " + addComma(player.records.missionPoints) + ")", safchan);
+        safaribot.sendMessage(src, (clearedAny ? "You now have " : "You currently have ") + plural(player.missionPoints, "mission point") + "! (Cumulative: " + addComma(player.records.missionPoints) + ")", safchan);
         safari.toRecentQuests(player, "missions");
         player.notificationData.missionWaiting = true;
         sys.sendMessage(src, "", safchan);
@@ -24263,12 +24312,35 @@ function Safari() {
         for (var t in out) {
             npcShop[t] = out[t];
         }
+        if (lastEscapedMons) {
+            lastEscapedMons.shuffle();
+            var max = Math.min(7, lastEscapedMons.length);
+            for (var i = 0; i < max; i++) {
+                var input = getInput(poke(lastEscapedMons[i].poke));
+                if (npcShop.hasOwnProperty(input.input)) {
+                    continue;
+                }
+                npcShop[input.input] = {
+                    price: lastEscapedMons[i].price,
+                    discountprice : 1,
+                    limit: 1,
+                    playerLimit: 1,
+                    purchases: {},
+                    discount: false,
+                    discount2: false,
+                    blackMarket: true
+                }
+            }
+            lastEscapedMons.splice(0, max);
+            permObj.add("lastEscapedMons", JSON.stringify(lastEscapedMons));
+        }
         this.saveShop();
         if (!silent && (mark)) {
             sendAll("", true, true);
             safaribot.sendHtmlAll("The market has been updated with new goodies! Type " + link("/buy") + " to see the prices!", safchan );
             sendAll("", true, true);
         }
+        permObj.save();
     };
 
     /* Daycare */
@@ -25344,7 +25416,7 @@ function Safari() {
             this.biasNPC0 = null;
         }
         if (typeof p2 !== "object") {
-            this.whitelist.push(sys.name(p2));
+            this.whitelist.push(this.name2.toLowerCase());
             this.name2 = sys.name(p2);
             this.idnum2 = getAvatar(p2).idnum;
             this.viewers.push(this.name2.toLowerCase());
@@ -33271,7 +33343,7 @@ function Safari() {
 
             safaribot.sendHtmlMessage(src, "-" + link("/quest alchemist", "Alchemist") + " " + (quest.alchemist.cooldown > n ? "[Available in " + timeLeftString(quest.alchemist.cooldown) + "]" : "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest arborist", "Arborist") + " " + "[Available]" + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest arborist", "Arborist") + " " + "[Available]" + (quest.arborist.cooldown > n ? " [Next Apricorn trade available in " + timeLeftString(quest.arborist.cooldown)  + "]" : "") + (stopQuests.arborist ? " <b>[Disabled]</b>" : ""), safchan);
 
             safaribot.sendHtmlMessage(src, "-" + link("/quest decor", "Decor") + " " + (quest.decor.cooldown > n ? "[Available in " + timeLeftString(quest.decor.cooldown) + "]" : "[Available]") + (stopQuests.decor ? " <b>[Disabled]</b>" : ""), safchan);
             
@@ -33287,7 +33359,7 @@ function Safari() {
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest idol", "Idol") + " " + (stopQuests.idol ? " <b>[Disabled]</b>" : " [Available]"), safchan);
             
-            safaribot.sendHtmlMessage(src, "-" + link("/quest detective", "Detective") + " " + (stopQuests.detective ? " <b>[Disabled]</b>" : (this.detectiveData[idnum] && this.detectiveData[idnum].solved && getDay(now()) == this.detectiveData[idnum].date ? "[Available in " : "[Ends in ") + timeLeftString(new Date().setUTCHours(24, 0, 0, 0)) + "]"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest detective", "Detective") + " " + (stopQuests.detective ? " <b>[Disabled]</b>" : (this.detectiveData[idnum] && this.detectiveData[idnum].solved && getDay(now()) == this.detectiveData[idnum].date ? "[Available in " : "[Ends in ") + timeLeftString(new Date().setUTCHours(24, 0, 0, 0)) + "] ") + (quest.detective.cooldown > n ? "[Next guess available in " + timeLeftString(quest.detective.cooldown) + "]" : ""), safchan);
             
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
@@ -36286,6 +36358,7 @@ function Safari() {
         }
         if (!(safari.detectiveData[uid+""])) {
             safari.detectiveData[uid+""] = assignClues();
+            player.quests.detective.lastGuesses = [];
             permObj.add("detectiveData", JSON.stringify(safari.detectiveData));
         }
         
@@ -36385,7 +36458,8 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Thank you for solving this mystery! The answer was " + readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(parseInt(x, 10))})) + "! Come back tomorrow to see if I have another case for you.", safchan);
                 } else {
                     var timeTaken = now() - safari.detectiveData[uid+""].started;
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: When you think you know which four Pokémon are, you can guess the combination with " + link("/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", false, true) + ". (Elapsed Time: " + (timeString(timeTaken / 1000, true) || "0 seconds") + ")", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: When you think you know which four Pokémon are, you can guess the combination with " + link("/quest detective:", "/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", true) + ". (Elapsed Time: " + (timeString(timeTaken / 1000, true) || "0 seconds") + ")" + (player.quests.detective.cooldown > now() ? " (Next guess available in " + timeLeftString(player.quests.detective.cooldown) + ")" : ""), safchan);
+                    safaribot.sendHtmlMessage(src, "Detective: You have had {0} wrong guesses so far. Use {1} to view your recent attempts.".format(addComma(safari.detectiveData[uid].wrongGuesses), link("/quest detective:guesses")), safchan);
                 }
             } else {
                 //if they supply a guess, make sure it's 4 valid guesses and then see if it's correct
@@ -36393,24 +36467,48 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You already solved this mystery! Are you trying to solve it again? Come back tomorrow to see if I have another case for you.", safchan);
                     return;
                 }
+                if (d1 === "guesses") {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Here are your last {0} for this case:".format(plural(player.quests.detective.lastGuesses.length, "guess")), safchan);
+                    for (var i = 0; i < player.quests.detective.lastGuesses.length; i++) {
+                        safaribot.sendHtmlMessage(src, player.quests.detective.lastGuesses[i].split("|").map(function(e) { return poke(parseInt(e)) }).join(", "), safchan);
+                    }
+                    return;
+                }
                 var arr = d1.split(",").map(function(e) { return e.trim() });
                 if (arr.length !== 4) {
-                    safaribot.sendHtmlMessage(src, "You must supply four Pokémon in a combination as your guess using the format " + link("/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", false, true) + ".", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You must supply four Pokémon in a combination as your guess using the format " + link("/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", false, true) + ".", safchan);
                     return;
                 }
                 var guesses = [];
                 for (var i = 0; i < arr.length; i++) {
                     if (!(getInputPokemon(arr[i]).num)) {
-                        safaribot.sendHtmlMessage(src, "Sorry, " + arr[i] + " is not a valid Pokémon!", safchan);
+                        safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Sorry, " + arr[i] + " is not a valid Pokémon!", safchan);
                         return;
                     }
                     if ((getInputPokemon(arr[i]).num > 65536)) {
-                        safaribot.sendHtmlMessage(src, "You cannot guess forms!", safchan);
+                        safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You cannot guess forms!", safchan);
                         return;
                     }
                     guesses.push(getInputPokemon(arr[i]).num);
                 }
+                var hasDupes = removeDuplicates(guesses, true).length < 4;
+                if (hasDupes) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You cannot guess duplicate Pokémon!", safchan);
+                    return;
+                }
                 var passed = true;
+                var alreadyGuessed = false;
+                for (var i = 0; i < player.quests.detective.lastGuesses.length; i++) {
+                    var g = player.quests.detective.lastGuesses[i];
+                    if (guesses.join("|") == g) {
+                        alreadyGuessed = true;
+                        break;
+                    }
+                }
+                if (alreadyGuessed) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You have already guessed this combination recently!", safchan);
+                    return;
+                }
                 for (var j = 0; j < guesses.length; j++) {
                     if (guesses[j] != safari.detectiveData[uid+""].answer[j]) {
                         passed = false;
@@ -36418,8 +36516,8 @@ function Safari() {
                     }
                 }
                 var n = now();
-                if (player.cooldowns.detective > n) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Please wait " + timeLeftString(player.cooldowns.detective) + " before guessing again!", safchan);
+                if (player.quests.detective.cooldown > n) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Please wait " + timeLeftString(player.quests.detective.cooldown) + " before guessing again!", safchan);
                     return;
                 }
                 if (passed) {
@@ -36451,16 +36549,22 @@ function Safari() {
                     player.notificationData.detectiveWaiting = true;
                     safari.missionProgress(player, "completeDetective", 1, 1);
                     safari.pendingNotifications(player.id);
+                    player.quests.detective.lastGuesses = [];
                     safari.saveGame(player);
                     permObj.add("detectiveData", JSON.stringify(safari.detectiveData));
                 } else {
                     safari.detectiveData[uid+""].wrongGuesses = safari.detectiveData[uid+""].wrongGuesses || 0;
                     if (safari.detectiveData[uid+""].wrongGuesses > 6) {
-                        player.cooldowns.detective = n + ((30 + ((safari.detectiveData[uid+""].wrongGuesses - 6) * 5)) * 1000);
+                        player.quests.detective.cooldown = n + ((30 + ((safari.detectiveData[uid+""].wrongGuesses - 6) * 5)) * 1000);
                     } else {
-                        player.cooldowns.detective = n + (30 * 1000);
+                        player.quests.detective.cooldown = n + (30 * 1000);
                     }
                     safari.detectiveData[uid+""].wrongGuesses++;
+                    player.quests.detective.lastGuesses.push(guesses.join("|"));
+                    while (player.quests.detective.lastGuesses.length > 30) {
+                        player.quests.detective.lastGuesses.shift();
+                    }
+                    safari.saveGame(player);
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! {0} is not the right solution! Try getting more clues, or else getting more clever!".format(readable(guesses.map(function(e) { return poke(parseInt(e)) }))), safchan);
                     permObj.add("detectiveData", JSON.stringify(safari.detectiveData));
                 }
@@ -36993,7 +37097,12 @@ function Safari() {
 
             amt = parseInt(amt);
             if (amt <= 0 || amt % tradeRatio !== 0) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: That's not a valid amount! I need a multiple of {0}! Try again would ya?".format(tradeRatio), safchan);
+                var closest = amt + (tradeRatio - amt % tradeRatio);
+                if (closest > player.balls[offer]) {
+                    closest = amt - amt % tradeRatio;
+                }
+                closest = Math.min(Math.max(tradeRatio, closest), tradeRatio * exchangeCap);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: That's not a valid amount! I need a multiple of {0}! Try again would ya? (Closest amount: {1})".format(tradeRatio, link("/quest arborist:trade:" + offer + ":" + closest, plural(closest, offer))), safchan);
                 return;
             }
             if (amt > (tradeRatio * exchangeCap)) {
@@ -39807,10 +39916,73 @@ function Safari() {
         }
         var set = data[0];
         if (set && set.toLowerCase() === "help") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Monger: I hold auctions every 6 hours for some special items. But I only accept " + es(finishName("shady")) + "!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Monger: I hold auctions every few hours for some special items. But I only accept " + es(finishName("shady")) + "!", safchan);
             safaribot.sendMessage(src, "Monger: You can obtain those " + es(finishName("shady")) + " by playing Event Games at #Mafia. They are distributed 5 minutes after the Event Game is finished.", safchan);
             safaribot.sendHtmlMessage(src, "Monger: To participate in the auction, just place your bid in the item that you want with " + link("/quest monger:Set:YourBid", null, true) + ". Participants cannot see each other's bids, so offer a value that you think it will be enough to beat any other bid. If your bid is the highest valid offer at the deadline, you get the prize.", safchan);
             safaribot.sendMessage(src, "Monger: Be sure that you have the amount of " + es(finishName("shady")) + " that you offered by the time the auction finishes or your bid will be ignored. Also, if two or more people bid the same value, the first one to bid will be the winner.", safchan);
+            return;
+        }
+        if (set && set.toLowerCase() === "shop") {
+            if (!safari.hasCostumeSkill(player, "blackMarketAccess")) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Monger: Hey, what do you think you're doing back here? Scram! You'd better not let me catch you around these parts again...", safchan);
+                return;
+            }
+            if (!mAuctionsMarket || mAuctionsMarket.length === 0) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Monger: Hmph, looks like I don't have anything left in here... Come back some other time.", safchan);
+                return;
+            }
+
+            var itemChoice = data[1];
+
+            if (!itemChoice) {
+                sys.sendMessage(src, "", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Monger: Here are some of the goods I skim off my supplier sometimes... Better keep that to yourself, you hear? You know the drill, " + es(finishName("shady")) + " only.", safchan);
+                for (var w in mAuctionsMarket) {
+                    var s = mAuctionsMarket[w];
+                    var itemName = s.itemName;
+                    safaribot.sendHtmlMessage(src, "{0}: {1}".format(link("/quest monger:shop:" + s.item, s.itemName, true), plural(s.cost, "shady")), safchan);
+                }
+                sys.sendMessage(src, "", safchan);
+                safaribot.sendHtmlMessage(src, "You currently have " + plural(player.balls.shady, "shady") + ". To buy something, use " + link("/quest monger:shop:", "/quest monger:shop:[Item Input]", true) + ", e.g. /quest monger:shop:3@nugget", safchan);
+                return;
+            }
+            if (cantBecause(src, "buy items", ["contest", "auction", "event", "pyramid"])) {
+                return;
+            }
+
+            itemChoice = itemChoice.toLowerCase();
+            var stockInd = -1
+            for (var w = 0; w < mAuctionsMarket.length; w++) {
+                if (mAuctionsMarket[w].item === itemChoice) {
+                    stockInd = w;
+                    break;
+                }
+            }
+            if (stockInd === -1) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Monger: Huh? I don't have anything like that in here. Go get your eyes checked.", safchan);
+                return;
+            }
+
+            var stock = mAuctionsMarket[stockInd];
+            var asset = translateAsset(stock.item);
+
+            if (player.balls.shady < stock.cost) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Monger: What's the meaning of this, you trying to shortchange me? This'll run you {0}, but you only have {1}.".format(plural(stock.cost, "shady"), player.balls.shady), safchan);
+                return;
+            }
+            if (!this.isBelowCap(src, asset.id, asset.amount, asset.type)) {
+                return;
+            }
+
+            player.balls.shady -= stock.cost;
+            giveStuff(player, toStuffObj(stock.item));
+
+            safaribot.sendHtmlMessage(src, trainerSprite + "Monger: Heh, nice doing business with you. Take your " + stock.itemName + ". (You now have " + plural(player.balls.shady, "shady") + "!)", safchan);
+            safari.saveGame(player);
+            mAuctionsMarket.splice(stockInd, 1);
+            permObj.add("mAuctionsMarket", JSON.stringify(mAuctionsMarket));
+            permObj.save();
+            sys.appendToFile(shopLog, now() + "|||Monger NPC::" + asset.amount + "::" + asset.name + "::" + stock.cost + "::" + stock.cost + "::shady|||" + sys.name(src) + "\n");
             return;
         }
         var options = ["a", "b", "c", "d", "e", "f"];
@@ -39822,9 +39994,13 @@ function Safari() {
                 var e, obj, n = now();
                 for (e = 0; e < mAuctionsData.length; e++) {
                     obj = mAuctionsData[e];
-                    safaribot.sendHtmlMessage(src, "[" + options[e].toUpperCase() + "] " + obj.rewardName + " --- " + (obj.deadline < n ? "Deal ends after contest" : "Deal ends in about " + timeLeftString(obj.deadline)) + (id in obj.offers ? " (Your bid: " + plural(obj.offers[id].value, "shady") + ")" : "") , safchan);
+                    safaribot.sendHtmlMessage(src, link("/quest monger:" + options[e].toUpperCase() + ":", "[" + options[e].toUpperCase() + "]", true) + " " + obj.rewardName + " --- " + (obj.deadline < n ? "Deal ends after contest" : "Deal ends in about " + timeLeftString(obj.deadline)) + (id in obj.offers ? " (Your bid: " + plural(obj.offers[id].value, "shady") + ")" : "") , safchan);
                 }
                 safaribot.sendMessage(src, "You currently have " + plural(player.balls.shady, "shady") + "!", safchan);
+                if (safari.hasCostumeSkill(player, "blackMarketAccess") && mAuctionsMarket && mAuctionsMarket.length > 0) {
+                    sys.sendMessage(src, "", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Monger: Hey, you're in this business too aren't you? I can tell. I've got a {0} nearby with some special goods if you're interested...".format(link("/quest monger:shop", "storeroom")), safchan);
+                }
             }
             return;
         }
@@ -39896,24 +40072,65 @@ function Safari() {
         
         if (changed) {
             permObj.add("mAuctions", JSON.stringify(mAuctionsData));
+            permObj.save();
         }
     };
+    this.mAuctionsMarketFill = function(obj) {
+        var marketSize = 7;
+        if (obj) {
+            mAuctionsMarket.push({
+                item: obj.secret,
+                itemName: translateStuff(obj.secret),
+                cost: Math.ceil((obj.set + 1) * 1.2)
+            });
+        }
+        if (mAuctionsMarket.length < marketSize) {
+            var filler = [
+                ["10@redapricorn", "10@blkapricorn", "10@whtapricorn", "10@pnkapricorn", "10@grnapricorn", "15@bluapricorn", "15@ylwapricorn"],
+                ["10@redapricorn", "10@blkapricorn", "10@whtapricorn", "10@pnkapricorn", "10@grnapricorn", "15@bluapricorn", "15@ylwapricorn"],
+                ["@form", "5@gacha", "3@pearl", "15@redapricorn"],
+                ["3@burn", "10@gacha", "2@pecha", "15@blkapricorn"],
+                ["@rare", "15@gacha", "2@razz", "15@whtapricorn"],
+                ["3@gem", "20@gacha", "2@bluk", "15@pnkapricorn"], 
+                ["5@silver", "25@gacha", "2@pokeblock", "2@leppa", "15@grnapricorn"]
+            ];
+            var toFill = marketSize - mAuctionsMarket.length;
+            var tmp = [];
+            for (var i = 0; i < toFill; i++) {
+                var f = filler[i].random();
+                tmp.push({
+                    item: f,
+                    itemName: translateStuff(f),
+                    cost: Math.ceil((i + 2) * 1.3)
+                });
+            }
+            mAuctionsMarket = tmp.concat(mAuctionsMarket);
+            // concat so the filler goes in front and are likely to be pushed off first
+        }
+        while (mAuctionsMarket.length > marketSize) {
+            mAuctionsMarket.shift();
+        }
+        permObj.add("mAuctionsMarket", JSON.stringify(mAuctionsMarket));
+    }
     this.createMAuction = function(index, set) {
         var rewards = [
-            ["5@gem", "5@bigpearl", "3@starpiece", "@nugget", "3@nugget", "@bignugget", "2@golden"],
-            ["2@golden", "@fossil", "@rare", "5@grnapricorn"],
-            ["@form", "2@egg", "2@golden", "20@pnkapricorn"],
-            ["@burn", "@nugget", "15@silver", "5@gem", "2@pack", "@nugget", "@fossil"],
-            ["10@redapricorn", "15@blkapricorn", "10@whtapricorn", "15@pnkapricorn", "10@grnapricorn", "10@bluapricorn"],
-            ["@fossil"]
+            ["5@gem", "5@bigpearl", "3@starpiece", "3@nugget", "@bignugget", "4@golden"],
+            ["4@golden", "@soda", "3@rare"],
+            ["3@egg", "6@golden", "3@soda"],
+            ["3@nugget", "15@silver", "3@pack", "3@brush", "5@gem", "@fossil"],
+            ["3@tamato", "3@pinap", "3@nanab", "3@watmel", "3@petaya", "5@oran"],
+            ["3@soda", "3@brush"]
         ];
         var out = {
             offers: {}, //name: { value: 5, time: 354891351 } 
             reward: rewards[set].random(),
             set: set,
             rewardName: "",
-            deadline: now() + hours((index+1)*4) - 3000
+            deadline: now() + hours((index+1)*3) - 3000
         };
+        do {
+            out.secret = rewards[set].random()
+        } while (out.secret === out.reward);
         out.rewardName = translateStuff(out.reward);
         return out;
     };
@@ -39952,6 +40169,7 @@ function Safari() {
             sys.sendAll("", safchan);
             sys.appendToFile(crossLog, now() + "|||Monger|||" + winner.id.toCorrectCase() + "|||" + obj.rewardName + " by paying " + plural(price, "shady") + "\n");
             sys.appendToFile(questLog, now() + "|||" + winner.id.toCorrectCase() + "|||Monger|||Paid " + plural(price, "shady") + "|||Received " + obj.rewardName + "\n");
+            safari.mAuctionsMarketFill(obj);
         } else {
             sys.sendAll("", safchan);
             safaribot.sendAll("No valid offers have been made for the Monger Auction of " + obj.rewardName + "!", safchan);
@@ -47954,7 +48172,7 @@ function Safari() {
                 daycarebot.sendMessage(src, "Hmm... it looks a little hungry.", safchan);
             }  else if (pokemon.hunger < 3) {
                 daycarebot.sendMessage(src, "It doesn't seem hungry.", safchan);
-            } 
+            }
             if (pokemon.meter > 18) {
                 daycarebot.sendMessage(src, "It's eager to play!", safchan);
             } else if (pokemon.meter > 13) {
@@ -48369,6 +48587,12 @@ function Safari() {
                 time: harvest.time
             };
             gardener = (pokemon.shiny ? "Shiny " : "") + poke(pokemon.id);
+            if (pokemon.hunger <= 7) {
+                pokemon.berry.amount = Math.round(pokemon.berry.amount * 1.3);
+            }
+            else if (pokemon.hunger > 19) {
+                pokemon.berry.amount = Math.round(pokemon.berry.amount * 0.75);
+            }
         }
         if (gardener !== null) {
             player.balls[berry] -= 1;
@@ -54910,7 +55134,7 @@ function Safari() {
                 randomNum = sys.rand(1, highestDexNum);
                 bst = getBST(randomNum);
 
-            } while (bst > 498 || isLegendary(randomNum));
+            } while (bst > 498 || isRare(randomNum));
         }
 
         var bonus = 1.78 - (318 - (498 - bst)) * 0.5 / 318;
@@ -56520,7 +56744,7 @@ function Safari() {
                 safari.getCostumes(src);
                 return true;
             }
-            if (command === "showcostume" || command === "showcostumeinfo") {
+            if (command === "showcostume" || command === "showcostumeinfo" || command === "skills") {
                 safari.showCostumeInfo(src, commandData);
                 return true;
             }
@@ -57536,8 +57760,10 @@ function Safari() {
                         safaribot.sendMessage(src, info.name + " cannot be sold.", safchan);
                     } else {
                         var perkBonus = 1 + getPerkBonus(player, "amulet");
-                        var price = getPrice(info.num, info.shiny, perkBonus);
-                        safaribot.sendMessage(src, "You can sell " + an(info.name) + " for $" + addComma(price) + ". " + (!info.shiny ? "If it's Shiny, you can sell it for $" + addComma(getPrice(info.num, true, perkBonus))  + ". " : ""), safchan);
+                        var fortuneBonus = 1 + safari.getFortune(player, "amulet", 0, null, true);
+                        var costumeBonus = (safari.hasCostumeSkill(player, "extraSellProfit") ? 1.5 : 1);
+                        var price = getPrice(info.num, info.shiny, perkBonus, fortuneBonus, costumeBonus);
+                        safaribot.sendMessage(src, "You can sell " + an(info.name) + " for $" + addComma(price) + ". " + (!info.shiny ? "If it's Shiny, you can sell it for $" + addComma(getPrice(info.num, true, perkBonus, fortuneBonus, costumeBonus))  + ". " : ""), safchan);
                     }
                 }
                 var species = evolutions.hasOwnProperty(info.num+"") ? info.num : pokeInfo.species(info.num);
@@ -59037,11 +59263,36 @@ function Safari() {
                     var price = cost/amount;
                     var p2 = info[2].split("::")[0];
                     var type = p1Info[5];
+                    var translatedCost = "", translatedPrice = "";
                     if (type) {
                         type = type.replace(/:/g, "");
+                        switch (type) {
+                            case "silver":
+                            case "true":
+                                translatedCost = plural(cost, "silver");
+                                translatedPrice = plural(price, "silver");
+                                break;
+                            case "bp":
+                                translatedCost = plural(cost, "battlepoint");
+                                translatedPrice = plural(price, "battlepoint");
+                                break;
+                            case "shady":
+                                translatedCost = plural(cost, "shady");
+                                translatedPrice = plural(price, "shady");
+                                price = cost;
+                                break;
+                            default:
+                                translatedCost = "$" + addComma(cost);
+                                translatedPrice = "$" + addComma(price);
+                            break;
+                        }
+                    }
+                    else {
+                        translatedCost = "$" + addComma(cost);
+                        translatedPrice = "$" + addComma(price);
                     }
 
-                    return p2 + " bought " + amount + "x " + item + " from " + p1 + " for " + (type === "silver" || type === "true" ?  plural(cost, "silver") : (type === "bp" ? plural(cost, "battlepoint") : "$" + addComma(cost))) + (amount > 1 ? " (" + (type === "silver" || type === "true" ?  plural(price, "silver") : (type === "bp" ? plural(price, "battlepoint") : "$" + addComma(price))) + " each)" : "") + " --- (" + time + ")";
+                    return p2 + " bought " + amount + "x " + item + " from " + p1 + " for " + translatedCost + (amount > 1 ? " (" + translatedPrice + " each)" : "") + " --- (" + time + ")";
                 });
                 return true;
             }
@@ -61138,6 +61389,8 @@ function Safari() {
                             permObj.add("marketurl", url);
                             safaribot.sendMessage(src, "Market successfully loaded!", safchan);
                             safari.sanitizeAll();
+                            permObj.add("marketData", JSON.stringify(marketData));
+                            permObj.save();
                         } catch (error) {
                             marketData = cThemes;
                             safaribot.sendMessage(src, "Couldn't load Market from " + url + "! Error: " + error, safchan);
@@ -61145,7 +61398,7 @@ function Safari() {
                     });
                 } catch (err) {
                     marketData = cThemes;
-                    safaribot.sendMessage(src, "Couldn't load Celebrities from " + url + "! Error: " + err, safchan);
+                    safaribot.sendMessage(src, "Couldn't load Market from " + url + "! Error: " + err, safchan);
                 }
                 return true;
             }
@@ -61911,9 +62164,11 @@ function Safari() {
         }
         
         lastLeaderboards = parseFromPerm("lastLeaderboards", null);
+        lastEscapedMons = parseFromPerm("lastEscapedMons", []);
         celebrityPKs = parseFromPerm("celebrityPKs", {});
         rafflePrizeObj = parseFromPerm("rafflePrize", null);
         mAuctionsData = parseFromPerm("mAuctions", []);
+        mAuctionsMarket = parseFromPerm("mAuctionsMarket", []);
         lastContests = parseFromPerm("lastContests", []);
         allowedSharedIPNames = parseFromPerm("allowedSharedIPs", []);
         marketData = parseFromPerm("marketData", {});
@@ -62068,7 +62323,7 @@ function Safari() {
                 var shiny = typeof currentPokemon === "string";
                 var sprite = "";
                 for (var i = 0; i < currentPokemonCount; i++) {
-                    sprite += pokeInfo.sprite(currentDisplay);
+                    sprite += "<a href='po:send//bst " + currentDisplay + "'>" + pokeInfo.sprite(currentDisplay) + "</a>";;
                 }
                 sys.sendHtmlMessage(src, "<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + ((wildEvent || (isRare(currentDisplay) && contestCount > 0)) ? "<br/>All ball cooldowns were reset!" : "") + "</center><hr>", safchan);
                 safari.afterSpawnDisplay(src, true);
@@ -62724,6 +62979,9 @@ function Safari() {
                         lastContests.shift();
                     }
                     permObj.add("lastContests", JSON.stringify(lastContests));
+                    if (currentPokemon) {
+                        safari.pokemonFlee();
+                    }
                     //Clear throwers if the contest ends with a Wild Pokemon uncaught
                     resetVars();
                     currentRules = null;
