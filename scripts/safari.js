@@ -506,6 +506,10 @@ function Safari() {
                 level: 1,
                 skills: [],
                 exp: 0
+            },
+            admin: {
+                level: 1,
+                skills: [],
             }
         },
         records: {
@@ -1314,9 +1318,9 @@ function Safari() {
         },
         pokefan: {
             icon: 398, name: "pokefan", fullName: "PokeFan", aliases: ["pokéfan", "pokefan", "poke fan"],
-            acqReq: 200, record: "collectorGiven", rate: 1.2,
+            acqReq: 200, record: "collectorGiven", rate: 1.2, rate2: -10,
             effect: "A master in Pokémon. Aficionados of Pokémon tend to stick together and help each other out, granting a bonus payout when finding Pokémon for the Collector's collection.", noAcq: "Turn in {0} more Pokémon to the Collector",
-            effect2: "Pokémon with BST > 500 have their BST count as 500 while catching.",
+            effect2: "Has slightly reduced move power in Auto Battles.",
             expTypes: ["daycareplay", "catchlowbst", "wincontest", "catch", "wintrivia"],
             expItem: "eviolite",
             skills: {
@@ -1529,14 +1533,18 @@ function Safari() {
             expTypes: ["none"],
             skills: {
             }
+        },
+        admin: {
+            icon: 167, name: "admin", fullName: "Admin", aliases: ["admin"],
+            effect: "pwrful",
+            expTypes: [],
+            skills: {}
         }
-    
         //triathlete: {icon: 361, name: "triathlete", fullName: "Triathlete", aliases: ["triathlete"], acqReq: 50, record: fullyPlayedContests, rate: 0.01, thresh1: 5, thresh2: 8, thresh3: 13, effect: "A master in endurance. Even after playing in the Safari Zone all day, extensive training allows a quick and alert response when a wild Pokémon appears.", noAcq: "{0}"},
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"},
         //sightseer: {icon: 816, name: "sightseer", fullName: "Sightseer", aliases: ["sightseer"], acqReq: 8, record: "rareHatched", acqReq2: 512, record2: "goldenBaitUsed", rate: 0.05, effect: "A master in tourism. Figured how to bait Shiny Pokemon more effectively after exploring the planet several times.", noAcq: "Match ${0} more rare Pokémon from eggs and use ${1} more Golden Bait" }
         
-        };
-
+    };
     var defaultItemData;
     var defaultCostumeData;
     var base64icons = {
@@ -10239,9 +10247,6 @@ function Safari() {
 
         var userStats = (getBST(leader));
         if (!(currentRules && currentRules.invertedBST)) {
-            if (player.costume == "pokefan") {
-                userStats = Math.min(userStats, 500);
-            }
             if (userStats <= 600 && this.hasCostumeSkill(player, "useLowBST")) {
                 userStats = Math.min(userStats + Math.floor(this.getCostumeLevel(player) * 3.5), 600);
             } 
@@ -16187,8 +16192,10 @@ function Safari() {
             if (this.hasCostumeSkill(player, "betterGacha") && (chance(0.1) && (chance(this.getCostumeLevel(player)-5)/15))) {
                 rng = Math.min(rng, Math.random());
             }
-            if (reward == "rock" && this.hasCostumeSkill(player, "betterGacha") && (chance(0.2) && (chance(this.getCostumeLevel(player)-5)/15))) {
-                reward = randomSample(gachaItems);
+            if (this.hasCostumeSkill(player, "betterGacha")) {
+                while (reward == "rock") {
+                    reward = randomSample(gachaItems);
+                }
             }
             if (rng < 0.01) {
                 amount = 4;
@@ -25125,7 +25132,7 @@ function Safari() {
         this.pinap = [];
 
         if (isNPC) {
-            var costumeBonus = player1.costume === "battle" ? costumeData.battle.rate : 0;
+            var costumeBonus = player1.costume === "battle" ? costumeData.battle.rate : (player1.costume === "pokefan" ? costumeData.pokefan.rate2 : 0);
             if (safari.hasCostumeSkill("battleBoost")) {
                 costumeBonus *= (1.05 + Math.max((this.getCostumeLevel(player1) - 5)/100, 0));
             }
@@ -40084,6 +40091,7 @@ function Safari() {
                 cost: Math.ceil((obj.set + 1) * 1.2)
             });
         }
+        var debugging = [];
         if (mAuctionsMarket.length < marketSize) {
             var filler = [
                 ["10@redapricorn", "10@blkapricorn", "10@whtapricorn", "10@pnkapricorn", "10@grnapricorn", "15@bluapricorn", "15@ylwapricorn"],
@@ -40103,12 +40111,24 @@ function Safari() {
                     itemName: translateStuff(f),
                     cost: Math.ceil((i + 2) * 1.3)
                 });
+                debugging.push("i: {0}, f: {1}, mAuctionsMarket.length: {2}, marketSize: {3}, toFill: {4}".format(i, f, mAuctionsMarket.length, marketSize, toFill));
             }
             mAuctionsMarket = tmp.concat(mAuctionsMarket);
             // concat so the filler goes in front and are likely to be pushed off first
         }
         while (mAuctionsMarket.length > marketSize) {
             mAuctionsMarket.shift();
+        }
+        var hasInvalid = false;
+        for (var i = 0; i < mAuctionsMarket.length; i++) {
+            if (!mAuctionsMarket[i].hasOwnProperty("item") || !mAuctionsMarket[i].itemName) {
+                hasInvalid = true;
+                mAuctionsMarket.splice(i, 1);
+                i--;
+            }
+        }
+        if (hasInvalid) {
+            sys.appendToFile(miscLog, now() + "|||Monger Market Debug|||" + debugging.join(" | ") + (obj ? " | " + JSON.stringify(obj) : "") + "\n");
         }
         permObj.add("mAuctionsMarket", JSON.stringify(mAuctionsMarket));
     }
@@ -54248,6 +54268,9 @@ function Safari() {
                     player.altTimeline.buff = 1;
                 }
             }
+            if (player.costumes.contains("admin")) {
+                player.costumeInfo.admin.skills = Object.keys(costumeSkillInfo);
+            }
             safari.saveGame(player);
         } else if (getAvatar(src)) {
             SESSION.users(src).safari = null;
@@ -54871,6 +54894,9 @@ function Safari() {
                     player.costumeInfo = {};
                 }
                 for (var t in costumeData) {
+                    if (t === "admin") {
+                        continue;
+                    }
                     player.costumeInfo[t] = {
                         level: 1,
                         exp: 0,
