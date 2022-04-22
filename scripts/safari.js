@@ -8789,7 +8789,7 @@ function Safari() {
                 var bestRate = 0;
                 for (var i = 0; i < allBalls.length; i++) {
                     var ball = allBalls[i];
-                    if (isBallAvailable(player, ball) && !["master", "spirit", "uturn"].contains(ball)) {
+                    if (isBallAvailable(player, ball) && !["master", "spirit", "uturn", "cherish"].contains(ball)) {
                         var ballRate = safari.computeCatchRate(pid, ball, currentDisplay, true);
                         //sys.sendMessage(sys.id("ripper roo"), ball + ": " + ballRate, safchan);
                         if (ballRate >= bestRate) {
