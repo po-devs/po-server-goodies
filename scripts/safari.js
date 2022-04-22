@@ -1283,6 +1283,7 @@ function Safari() {
             icon: 401, name: "preschooler", fullName: "Preschooler", aliases: ["preschooler", "pre schooler"], acqReq: 1, record: "pokesCaught", rate: 1.30, thresh1: 25, thresh2: 50, thresh3: 90, changeRate: 0.1, rate2: 1.15, 
             effect: "A master in friendship. Strengthens the bond between a trainer and their Starter Pokémon to increase catch rate at the beginning of an adventure. Also increases the limit of Eviolites that can be used.", noAcq: "Catch your first Pokémon",
             expTypes: ["daycareplay", "bait", "wincontest", "catch"],
+            expItem: "eviolite",
             skills: {
                 preschoolerPack1: [2, 2],
                 typeMatchupHelper: [3, 3],
@@ -11553,7 +11554,7 @@ function Safari() {
         }
         this.saveGame(player);
     };
-    this.pokemonFlee = function(customFlee) {
+    this.pokemonFlee = function(customFlee, skipLog) {
         var pokeName = poke(currentPokemon, true);
         var runmsgs = [
             "The wild {0} got spooked and fled!",
@@ -11584,7 +11585,7 @@ function Safari() {
             "The wild {0} was caught, but the Pokéball containing it mysteriously vanished!",
             "The wild {0} was divided by zero!"
         ];
-        if (isRare(currentPokemon)) {
+        if (isRare(currentPokemon) && !skipLog) {
             sys.appendToFile(mythLog, now() + "|||" + (wildSpirit ? "Spirit Realm " : "") + poke(currentPokemon) + "::fled" + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + (currentThemeAlter ? " (" + contestThemes[currentTheme].alterName + ")" : "") + (currentThemeEffect ? " [" + cap(currentThemeEffect) + "]": "") + " contest" : "") + "::\n");
             runmsgs = ["The wild {0} was obliterated by a grumpy old safari coder!"];
         }
@@ -11605,7 +11606,7 @@ function Safari() {
             if ((bst >= 450 || isRare(currentPokemon)) && bst <= 600) {
                 lastEscapedMons.push({
                     poke: currentPokemon,
-                    price: Math.round(getPrice(currentPokemon, typeof currentPokemon === "string") * (isRare(currentPokemon) ? 7 : 1.5))
+                    price: Math.round(getPrice(currentPokemon, typeof currentPokemon === "string") * (isRare(currentPokemon) ? 4 : 1.5))
                 });
             }
             while (lastEscapedMons.length > 100) {
@@ -24315,13 +24316,26 @@ function Safari() {
                 }
             }
         }
+        var carryOver = {}, numCarried = 0;
+        for (var i in npcShop) {
+            if (npcShop[i].blackMarket && isRare(getInputPokemon(i).id) && npcShop[i].limit > 0 && chance(0.95)) {
+                carryOver[i] = JSON.parse(JSON.stringify(npcShop[i]));
+            }
+        }
         npcShop = {};
         for (var t in out) {
             npcShop[t] = out[t];
         }
+        for (var t in carryOver) {
+            if (npcShop.hasOwnProperty(t)) {
+                continue;
+            }
+            npcShop[t] = JSON.parse(JSON.stringify(carryOver[t]));
+            numCarried++;
+        }
         if (lastEscapedMons) {
             lastEscapedMons.shuffle();
-            var max = Math.min(7, lastEscapedMons.length);
+            var max = Math.min(8 - numCarried, lastEscapedMons.length);
             for (var i = 0; i < max; i++) {
                 var input = getInput(poke(lastEscapedMons[i].poke));
                 if (npcShop.hasOwnProperty(input.input)) {
@@ -63006,7 +63020,7 @@ function Safari() {
                     }
                     permObj.add("lastContests", JSON.stringify(lastContests));
                     if (currentPokemon) {
-                        safari.pokemonFlee();
+                        safari.pokemonFlee(false, true);
                     }
                     //Clear throwers if the contest ends with a Wild Pokemon uncaught
                     resetVars();
