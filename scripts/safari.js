@@ -56480,7 +56480,7 @@ function Safari() {
             "/multisell: To sell off multiple Pokémon at once. Alias(es): /msell",
             "/turbosell: To easily sell off multiple Pokémon of the SAME SPECIES at once. Alias(es): /tsell",
             "/pawn: To sell specific items. Use /pawnall to sell all your pawnable items at once!",
-            "/burn: To give a Burn Heal to another player. See /itemhelp Burn Heal for more information."
+            "/burn: To give a Burn Heal to another player. See /itemhelp Burn Heal for more information.",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
             "/tradeblock: To edit your tradeblocked list. You will instantly reject trade requests asking you for an Item/Pokémon you tradeblocked. Pokémon in this list cannot be sold with /sell. To reject all trades, use /options trade:off.",
             "/playertradeblock: To edit your player tradeblocked list. You will instantly reject trade requests from the users you tradeblocked. To reject all trades, use /options trade:off.",
