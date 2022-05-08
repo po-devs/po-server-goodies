@@ -1281,7 +1281,7 @@ function Safari() {
     var costumeData = {
         preschooler: {
             icon: 401, name: "preschooler", fullName: "Preschooler", aliases: ["preschooler", "pre schooler"], acqReq: 1, record: "pokesCaught", rate: 1.30, thresh1: 25, thresh2: 50, thresh3: 90, changeRate: 0.1, rate2: 1.15, 
-            effect: "A master in friendship. Strengthens the bond between a trainer and their Starter Pokémon to increase catch rate at the beginning of an adventure. Also increases the limit of Eviolites that can be used.", noAcq: "Catch your first Pokémon",
+            effect: "A master in friendship. Strengthens the bond between a trainer and their Starter Pokémon to increase catch rate at the beginning of an adventure. Also increases the limit of Eviolites that can be used. [Exp. Up item: Eviolite]", noAcq: "Catch your first Pokémon",
             expTypes: ["daycareplay", "bait", "wincontest", "catch"],
             expItem: "eviolite",
             skills: {
@@ -1302,7 +1302,7 @@ function Safari() {
         },
         breeder: {
             icon: 379, name: "breeder", fullName: "PokeBreeder", aliases: ["pokébreeder", "breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], 
-            acqReq: 15, record: "pokesEvolved", rate: 0.9, effect: "A master in evolution. Taps into years of experience in order to reduce the number of Rare Candies required for evolution.", 
+            acqReq: 15, record: "pokesEvolved", rate: 0.9, effect: "A master in evolution. Taps into years of experience in order to reduce the number of Rare Candies required for evolution. [Exp. Up item: Soothe Bell]", 
             effect2: "Has slightly increased cooldown when throwing Pokéballs other than Safari or Love.",
             noAcq: "Evolve {0} more Pokémon",
             expTypes: ["daycareplay", "bait", "wincontest", "catch"],
@@ -1320,7 +1320,7 @@ function Safari() {
         pokefan: {
             icon: 398, name: "pokefan", fullName: "PokeFan", aliases: ["pokéfan", "pokefan", "poke fan"],
             acqReq: 200, record: "collectorGiven", rate: 1.2, rate2: -10,
-            effect: "A master in Pokémon. Aficionados of Pokémon tend to stick together and help each other out, granting a bonus payout when finding Pokémon for the Collector's collection.", noAcq: "Turn in {0} more Pokémon to the Collector",
+            effect: "A master in Pokémon. Aficionados of Pokémon tend to stick together and help each other out, granting a bonus payout when finding Pokémon for the Collector's collection. [Exp. Up item: Eviolite]", noAcq: "Turn in {0} more Pokémon to the Collector",
             effect2: "Has slightly reduced move power in Auto Battles.",
             expTypes: ["daycareplay", "catchlowbst", "wincontest", "catch", "wintrivia"],
             expItem: "eviolite",
@@ -1336,7 +1336,7 @@ function Safari() {
         },
         explorer: {
             icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], acqReq: 500, record: "itemsFound", rate: 0.1, rate2: 0.5,
-            effect: "A master in scavenging. Uses knowledge from past finds to slightly increase the likelihood of finding an item with Itemfinder. Rarely, you can even find multiple items or exclusive items!",
+            effect: "A master in scavenging. Uses knowledge from past finds to slightly increase the likelihood of finding an item with Itemfinder. Rarely, you can even find multiple items or exclusive items! [Exp. Up item: Relic Crown]",
             noAcq: "Find {0} more items",
             effect2: "Has slightly increased cooldown when throwing Pokéballs other than Safari or Heavy.",
             expTypes: ["findrare", "wincontest", "catch", "winmafia"],
@@ -1352,7 +1352,7 @@ function Safari() {
         },
         chef: {
             icon: 423, name: "chef", fullName: "Chef", aliases: ["chef"], acqReq: 500, record: "baitNothing", rate: 12,
-            effect: "A master in cooking. After years of throwing bait that even a Garbodor wouldn't eat, all it took was a simple dash of seasoning and some ketchup to help make the bait more irresistable to Pokémon with a type disadvantage against their lead.",
+            effect: "A master in cooking. After years of throwing bait that even a Garbodor wouldn't eat, all it took was a simple dash of seasoning and some ketchup to help make the bait more irresistable to Pokémon with a type disadvantage against their lead. [Exp. Up item: Honey]",
             effect2: "Has slightly increased cooldown when sucessfully catching.",
             noAcq: "Fail to attract {0} more Pokémon with Bait",
             expTypes: ["bait", "wincontest", "catch", "wintour"],
@@ -1370,7 +1370,7 @@ function Safari() {
         },
         battle: {
             icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 20,
-            effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offensive techniques, attacks deal more damage in NPC Auto-Battles.",
+            effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offensive techniques, attacks deal more damage in NPC Auto-Battles. [Exp. Up item: Cell Battery]",
             effect2: "Has slightly increased cooldown when sucessfully catching.",
             noAcq: "Accumulate {0} more Arena Points",
             expTypes: ["wintour", "arenasilver", "fighttower", "catch"],
@@ -1388,7 +1388,7 @@ function Safari() {
         },
         scientist: {
             icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], acqReq: 6, record: "pokesCloned", acqReq2: 50, record2: "scientistEarnings", rate: 0.02, bonusChance: 0.05,
-            effect: "A master in genetics. Recent breakthroughs in science allow easier modification of DNA, granting an increased success rate in cloning, a small chance to clone multiple times in a single attempt, and the ability to clone very rare Pokémon!",
+            effect: "A master in genetics. Recent breakthroughs in science allow easier modification of DNA, granting an increased success rate in cloning, a small chance to clone multiple times in a single attempt, and the ability to clone very rare Pokémon! [Exp. Up item: Cell Battery]",
             effect2: "Has less success befriending Pokémon in the daycare.",
             noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest",
             expTypes: ["soda", "clonepoke", "scientist", "catch", "wintrivia"],
@@ -1404,7 +1404,7 @@ function Safari() {
         },
         ninja: {
             icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 0.15, thresh: 499,
-            effect: "A master in ninjutsu. Able to lurk amongst the shadows and create diversions to sneak past a small number of Trainers in the Battle Tower.",
+            effect: "A master in ninjutsu. Able to lurk amongst the shadows and create diversions to sneak past a small number of Trainers in the Battle Tower. [Exp. Up item: Silk Scarf]",
             effect2: "Is less adept at catching with a legendary Pokémon as a lead.",
             noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon with &lt;500 BST (without using Battle Girl costume)",
             expTypes: ["fighttower", "wincontest", "catch", "winmafia", "catchlowbst"],
@@ -1422,7 +1422,7 @@ function Safari() {
         },
         rocket: {
             icon: 999, name: "rocket", fullName: "Rocket", aliases: ["rocket"], acqReq: 100, record: "notBaitedCaught", acqReq2: 150000, record2: "pokeSoldEarnings", rate: 0.05, rate2: 0.03,
-            effect: "A master in deception. Years of trickery have granted a small chance to steal back a Pokémon given to NPCs!",
+            effect: "A master in deception. Years of trickery have granted a small chance to steal back a Pokémon given to NPCs! [Exp. Up item: Amulet Coin]",
             effect2: "Has less success befriending Pokémon in the Daycare.",
             noAcq: "Catch {0} Pokémon attracted by other players and earn ${1} more from selling Pokémon",
             expTypes: ["stealpoke", "arenasilver", "wincontest", "catch", "winmafia"],
@@ -1440,7 +1440,7 @@ function Safari() {
         },
         flower: {
             icon: 439, name: "flower", fullName: "Flower Girl", aliases: ["flower", "flowergirl", "flower girl"], acqReq: 25, record: "catchMono", acqReq2: 15, record2: "mushroomsEaten", rate: 20, rate2: 0.05,
-            effect: "A master in simplicity. Understanding Pokémon is the key to making them stronger. Single-type Pokémon perform better for this trainer! Also reduces cooldown while using Mono Balls.",
+            effect: "A master in simplicity. Understanding Pokémon is the key to making them stronger. Single-type Pokémon perform better for this trainer! Also reduces cooldown while using Mono Balls. [Exp. Up item: Eviolite]",
             noAcq: "Catch {0} Pokémon with Mono Balls and consume {1} Mushrooms",
             effect2: "Has higher cooldown using the Itemfinder.",
             expTypes: ["daycareplay", "bait", "wincontest", "catch"],
@@ -1459,7 +1459,7 @@ function Safari() {
         },
         fisherman: {
             icon: 359, name: "fisherman", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], acqReq: 80, record: "baitWater", rate: 0.3,
-            effect: "A master in angling. Superb technique at handling fishing rods allows them to reel back Poké Balls that failed to catch a Pokémon!",
+            effect: "A master in angling. Superb technique at handling fishing rods allows them to reel back Poké Balls that failed to catch a Pokémon! [Exp. Up item: Soothe Bell]",
             effect2: "Has higher cooldown using the Itemfinder.",
             noAcq: "Bait {0} more pure Water-type Pokémon",
             expTypes: ["bait", "catchwater", "wincontest", "catch"],
@@ -1476,7 +1476,7 @@ function Safari() {
         },
         backpacker: {
             icon: 372, name: "backpacker", fullName: "Backpacker", aliases: ["backpacker", "back packer"], acqReq: 36, record: "wonderStarter", rate: 1.2,
-            effect: "A master in traveling. Can easily fit more Honey, Silk Scarves and Cell Batteries into the bag to benefit more from its effects!",
+            effect: "A master in traveling. Can easily fit more Honey, Silk Scarves and Cell Batteries into the bag to benefit more from its effects! [Exp. Up item: Relic Crown]",
             effect2: "Carrying a heavy backpack makes you throw Poké Balls slower.",
             noAcq: "Obtain {0} more starters from Wonder Trade",
             expTypes: ["journal", "catchhighbst", "wincontest", "catch"],
@@ -1493,7 +1493,7 @@ function Safari() {
         },
         rich: {
             icon: 395, name: "rich", fullName: "Rich Girl", aliases: ["rich", "rich girl", "rich boy"], acqReq: 200000, record: "pawnComet", acqReq2: 50000, record2: "luxuryEarnings", rate: 1.1,
-            effect: "A master in money. Personal wealth grants the experience necessary to use more Amulet Coins, Relic Crowns and Soothe Bells than normal people!",
+            effect: "A master in money. Personal wealth grants the experience necessary to use more Amulet Coins, Relic Crowns and Soothe Bells than normal people! [Exp. Up item: Amulet Coin]",
             effect2: "Peasant balls (Safari Balls) are more likely to fail.",
             noAcq: "Obtain ${0} more by pawning Comet Shards and earn ${1} more from Luxury Balls",
             expTypes: ["bait", "wincontest", "findrare", "catch"],
@@ -1510,7 +1510,7 @@ function Safari() {
         },
         journalist: {
             icon: 327, name: "journalist", fullName: "Journalist", aliases: ["journalist", "journal", "photographer", "photo"], acqReq: 20, record: "goodJournalSubmission", acqReq2: 5, record2: "scientistPhotoSubmission", rate: 3, rate2: 1,
-            effect: "A master in photography. Keen spacial awareness grants you the best photo opportunities, allowing you to take higher quality photos than usual!",
+            effect: "A master in photography. Keen spacial awareness grants you the best photo opportunities, allowing you to take higher quality photos than usual! [Exp. Up item: Silk Scarf]",
             effect2: "The Monger probably won't want anything to do with a nosy journalist...",
             noAcq: "Complete {0} more Journal requests worth at least 50 points and submit {1} more photos to the Scientist",
             expTypes: ["journal", "wincontest", "takephoto", "catch"],
@@ -1851,7 +1851,7 @@ function Safari() {
             box: "Increases number of Pokémon that can be owned by " + itemData.box.bonusRate + " each. Can only acquire by purchasing.",
             stick: "Legendary Stick of the almighty Farfetch'd that provides a never ending wave of prods and pokes unto your enemies and other nefarious evil-doers. " + cdSeconds("stick") + " Use with \"/stick [Player]\".",
             salt: "A pile of salt that makes the holder increasingly unlucky the more they have.",
-            burn: "A potion used to heal burns. Use /burn to give it to someone who may need it.",
+            burn: "A potion used to purify Burning Aura into Brilliant Aura, in exchange, you also get Brilliant Aura. Use /burn [player] to give it to someone who may need it. Obtainable via Gachapon.",
             entry: "A Raffle Entry that can win a spectacular prize if you own the correct one at the time of drawing. Simply hold onto your ticket safely until the time of the drawing. Nothing more is needed on your part!",
             coupon: "A coupon holding a special offer to those interested in decorating their Secret Base. Can be traded for a Decoration at the Decor.",
             fossil: "A rare fossil often desired by archaeologists. Use it to enter the Pyramid without paying the entry fee by typing \"/quest pyramid:fossil:Name1:Name2\". You also receive " + (itemData.fossil.bonusRate * 100) + "% more points during that run.",
@@ -56480,6 +56480,7 @@ function Safari() {
             "/multisell: To sell off multiple Pokémon at once. Alias(es): /msell",
             "/turbosell: To easily sell off multiple Pokémon of the SAME SPECIES at once. Alias(es): /tsell",
             "/pawn: To sell specific items. Use /pawnall to sell all your pawnable items at once!",
+			"/burn: To give a Burn Heal to another player. See /itemhelp Burn Heal for more information."
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
             "/tradeblock: To edit your tradeblocked list. You will instantly reject trade requests asking you for an Item/Pokémon you tradeblocked. Pokémon in this list cannot be sold with /sell. To reject all trades, use /options trade:off.",
             "/playertradeblock: To edit your player tradeblocked list. You will instantly reject trade requests from the users you tradeblocked. To reject all trades, use /options trade:off.",
@@ -56539,7 +56540,6 @@ function Safari() {
             "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
             "/stick: To poke another player with your stick.",
-            "/burn: To give a Burn Heal to another player."
             // "/hidelb [type]: To hide yourself from a specific leaderboard.",
         ];
         var help = userHelp;
