@@ -39651,7 +39651,7 @@ function Safari() {
                 req.fscore = Math.round(req.score * diffModifiers[c]);
                 if (current[c] < goal[c]) {
                     index = getNextIndex(photographQuest, justRemoved);
-                    req.deadline = now() + hours(72);
+                    req.deadline = now() + hours(48);
                     photographQuest[index] = req;
                     current[c]++;
                     changed = true;
