@@ -2743,6 +2743,13 @@ function Safari() {
         }
         return "Default";
     }
+    function getAllThemeNames(commandLink) {
+        return Object.keys(contestThemes).filter(function(e) {
+            return e !== "none";
+        }).map(function(e) {
+            return (commandLink ? link("/" + commandLink + " " + e, contestThemes[e].name) : contestThemes[e].name);
+        });
+    }
     function loadLastId () {
         try {
             return parseInt(permObj.get("lastIdAssigned"), 10);
@@ -10001,12 +10008,7 @@ function Safari() {
         var themeKey = safari.getThemeKeyByName(theme);
  
         if (!themeKey || themeKey === "none") {
-            var valid = Object.keys(contestThemes).filter(function(e) {
-                return e !== "none";
-            }).map(function(e) {
-                return link("/themerares " + contestThemes[e].name, contestThemes[e].name);
-            });
-            
+            var valid = getAllThemeNames("themerares");
             safaribot.sendHtmlMessage(src, "Valid theme inputs are: " + readable(valid) + ".", safchan);
             return;
         }
@@ -10026,12 +10028,7 @@ function Safari() {
         var themeKey = safari.getThemeKeyByName(theme);
  
         if (!themeKey || themeKey === "none") {
-            var valid = Object.keys(contestThemes).filter(function(e) {
-                return e !== "none";
-            }).map(function(e) {
-                return link("/themespawns " + contestThemes[e].name, contestThemes[e].name);
-            });
-            
+            var valid = getAllThemeNames("themespawns");
             safaribot.sendHtmlMessage(src, "Valid theme inputs are: " + readable(valid) + ".", safchan);
             return;
         }
@@ -13414,7 +13411,7 @@ function Safari() {
             safaribot.sendMessage(src, "For Duplicate: Type a number. e.g.: /find duplicate 3 (will display all Pokémon that you have exactly 3 copies of)", safchan);
             safaribot.sendMessage(src, "For Duplicate+: Type a number greater than 1. e.g.: /find duplicate+ 3 (will display all Pokémon that you have at least 3 copies of)", safchan);
             safaribot.sendMessage(src, "For Region: Select any valid region (" +  readable(generations.slice(1, generations.length), "or") + ") to display all currently owned Pokémon from that region", safchan);
-            safaribot.sendMessage(src, "For Theme: Select any valid theme to display all currently owned Pokémon that spawn in that theme.", safchan);
+            safaribot.sendMessage(src, "For Theme: Select any valid theme (" + readable(getAllThemeNames(), "or") + ") to display all currently owned Pokémon that spawn in that theme.", safchan);
             safaribot.sendMessage(src, "For Tier: Select any valid tier (" +  readable(tiers, "or") + ") to display all currently owned Pokémon in that tier", safchan);
             safaribot.sendMessage(src, "For Color: Select any valid color (" +  readable(Object.keys(pokeColors), "or") + ") to display all currently owned Pokémon with that color", safchan);
             safaribot.sendMessage(src, "For Start: Type one or more letters to find Pokémon with name starting with that letter sequence.", safchan);
@@ -13856,17 +13853,13 @@ function Safari() {
             val = val.toLowerCase();
             var themeKey = safari.getThemeKeyByName(val);
             if (!themeKey || themeKey === "none") {
-                var valid = Object.keys(contestThemes).filter(function(e) {
-                    return e !== "none";
-                }).map(function(e) {
-                    return contestThemes[e].name;
-                });
+                var valid = getAllThemeNames();
                 safaribot.sendMessage(src, val + " is not a valid theme! Valid theme inputs are: " + readable(valid) + ".", safchan);
                 return false;
             }
 
            var themeSpawns = safari.getAllSpawnsInTheme(themeKey, true);
-           var values = Object.keys(themeSpawns).map(function(e) {return themeSpawns[e] });
+           var values = Object.keys(themeSpawns).map(function(e) {return themeSpawns[e] }); // polyfill Object.values
            var combined = values.reduce(function(a, b) { return a.concat(b) });
            current.forEach(function(x) {
                 if (combined.contains(x)) {
@@ -57982,14 +57975,7 @@ function Safari() {
                 return true;
             }
             if (command === "themes") {
-                var ret = [];
-                var contests = Object.keys(contestThemes);
-                for (var e in contests) {
-                    if (e !== "none") {
-                        ret.push(contestThemes[contests[e]].name);
-                    }
-                }
-                ret.sort();
+                var ret = getAllThemeNames();
                 safaribot.sendMessage(src, "Available Contest Themes: " + readable(ret, "and") + ".", safchan);
                 if (SESSION.channels(safchan).isChannelOwner(src)) {
                     var url = permObj.get("themesurl");
