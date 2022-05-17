@@ -13434,7 +13434,7 @@ function Safari() {
         var sets = commandData.split(" or ");
         var multi;
         var str, info, crit, val, m, def, title = [], finalTitle = [], list, current = player.pokemon.concat(), finalList = [];
-        var spacedVal = ["move","learn","canlearn", "tier", "ability", "hasability"];
+        var spacedVal = ["move","learn","canlearn", "tier", "ability", "hasability", "theme"];
 
         for (var i = 0; i < sets.length; i++) {
             multi = sets[i].split("&&");
@@ -13859,14 +13859,14 @@ function Safari() {
             }
 
            var themeSpawns = safari.getAllSpawnsInTheme(themeKey, true);
-           var values = Object.keys(themeSpawns).map(function(e) {return themeSpawns[e] }); // polyfill Object.values
+           var values = Object.keys(themeSpawns).map(function(e) { return themeSpawns[e] }); // polyfill Object.values
            var combined = values.reduce(function(a, b) { return a.concat(b) });
            current.forEach(function(x) {
                 if (combined.contains(x)) {
                     list.push(x);
                 }
            });
-           return "that appear in the " + themeName(val) + " theme (and alters/variations)";
+           return "that appear in the " + themeName(safari.getThemeKeyByName(val)) + " theme (and alters/variations)";
         }
     }
     function rangeFilter(src, current, list, val, mode, paramName, info, type) {
@@ -24982,6 +24982,10 @@ function Safari() {
             safaribot.sendMessage(src, "No such player!", safchan);
             return;
         }
+        if (target.playerBlacklist.contains(player.idnum)) {
+            safaribot.sendMessage(src, "This person is not accepting challenge requests from you right now!", safchan);
+            return;
+        }
         if (this.isInAuction(tName)) {
             safaribot.sendMessage(src, "This person is currently in an auction! Wait for them to finish to challenge again!", safchan);
             return;
@@ -33256,14 +33260,14 @@ function Safari() {
             return idnumList.get(id).toCorrectCase();
         };
         var removeBlock = function(id) {
-            return link("/playertradeblock " + idToName(id), idToName(id));
+            return link("/playerblacklist " + idToName(id), idToName(id));
         };
         list = player.playerBlacklist;
         if (data === "*") {            
             if (list.length > 0) {
                 safaribot.sendHtmlMessage(src, "You currently have the following users tradeblocked (" + list.length + "): " + readable(list.map(removeBlock)), safchan);
             }
-            safaribot.sendMessage(src, "Use \"/playertradeblock [Username]\" to automatically reject trade offers from that user. Use the command again to remove it. To clear your entire list, type \"playertradeblock ~clear\".", safchan);
+            safaribot.sendMessage(src, "Use \"/playerblacklist [Username]\" to automatically reject trades and battles from that user. Use the command again to remove it. To clear your entire list, type \"playerblacklist ~clear\".", safchan);
             return;
         }
 
@@ -39989,7 +39993,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "{0}: {1}".format(link("/quest monger:shop:" + s.item + ":" + s.cost, s.itemName, true), plural(s.cost, "shady")), safchan);
                 }
                 sys.sendMessage(src, "", safchan);
-                safaribot.sendHtmlMessage(src, "You currently have " + plural(player.balls.shady, "shady") + ". To buy something, use " + link("/quest monger:shop:", "/quest monger:shop:[Item Input]", true) + ", e.g. /quest monger:shop:3@nugget", safchan);
+                safaribot.sendHtmlMessage(src, "You currently have " + plural(player.balls.shady, "shady") + ". To buy something, use " + link("/quest monger:shop:", "/quest monger:shop:[Item Input]:[Item Cost]", true) + ", e.g. /quest monger:shop:3@nugget:4", safchan);
                 return;
             }
             if (cantBecause(src, "buy items", ["contest", "auction", "event", "pyramid"])) {
@@ -56508,7 +56512,7 @@ function Safari() {
             "/burn: To give a Burn Heal to another player. See /itemhelp Burn Heal for more information.",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
             "/tradeblock: To edit your tradeblocked list. You will instantly reject trade requests asking you for an Item/Pokémon you tradeblocked. Pokémon in this list cannot be sold with /sell. To reject all trades, use /options trade:off.",
-            "/playertradeblock: To edit your player tradeblocked list. You will instantly reject trade requests from the users you tradeblocked. To reject all trades, use /options trade:off.",
+            "/playerblacklist: To edit your player blacklist. You will instantly reject trade requests and battle requests from the users you blacklisted.",
             "/evolve: Use a Rare Candy (or candies) to evolve a Pokémon, which will give you Candy Dusts depending on the amount of Rare Candies used*.",
             "/spray: Use a Devolution Spray to devolve a Pokémon*.",
             "/mega [Pokémon*]: Use a Mega Stone to Mega Evolve a Pokémon. Use /mega [Pokémon*]:[X or Y] to choose between Mega Evolutions for species that have multiple.",
@@ -56857,7 +56861,7 @@ function Safari() {
                 safari.blacklistTrade(src, commandData);
                 return true;
             }
-            if (command === "playertradeblock") {
+            if (command === "playerblacklist") {
                 safari.blacklistPlayer(src, commandData);
                 return true;
             }
