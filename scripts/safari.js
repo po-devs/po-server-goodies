@@ -33260,14 +33260,14 @@ function Safari() {
             return idnumList.get(id).toCorrectCase();
         };
         var removeBlock = function(id) {
-            return link("/playerblacklist " + idToName(id), idToName(id));
+            return link("/blacklist " + idToName(id), idToName(id));
         };
         list = player.playerBlacklist;
         if (data === "*") {            
             if (list.length > 0) {
                 safaribot.sendHtmlMessage(src, "You currently have the following users blacklisted (" + list.length + "): " + readable(list.map(removeBlock)), safchan);
             }
-            safaribot.sendMessage(src, "Use \"/playerblacklist [Username]\" to automatically reject trades and battles from that user. Use the command again to remove it. To clear your entire list, type \"playerblacklist ~clear\".", safchan);
+            safaribot.sendMessage(src, "Use \"/blacklist [Username]\" to automatically reject trades and battles from that user. Use the command again to remove it. To clear your entire list, type \"blacklist ~clear\".", safchan);
             return;
         }
 
