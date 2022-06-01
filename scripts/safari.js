@@ -33267,7 +33267,7 @@ function Safari() {
             if (list.length > 0) {
                 safaribot.sendHtmlMessage(src, "You currently have the following users blacklisted (" + list.length + "): " + readable(list.map(removeBlock)), safchan);
             }
-            safaribot.sendMessage(src, "Use \"/blacklist [Username]\" to automatically reject trades and battles from that user. Use the command again to remove it. To clear your entire list, type \"blacklist ~clear\".", safchan);
+            safaribot.sendMessage(src, "Use \"/blacklist [Username]\" to automatically reject trades and battles from that user. Use the command again to remove it. To clear your entire list, type \"/blacklist ~clear\".", safchan);
             return;
         }
 
@@ -39474,7 +39474,7 @@ function Safari() {
     };
     this.photoMatchesRequest = function(photo, request) {
         var id = parseInt(photo.id, 10);
-        if (request.species && request.species !== id) {
+        if (request.species && request.species !== pokeInfo.species(id)) {
             return false;
         }
         if (request.amt && photo.amt < request.amt) {
