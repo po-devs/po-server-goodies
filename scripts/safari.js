@@ -8413,6 +8413,9 @@ function Safari() {
                             include = include.concat(theme.variations[variation]);
                         }
                     }
+                    else if (currentThemeEffect) {
+                        include = include.concat(theme.variations[currentThemeEffect]);
+                    }
                     if (currentThemeAlter && theme.alter) { // alter pool overrides everything
                         include = theme.alter;
                     }
