@@ -8413,7 +8413,7 @@ function Safari() {
                             include = include.concat(theme.variations[variation]);
                         }
                     }
-                    else if (currentThemeEffect) {
+                    else if (currentThemeEffect && !currentThemeSecondary) {
                         include = include.concat(theme.variations[currentThemeEffect]);
                     }
                     if (currentThemeAlter && theme.alter) { // alter pool overrides everything
