@@ -2889,13 +2889,13 @@ function Safari() {
                 return true;
             }
         }
-        if (arr.contains("distortion")) {
+        /*if (arr.contains("distortion")) {
             if ((contestCount > 0 && !contestForfeited.contains(player.idnum)) && currentThemeEffect == "distortion") {
                 if (!silent)
                     safaribot.sendMessage(src, "You can't " + action + " during the twisted dimensions!", safchan);
                 return true;
             }
-        }
+        }*/
         if (arr.contains("wild")) {
             if ((currentPokemon && contestCount === 0) || (currentPokemon && contestCount > 0 && !contestForfeited.contains(player.idnum))) {
                 if (!silent)
@@ -8780,10 +8780,10 @@ function Safari() {
                 if (currentTypeOverride) {
                     wType1 = currentTypeOverride;
                 }
-                var inverse = (player.costume === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(currentPokemon, abilitynum("Contrary")) && !ignore);
+                var inverse = currentThemeEffect == "distortion" || (player.costume === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(currentPokemon, abilitynum("Contrary")) && !ignore);
                 // use currentPokemon instead of currentDisplay for ability related stuff, since they broadcast an ability message anyway
                 var select = { levitate: canHaveAbility(currentPokemon, abilitynum("Levitate")) && !ignore, scrappy: canHaveAbility(leader, abilitynum("Scrappy")) };
-                if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
+                if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0) || currentThemeEffect == "distortion") {
                     typeEffectiveness = this.checkEffective([wType1, wType2], [pType1, pType2, pType3], !inverse);
                 }
                 else {
@@ -10261,7 +10261,7 @@ function Safari() {
             evioBonus = getPerkBonus(player, "eviolite");
             userStats += evioBonus;
         }
-        if ((currentRules && currentRules.invertedBST) || this.getFortune(player, "invertbst", 0)) {
+        if ((currentRules && currentRules.invertedBST) || this.getFortune(player, "invertbst", 0) || currentThemeEffect == "distortion") {
             userStats -= evioBonus;
             userStats -= (cherishBonus * 6);
             statsBonus = (userStats - wildStats) / -8000;
@@ -10279,14 +10279,14 @@ function Safari() {
         if (currentTypeOverride) {
             wType1 = currentTypeOverride;
         }
-        var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(usingPokemon, abilitynum("Contrary")) && !ignoresWildAbilities(player));
+        var inverse = currentThemeEffect == "distortion" || (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(usingPokemon, abilitynum("Contrary")) && !ignoresWildAbilities(player));
         var select = {
             levitate: canHaveAbility(usingPokemon, abilitynum("Levitate")) && !ignoresWildAbilities(player),
             scrappy: canHaveAbility(leader, abilitynum("Scrappy")),
             tintedLens: canHaveAbility(leader, abilitynum("Tinted Lens")),
             simple: canHaveAbility(leader, abilitynum("Simple"))
         };
-        if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
+        if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0) || currentThemeEffect == "distortion") {
             if (ball === "mono") {
                 typeBonus = this.checkEffective([wType1, wType2], (pType2 === "???" || !player.options.monoSecondary ? [pType1] : [pType2]), !inverse, select);
             } else {
@@ -12642,7 +12642,7 @@ function Safari() {
                     return;
                 }
             }
-            if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid", "distortion"])) {
+            if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid"])) {
                 return;
             }
             if (player.party.length >= 6) {
@@ -12662,7 +12662,7 @@ function Safari() {
             }
             this.saveGame(player);
         } else if (action === "remove") {
-            var restrictions = ["auction", "battle", "event", "tutorial", "pyramid", "distortion", "baking"];
+            var restrictions = ["auction", "battle", "event", "tutorial", "pyramid", "baking"];
             var reason = "modify your party";
             var index;
 
@@ -12728,7 +12728,7 @@ function Safari() {
                     bypassed = true;
                 }
                 if (!bypassed) {
-                    safari.addPendingActive(player.id, "manageParty", "active:"+info.input, ["auction", "battle", "event", "tutorial", "pyramid", "distortion", "wild", "contest", "baking"]);
+                    safari.addPendingActive(player.id, "manageParty", "active:"+info.input, ["auction", "battle", "event", "tutorial", "pyramid", "wild", "contest", "baking"]);
                     safaribot.sendMessage(src, "Your active Pokémon will automatically be changed to " + poke(getInputPokemon(info.input).num + (info.shiny ? "" : 0), true) + " at the next opportunity!", safchan);
                     return;
                 }
@@ -12803,7 +12803,7 @@ function Safari() {
             safaribot.sendMessage(src, "Deleted saved party at slot " + targetId + "!", safchan);
             this.saveGame(player);
         } else if (action === "load") {
-            if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid", "tutorial", "distortion"])) {
+            if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid", "tutorial"])) {
                 return;
             }
             var num = targetId - 1;
@@ -12841,7 +12841,7 @@ function Safari() {
             }
             if (contestCount > 0 || currentPokemon) {
                 if (!(contestCount > 0 && contestForfeited.contains(player.idnum))) {
-                    safari.addPendingActive(player.id, "manageParty", "load:"+targetId, ["auction", "battle", "event", "tutorial", "pyramid", "distortion", "wild", "contest", "baking"]);
+                    safari.addPendingActive(player.id, "manageParty", "load:"+targetId, ["auction", "battle", "event", "tutorial", "pyramid", "wild", "contest", "baking"]);
                     safaribot.sendMessage(src, "Your party saved in the slot " + targetId + " (" + readable(toLoad.map(poke), "and") + ") will be loaded at the next opportunity!", safchan);
                     return;
                 }
@@ -12912,7 +12912,7 @@ function Safari() {
         
         if (contestCount > 0 || currentPokemon) {
             if (!(contestCount > 0 && contestForfeited.contains(player.idnum))) {
-                safari.addPendingActive(player.id, "quickLoadParty", data.join(","), ["auction", "battle", "event", "tutorial", "pyramid", "distortion", "wild", "contest", "baking"]);
+                safari.addPendingActive(player.id, "quickLoadParty", data.join(","), ["auction", "battle", "event", "tutorial", "pyramid", "wild", "contest", "baking"]);
                 safaribot.sendMessage(src, "Your party will be changed to " + readable(toLoad.map(poke), "and") + " at the next opportunity!", safchan);
                 return;
             }
@@ -12957,9 +12957,9 @@ function Safari() {
             costumed = (player.costume !== "none");
         
         var partyShown = [].concat(player.party);
-        if (currentThemeEffect == "distortion" && !contestForfeited.contains(player.idnum)) {
+        /*if (currentThemeEffect == "distortion" && !contestForfeited.contains(player.idnum)) {
             partyShown.reverse();
-        } else if (currentThemeEffect == "past" && !contestForfeited.contains(player.idnum)) {
+        } else */if (currentThemeEffect == "past" && !contestForfeited.contains(player.idnum)) {
             if (player.altTimeline.lead !== 0) {
                 partyShown[0] = player.altTimeline.lead;
             }
@@ -24931,7 +24931,7 @@ function Safari() {
             }
         }
     };
-    this.challengePlayer = function(src, data, isRotation) {
+    this.challengePlayer = function(src, data, isRotation, conditions, command) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -25001,12 +25001,11 @@ function Safari() {
             safaribot.sendMessage(src, "This person is currently completing the tutorial! Wait for them to finish to challenge again!", safchan);
             return;
         }
-        
         var type = isRotation ? "rotation" : "normal";
         if (challengeRequests.hasOwnProperty(tName) && challengeRequests[tName].opponent == name) {
             var chall = challengeRequests[tName];
             if (chall.type !== type) {
-                safaribot.sendHtmlMessage(src, sys.name(targetId) + " challenged you for a " + cap(chall.type) + " Battle! To accept it, use " + link("/challenge" + (chall.type === "rotation" ? "2" : "") + " " + tName.toCorrectCase()) + ".", safchan);
+                safaribot.sendHtmlMessage(src, sys.name(targetId) + " challenged you for a " + cap(chall.type) + " Battle! To accept it, use " + link("/" + (chall.type === "rotation" ? command : "challenge") + " " + tName.toCorrectCase()) + ".", safchan);
                 return;
             }
             /* if (target.party.length < 3) {
@@ -25018,7 +25017,7 @@ function Safari() {
                 safaribot.sendMessage(src, (isRotation ? "Rotation " : "") + "Battle not started because both players have a different number of Pokémon in their party!", safchan);
                 return;
             }
-            var battle = isRotation ? new Battle2(targetId, src, {}) : new Battle(targetId, src);
+            var battle = isRotation ? new Battle2(targetId, src, {}, false, false, conditions) : new Battle(targetId, src);
             currentBattles.push(battle);
 
             delete challengeRequests[tName];
@@ -25040,7 +25039,7 @@ function Safari() {
             var commandLink = "/challenge" + (isRotation ? "2" : "") + " cancel";
             safaribot.sendHtmlMessage(src, "You are challenging " + sys.name(targetId) + " to a" + (isRotation ? " Rotation" : "") + " Battle! Wait for them to accept, or cancel the challenge with " + link(commandLink) + ".", safchan);
 
-            commandLink = "/challenge" + (isRotation ? "2" : "") + " " + sys.name(src);
+            commandLink = (isRotation ? "/" + command : "/challenge") + " " + sys.name(src);
             sys.sendMessage(targetId, "", safchan);
             safaribot.sendHtmlMessage(targetId, sys.name(src) + " is challenging you for a" + (isRotation ? " Rotation" : "") + " Battle! To accept, type " + link(commandLink) + ".", safchan);
             sys.sendMessage(targetId, "", safchan);
@@ -28495,7 +28494,7 @@ function Safari() {
         }
         var bonus = 1;
         if (this.select) {
-            bonus *= ((isP2 || isP4) && (this.select.boostType.contains(move.type)) ? 1.3 : 1);
+            bonus *= ((isP2 || isP4) && (this.select.boostType && this.select.boostType.contains(move.type)) ? 1.3 : 1);
             bonus *= ((isP1 || isP3) && (this.select.solidRock) && (typeMultiplier > 1) ? 0.75 : 1);
             bonus *= ((isP2 || isP4) && (this.select.expertBelt) && (typeMultiplier > 1) ? 1.2 : 1);
             bonus *= ((isP1 || isP3) && (this.select.heatproof) && (move.type === "Fire") ? 0.5 : 1);
@@ -30809,7 +30808,7 @@ function Safari() {
                                     move.power += (5 * Math.round(Math.random() * 6));
                                 }
                                 if (this.weather == "Sand") {
-                                    move.type = "Sand";
+                                    move.type = "Rock";
                                     move.power += (5 * Math.round(Math.random() * 6));
                                 }
                                 if (this.weather == "Hail") {
@@ -33852,7 +33851,7 @@ function Safari() {
                 }
                 safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Oh, you don't want to help me anymore? It's a shame, but I understand. Come back later if you change your mind!", safchan);
                 quest.reward = 0;
-                quest.cooldown = now() + Math.round(hours(1) * (1 - safari.getFortune(player, "questcd", 0, "collector")) * (1 - safari.getAuraEffect(player, "questcd", 0)));
+                quest.cooldown = now() + Math.round(hours(1) * (1 - safari.getAuraEffect(player, "questcd", 0)));
                 player.notificationData.collectorWaiting = true;
                 quest.requests = [];
                 quest.deadline = null;
@@ -40255,10 +40254,10 @@ function Safari() {
         var os = sys.os(sys.id(player.id));
         line1 += costumeSprite(player, os) + " ";
         var partyShown = [].concat(player.party);
-        if (currentThemeEffect == "distortion") {
+        /*if (currentThemeEffect == "distortion") {
             partyShown = [].concat(player.party)
             partyShown.reverse();
-        } else if (currentThemeEffect == "past") {
+        } else */if (currentThemeEffect == "past") {
             partyShown = [].concat(player.party);
             if (player.altTimeline.lead !== 0) {
                 partyShown[0] = player.altTimeline.lead;
@@ -55238,9 +55237,9 @@ function Safari() {
         var leader = player.party[0];
 
         // handle any party position manipulation here
-        if (currentThemeEffect == "distortion" && !contestForfeited.contains(player.idnum)) {
+        /*if (currentThemeEffect == "distortion" && !contestForfeited.contains(player.idnum)) {
             leader = player.party[player.party.length-1];
-        }
+        }*/
         if (currentThemeEffect == "past" && player.altTimeline.lead !== 0) {
             leader = player.altTimeline.lead;
         }
@@ -57124,7 +57123,23 @@ function Safari() {
                 return true;
             }
             if (command === "challenge" || command === "challenge2") {
-                safari.challengePlayer(src, commandData, command === "challenge2");
+                safari.challengePlayer(src, commandData, command === "challenge2", null, command);
+                return true;
+            }
+            if (command === "challenge2sun") {
+                safari.challengePlayer(src, commandData, true, {sun: true}, command);
+                return true;
+            }
+            if (command === "challenge2rain") {
+                safari.challengePlayer(src, commandData, true, {rain: true}, command);
+                return true;
+            }
+            if (command === "challenge2sand" || command === "challenge2sandstorm") {
+                safari.challengePlayer(src, commandData, true, {sandstorm: true}, command);
+                return true;
+            }
+            if (command === "challenge2hail") {
+                safari.challengePlayer(src, commandData, true, {hail: true}, command);
                 return true;
             }
             if (command === "challenge3" || command === "challengetag") {
@@ -62738,7 +62753,6 @@ function Safari() {
                 nextTheme = [];
                 nextTheme = possibleThemes.shuffle().slice(0, 3);
             }
-
             nextRules = {};
             var rulesDesc = [];
             for (var n = 0; n < nextTheme.length; n++) {
