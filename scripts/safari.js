@@ -16882,7 +16882,7 @@ function Safari() {
         var minCombo = 3;
         var comboPulls = 0;
         var maxComboPulls = 99;
-        var usedCombo = 0;
+        var usedCombo = 1;
         if (combo) {
             if (player.consecutiveCombo < minCombo) {
                 safaribot.sendHtmlMessage(src, "Your Consecutive Catch Combo needs to be at least " + minCombo + " in order to power up your Itemfinder! " + link("/finder", "[Use Without Combo]"), safchan);
@@ -17232,7 +17232,7 @@ function Safari() {
                             }
                         }
                         
-                        safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it! " + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "]. " + link("/finder", "[Use Again]"), safchan);
+                        safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it!", safchan);
                         sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Hint:</font></b> "  + dynamicHints.random(), safchan);
                         foundAny = true;
                     }
@@ -17241,7 +17241,7 @@ function Safari() {
                         if (player.costume == "explorer" && chance(0.2) && safari.detectiveData.hasOwnProperty(player.idnum+"") && safari.detectiveData[player.idnum].date === getDay(now()) && !safari.detectiveData[player.idnum].solved) {
                             for (var i = 0; i < safari.detectiveData[player.idnum+""].clues.length; i++) {
                                 if (safari.detectiveData[player.idnum+""].clues[i].unlock == "explorerfinder") {
-                                    safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! " + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "]. " + link("/finder", "[Use Again]"), safchan);
+                                    safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue!", safchan);
                                     safari.detectiveClue(player.idnum, "explorerfinder", src);
                                     hit = true;
                                     foundAny = true;
@@ -17272,7 +17272,7 @@ function Safari() {
         }
         if (emptyPulls > 0) {
             if (foundAny) {
-                safaribot.sendHtmlMessage(src, "Your Itemfinder did not detect anything the other " + plural(emptyPulls, "time") + "...", safchan);
+                safaribot.sendHtmlMessage(src, "Your Itemfinder did not detect anything the other " + plural(emptyPulls, "time") + "... " + (Object.keys(totalRewards).length ? "" : "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "]. " + link("/finder", "[Use Again]")), safchan); // if your only pulls were hints/ads etc, display charges here since the reward lines don't print
             }
             else {
                 safaribot.sendHtmlMessage(src, "You pulled out your Itemfinder " + plural(emptyPulls, "time") + ", but it did not detect anything... [Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "]. " + link("/finder", "[Use Again]"), safchan);
