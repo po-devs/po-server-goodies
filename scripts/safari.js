@@ -7433,7 +7433,7 @@ function Safari() {
         
         return "<background color='"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'>&nbsp;" + (string ? string : type) + "&nbsp;</font></background>";
     }
-    function generation(pokeNum, wordy) {
+    function generation(pokeNum, wordy, excludeAlts) {
         var num = pokeInfo.species(pokeNum);
         var ret = 1;
         var useAlt = false;
@@ -7461,7 +7461,9 @@ function Safari() {
         }
         else if (inclusive(num, 899, 905)) { // New Hisui region Pokémon from Legends: Arceus
             ret = 4;
-            useAlt = true;
+            if (!excludeAlts) {
+                useAlt = true;
+            }
         }
         if (wordy) {
             var altRegions = ["None", "", "", "", "Hisui", "", "", "", ""];
@@ -21497,7 +21499,7 @@ function Safari() {
         switch (type) {
             case "type": return hasType(id, sys.type(sys.typeNum(target)));
             case "color": return (data && data.color ? data.color : getPokeColor(id)) === target;
-            case "region": return generation(id).toLowerCase() === target.toLowerCase();
+            case "region": return generation(id, true, true).toLowerCase() === target.toLowerCase();
             case "bst": return isInRange(getBST(id), target);
             case "height": return isInRange(parseFloat(getHeight(id)), target);
             case "weight": return isInRange(parseFloat(getWeight(id)), target);
