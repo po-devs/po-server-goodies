@@ -3139,7 +3139,7 @@ function Safari() {
         return utilities.getTimeString(timeLeft(time));
     }
     function timeString(time, full) {
-        return utilities.getTimeString(time, full);
+        return utilities.getTimeString(time, full) || "0 seconds";
     }
     function getDay(time) {
         return Math.floor(time / (1000 * 60 * 60 * 24));
@@ -9141,7 +9141,7 @@ function Safari() {
                     }
                 }
             } else if (currentThemeEffect == "distortion") {
-                safaribot.sendHtmlAll(pokeInfo.icon(66023) + " Giratina appeared and twisted the dimensions!", safchan);
+                safaribot.sendHtmlAll(pokeInfo.icon(66023) + " Giratina appeared and twisted the dimensions! Inverted BST, Inverted Type Effectiveness, and Resistance Mode are now in effect!", safchan);
             } else if (["rain","sandstorm","sunny","hail"].contains(currentThemeEffect)) {
                 weatherMessage();
             }
@@ -10815,7 +10815,7 @@ function Safari() {
         var flee;
         var caughtAny = false;
         if (crystalEffect.effect === "photo" && player.photos.length < 20) {
-            this.takePhoto(src, "*", true, true);
+            this.takePhoto(src, "*", true, true, false, false, true);
         }
 
         if (rng < finalChance || ballBonus == 255) {
@@ -10842,6 +10842,7 @@ function Safari() {
             }
             var ch = "";
             var catchingMon = leader;
+            var finalCatch = currentPokemon;
             if (player.cherished.indexOf(pokeInfo.species(getInputPokemon(poke(catchingMon)).num)) !== -1) {
                 if (!player.options.cherishOff) {
                     ch = "Cherished ";
@@ -10912,6 +10913,7 @@ function Safari() {
                     player.pokemon.push(evolved);
                     sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
                     sendAll("The " + pokeName + " instantly evolved into " + poke(evolved, true) + "!");
+                    finalCatch = evolved;
                 } else {
                     player.pokemon.push(currentPokemon);
                 }
@@ -11291,8 +11293,8 @@ function Safari() {
                     player.eventFlags[i] = 0;
                 }
             }
-            if (player.options.sellPrompt && !isRare(currentPokemon)) {
-                safaribot.sendHtmlMessage(src, "«{0}» ({1})".format(link("/sell " + poke(currentPokemon) + ":confirm", "Click here to sell the " + poke(currentPokemon, true) + " you just caught"), "You now have " + countRepeated(player.pokemon, currentPokemon) + " " + poke(currentPokemon, true)), safchan);
+            if (player.options.sellPrompt && !isRare(finalCatch)) {
+                safaribot.sendHtmlMessage(src, "«{0}» ({1})".format(link("/sell " + poke(finalCatch) + ":confirm", "Click here to sell the " + poke(finalCatch, true) + " you just caught"), "You now have " + countRepeated(player.pokemon, finalCatch) + " " + poke(finalCatch, true)), safchan);
             }
             if (contestCount > 0) {
                 var nameLower = name.toLowerCase();
@@ -11983,7 +11985,7 @@ function Safari() {
     };
 
     /* Photos */
-    this.takePhoto = function(src, data, bypass, suppress, command, bufferThrow) {
+    this.takePhoto = function(src, data, bypass, suppress, command, bufferThrow, ignoreThrow) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -12154,7 +12156,9 @@ function Safari() {
         if (contestCount > 0 && !contestActivity[player.id].contains(lastWild)) {
             contestActivity[player.id].push(lastWild);
         }
-        currentThrows -= 2;
+        if (!ignoreThrow) {
+            currentThrows -= 2;
+        }
         if (currentThrows <= 0 && !wildEvent && !resolvingThrows) {
             this.pokemonFlee();
         } else {
@@ -16877,16 +16881,21 @@ function Safari() {
         var pulls = this.getFortune(player, "finderburn", 1)
         var minCombo = 3;
         var comboPulls = 0;
-        var maxComboPulls = 50;
+        var maxComboPulls = 99;
+        var usedCombo = 0;
         if (combo) {
             if (player.consecutiveCombo < minCombo) {
                 safaribot.sendHtmlMessage(src, "Your Consecutive Catch Combo needs to be at least " + minCombo + " in order to power up your Itemfinder! " + link("/finder", "[Use Without Combo]"), safchan);
                 return;
             }
-            var maxPullsPerCombo = 5;
+            var maxPullsPerCombo = 7;
             var usable = player.consecutiveCombo - minCombo + 1;
             for (var i = 0; i <= usable; i++) {
                 comboPulls += Math.min(maxPullsPerCombo, usable - i);
+                usedCombo += 1;
+                if (comboPulls >= maxComboPulls) {
+                    break;
+                }
             }
             comboPulls = Math.min(comboPulls, maxComboPulls);
             pulls += comboPulls;
@@ -16894,8 +16903,8 @@ function Safari() {
 
         pulls = Math.min(pulls, totalCharges);
         if (comboPulls) {
-            player.consecutiveCombo = 0;
-            safaribot.sendHtmlMessage(src, "You powered up the Itemfinder with your Consecutive Catch Combo, allowing you to use it " + plural(pulls, "time") + " in a row!", safchan);
+            player.consecutiveCombo -= usedCombo;
+            safaribot.sendHtmlMessage(src, "You powered up the Itemfinder with your Consecutive Catch Combo, allowing you to use it " + plural(pulls, "time") + " in a row! [Remaining Combo: " + player.consecutiveCombo + "]", safchan);
         }
 
         var emptyPulls = freePulls = 0;
@@ -17223,7 +17232,7 @@ function Safari() {
                             }
                         }
                         
-                        safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it! " + link("/finder", "[Use Again]"), safchan);
+                        safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it! " + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "]. " + link("/finder", "[Use Again]"), safchan);
                         sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Hint:</font></b> "  + dynamicHints.random(), safchan);
                         foundAny = true;
                     }
@@ -17232,7 +17241,7 @@ function Safari() {
                         if (player.costume == "explorer" && chance(0.2) && safari.detectiveData.hasOwnProperty(player.idnum+"") && safari.detectiveData[player.idnum].date === getDay(now()) && !safari.detectiveData[player.idnum].solved) {
                             for (var i = 0; i < safari.detectiveData[player.idnum+""].clues.length; i++) {
                                 if (safari.detectiveData[player.idnum+""].clues[i].unlock == "explorerfinder") {
-                                    safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! " + link("/finder", "[Use Again]"), safchan);
+                                    safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! " + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "]. " + link("/finder", "[Use Again]"), safchan);
                                     safari.detectiveClue(player.idnum, "explorerfinder", src);
                                     hit = true;
                                     foundAny = true;
@@ -17393,7 +17402,7 @@ function Safari() {
                     case "bluapricorn": case "grnapricorn": case "pnkapricorn": amount = 20; break;
                 }
                 safaribot.sendMessage(src, "You excitedly open your " + finishName("pack") + " to reveal " + plural(amount, reward) + "!", safchan);
-                if (item === "mega") {
+                /*if (item === "mega") {
                     safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("mega")) + " in their " + finishName("pack") + "!</b>", safchan);
                 }
                 if (item === "bignugget") {
@@ -17407,7 +17416,7 @@ function Safari() {
                 }
                 if (item === "spray") {
                     safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("spray")) + " in their " + finishName("pack") + "!</b>", safchan);
-                }
+                }*/
                 if (item === "silver2") {
                     safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + plural(amount, reward) + " in their " + finishName("pack") + "!</b>", safchan);
                 }
@@ -21488,7 +21497,7 @@ function Safari() {
         switch (type) {
             case "type": return hasType(id, sys.type(sys.typeNum(target)));
             case "color": return (data && data.color ? data.color : getPokeColor(id)) === target;
-            case "region": return generation(id, true).toLowerCase() === target.toLowerCase();
+            case "region": return generation(id).toLowerCase() === target.toLowerCase();
             case "bst": return isInRange(getBST(id), target);
             case "height": return isInRange(parseFloat(getHeight(id)), target);
             case "weight": return isInRange(parseFloat(getWeight(id)), target);
@@ -36362,7 +36371,7 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[2], 5 + Math.random() * 15, "pokefandaycare"));
             out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[3], 5 + Math.random() * 15, "explorerfinder"));
             out.clues.push(getClue(out.answer, out.clues, 0, specClueOrder[4], 5 + Math.random() * 15, "mafia"));
-            out.clues.push(getClue(out.answer, out.clues, false, false, 10 + Math.random() * 15, "mafia2"));
+            out.clues.push(getClue(out.answer, out.clues, false, false, 10 + Math.random() * 15, "trivia"));
             
             out.clues.push(getClue(out.answer, out.clues, extraOrder[0], false, 2 + 2 * Math.random(), "mission"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder[1], false, 2 + 6 * Math.random(), "contest"));
@@ -36444,6 +36453,7 @@ function Safari() {
                     var reqDesc = {
                         "mafia": "Win rewards from an Event Mafia game.",
                         "mafia2": "Win rewards from an Event Mafia game with 7 or more players.",
+                        "trivia": "Win rewards from an Event Trivia game.",
                         "battlearena": "Defeat Trainer Lorekeeper while wearing the Battle Girl costume.",
                         "explorerfinder": "Discover a clue with the Itemfinder while wearing the Explorer costume.",
                         "pokefandaycare": "Interact with your Pokémon at the daycare while wearing the Pokéfan costume.",
@@ -56079,6 +56089,7 @@ function Safari() {
         this.missionProgress(player, "sodaFromTrivia", "trivia", (4 - placing), {});
         safari.costumeEXP(player, "soda", 10 * amt);
         this.inboxMessage(player, "You won " + rew + " from an Event Trivia Game!", isPlaying(name));
+        safari.detectiveClue(player.idnum, "trivia");
         this.sanitize(player);
         safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
         sys.appendToFile(crossLog, now() + "|||Trivia|||" + name.toCorrectCase() + "|||" + rew + "\n");
