@@ -11962,7 +11962,6 @@ function Safari() {
         }
 
         var currentTime = now();
-        this.changeWildMood(safari.getEffectiveLead(player));
         pokeblockThrows += 1;
         player.balls.pokeblock -= 1;
 
@@ -11983,6 +11982,7 @@ function Safari() {
         }
         var boosted = safari.hasCostumeSkill(player, "pokeblockBoost");
         safaribot.sendHtmlAll(toColor(playerDisplayName + " is feeding the " + poke(currentDisplay, true) + " a " + (boosted ? "strong " : "") + "Pokéblock!", "#438ed9"), safchan);
+        this.changeWildMood(safari.getEffectiveLead(player));
         currentThrows = getMaxThrows(currentPokemon, currentPokemonCount, (typeof currentPokemon == "string" ? true : false), throwAttempts, boosted);
     };
 
@@ -12118,7 +12118,6 @@ function Safari() {
             quality = Math.max(7, quality);
         }
         var pokeName = poke(target, true);
-        this.changeWildMood(safari.getEffectiveLead(player));
         
         var period = new Date().getUTCHours();
         period = ["night", "morning", "afternoon", "evening"][Math.floor(period/6)];
@@ -12164,6 +12163,7 @@ function Safari() {
         if (currentThrows <= 0 && !wildEvent && !resolvingThrows) {
             this.pokemonFlee();
         } else {
+            this.changeWildMood(safari.getEffectiveLead(player));
             this.changeWildAction("photo");
         }
 
