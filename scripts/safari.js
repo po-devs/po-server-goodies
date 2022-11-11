@@ -2070,7 +2070,7 @@ function Safari() {
     var contestVotes;
     var contestVotingCooldown = 4;
     var contestVotingCount = (SESSION.global() && SESSION.global().contestVotingCount ? SESSION.global().contestVotingCount : contestVotingCooldown);
-    var generations = ["None", "Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar"];
+    var generations = ["None", "Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar", "Paldea"];
     var nextTheme;
     var currentRules;
     var nextRules;
@@ -7005,6 +7005,1149 @@ function Safari() {
             "height": 1.6, // UNCONFIRMED
             "weight": 48.0, // UNCONFIRMED
             "moves": [movenum("Tackle"), movenum("Bite"), movenum("Twister"), movenum("Draining Kiss"), movenum("Iron Defense"), movenum("Extrasensory"), movenum("Crunch"), movenum("Moonblast"), movenum("Springtide Storm"), movenum("Rock Smash"), movenum("Power Shift"), movenum("Calm Mind"), movenum("Rest"), movenum("Zen Headbutt"), movenum("Mystical Fire"), movenum("Sludge Bomb"), movenum("Earth Power"), movenum("Dazzling Gleam"), movenum("Giga Impact"), movenum("Play Rough"), movenum("Hyper Beam"), movenum("Psychic")]
+        },
+        "65564": {
+            "types": ["Fighting", "???"],
+            "name": "Paldean Tauros",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "131266": {
+            "types": ["Fighting", "Fire"],
+            "name": "Paldean Tauros 2",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "196802": {
+            "types": ["Fighting", "Water"],
+            "name": "Paldean Tauros 3",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "65730": {
+            "types": ["Poison", "Ground"],
+            "name": "Paldean Wooper",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "906": {
+            "types": ["Grass", "???"],
+            "name": "Sprigatito",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "907": {
+            "types": ["Grass", "???"],
+            "name": "Floragato",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "908": {
+            "types": ["Grass", "Dark"],
+            "name": "Meowscarada",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "909": {
+            "types": ["Fire", "???"],
+            "name": "Fuecoco",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "910": {
+            "types": ["Fire", "???"],
+            "name": "Crocalor",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "911": {
+            "types": ["Fire", "Ghost"],
+            "name": "Skeledirge",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "912": {
+            "types": ["Water", "???"],
+            "name": "Quaxly",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "913": {
+            "types": ["Water", "???"],
+            "name": "Quaxwell",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "914": {
+            "types": ["Water", "Fighting"],
+            "name": "Quaquaval",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "915": {
+            "types": ["Normal", "???"],
+            "name": "Lechonk",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "916": {
+            "types": ["Normal", "???"],
+            "name": "Oinkologne",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "66452": {
+            "types": ["Normal", "???"],
+            "name": "Oinkologne-F",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "917": {
+            "types": ["Normal", "???"],
+            "name": "Dudunsparce",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "66453": {
+            "types": ["Normal", "???"],
+            "name": "Dudunsparce-Three Segment",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "918": {
+            "types": ["Bug", "???"],
+            "name": "Tarountula",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "919": {
+            "types": ["Bug", "???"],
+            "name": "Spidops",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "920": {
+            "types": ["Bug", "???"],
+            "name": "Nymble",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "921": {
+            "types": ["Bug", "Dark"],
+            "name": "Lokix",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "922": {
+            "types": ["Bug", ""],
+            "name": "Rellor",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "923": {
+            "types": ["Bug", "Psychic"],
+            "name": "Rabsca",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "924": {
+            "types": ["Ghost", "???"],
+            "name": "Greavard",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "925": {
+            "types": ["Ghost", "???"],
+            "name": "Houndstone",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "926": {
+            "types": ["Psychic", "???"],
+            "name": "Flittle",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "927": {
+            "types": ["Psychic", "???"],
+            "name": "Espartha",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "928": {
+            "types": ["Normal", "Psychic"],
+            "name": "Farigiraf",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "929": {
+            "types": ["Water", "???"],
+            "name": "Wiglett",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "930": {
+            "types": ["Water", "???"],
+            "name": "Wugtrio",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "931": { // potential 2nd+ forme combined with tatsugiri?
+            "types": ["Water", "???"],
+            "name": "Dondozo",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "932": {
+            "types": ["Water", "Psychic"],
+            "name": "Veluza",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "933": {
+            "types": ["Water", "???"],
+            "name": "Finizen",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "934": {
+            "types": ["Water", "???"],
+            "name": "Palafin",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "66470": {
+            "types": ["Water", "???"],
+            "name": "Palafin 2",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "935": {
+            "types": ["Grass", "Normal"],
+            "name": "Smoliv",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "936": {
+            "types": ["Grass", "Normal"],
+            "name": "Dolliv",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "937": {
+            "types": ["Grass", "Normal"],
+            "name": "Arboliva",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "938": {
+            "types": ["Grass", "???"],
+            "name": "Capsakid",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "939": {
+            "types": ["Grass", "Fire"],
+            "name": "Scovillain",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "940": {
+            "types": ["Electric", "???"],
+            "name": "Tadbulb",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "941": {
+            "types": ["Electric", "???"],
+            "name": "Bellibolt",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "942": {
+            "types": ["Steel", "Poison"],
+            "name": "Varoom",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "943": {
+            "types": ["Steel", "Poison"],
+            "name": "Revavroom",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "944": {
+            "types": ["Steel", "???"],
+            "name": "Orthworm",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "945": {
+            "types": ["Normal", "???"],
+            "name": "Tandemaus",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "946": {
+            "types": ["Normal", "???"],
+            "name": "Maushold",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "947": {
+            "types": ["Ice", "???"],
+            "name": "Cetoddle",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "948": {
+            "types": ["Ice", "???"],
+            "name": "Cetitan",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "949": {
+            "types": ["Ice", "Dragon"],
+            "name": "Frigibax",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "950": {
+            "types": ["Ice", "Dragon"],
+            "name": "Arctibax",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "951": {
+            "types": ["Ice", "Dragon"],
+            "name": "Baxcalibur",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "952": {
+            "types": ["Water", "Dragon"],
+            "name": "Tatsugiri",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "66488": {
+            "types": ["Water", "Dragon"],
+            "name": "Tatsugiri 2",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "132024": {
+            "types": ["Water", "Dragon"],
+            "name": "Tatsugiri 3",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "953": {
+            "types": ["Dragon", "Normal"],
+            "name": "Cyclizar",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "954": {
+            "types": ["Electric", "???"],
+            "name": "Pawmi",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "955": {
+            "types": ["Electric", "???"],
+            "name": "Pawmo",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "956": {
+            "types": ["Electric", "Fighting"],
+            "name": "Pawmot",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "957": {
+            "types": ["Electric", "Flying"],
+            "name": "Wattrel",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "958": {
+            "types": ["Electric", "Flying"],
+            "name": "Kilowattrel",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "959": {
+            "types": ["Dark", "Flying"],
+            "name": "Bombirdier",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "960": {
+            "types": ["Normal", "Flying"],
+            "name": "Squawkabilly",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "66496": {
+            "types": ["Normal", "Flying"],
+            "name": "Squawkabilly 2",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "132032": {
+            "types": ["Normal", "Flying"],
+            "name": "Squawkabilly 3",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "197568": {
+            "types": ["Normal", "Flying"],
+            "name": "Squawkabilly 4",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "961": {
+            "types": ["Flying", "Fighting"],
+            "name": "Flamigo",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "962": {
+            "types": ["Rock", "???"],
+            "name": "Klawf",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "963": {
+            "types": ["Rock", "???"],
+            "name": "Nacli",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "964": {
+            "types": ["Rock", "???"],
+            "name": "Naclstack",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "965": {
+            "types": ["Rock", "???"],
+            "name": "Garganacl",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "966": {
+            "types": ["Poison", "Rock"],
+            "name": "Glimmet",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "967": {
+            "types": ["Poison", "Rock"],
+            "name": "Glimmora",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "968": {
+            "types": ["Poison", "Normal"],
+            "name": "Shroodle",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "969": {
+            "types": ["Poison", "Normal"],
+            "name": "Grafaiai",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "970": {
+            "types": ["Fairy", "???"],
+            "name": "Fidough",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "971": {
+            "types": ["Fairy", "???"],
+            "name": "Dachsbun",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "972": {
+            "types": ["Dark", "???"],
+            "name": "Maschiff",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "973": {
+            "types": ["Dark", "???"],
+            "name": "Mabosstiff",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "66509": {
+            "types": ["Dark", "???"],
+            "name": "Mabosstiff-Night",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "974": {
+            "types": ["Grass", "Ghost"],
+            "name": "Bramblin",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "975": {
+            "types": ["Grass", "Ghost"],
+            "name": "Brambleghast",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "976": {
+            "types": ["Ghost", "???"],
+            "name": "Gimmighoul",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "66512": {
+            "types": ["Ghost", "???"],
+            "name": "Gimmighoul-Roaming",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "977": {
+            "types": ["Ghost", "Steel"],
+            "name": "Gholdengo",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "978": {
+            "types": ["Ground", "Fighting"],
+            "name": "Great Tusk",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "979": {
+            "types": ["Grass", "Dark"],
+            "name": "Brute Bonnet",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "980": { // placeholder
+            "types": ["Normal", "???"],
+            "name": "Paradox Suicune",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "981": {
+            "types": ["Electric", "Ground"],
+            "name": "Sandy Shocks",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "982": {
+            "types": ["Fairy", "Psychic"],
+            "name": "Scream Tail",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "983": {
+            "types": ["Ghost", "Fairy"],
+            "name": "Flutter Mane",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "984": {
+            "types": ["Bug", "Fighting"],
+            "name": "Slither Wing",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "985": {
+            "types": ["Dragon", "Dark"],
+            "name": "Roaring Moon",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "986": {
+            "types": ["Ground", "Steel"],
+            "name": "Iron Treads",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "987": { // placeholder
+            "types": ["Normal", "???"],
+            "name": "Paradox Virizion",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "988": {
+            "types": ["Fire", "Poison"],
+            "name": "Iron Moth",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "989": {
+            "types": ["Fighting", "Electric"],
+            "name": "Iron Hands",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "990": {
+            "types": ["Dark", "Flying"],
+            "name": "Iron Jugulis",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "991": {
+            "types": ["Rock", "Electric"],
+            "name": "Iron Thorns",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "992": {
+            "types": ["Ice", "Water"],
+            "name": "Iron Bundle",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "993": {
+            "types": ["Fairy", "Fighting"],
+            "name": "Iron Valiant",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "994": {
+            "types": ["Dark", "Ground"],
+            "name": "Ting-Lu",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "995": {
+            "types": ["Dark", "Ice"],
+            "name": "Chien-Pao",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "996": {
+            "types": ["Dark", "Grass"],
+            "name": "Wo-Chien",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "997": {
+            "types": ["Dark", "Fire"],
+            "name": "Chi-Yu",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "998": {
+            "types": ["Fighting", "Dragon"],
+            "name": "Koraidon",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "66534": {
+            "types": ["Fighting", "Dragon"],
+            "name": "Koraidon-Limited",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "132070": {
+            "types": ["Fighting", "Dragon"],
+            "name": "Koraidon-Sprinting",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "197606": {
+            "types": ["Fighting", "Dragon"],
+            "name": "Koraidon-Swimming",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "263142": {
+            "types": ["Fighting", "Dragon"],
+            "name": "Koraidon-Gliding",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "999": {
+            "types": ["Electric", "Dragon"],
+            "name": "Miraidon",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "66535": {
+            "types": ["Electric", "Dragon"],
+            "name": "Miraidon-Low Power",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "132071": {
+            "types": ["Electric", "Dragon"],
+            "name": "Miraidon-Drive",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "197607": {
+            "types": ["Electric", "Dragon"],
+            "name": "Miraidon-Aquatic",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "263143": {
+            "types": ["Electric", "Dragon"],
+            "name": "Miraidon-Glide",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "1000": {
+            "types": ["Fairy", "Steel"],
+            "name": "Tinkatink",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "1001": {
+            "types": ["Fairy", "Steel"],
+            "name": "Tinkatuff",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "1002": {
+            "types": ["Fairy", "Steel"],
+            "name": "Tinkaton",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "1003": {
+            "types": ["Fire", "???"],
+            "name": "Charcadet",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "1004": {
+            "types": ["Fire", "Psychic"],
+            "name": "Armarouge",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "1005": {
+            "types": ["Fire", "Ghost"],
+            "name": "Ceruledge",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "1006": {
+            "types": ["Ground", "Grass"],
+            "name": "Toedscool",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "1007": {
+            "types": ["Ground", "Grass"],
+            "name": "Toedscruel",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "1008": {
+            "types": ["Dark", "Steel"],
+            "name": "Kingambit",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "1009": {
+            "types": ["Poison", "Ground"],
+            "name": "Clodsire",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
+        "1010": {
+            "types": ["Fighting", "Ghost"],
+            "name": "Annihilape",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
         }
         /* template
         "": {
@@ -7444,6 +8587,8 @@ function Safari() {
         } else if (isHisuianForm(pokeNum) || [66019, 66020].contains(pokeNum)) { // Dialga & Palkia Origin
             ret = 4;
             useAlt = true;
+        } else if (isPaldeanForm(pokeNum)) {
+            ret = 9;
         } else if (inclusive(num, 152, 251)) {
             ret = 2;
         } else if (inclusive(num, 252, 386)) {
@@ -7458,12 +8603,13 @@ function Safari() {
             ret = 7;
         } else if (inclusive(num, 810, 898)) {
             ret = 8;
-        }
-        else if (inclusive(num, 899, 905)) { // New Hisui region Pokémon from Legends: Arceus
+        } else if (inclusive(num, 899, 905)) { // New Hisui region Pokémon from Legends: Arceus
             ret = 4;
             if (!excludeAlts) {
                 useAlt = true;
             }
+        } else if (inclusive(num, 906, 1010)) {
+            ret = 9;
         }
         if (wordy) {
             var altRegions = ["None", "", "", "", "Hisui", "", "", "", ""];
@@ -7480,6 +8626,9 @@ function Safari() {
     }
     function isHisuianForm(pokeNum) {
         return [65594, 65595, 65636, 65637, 65693, 65747, 65751, 66019, 66020, 66039, 66085, 131622, 66106, 66107, 66164, 66241, 66242, 66249, 66260].contains(parseInt(pokeNum, 10));
+    }
+    function isPaldeanForm(pokeNum) {
+        return [65564, 131266, 196802, 65730].contains(parseInt(pokeNum, 10));
     }
     function getPokeColor(pokeNum) {
         var c, id = parseInt(pokeNum, 10);
