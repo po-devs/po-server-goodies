@@ -4381,7 +4381,7 @@ function Safari() {
             "name": "Wicked Blow",
             "learned": [892],
             "type": "Dark",
-            "power": 80
+            "power": 75
         },
         "742": {
             "name": "Surging Strikes",
@@ -4423,7 +4423,7 @@ function Safari() {
             "name": "Glacial Lance",
             "learned": [66434],
             "type": "Ice",
-            "power": 130
+            "power": 120
         },
         "749": {
             "name": "Astral Barrage",
@@ -4465,7 +4465,7 @@ function Safari() {
             "name": "Grassy Glide",
             "learned": [ 1, 2, 3, 43, 44, 45, 102, 103, 65639, 114, 151, 182, 251, 252, 253, 254, 270, 271, 272, 273, 274, 275, 315, 406, 407, 420, 421, 459, 460, 465, 470, 546, 547, 548, 549, 556, 640, 708, 709, 710, 711, 722, 723, 724, 753, 754, 761, 762, 763, 764, 781, 810, 811, 812, 829, 830, 831, 832, 840, 841, 842, 865, 893 ],
             "type": "Grass",
-            "power": 70
+            "power": 60
         },
         "756": {
             "name": "Rising Voltage",
@@ -4561,7 +4561,7 @@ function Safari() {
             "name": "Dire Claw",
             "learned": [903],
             "type": "Poison",
-            "power": 60
+            "power": 80
         },
         "772": {
             "name": "Psyshield Bash",
@@ -4591,19 +4591,19 @@ function Safari() {
             "name": "Raging Fury",
             "learned": [65595],
             "type": "Fire",
-            "power": 90
+            "power": 120
         },
         "777": {
             "name": "Wave Crash",
             "learned": [902, 66438],
             "type": "Water",
-            "power": 75
+            "power": 120
         },
         "778": {
             "name": "Chloroblast",
             "learned": [65637],
             "type": "Grass",
-            "power": 120
+            "power": 150
         },
         "779": {
             "name": "Mountain Gale",
@@ -4621,7 +4621,7 @@ function Safari() {
             "name": "Headlong Rush",
             "learned": [389, 901],
             "type": "Ground",
-            "power": 100
+            "power": 120
         },
         "782": {
             "name": "Barb Barrage",
@@ -4633,13 +4633,13 @@ function Safari() {
             "name": "Esper Wing",
             "learned": [66164],
             "type": "Psychic",
-            "power": 75
+            "power": 80
         },
         "784": {
             "name": "Bitter Malice",
             "learned": [66106, 66107],
             "type": "Ghost",
-            "power": 60
+            "power": 75
         },
         "785": {
             "name": "Shelter",
@@ -4651,7 +4651,7 @@ function Safari() {
             "name": "Triple Arrows",
             "learned": [66260],
             "type": "Fighting",
-            "power": 50
+            "power": 90
         },
         "787": {
             "name": "Infernal Parade",
@@ -4669,45 +4669,334 @@ function Safari() {
             "name": "Springtide Storm",
             "learned": [905, 66441],
             "type": "Fairy",
-            "power": 95
+            "power": 100
         },
         "790": {
             "name": "Bleakwind Storm",
             "learned": [641, 66177],
             "type": "Flying",
-            "power": 95
+            "power": 100
         },
         "791": {
             "name": "Wildbolt Storm",
             "learned": [642, 66178],
             "type": "Electric",
-            "power": 95
+            "power": 100
         },
         "792": {
             "name": "Sandsear Storm",
             "learned": [645, 66181],
             "type": "Ground",
-            "power": 95
+            "power": 100
         },
         "793": {
             "name": "Lunar Blessing",
             "learned": [488],
-            "type": "Normal", // UNCONFIRMED
+            "type": "Psychic",
             "power": "---"
         },
         "794": {
             "name": "Take Heart",
             "learned": [489, 490],
-            "type": "Normal", // UNCONFIRMED
+            "type": "Normal",
             "power": "---"
+        },
+        "795": {
+            "name": "Tera Blast",
+            "learned": [], // literally every mon or something
+            "type": "Normal",
+            "power": 80
+        },
+        "796": {
+            "name": "Silk Trap",
+            "learned": [919],
+            "type": "Bug",
+            "power": "---"
+        },
+        "797": {
+            "name": "Axe Kick",
+            "learned": [308, 66085, 921],
+            "type": "Fighting",
+            "power": 120
+        },
+        "798": {
+            "name": "Last Respects",
+            "learned": [925],
+            "type": "Ghost",
+            "power": 50
+        },
+        "799": {
+            "name": "Lumina Crash",
+            "learned": [927],
+            "type": "Psychic",
+            "power": 80
+        },
+        "800": {
+            "name": "Order Up",
+            "learned": [931],
+            "type": "Dragon",
+            "power": 80
+        },
+        "801": {
+            "name": "Jet Punch",
+            "learned": [934, 66470],
+            "type": "Water",
+            "power": 60
+        },
+        "802": {
+            "name": "Spicy Extract",
+            "learned": [939],
+            "type": "Grass",
+            "power": "---"
+        },
+        "803": {
+            "name": "Spin Out",
+            "learned": [942, 943],
+            "type": "Steel",
+            "power": 100
+        },
+        "804": {
+            "name": "Population Bomb",
+            "learned": [945, 946, 66482],
+            "type": "Normal",
+            "power": 20
+        },
+        "805": {
+            "name": "Ice Spinner",
+            "learned": [947, 948], // TM lines unadded
+            "type": "Ice",
+            "power": 80
+        },
+        "806": {
+            "name": "Glaive Rush",
+            "learned": [951],
+            "type": "Dragon",
+            "power": 120
+        },
+        "807": {
+            "name": "Revival Blessing",
+            "learned": [923, 956],
+            "type": "Normal",
+            "power": "---"
+        },
+        "808": {
+            "name": "Salt Cure",
+            "learned": [963, 964, 965],
+            "type": "Rock",
+            "power": 40
+        },
+        "809": {
+            "name": "Triple Dive",
+            "learned": [930],
+            "type": "Water",
+            "power": 30
+        },
+        "810": {
+            "name": "Mortal Spin",
+            "learned": [967],
+            "type": "Poison",
+            "power": 30
+        },
+        "811": {
+            "name": "Doodle",
+            "learned": [969],
+            "type": "Normal",
+            "power": "---"
+        },
+        "812": {
+            "name": "Fillet Away",
+            "learned": [932],
+            "type": "Normal",
+            "power": "---"
+        },
+        "813": {
+            "name": "Kowtow Cleave",
+            "learned": [1008],
+            "type": "Dark",
+            "power": 85
+        },
+        "814": {
+            "name": "Flower Trick",
+            "learned": [908],
+            "type": "Grass",
+            "power": 70
+        },
+        "815": {
+            "name": "Torch Song",
+            "learned": [911],
+            "type": "Fire",
+            "power": 80
+        },
+        "816": {
+            "name": "Aqua Step",
+            "learned": [914],
+            "type": "Water",
+            "power": 80
+        },
+        "817": {
+            "name": "Raging Bull",
+            "learned": [128, 65664, 131200, 196736],
+            "type": "Normal",
+            "power": 90
+        },
+        "818": {
+            "name": "Make It Rain",
+            "learned": [977],
+            "type": "Steel",
+            "power": 120
+        },
+        "819": {
+            "name": "Ruination",
+            "learned": [994, 995, 996, 997],
+            "type": "Dark",
+            "power": "---"
+        },
+        "820": {
+            "name": "Collision Course",
+            "learned": [998, 66534, 132070, 197606, 263142],
+            "type": "Fighting",
+            "power": 100
+        },
+        "821": {
+            "name": "Electro Drift",
+            "learned": [999, 66535, 132071, 197607, 263143],
+            "type": "Electric",
+            "power": 100
+        },
+        "822": {
+            "name": "Shed Tail",
+            "learned": [944, 953],
+            "type": "Normal",
+            "power": "---"
+        },
+        "823": {
+            "name": "Chilly Reception",
+            "learned": [199, 65735],
+            "type": "Ice",
+            "power": "---"
+        },
+        "824": {
+            "name": "Tidy Up",
+            "learned": [946, 66482],
+            "type": "Normal",
+            "power": "---"
+        },
+        "825": {
+            "name": "Snowscape",
+            "learned": [902, 66438, 947, 948, 932, 950, 951, 952, 982, 992, 995], // all pokemon with hail before unadded
+            "type": "",
+            "power": 0
+        },
+        "826": {
+            "name": "Pounce",
+            "learned": [], // way too many
+            "type": "Bug",
+            "power": 50
+        },
+        "827": {
+            "name": "Trailblaze",
+            "learned": [], // way too many
+            "type": "Grass",
+            "power": 50
+        },
+        "828": {
+            "name": "Chilling Water",
+            "learned": [], // way too many
+            "type": "Water",
+            "power": 50
+        },
+        "829": {
+            "name": "Hyper Drill",
+            "learned": [206, 917, 66453],
+            "type": "Normal",
+            "power": 100
+        },
+        "830": {
+            "name": "Twin Beam",
+            "learned": [203, 928],
+            "type": "Psychic",
+            "power": 40
+        },
+        "831": {
+            "name": "Rage Fist",
+            "learned": [57, 1010],
+            "type": "Ghost",
+            "power": 50
+        },
+        "832": {
+            "name": "Armor Cannon",
+            "learned": [1004],
+            "type": "Fire",
+            "power": 120
+        },
+        "833": {
+            "name": "Bitter Blade",
+            "learned": [1005],
+            "type": "Fire",
+            "power": 90
+        },
+        "834": {
+            "name": "Double Shock",
+            "learned": [956],
+            "type": "Electric",
+            "power": 120
+        },
+        "835": {
+            "name": "Gigaton Hammer",
+            "learned": [1002],
+            "type": "Steel",
+            "power": 160
+        },
+        "836": {
+            "name": "Comeuppance",
+            "learned": [228, 229, 430, 66106, 66107, 973],
+            "type": "Dark",
+            "power": "---"
+        },
+        "837": {
+            "name": "Aqua Cutter",
+            "learned": [475, 912, 913, 914, 932],
+            "type": "Water",
+            "power": 70
+        },
+        "838": {
+            "name": "Blazing Torque", // could give these torque moves to revavroom but in-game they're only usable by the boss-only starmobile revavroom
+            "learned": [],
+            "type": "Fire",
+            "power": 80
+        },
+        "839": {
+            "name": "Wicked Torque",
+            "learned": [],
+            "type": "Dark",
+            "power": 80
+        },
+        "840": {
+            "name": "Noxious Torque",
+            "learned": [],
+            "type": "Poison",
+            "power": 100
+        },
+        "841": {
+            "name": "Combat Torque",
+            "learned": [],
+            "type": "Fighting",
+            "power": 100
+        },
+        "842": {
+            "name": "Magical Torque",
+            "learned": [],
+            "type": "Fairy",
+            "power": 100
         }
         /* template
+        
         "": {
             "name": "",
             "learned": [],
             "type": "",
             "power": 0
-        }
+        },
         */
     };
     var moveBlacklist = { // move: [pokemon list]
@@ -6466,7 +6755,7 @@ function Safari() {
         "888": {
             "types": ["Fairy", "???"],
             "name": "Zacian",
-            "stats": [92, 130, 115, 80, 115, 138],
+            "stats": [92, 120, 115, 80, 115, 138],
             "abilities": [ "Intrepid Sword" ],
             "tier": "SM Ubers",
             "height": 2.8,
@@ -6476,7 +6765,7 @@ function Safari() {
         "66424": {
             "types": ["Fairy", "Steel"],
             "name": "Zacian-Crowned Sword",
-            "stats": [92, 170, 115, 80, 115, 148],
+            "stats": [92, 150, 115, 80, 115, 148],
             "abilities": [ "Intrepid Sword" ],
             "tier": "SM Ubers",
             "height": 2.8,
@@ -6486,7 +6775,7 @@ function Safari() {
         "889": {
             "types": ["Fighting", "???"],
             "name": "Zamazenta",
-            "stats": [92, 130, 115, 80, 115, 138],
+            "stats": [92, 120, 115, 80, 115, 138],
             "abilities": [ "Dauntless Shield" ],
             "tier": "SM Ubers",
             "height": 2.9,
@@ -6496,7 +6785,7 @@ function Safari() {
         "66425": {
             "types": ["Fighting", "Steel"],
             "name": "Zamazenta-Crowned Shield",
-            "stats": [92, 130, 145, 80, 145, 128],
+            "stats": [92, 120, 140, 80, 140, 128],
             "abilities": [ "Dauntless Shield" ],
             "tier": "SM Ubers",
             "height": 2.9, 
@@ -6573,7 +6862,7 @@ function Safari() {
             "types": ["Fighting", "???"],
             "name": "Kubfu",
             "stats": [60, 90, 60, 53, 50, 72],
-            "abilities": [ "Inner Focus" ],
+            "abilities": [ "Inner Focus", "No Guard" ],
             "tier": "SM PU",
             "height": 0.6,
             "weight": 12,
@@ -6732,7 +7021,7 @@ function Safari() {
             "types": ["Fire", "Rock"],
             "name": "Hisuian Growlithe",
             "stats": [60, 75, 45, 65, 50, 55],
-            "abilities": [ "Intimidate", "Flash Fire", "Justified" ],
+            "abilities": [ "Intimidate", "Flash Fire", "Rock Head" ],
             "tier": "SM LC",
             "height": 0.8,
             "weight": 22.7,
@@ -6742,7 +7031,7 @@ function Safari() {
             "types": ["Fire", "Rock"],
             "name": "Hisuian Arcanine",
             "stats": [95, 115, 80, 95, 80, 90],
-            "abilities": [ "Intimidate", "Flash Fire", "Justified" ],
+            "abilities": [ "Intimidate", "Flash Fire", "Rock Head" ],
             "tier": "SM OU",
             "height": 2.2,
             "weight": 182.9,
@@ -6773,7 +7062,7 @@ function Safari() {
             "types": ["Fire", "Ghost"],
             "name": "Hisuian Typhlosion",
             "stats": [73, 84, 78, 119, 85, 95],
-            "abilities": [ "Blaze", "Flash Fire" ],
+            "abilities": [ "Blaze", "Frisk" ],
             "tier": "SM OU",
             "height": 1.6,
             "weight": 69.7,
@@ -6793,7 +7082,7 @@ function Safari() {
             "types": ["Poison", "Fighting"],
             "name": "Hisuian Sneasel",
             "stats": [55, 95, 55, 35, 75, 115],
-            "abilities": [ "Inner Focus", "Keen Eye", "Poison Touch" ],
+            "abilities": [ "Inner Focus", "Keen Eye", "Pickpocket" ],
             "tier": "SM LC",
             "height": 0.9,
             "weight": 28.0,
@@ -6823,7 +7112,7 @@ function Safari() {
             "types": ["Water", "Dark"],
             "name": "Hisuian Samurott",
             "stats": [90, 108, 80, 100, 65, 85],
-            "abilities": [ "Torrent", "Shell Armor"],
+            "abilities": [ "Torrent", "Sharpness" ],
             "tier": "SM OU",
             "height": 1.5,
             "weight": 94.6,
@@ -6843,7 +7132,7 @@ function Safari() {
             "types": ["Water", "???"],
             "name": "Basculin-White Striped",
             "stats": [70, 92, 65, 80, 55, 98],
-            "abilities": [ "Rattled", "Adaptability", "Mold Breaker" ],
+            "abilities": [ "Swift Swim", "Adaptability", "Mold Breaker" ],
             "tier": "SM LC",
             "height": 1.0,
             "weight": 18.0,
@@ -6852,7 +7141,7 @@ function Safari() {
         "66106": {
             "types": ["Normal", "Ghost"],
             "name": "Hisuian Zorua",
-            "stats": [35, 60, 40, 85, 40, 70],
+            "stats": [40, 65, 40, 80, 40, 65],
             "abilities": [ "Illusion" ],
             "tier": "SM LC",
             "height": 0.7,
@@ -6862,7 +7151,7 @@ function Safari() {
         "66107": {
             "types": ["Normal", "Ghost"],
             "name": "Hisuian Zoroark",
-            "stats": [55, 100, 60, 125, 60, 110],
+            "stats": [60, 105, 60, 120, 60, 105],
             "abilities": [ "Illusion" ],
             "tier": "SM OU",
             "height": 1.6,
@@ -6873,7 +7162,7 @@ function Safari() {
             "types": ["Psychic", "Flying"],
             "name": "Hisuian Braviary",
             "stats": [110, 83, 70, 112, 70, 65],
-            "abilities": [ "Keen Eye", "Sheer Force", "Defiant" ],
+            "abilities": [ "Keen Eye", "Sheer Force", "Tinted Lens" ],
             "tier": "SM OU",
             "height": 1.7,
             "weight": 43.4,
@@ -6883,7 +7172,7 @@ function Safari() {
             "types": ["Dragon", "Steel"],
             "name": "Hisuian Sliggoo",
             "stats": [58, 75, 83, 83, 113, 40],
-            "abilities": [ "Sap Sipper", "Overcoat", "Gooey" ],
+            "abilities": [ "Sap Sipper", "Shell Armor", "Gooey" ],
             "tier": "SM PU",
             "height": 0.7,
             "weight": 76.8,
@@ -6893,7 +7182,7 @@ function Safari() {
             "types": ["Dragon", "Steel"],
             "name": "Hisuian Goodra",
             "stats": [80, 100, 100, 110, 150, 60],
-            "abilities": [ "Sap Sipper", "Overcoat", "Gooey" ],
+            "abilities": [ "Sap Sipper", "Shell Armor", "Gooey" ],
             "tier": "SM OU",
             "height": 2.7,
             "weight": 641.5,
@@ -6913,7 +7202,7 @@ function Safari() {
             "types": ["Grass", "Fighting"],
             "name": "Hisuian Decidueye",
             "stats": [88, 112, 80, 95, 95, 60],
-            "abilities": [ "Overgrow", "Long Reach" ],
+            "abilities": [ "Overgrow", "Scrappy" ],
             "tier": "SM OU",
             "height": 1.6,
             "weight": 36.9,
@@ -6932,8 +7221,8 @@ function Safari() {
         "900": {
             "types": ["Bug", "Rock"],
             "name": "Kleavor",
-            "stats": [70, 135, 95, 45, 70, 85],
-            "abilities": [ "Swarm", "Sheer Force", "Steadfast" ],
+            "stats": [70, 130, 95, 45, 75, 85],
+            "abilities": [ "Swarm", "Sheer Force", "Sharpness" ],
             "tier": "SM OU",
             "height": 1.8,
             "weight": 89.0,
@@ -6953,7 +7242,7 @@ function Safari() {
             "types": ["Water", "Ghost"],
             "name": "Basculegion",
             "stats": [120, 112, 65, 80, 75, 78],
-            "abilities": [ "Rattled", "Adaptability", "Mold Breaker" ],
+            "abilities": [ "Swift Swim", "Adaptability", "Mold Breaker" ],
             "tier": "SM OU",
             "height": 3.0,
             "weight": 110.0,
@@ -6963,7 +7252,7 @@ function Safari() {
             "types": ["Water", "Ghost"],
             "name": "Basculegion-F",
             "stats": [120, 92, 65, 100, 75, 78],
-            "abilities": [ "Rattled", "Adaptability", "Mold Breaker" ],
+            "abilities": [ "Swift Swim", "Adaptability", "Mold Breaker" ],
             "tier": "SM OU",
             "height": 3.0,
             "weight": 110.0,
@@ -6973,7 +7262,7 @@ function Safari() {
             "types": ["Poison", "Fighting"],
             "name": "Sneasler",
             "stats": [80, 130, 60, 40, 80, 120],
-            "abilities": [ "Pressure", "Poison Touch" ],
+            "abilities": [ "Pressure", "Poison Touch", "Unburden" ],
             "tier": "SM OU",
             "height": 1.3,
             "weight": 43.0,
@@ -6993,7 +7282,7 @@ function Safari() {
             "types": ["Fairy", "Flying"],
             "name": "Enamorus",
             "stats": [74, 115, 70, 135, 80, 106],
-            "abilities": [ "Healer", "Contrary" ],
+            "abilities": [ "Cute Charm", "Contrary" ],
             "tier": "SM OU",
             "height": 1.6,
             "weight": 48.0,
@@ -7005,11 +7294,11 @@ function Safari() {
             "stats": [74, 115, 110, 135, 100, 46],
             "abilities": [ "Overcoat" ],
             "tier": "SM OU",
-            "height": 1.6, // UNCONFIRMED
-            "weight": 48.0, // UNCONFIRMED
+            "height": 1.6,
+            "weight": 48.0,
             "moves": [movenum("Tackle"), movenum("Bite"), movenum("Twister"), movenum("Draining Kiss"), movenum("Iron Defense"), movenum("Extrasensory"), movenum("Crunch"), movenum("Moonblast"), movenum("Springtide Storm"), movenum("Rock Smash"), movenum("Power Shift"), movenum("Calm Mind"), movenum("Rest"), movenum("Zen Headbutt"), movenum("Mystical Fire"), movenum("Sludge Bomb"), movenum("Earth Power"), movenum("Dazzling Gleam"), movenum("Giga Impact"), movenum("Play Rough"), movenum("Hyper Beam"), movenum("Psychic")]
         },
-        "65564": {
+        "65664": {
             "types": ["Fighting", "???"],
             "name": "Paldean Tauros",
             "stats": [],
@@ -7018,7 +7307,7 @@ function Safari() {
             "height": 0,
             "weight": 0
         },
-        "131266": {
+        "131200": {
             "types": ["Fighting", "Fire"],
             "name": "Paldean Tauros 2",
             "stats": [],
@@ -7027,7 +7316,7 @@ function Safari() {
             "height": 0,
             "weight": 0
         },
-        "196802": {
+        "196736": {
             "types": ["Fighting", "Water"],
             "name": "Paldean Tauros 3",
             "stats": [],
@@ -7515,7 +7804,7 @@ function Safari() {
         },
         "953": {
             "types": ["Dragon", "Normal"],
-            "name": "Cyclizar",
+            "name": "Cyclizard",
             "stats": [],
             "abilities": [],
             "tier": "",
@@ -8266,6 +8555,96 @@ function Safari() {
         },
         "266": {
             "name": "Curious Medicine"
+        },
+        "267": {
+            "name:": "Lingering Aroma"
+        },
+        "": {
+            "name": "Seed Sower"
+        },
+        "": {
+            "name": "Thermal Exchange"
+        },
+        "": {
+            "name": "Anger Shell"
+        },
+        "": {
+            "name": "Purifying Salt"
+        },
+        "": {
+            "name": "Well-Baked Body"
+        },
+        "": {
+            "name": "Wind Rider"
+        },
+        "": {
+            "name": "Guard Dog"
+        },
+        "": {
+            "name": "Rocky Payload"
+        },
+        "": {
+            "name": "Wind Power"
+        },
+        "": {
+            "name": "Zero to Hero"
+        },
+        "": {
+            "name": "Commander"
+        },
+        "": {
+            "name": "Electromorphosis"
+        },
+        "": {
+            "name": "Protosynthesis"
+        },
+        "": {
+            "name": "Quark Drive"
+        },
+        "": {
+            "name": "Good as Gold"
+        },
+        "": {
+            "name": "Vessel of Ruin"
+        },
+        "": {
+            "name": "Sword of Ruin"
+        },
+        "": {
+            "name": "Tablets of Ruin"
+        },
+        "": {
+            "name": "Beads of Ruin"
+        },
+        "": {
+            "name": "Orichalcum Pulse"
+        },
+        "": {
+            "name": "Hadron Engine"
+        },
+        "": {
+            "name": "Opportunist"
+        },
+        "": {
+            "name": "Cud Chew"
+        },
+        "": {
+            "name": "Sharpness"
+        },
+        "": {
+            "name": "Supreme Overlord"
+        },
+        "": {
+            "name": "Costar"
+        },
+        "": {
+            "name": "Toxic Debris"
+        },
+        "": {
+            "name": "Armor Tail"
+        },
+        "": {
+            "name": "Mycelium Might"
         }
     }
     var updatedAbilities = {
@@ -8275,7 +8654,8 @@ function Safari() {
     var updatedStats = {
         "65708": [20, 40, 15, 35, 35, 60], // Pichu-Spiky Eared's stats are incorrect on PO
         "681": [60, 50, 140, 50, 140, 60], // Aegislash was nerfed in Gen 8 (Sword & Shield)
-        "66217": [60, 140, 50, 140, 50, 60]
+        "66217": [60, 140, 50, 140, 50, 60],
+        "488": [120, 70, 110, 75, 120, 85] // Cresselia's defences nerfed in Gen 9
     };
     function getPokeNum(name) {
         var out = sys.pokeNum(name);
