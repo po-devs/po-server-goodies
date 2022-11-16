@@ -4584,7 +4584,7 @@ function Safari() {
         "775": {
             "name": "Mystical Power",
             "learned": [480, 481, 482],
-            "type": "Normal", // UNCONFIRMED
+            "type": "Psychic",
             "power": 70
         },
         "776": {
@@ -4698,7 +4698,7 @@ function Safari() {
         "794": {
             "name": "Take Heart",
             "learned": [489, 490],
-            "type": "Normal",
+            "type": "Psychic",
             "power": "---"
         },
         "795": {
@@ -7309,7 +7309,7 @@ function Safari() {
         },
         "131200": {
             "types": ["Fighting", "Fire"],
-            "name": "Paldean Tauros 2",
+            "name": "Paldean Tauros-Fire",
             "stats": [],
             "abilities": [],
             "tier": "",
@@ -7318,7 +7318,7 @@ function Safari() {
         },
         "196736": {
             "types": ["Fighting", "Water"],
-            "name": "Paldean Tauros 3",
+            "name": "Paldean Tauros-Aqua",
             "stats": [],
             "abilities": [],
             "tier": "",
@@ -7543,7 +7543,7 @@ function Safari() {
         },
         "927": {
             "types": ["Psychic", "???"],
-            "name": "Espartha",
+            "name": "Espathra",
             "stats": [],
             "abilities": [],
             "tier": "",
@@ -7615,7 +7615,7 @@ function Safari() {
         },
         "66470": {
             "types": ["Water", "???"],
-            "name": "Palafin 2",
+            "name": "Palafin-Hero",
             "stats": [],
             "abilities": [],
             "tier": "",
@@ -7730,6 +7730,15 @@ function Safari() {
             "height": 0,
             "weight": 0
         },
+        "66482": {
+            "types": ["Normal", "???"],
+            "name": "Maushold 2",
+            "stats": [],
+            "abilities": [],
+            "tier": "",
+            "height": 0,
+            "weight": 0
+        },
         "947": {
             "types": ["Ice", "???"],
             "name": "Cetoddle",
@@ -7804,7 +7813,7 @@ function Safari() {
         },
         "953": {
             "types": ["Dragon", "Normal"],
-            "name": "Cyclizard",
+            "name": "Cyclizar",
             "stats": [],
             "abilities": [],
             "tier": "",
@@ -8559,91 +8568,91 @@ function Safari() {
         "267": {
             "name:": "Lingering Aroma"
         },
-        "": {
+        "268": {
             "name": "Seed Sower"
         },
-        "": {
+        "269": {
             "name": "Thermal Exchange"
         },
-        "": {
+        "270": {
             "name": "Anger Shell"
         },
-        "": {
+        "271": {
             "name": "Purifying Salt"
         },
-        "": {
+        "272": {
             "name": "Well-Baked Body"
         },
-        "": {
+        "273": {
             "name": "Wind Rider"
         },
-        "": {
+        "274": {
             "name": "Guard Dog"
         },
-        "": {
+        "275": {
             "name": "Rocky Payload"
         },
-        "": {
+        "276": {
             "name": "Wind Power"
         },
-        "": {
+        "277": {
             "name": "Zero to Hero"
         },
-        "": {
+        "278": {
             "name": "Commander"
         },
-        "": {
+        "279": {
             "name": "Electromorphosis"
         },
-        "": {
+        "280": {
             "name": "Protosynthesis"
         },
-        "": {
+        "281": {
             "name": "Quark Drive"
         },
-        "": {
+        "282": {
             "name": "Good as Gold"
         },
-        "": {
+        "283": {
             "name": "Vessel of Ruin"
         },
-        "": {
+        "284": {
             "name": "Sword of Ruin"
         },
-        "": {
+        "285": {
             "name": "Tablets of Ruin"
         },
-        "": {
+        "286": {
             "name": "Beads of Ruin"
         },
-        "": {
+        "287": {
             "name": "Orichalcum Pulse"
         },
-        "": {
+        "288": {
             "name": "Hadron Engine"
         },
-        "": {
+        "289": {
             "name": "Opportunist"
         },
-        "": {
+        "290": {
             "name": "Cud Chew"
         },
-        "": {
+        "291": {
             "name": "Sharpness"
         },
-        "": {
+        "292": {
             "name": "Supreme Overlord"
         },
-        "": {
+        "293": {
             "name": "Costar"
         },
-        "": {
+        "294": {
             "name": "Toxic Debris"
         },
-        "": {
+        "295": {
             "name": "Armor Tail"
         },
-        "": {
+        "296": {
             "name": "Mycelium Might"
         }
     }
