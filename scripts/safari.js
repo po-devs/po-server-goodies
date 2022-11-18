@@ -7795,7 +7795,7 @@ function Safari() {
         },
         "66488": {
             "types": ["Water", "Dragon"],
-            "name": "Tatsugiri 2",
+            "name": "Tatsugiri-Droopy",
             "stats": [68, 50, 60, 120, 95, 82],
             "abilities": [],
             "tier": "SM OU",
@@ -7804,7 +7804,7 @@ function Safari() {
         },
         "132024": {
             "types": ["Water", "Dragon"],
-            "name": "Tatsugiri 3",
+            "name": "Tatsugiri-Stretchy",
             "stats": [68, 50, 60, 120, 95, 82],
             "abilities": [],
             "tier": "SM OU",
@@ -7885,7 +7885,7 @@ function Safari() {
         },
         "66496": {
             "types": ["Normal", "Flying"],
-            "name": "Squawkabilly 2",
+            "name": "Squawkabilly-Blue",
             "stats": [82, 96, 51, 45, 51, 92],
             "abilities": [],
             "tier": "SM OU",
@@ -7894,7 +7894,7 @@ function Safari() {
         },
         "132032": {
             "types": ["Normal", "Flying"],
-            "name": "Squawkabilly 3",
+            "name": "Squawkabilly-Yellow",
             "stats": [82, 96, 51, 45, 51, 92],
             "abilities": [],
             "tier": "SM OU",
@@ -7903,7 +7903,7 @@ function Safari() {
         },
         "197568": {
             "types": ["Normal", "Flying"],
-            "name": "Squawkabilly 4",
+            "name": "Squawkabilly-White",
             "stats": [82, 96, 51, 45, 51, 92],
             "abilities": [],
             "tier": "SM OU",
