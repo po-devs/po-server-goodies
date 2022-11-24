@@ -7302,1150 +7302,1263 @@ function Safari() {
             "types": ["Fighting", "???"],
             "name": "Paldean Tauros",
             "stats": [75, 110, 105, 30, 70, 100],
-            "abilities": [],
+            "abilities": ["Intimidate", "Anger Point", "Cud Chew"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1.4,
+            "weight": 115,
+            "moves": []
         },
         "131200": {
             "types": ["Fighting", "Fire"],
-            "name": "Paldean Tauros-Fire",
+            "name": "Paldean Tauros-Blaze",
             "stats": [75, 110, 105, 30, 70, 100],
-            "abilities": [],
+            "abilities": ["Intimidate", "Anger Point", "Cud Chew"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1.4,
+            "weight": 85,
+            "moves": []
         },
         "196736": {
             "types": ["Fighting", "Water"],
             "name": "Paldean Tauros-Aqua",
             "stats": [75, 110, 105, 30, 70, 100],
-            "abilities": [],
+            "abilities": ["Intimidate", "Anger Point", "Cud Chew"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1.4,
+            "weight": 110,
+            "moves": []
         },
         "65730": {
             "types": ["Poison", "Ground"],
             "name": "Paldean Wooper",
             "stats": [55, 45, 45, 25, 25, 15],
-            "abilities": [],
+            "abilities": ["Poison Point", "Water Absorb", "Unaware"],
             "tier": "SM LC",
-            "height": 0,
-            "weight": 0
+            "height": 0.4,
+            "weight": 11,
+            "moves": []
         },
         "906": {
             "types": ["Grass", "???"],
             "name": "Sprigatito",
             "stats": [40, 61, 54, 45, 45, 65],
-            "abilities": [],
+            "abilities": ["Overgrow", "", "Protean"],
             "tier": "SM LC",
-            "height": 0,
-            "weight": 0
+            "height": 0.4,
+            "weight": 4.1,
+            "moves": []
         },
         "907": {
             "types": ["Grass", "???"],
             "name": "Floragato",
             "stats": [61, 80, 63, 60, 63, 83],
-            "abilities": [],
+            "abilities": ["Overgrow", "Protean"],
             "tier": "SM PU",
-            "height": 0,
-            "weight": 0
+            "height": 0.9,
+            "weight": 12.2,
+            "moves": []
         },
         "908": {
             "types": ["Grass", "Dark"],
             "name": "Meowscarada",
             "stats": [76, 110, 70, 81, 70, 123],
-            "abilities": [],
+            "abilities": ["Overgrow", "Protean"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1.5,
+            "weight": 31.2,
+            "moves": []
         },
         "909": {
             "types": ["Fire", "???"],
             "name": "Fuecoco",
             "stats": [67, 45, 59, 63, 43, 36],
-            "abilities": [],
+            "abilities": ["Blaze", "Unaware"],
             "tier": "SM LC",
-            "height": 0,
-            "weight": 0
+            "height": 0.4,
+            "weight": 9.8,
+            "moves": []
         },
         "910": {
             "types": ["Fire", "???"],
             "name": "Crocalor",
             "stats": [81, 55, 78, 90, 58, 49],
-            "abilities": [],
+            "abilities": ["Blaze", "Unaware"],
             "tier": "SM PU",
-            "height": 0,
-            "weight": 0
+            "height": 1,
+            "weight": 30.7,
+            "moves": []
         },
         "911": {
             "types": ["Fire", "Ghost"],
             "name": "Skeledirge",
             "stats": [104, 75, 100, 110, 76, 66],
-            "abilities": [],
+            "abilities": ["Blaze", "Unaware"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1.6,
+            "weight": 326.5,
+            "moves": []
         },
         "912": {
             "types": ["Water", "???"],
             "name": "Quaxly",
             "stats": [55, 65, 45, 50, 45, 50],
-            "abilities": [],
+            "abilities": ["Torrent", "Moxie"],
             "tier": "SM LC",
-            "height": 0,
-            "weight": 0
+            "height": 0.5,
+            "weight": 6.1,
+            "moves": []
         },
         "913": {
             "types": ["Water", "???"],
             "name": "Quaxwell",
             "stats": [70, 85, 65, 65, 60, 65],
-            "abilities": [],
+            "abilities": ["Torrent", "Moxie"],
             "tier": "SM PU",
-            "height": 0,
-            "weight": 0
+            "height": 1.2,
+            "weight": 21.5,
+            "moves": []
         },
         "914": {
             "types": ["Water", "Fighting"],
             "name": "Quaquaval",
             "stats": [85, 120, 80, 85, 75, 85],
-            "abilities": [],
+            "abilities": ["Torrent", "Moxie"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1.8,
+            "weight": 61.9,
+            "moves": []
         },
         "915": {
             "types": ["Normal", "???"],
             "name": "Lechonk",
             "stats": [54, 45, 40, 35, 45, 35],
-            "abilities": [],
+            "abilities": ["Aroma Veil", "Gluttony", "Thick Fat"],
             "tier": "SM LC",
-            "height": 0,
-            "weight": 0
+            "height": 0.5,
+            "weight": 10.2,
+            "moves": []
         },
         "916": {
             "types": ["Normal", "???"],
             "name": "Oinkologne",
             "stats": [110, 100, 75, 59, 80, 65],
-            "abilities": [],
+            "abilities": ["Lingering Aroma", "Gluttony", "Thick Fat"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1,
+            "weight": 120,
+            "moves": []
         },
         "66452": {
             "types": ["Normal", "???"],
             "name": "Oinkologne-F",
             "stats": [115, 90, 70, 59, 90, 65],
-            "abilities": [],
+            "abilities": ["Aroma Veil", "Gluttony", "Thick Fat"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1,
+            "weight": 120,
+            "moves": []
         },
         "917": {
-            "types": ["Normal", "???"],
-            "name": "Dudunsparce",
-            "stats": [125, 100, 80, 85, 75, 55],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "66453": {
-            "types": ["Normal", "???"],
-            "name": "Dudunsparce-Three Segment",
-            "stats": [125, 100, 80, 85, 75, 55],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "918": {
             "types": ["Bug", "???"],
             "name": "Tarountula",
             "stats": [35, 41, 45, 29, 40, 20],
-            "abilities": [],
+            "abilities": ["Insomnia", "Stakeout"],
             "tier": "SM LC",
-            "height": 0,
-            "weight": 0
+            "height": 0.3,
+            "weight": 4,
+            "moves": []
         },
-        "919": {
+        "918": {
             "types": ["Bug", "???"],
             "name": "Spidops",
             "stats": [60, 79, 92, 52, 86, 35],
-            "abilities": [],
+            "abilities": ["Insomnia", "Stakeout"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1,
+            "weight": 16.5,
+            "moves": []
         },
-        "920": {
+        "919": {
             "types": ["Bug", "???"],
             "name": "Nymble",
             "stats": [33, 46, 40, 21, 25, 45],
-            "abilities": [],
+            "abilities": ["Swarm", "Tinted Lens"],
             "tier": "SM LC",
-            "height": 0,
-            "weight": 0
+            "height": 0.2,
+            "weight": 1,
+            "moves": []
         },
-        "921": {
+        "920": {
             "types": ["Bug", "Dark"],
             "name": "Lokix",
             "stats": [71, 102, 78, 52, 55, 92],
-            "abilities": [],
+            "abilities": ["Swarm", "Tinted Lens"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1,
+            "weight": 17.5,
+            "moves": []
         },
-        "922": {
-            "types": ["Bug", ""],
-            "name": "Rellor",
-            "stats": [41, 50, 60, 31, 58, 30],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "923": {
-            "types": ["Bug", "Psychic"],
-            "name": "Rabsca",
-            "stats": [75, 50, 85, 115, 100, 45],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "924": {
-            "types": ["Ghost", "???"],
-            "name": "Greavard",
-            "stats": [50, 61, 60, 30, 55, 34],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "925": {
-            "types": ["Ghost", "???"],
-            "name": "Houndstone",
-            "stats": [72, 101, 100, 50, 97, 68],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "926": {
-            "types": ["Psychic", "???"],
-            "name": "Flittle",
-            "stats": [30, 35, 30, 55, 30, 75],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "927": {
-            "types": ["Psychic", "???"],
-            "name": "Espathra",
-            "stats": [95, 60, 60, 101, 60, 105],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "928": {
-            "types": ["Normal", "Psychic"],
-            "name": "Farigiraf",
-            "stats": [120, 90, 70, 110, 70, 60],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "929": {
-            "types": ["Water", "???"],
-            "name": "Wiglett",
-            "stats": [10, 55, 25, 35, 25, 95],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "930": {
-            "types": ["Water", "???"],
-            "name": "Wugtrio",
-            "stats": [35, 100, 50, 50, 70, 120],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "931": {
-            "types": ["Water", "???"],
-            "name": "Dondozo",
-            "stats": [150, 100, 115, 65, 65, 35],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "932": {
-            "types": ["Water", "Psychic"],
-            "name": "Veluza",
-            "stats": [90, 102, 73, 78, 65, 70],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "933": {
-            "types": ["Water", "???"],
-            "name": "Finizen",
-            "stats": [70, 45, 40, 45, 40, 75],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "934": {
-            "types": ["Water", "???"],
-            "name": "Palafin",
-            "stats": [100, 70, 72, 53, 62, 100],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "66470": {
-            "types": ["Water", "???"],
-            "name": "Palafin-Hero",
-            "stats": [100, 160, 97, 106, 87, 100],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "935": {
-            "types": ["Grass", "Normal"],
-            "name": "Smoliv",
-            "stats": [41, 35, 45, 58, 51, 30],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "936": {
-            "types": ["Grass", "Normal"],
-            "name": "Dolliv",
-            "stats": [52, 53, 60, 78, 78, 33],
-            "abilities": [],
-            "tier": "SM PU",
-            "height": 0,
-            "weight": 0
-        },
-        "937": {
-            "types": ["Grass", "Normal"],
-            "name": "Arboliva",
-            "stats": [78, 69, 90, 125, 109, 39],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "938": {
-            "types": ["Grass", "???"],
-            "name": "Capsakid",
-            "stats": [50, 62, 40, 62, 40, 50],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "939": {
-            "types": ["Grass", "Fire"],
-            "name": "Scovillain",
-            "stats": [65, 108, 65, 108, 65, 75],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "940": {
-            "types": ["Electric", "???"],
-            "name": "Tadbulb",
-            "stats": [61, 31, 41, 59, 35, 45],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "941": {
-            "types": ["Electric", "???"],
-            "name": "Bellibolt",
-            "stats": [109, 64, 91, 103, 83, 45],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "942": {
-            "types": ["Steel", "Poison"],
-            "name": "Varoom",
-            "stats": [45, 70, 63, 30, 45, 47],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "943": {
-            "types": ["Steel", "Poison"],
-            "name": "Revavroom",
-            "stats": [80, 119, 90, 54, 67, 90],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "944": {
-            "types": ["Steel", "???"],
-            "name": "Orthworm",
-            "stats": [70, 85, 145, 60, 55, 65, ],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "945": {
-            "types": ["Normal", "???"],
-            "name": "Tandemaus",
-            "stats": [50, 50, 45, 40, 45, 75],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "946": {
-            "types": ["Normal", "???"],
-            "name": "Maushold",
-            "stats": [74, 75, 70, 65, 75, 111],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "66482": {
-            "types": ["Normal", "???"],
-            "name": "Maushold 2",
-            "stats": [74, 75, 70, 65, 75, 111],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "947": {
-            "types": ["Ice", "???"],
-            "name": "Cetoddle",
-            "stats": [108, 68, 45, 30, 40, 43],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "948": {
-            "types": ["Ice", "???"],
-            "name": "Cetitan",
-            "stats": [170, 113, 65, 45, 55, 73],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "949": {
-            "types": ["Ice", "Dragon"],
-            "name": "Frigibax",
-            "stats": [65, 75, 45, 35, 45, 55],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "950": {
-            "types": ["Ice", "Dragon"],
-            "name": "Arctibax",
-            "stats": [90, 95, 66, 45, 65, 62],
-            "abilities": [],
-            "tier": "SM PU",
-            "height": 0,
-            "weight": 0
-        },
-        "951": {
-            "types": ["Ice", "Dragon"],
-            "name": "Baxcalibur",
-            "stats": [115, 145, 92, 75, 86, 87],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "952": {
-            "types": ["Water", "Dragon"],
-            "name": "Tatsugiri",
-            "stats": [68, 50, 60, 120, 95, 82],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "66488": {
-            "types": ["Water", "Dragon"],
-            "name": "Tatsugiri-Droopy",
-            "stats": [68, 50, 60, 120, 95, 82],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "132024": {
-            "types": ["Water", "Dragon"],
-            "name": "Tatsugiri-Stretchy",
-            "stats": [68, 50, 60, 120, 95, 82],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "953": {
-            "types": ["Dragon", "Normal"],
-            "name": "Cyclizar",
-            "stats": [70, 95, 65, 85, 65, 121],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "954": {
+        "921": {
             "types": ["Electric", "???"],
             "name": "Pawmi",
             "stats": [45, 50, 20, 40, 25, 60],
-            "abilities": [],
+            "abilities": ["Static", "Natural Cure", "Iron Fist"],
             "tier": "SM LC",
-            "height": 0,
-            "weight": 0
+            "height": 0.3,
+            "weight": 2.5,
+            "moves": []
         },
-        "955": {
+        "922": {
             "types": ["Electric", "???"],
             "name": "Pawmo",
             "stats": [60, 75, 40, 50, 40, 85],
-            "abilities": [],
+            "abilities": ["Volt Absorb", "Iron Fist"],
             "tier": "SM PU",
-            "height": 0,
-            "weight": 0
+            "height": 0.4,
+            "weight": 6.5,
+            "moves": []
         },
-        "956": {
+        "923": {
             "types": ["Electric", "Fighting"],
             "name": "Pawmot",
             "stats": [70, 115, 70, 70, 60, 105],
-            "abilities": [],
+            "abilities": ["Volt Absorb", "Iron Fist"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 0.9,
+            "weight": 41,
+            "moves": []
         },
-        "957": {
-            "types": ["Electric", "Flying"],
-            "name": "Wattrel",
-            "stats": [40, 40, 35, 55, 40, 70],
-            "abilities": [],
+        "924": {
+            "types": ["Normal", "???"],
+            "name": "Tandemaus",
+            "stats": [50, 50, 45, 40, 45, 75],
+            "abilities": ["Run Away", "Pickup", "Own Tempo"],
             "tier": "SM LC",
-            "height": 0,
-            "weight": 0
+            "height": 0.3,
+            "weight": 1.8,
+            "moves": []
         },
-        "958": {
-            "types": ["Electric", "Flying"],
-            "name": "Kilowattrel",
-            "stats": [70, 70, 60, 105, 60, 125],
-            "abilities": [],
+        "925": {
+            "types": ["Normal", "???"],
+            "name": "Maushold",
+            "stats": [74, 75, 70, 65, 75, 111],
+            "abilities": ["Friend Guard", "Cheek Pouch", "Technician"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 0.3,
+            "weight": 2.8,
+            "moves": []
         },
-        "959": {
-            "types": ["Dark", "Flying"],
-            "name": "Bombirdier",
-            "stats": [70, 103, 85, 60, 85, 82],
-            "abilities": [],
+        "66461": {
+            "types": ["Normal", "???"],
+            "name": "Maushold-Three",
+            "stats": [74, 75, 70, 65, 75, 111],
+            "abilities": ["Friend Guard", "Cheek Pouch", "Technician"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 0.3,
+            "weight": 2.3,
+            "moves": []
         },
-        "960": {
-            "types": ["Normal", "Flying"],
-            "name": "Squawkabilly",
-            "stats": [82, 96, 51, 45, 51, 92],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "66496": {
-            "types": ["Normal", "Flying"],
-            "name": "Squawkabilly-Blue",
-            "stats": [82, 96, 51, 45, 51, 92],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "132032": {
-            "types": ["Normal", "Flying"],
-            "name": "Squawkabilly-Yellow",
-            "stats": [82, 96, 51, 45, 51, 92],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "197568": {
-            "types": ["Normal", "Flying"],
-            "name": "Squawkabilly-White",
-            "stats": [82, 96, 51, 45, 51, 92],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "961": {
-            "types": ["Flying", "Fighting"],
-            "name": "Flamigo",
-            "stats": [82, 115, 74, 75, 64, 90],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "962": {
-            "types": ["Rock", "???"],
-            "name": "Klawf",
-            "stats": [70, 100, 115, 35, 55, 75],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "963": {
-            "types": ["Rock", "???"],
-            "name": "Nacli",
-            "stats": [55, 55, 75, 35, 35, 25],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "964": {
-            "types": ["Rock", "???"],
-            "name": "Naclstack",
-            "stats": [60, 60, 100, 35, 65, 35],
-            "abilities": [],
-            "tier": "SM PU",
-            "height": 0,
-            "weight": 0
-        },
-        "965": {
-            "types": ["Rock", "???"],
-            "name": "Garganacl",
-            "stats": [100, 100, 130, 45, 90, 35],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "966": {
-            "types": ["Poison", "Rock"],
-            "name": "Glimmet",
-            "stats": [48, 35, 42, 105, 60, 60],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "967": {
-            "types": ["Poison", "Rock"],
-            "name": "Glimmora",
-            "stats": [83, 55, 90, 130, 81, 86],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "968": {
-            "types": ["Poison", "Normal"],
-            "name": "Shroodle",
-            "stats": [40, 65, 35, 40, 35, 75],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "969": {
-            "types": ["Poison", "Normal"],
-            "name": "Grafaiai",
-            "stats": [63, 95, 65, 80, 72, 110],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "970": {
+        "926": {
             "types": ["Fairy", "???"],
             "name": "Fidough",
             "stats": [37, 55, 70, 30, 55, 65],
-            "abilities": [],
+            "abilities": ["Own Tempo", "Klutz"],
             "tier": "SM LC",
-            "height": 0,
-            "weight": 0
+            "height": 0.3,
+            "weight": 10.9,
+            "moves": []
         },
-        "971": {
+        "927": {
             "types": ["Fairy", "???"],
             "name": "Dachsbun",
             "stats": [57, 80, 115, 50, 80, 95],
-            "abilities": [],
+            "abilities": ["Well-Baked Body", "Aroma Veil"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 0.5,
+            "weight": 14.9,
+            "moves": []
         },
-        "972": {
-            "types": ["Dark", "???"],
-            "name": "Maschiff",
-            "stats": [60, 78, 60, 40, 51, 51, ],
-            "abilities": [],
+        "928": {
+            "types": ["Grass", "Normal"],
+            "name": "Smoliv",
+            "stats": [41, 35, 45, 58, 51, 30],
+            "abilities": ["Early Bird", "Harvest"],
             "tier": "SM LC",
-            "height": 0,
-            "weight": 0
+            "height": 0.3,
+            "weight": 6.5,
+            "moves": []
         },
-        "973": {
-            "types": ["Dark", "???"],
-            "name": "Mabosstiff",
-            "stats": [80, 120, 90, 60, 70, 85],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "66509": {
-            "types": ["Dark", "???"],
-            "name": "Mabosstiff-Night",
-            "stats": [80, 120, 90, 60, 70, 85],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "974": {
-            "types": ["Grass", "Ghost"],
-            "name": "Bramblin",
-            "stats": [40, 65, 30, 45, 35, 60],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "975": {
-            "types": ["Grass", "Ghost"],
-            "name": "Brambleghast",
-            "stats": [55, 115, 70, 80, 70, 90],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "976": {
-            "types": ["Ghost", "???"],
-            "name": "Gimmighoul",
-            "stats": [45, 30, 70, 75, 70, 10],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "66512": {
-            "types": ["Ghost", "???"],
-            "name": "Gimmighoul-Roaming",
-            "stats": [45, 30, 25, 75, 45, 80],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "977": {
-            "types": ["Ghost", "Steel"],
-            "name": "Gholdengo",
-            "stats": [87, 60, 95, 133, 91, 84],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "978": {
-            "types": ["Ground", "Fighting"],
-            "name": "Great Tusk",
-            "stats": [115, 131, 131, 53, 53, 87],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "979": {
-            "types": ["Grass", "Dark"],
-            "name": "Brute Bonnet",
-            "stats": [111, 127, 99, 79, 99, 55],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "980": { // placeholder
-            "types": ["Normal", "???"],
-            "name": "Paradox Suicune",
-            "stats": [1, 1, 1, 1, 1, 1],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "981": {
-            "types": ["Electric", "Ground"],
-            "name": "Sandy Shocks",
-            "stats": [85, 81, 97, 121, 85, 101],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "982": {
-            "types": ["Fairy", "Psychic"],
-            "name": "Scream Tail",
-            "stats": [115, 65, 99, 65, 115, 111],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "983": {
-            "types": ["Ghost", "Fairy"],
-            "name": "Flutter Mane",
-            "stats": [55, 55, 55, 135, 135, 135],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "984": {
-            "types": ["Bug", "Fighting"],
-            "name": "Slither Wing",
-            "stats": [85, 135, 79, 85, 105, 81],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "985": {
-            "types": ["Dragon", "Dark"],
-            "name": "Roaring Moon",
-            "stats": [105, 139, 71, 55, 101, 119],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "986": {
-            "types": ["Ground", "Steel"],
-            "name": "Iron Treads",
-            "stats": [90, 112, 120, 72, 70, 106],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "987": { // placeholder
-            "types": ["Normal", "???"],
-            "name": "Paradox Virizion",
-            "stats": [1, 1, 1, 1, 1, 1],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "988": {
-            "types": ["Fire", "Poison"],
-            "name": "Iron Moth",
-            "stats": [80, 70, 60, 140, 110, 110],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "989": {
-            "types": ["Fighting", "Electric"],
-            "name": "Iron Hands",
-            "stats": [154, 140, 108, 50, 68, 50],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "990": {
-            "types": ["Dark", "Flying"],
-            "name": "Iron Jugulis",
-            "stats": [94, 80, 86, 122, 80, 108],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "991": {
-            "types": ["Rock", "Electric"],
-            "name": "Iron Thorns",
-            "stats": [100, 134, 110, 70, 84, 72],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "992": {
-            "types": ["Ice", "Water"],
-            "name": "Iron Bundle",
-            "stats": [56, 80, 114, 124, 60, 136],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "993": {
-            "types": ["Fairy", "Fighting"],
-            "name": "Iron Valiant",
-            "stats": [74, 130, 90, 120, 60, 116],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "994": {
-            "types": ["Dark", "Ground"],
-            "name": "Ting-Lu",
-            "stats": [155, 110, 125, 55, 80, 45],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "995": {
-            "types": ["Dark", "Ice"],
-            "name": "Chien-Pao",
-            "stats": [80, 120, 80, 90, 65, 135, ],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "996": {
-            "types": ["Dark", "Grass"],
-            "name": "Wo-Chien",
-            "stats": [85, 85, 100, 95, 135, 70],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "997": {
-            "types": ["Dark", "Fire"],
-            "name": "Chi-Yu",
-            "stats": [55, 80, 80, 135, 120, 100],
-            "abilities": [],
-            "tier": "SM OU",
-            "height": 0,
-            "weight": 0
-        },
-        "998": {
-            "types": ["Fighting", "Dragon"],
-            "name": "Koraidon",
-            "stats": [100, 135, 115, 85, 100, 135],
-            "abilities": [],
-            "tier": "SM Ubers",
-            "height": 0,
-            "weight": 0
-        },
-        "66534": {
-            "types": ["Fighting", "Dragon"],
-            "name": "Koraidon-Limited",
-            "stats": [100, 135, 115, 85, 100, 135],
-            "abilities": [],
-            "tier": "SM Ubers",
-            "height": 0,
-            "weight": 0
-        },
-        "132070": {
-            "types": ["Fighting", "Dragon"],
-            "name": "Koraidon-Sprinting",
-            "stats": [100, 135, 115, 85, 100, 135],
-            "abilities": [],
-            "tier": "SM Ubers",
-            "height": 0,
-            "weight": 0
-        },
-        "197606": {
-            "types": ["Fighting", "Dragon"],
-            "name": "Koraidon-Swimming",
-            "stats": [100, 135, 115, 85, 100, 135],
-            "abilities": [],
-            "tier": "SM Ubers",
-            "height": 0,
-            "weight": 0
-        },
-        "263142": {
-            "types": ["Fighting", "Dragon"],
-            "name": "Koraidon-Gliding",
-            "stats": [100, 135, 115, 85, 100, 135],
-            "abilities": [],
-            "tier": "SM Ubers",
-            "height": 0,
-            "weight": 0
-        },
-        "999": {
-            "types": ["Electric", "Dragon"],
-            "name": "Miraidon",
-            "stats": [100, 85, 100, 135, 115, 135],
-            "abilities": [],
-            "tier": "SM Ubers",
-            "height": 0,
-            "weight": 0
-        },
-        "66535": {
-            "types": ["Electric", "Dragon"],
-            "name": "Miraidon-Low Power",
-            "stats": [100, 85, 100, 135, 115, 135],
-            "abilities": [],
-            "tier": "SM Ubers",
-            "height": 0,
-            "weight": 0
-        },
-        "132071": {
-            "types": ["Electric", "Dragon"],
-            "name": "Miraidon-Drive",
-            "stats": [100, 85, 100, 135, 115, 135],
-            "abilities": [],
-            "tier": "SM Ubers",
-            "height": 0,
-            "weight": 0
-        },
-        "197607": {
-            "types": ["Electric", "Dragon"],
-            "name": "Miraidon-Aquatic",
-            "stats": [100, 85, 100, 135, 115, 135],
-            "abilities": [],
-            "tier": "SM Ubers",
-            "height": 0,
-            "weight": 0
-        },
-        "263143": {
-            "types": ["Electric", "Dragon"],
-            "name": "Miraidon-Glide",
-            "stats": [100, 85, 100, 135, 115, 135],
-            "abilities": [],
-            "tier": "SM Ubers",
-            "height": 0,
-            "weight": 0
-        },
-        "1000": {
-            "types": ["Fairy", "Steel"],
-            "name": "Tinkatink",
-            "stats": [50, 45, 45, 35, 64, 58],
-            "abilities": [],
-            "tier": "SM LC",
-            "height": 0,
-            "weight": 0
-        },
-        "1001": {
-            "types": ["Fairy", "Steel"],
-            "name": "Tinkatuff",
-            "stats": [65, 55, 55, 45, 82, 78],
-            "abilities": [],
+        "929": {
+            "types": ["Grass", "Normal"],
+            "name": "Dolliv",
+            "stats": [52, 53, 60, 78, 78, 33],
+            "abilities": ["Early Bird", "Harvest"],
             "tier": "SM PU",
-            "height": 0,
-            "weight": 0
+            "height": 0.6,
+            "weight": 11.9,
+            "moves": []
         },
-        "1002": {
-            "types": ["Fairy", "Steel"],
-            "name": "Tinkaton",
-            "stats": [85, 75, 77, 70, 105, 94],
-            "abilities": [],
+        "930": {
+            "types": ["Grass", "Normal"],
+            "name": "Arboliva",
+            "stats": [78, 69, 90, 125, 109, 39],
+            "abilities": ["Seed Sower", "Harvest"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1.4,
+            "weight": 48.2,
+            "moves": []
         },
-        "1003": {
+        "931": {
+            "types": ["Normal", "Flying"],
+            "name": "Squawkabilly",
+            "stats": [82, 96, 51, 45, 51, 92],
+            "abilities": ["Intimidate", "Hustle", "Guts"],
+            "tier": "SM OU",
+            "height": 0.6,
+            "weight": 2.4,
+            "moves": []
+        },
+        "66467": {
+            "types": ["Normal", "Flying"],
+            "name": "Squawkabilly-Blue",
+            "stats": [82, 96, 51, 45, 51, 92],
+            "abilities": ["Intimidate", "Hustle", "Guts"],
+            "tier": "SM OU",
+            "height": 0.6,
+            "weight": 2.4,
+            "moves": []
+        },
+        "132003": {
+            "types": ["Normal", "Flying"],
+            "name": "Squawkabilly-Yellow",
+            "stats": [82, 96, 51, 45, 51, 92],
+            "abilities": ["Intimidate", "Hustle", "Sheer Force"],
+            "tier": "SM OU",
+            "height": 0.6,
+            "weight": 2.4,
+            "moves": []
+        },
+        "197539": {
+            "types": ["Normal", "Flying"],
+            "name": "Squawkabilly-White",
+            "stats": [82, 96, 51, 45, 51, 92],
+            "abilities": ["Intimidate", "Hustle", "Sheer Force"],
+            "tier": "SM OU",
+            "height": 0.6,
+            "weight": 2.4,
+            "moves": []
+        },
+        "932": {
+            "types": ["Rock", "???"],
+            "name": "Nacli",
+            "stats": [55, 55, 75, 35, 35, 25],
+            "abilities": ["Purifying Salt", "Sturdy", "Clear Body"],
+            "tier": "SM LC",
+            "height": 0.4,
+            "weight": 16,
+            "moves": []
+        },
+        "933": {
+            "types": ["Rock", "???"],
+            "name": "Naclstack",
+            "stats": [60, 60, 100, 35, 65, 35],
+            "abilities": ["Purifying Salt", "Sturdy", "Clear Body"],
+            "tier": "SM PU",
+            "height": 0.6,
+            "weight": 105,
+            "moves": []
+        },
+        "934": {
+            "types": ["Rock", "???"],
+            "name": "Garganacl",
+            "stats": [100, 100, 130, 45, 90, 35],
+            "abilities": ["Purifying Salt", "Sturdy", "Clear Body"],
+            "tier": "SM OU",
+            "height": 2.3,
+            "weight": 240,
+            "moves": []
+        },
+        "935": {
             "types": ["Fire", "???"],
             "name": "Charcadet",
             "stats": [40, 50, 40, 50, 40, 35],
-            "abilities": [],
+            "abilities": ["Flash Fire", "Flame Body"],
             "tier": "SM LC",
-            "height": 0,
-            "weight": 0
+            "height": 0.6,
+            "weight": 10.5,
+            "moves": []
         },
-        "1004": {
+        "936": {
             "types": ["Fire", "Psychic"],
             "name": "Armarouge",
             "stats": [85, 60, 100, 125, 80, 75],
-            "abilities": [],
+            "abilities": ["Flash Fire", "Weak Armor"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1.5,
+            "weight": 85,
+            "moves": []
         },
-        "1005": {
+        "937": {
             "types": ["Fire", "Ghost"],
             "name": "Ceruledge",
             "stats": [75, 125, 80, 60, 100, 85],
-            "abilities": [],
+            "abilities": ["Flash Fire", "Weak Armor"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1.6,
+            "weight": 62,
+            "moves": []
         },
-        "1006": {
+        "938": {
+            "types": ["Electric", "???"],
+            "name": "Tadbulb",
+            "stats": [61, 31, 41, 59, 35, 45],
+            "abilities": ["Own Tempo", "Static", "Damp"],
+            "tier": "SM LC",
+            "height": 0.3,
+            "weight": 0.4,
+            "moves": []
+        },
+        "939": {
+            "types": ["Electric", "???"],
+            "name": "Bellibolt",
+            "stats": [109, 64, 91, 103, 83, 45],
+            "abilities": ["Electromorphosis", "Static", "Damp"],
+            "tier": "SM OU",
+            "height": 1.2,
+            "weight": 113,
+            "moves": []
+        },
+        "940": {
+            "types": ["Electric", "Flying"],
+            "name": "Wattrel",
+            "stats": [40, 40, 35, 55, 40, 70],
+            "abilities": ["Wind Power", "Volt Absorb", "Competitive"],
+            "tier": "SM LC",
+            "height": 0.4,
+            "weight": 3.6,
+            "moves": []
+        },
+        "941": {
+            "types": ["Electric", "Flying"],
+            "name": "Kilowattrel",
+            "stats": [70, 70, 60, 105, 60, 125],
+            "abilities": ["Wind Power", "Volt Absorb", "Competitive"],
+            "tier": "SM OU",
+            "height": 1.4,
+            "weight": 38.6,
+            "moves": []
+        },
+        "942": {
+            "types": ["Dark", "???"],
+            "name": "Maschiff",
+            "stats": [60, 78, 60, 40, 51, 51, ],
+            "abilities": ["Intimidate", "Run Away", "Stakeout"],
+            "tier": "SM LC",
+            "height": 0.5,
+            "weight": 16,
+            "moves": []
+        },
+        "943": {
+            "types": ["Dark", "???"],
+            "name": "Mabosstiff",
+            "stats": [80, 120, 90, 60, 70, 85],
+            "abilities": ["Intimidate", "Guard Dog", "Stakeout"],
+            "tier": "SM OU",
+            "height": 1.1,
+            "weight": 61,
+            "moves": []
+        },
+        "944": {
+            "types": ["Poison", "Normal"],
+            "name": "Shroodle",
+            "stats": [40, 65, 35, 40, 35, 75],
+            "abilities": ["Unburden", "Pickpocket", "Prankster"],
+            "tier": "SM LC",
+            "height": 0.2,
+            "weight": 0.7,
+            "moves": []
+        },
+        "945": {
+            "types": ["Poison", "Normal"],
+            "name": "Grafaiai",
+            "stats": [63, 95, 65, 80, 72, 110],
+            "abilities": ["Unburden", "Poison Touch", "Prankster"],
+            "tier": "SM OU",
+            "height": 0.7,
+            "weight": 27.2,
+            "moves": []
+        },
+        "946": {
+            "types": ["Grass", "Ghost"],
+            "name": "Bramblin",
+            "stats": [40, 65, 30, 45, 35, 60],
+            "abilities": ["Wind Rider", "Infiltrator"],
+            "tier": "SM LC",
+            "height": 0.6,
+            "weight": 0.6,
+            "moves": []
+        },
+        "947": {
+            "types": ["Grass", "Ghost"],
+            "name": "Brambleghast",
+            "stats": [55, 115, 70, 80, 70, 90],
+            "abilities": ["Wind Rider", "Infiltrator"],
+            "tier": "SM OU",
+            "height": 1.2,
+            "weight": 6,
+            "moves": []
+        },
+        "948": {
             "types": ["Ground", "Grass"],
             "name": "Toedscool",
             "stats": [40, 40, 35, 50, 100, 70],
-            "abilities": [],
+            "abilities": ["Mycelium Might"],
             "tier": "SM LC",
-            "height": 0,
-            "weight": 0
+            "height": 0.9,
+            "weight": 33,
+            "moves": []
         },
-        "1007": {
+        "949": {
             "types": ["Ground", "Grass"],
             "name": "Toedscruel",
             "stats": [80, 70, 65, 80, 120, 100, ],
-            "abilities": [],
+            "abilities": ["Mycelium Might"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1.9,
+            "weight": 58,
+            "moves": []
         },
-        "1008": {
-            "types": ["Dark", "Steel"],
-            "name": "Kingambit",
-            "stats": [100, 135, 120, 60, 85, 50],
-            "abilities": [],
+        "950": {
+            "types": ["Rock", "???"],
+            "name": "Klawf",
+            "stats": [70, 100, 115, 35, 55, 75],
+            "abilities": ["Anger Shell", "Shell Armor", "Regenerator"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 1.3,
+            "weight": 79,
+            "moves": []
         },
-        "1009": {
-            "types": ["Poison", "Ground"],
-            "name": "Clodsire",
-            "stats": [130, 75, 60, 45, 100, 20],
-            "abilities": [],
+        "951": {
+            "types": ["Grass", "???"],
+            "name": "Capsakid",
+            "stats": [50, 62, 40, 62, 40, 50],
+            "abilities": ["Chlorophyll", "Insomnia", "Klutz"],
+            "tier": "SM LC",
+            "height": 0.3,
+            "weight": 3,
+            "moves": []
+        },
+        "952": {
+            "types": ["Grass", "Fire"],
+            "name": "Scovillain",
+            "stats": [65, 108, 65, 108, 65, 75],
+            "abilities": ["Chlorophyll", "Insomnia", "Moody"],
             "tier": "SM OU",
-            "height": 0,
-            "weight": 0
+            "height": 0.9,
+            "weight": 15,
+            "moves": []
         },
-        "1010": {
+        "953": {
+            "types": ["Bug", ""],
+            "name": "Rellor",
+            "stats": [41, 50, 60, 31, 58, 30],
+            "abilities": ["Compound Eyes", "Shed Skin"],
+            "tier": "SM LC",
+            "height": 0.2,
+            "weight": 1,
+            "moves": []
+        },
+        "954": {
+            "types": ["Bug", "Psychic"],
+            "name": "Rabsca",
+            "stats": [75, 50, 85, 115, 100, 45],
+            "abilities": ["Synchronize", "Telepathy"],
+            "tier": "SM OU",
+            "height": 0.3,
+            "weight": 3.5,
+            "moves": []
+        },
+        "955": {
+            "types": ["Psychic", "???"],
+            "name": "Flittle",
+            "stats": [30, 35, 30, 55, 30, 75],
+            "abilities": ["Anticipation", "Frisk", "Speed Boost"],
+            "tier": "SM LC",
+            "height": 0.2,
+            "weight": 1.5,
+            "moves": []
+        },
+        "956": {
+            "types": ["Psychic", "???"],
+            "name": "Espathra",
+            "stats": [95, 60, 60, 101, 60, 105],
+            "abilities": ["Opportunist", "Frisk", "Speed Boost"],
+            "tier": "SM OU",
+            "height": 1.9,
+            "weight": 90,
+            "moves": []
+        },
+        "957": {
+            "types": ["Fairy", "Steel"],
+            "name": "Tinkatink",
+            "stats": [50, 45, 45, 35, 64, 58],
+            "abilities": ["Mold Breaker", "Own Tempo", "Pickpocket"],
+            "tier": "SM LC",
+            "height": 0.4,
+            "weight": 8.9,
+            "moves": []
+        },
+        "958": {
+            "types": ["Fairy", "Steel"],
+            "name": "Tinkatuff",
+            "stats": [65, 55, 55, 45, 82, 78],
+            "abilities": ["Mold Breaker", "Own Tempo", "Pickpocket"],
+            "tier": "SM PU",
+            "height": 0.7,
+            "weight": 59.1,
+            "moves": []
+        },
+        "959": {
+            "types": ["Fairy", "Steel"],
+            "name": "Tinkaton",
+            "stats": [85, 75, 77, 70, 105, 94],
+            "abilities": ["Mold Breaker", "Own Tempo", "Pickpocket"],
+            "tier": "SM OU",
+            "height": 0.7,
+            "weight": 112.8,
+            "moves": []
+        },
+        "960": {
+            "types": ["Water", "???"],
+            "name": "Wiglett",
+            "stats": [10, 55, 25, 35, 25, 95],
+            "abilities": ["Gooey", "Rattled", "Sand Veil"],
+            "tier": "SM LC",
+            "height": 1.2,
+            "weight": 1.8,
+            "moves": []
+        },
+        "961": {
+            "types": ["Water", "???"],
+            "name": "Wugtrio",
+            "stats": [35, 100, 50, 50, 70, 120],
+            "abilities": ["Gooey", "Rattled", "Sand Veil"],
+            "tier": "SM OU",
+            "height": 1.2,
+            "weight": 5.4,
+            "moves": []
+        },
+        "962": {
+            "types": ["Dark", "Flying"],
+            "name": "Bombirdier",
+            "stats": [70, 103, 85, 60, 85, 82],
+            "abilities": ["Big Pecks", "Keen Eye", "Rocky Payload"],
+            "tier": "SM OU",
+            "height": 1.5,
+            "weight": 42.9,
+            "moves": []
+        },
+        "963": {
+            "types": ["Water", "???"],
+            "name": "Finizen",
+            "stats": [70, 45, 40, 45, 40, 75],
+            "abilities": ["Water Veil"],
+            "tier": "SM LC",
+            "height": 1.3,
+            "weight": 60.2,
+            "moves": []
+        },
+        "964": {
+            "types": ["Water", "???"],
+            "name": "Palafin",
+            "stats": [100, 70, 72, 53, 62, 100],
+            "abilities": ["Zero to Hero"],
+            "tier": "SM OU",
+            "height": 1.3,
+            "weight": 60.2,
+            "moves": []
+        },
+        "66500": {
+            "types": ["Water", "???"],
+            "name": "Palafin-Hero",
+            "stats": [100, 160, 97, 106, 87, 100],
+            "abilities": ["Zero to Hero"],
+            "tier": "SM OU",
+            "height": 1.8,
+            "weight": 97.4,
+            "moves": []
+        },
+        "965": {
+            "types": ["Steel", "Poison"],
+            "name": "Varoom",
+            "stats": [45, 70, 63, 30, 45, 47],
+            "abilities": ["Overcoat", "Slow Start"],
+            "tier": "SM LC",
+            "height": 1,
+            "weight": 35,
+            "moves": []
+        },
+        "966": {
+            "types": ["Steel", "Poison"],
+            "name": "Revavroom",
+            "stats": [80, 119, 90, 54, 67, 90],
+            "abilities": ["Overcoat", "Filter"],
+            "tier": "SM OU",
+            "height": 1.8,
+            "weight": 120,
+            "moves": []
+        },
+        "967": {
+            "types": ["Dragon", "Normal"],
+            "name": "Cyclizar",
+            "stats": [70, 95, 65, 85, 65, 121],
+            "abilities": ["Shed Skin", "Regenerator"],
+            "tier": "SM OU",
+            "height": 1.6,
+            "weight": 63,
+            "moves": []
+        },
+        "968": {
+            "types": ["Steel", "???"],
+            "name": "Orthworm",
+            "stats": [70, 85, 145, 60, 55, 65, ],
+            "abilities": ["Earth Eater", "Sand Veil"],
+            "tier": "SM OU",
+            "height": 2.5,
+            "weight": 310,
+            "moves": []
+        },
+        "969": {
+            "types": ["Poison", "Rock"],
+            "name": "Glimmet",
+            "stats": [48, 35, 42, 105, 60, 60],
+            "abilities": ["Toxic Debris", "Corrosion"],
+            "tier": "SM LC",
+            "height": 0.7,
+            "weight": 8,
+            "moves": []
+        },
+        "970": {
+            "types": ["Poison", "Rock"],
+            "name": "Glimmora",
+            "stats": [83, 55, 90, 130, 81, 86],
+            "abilities": ["Toxic Debris", "Corrosion"],
+            "tier": "SM OU",
+            "height": 1.5,
+            "weight": 45,
+            "moves": []
+        },
+        "971": {
+            "types": ["Ghost", "???"],
+            "name": "Greavard",
+            "stats": [50, 61, 60, 30, 55, 34],
+            "abilities": ["Pickup", "Fluffy"],
+            "tier": "SM LC",
+            "height": 0.6,
+            "weight": 35,
+            "moves": []
+        },
+        "972": {
+            "types": ["Ghost", "???"],
+            "name": "Houndstone",
+            "stats": [72, 101, 100, 50, 97, 68],
+            "abilities": ["Sand Rush", "Fluffy"],
+            "tier": "SM OU",
+            "height": 2,
+            "weight": 15,
+            "moves": []
+        },
+        "973": {
+            "types": ["Flying", "Fighting"],
+            "name": "Flamigo",
+            "stats": [82, 115, 74, 75, 64, 90],
+            "abilities": ["Scrappy", "Tangled Feet", "Costar"],
+            "tier": "SM OU",
+            "height": 1.6,
+            "weight": 37,
+            "moves": []
+        },
+        "974": {
+            "types": ["Ice", "???"],
+            "name": "Cetoddle",
+            "stats": [108, 68, 45, 30, 40, 43],
+            "abilities": ["Thick Fat", "Snow Cloak", "Sheer Force"],
+            "tier": "SM LC",
+            "height": 1.2,
+            "weight": 45,
+            "moves": []
+        },
+        "975": {
+            "types": ["Ice", "???"],
+            "name": "Cetitan",
+            "stats": [170, 113, 65, 45, 55, 73],
+            "abilities": ["Thick Fat", "Slush Rush", "Sheer Force"],
+            "tier": "SM OU",
+            "height": 4.5,
+            "weight": 700,
+            "moves": []
+        },
+        "976": {
+            "types": ["Water", "Psychic"],
+            "name": "Veluza",
+            "stats": [90, 102, 73, 78, 65, 70],
+            "abilities": ["Mold Breaker", "Sharpness"],
+            "tier": "SM OU",
+            "height": 2.5,
+            "weight": 90,
+            "moves": []
+        },
+        "977": {
+            "types": ["Water", "???"],
+            "name": "Dondozo",
+            "stats": [150, 100, 115, 65, 65, 35],
+            "abilities": ["Unaware", "Oblivious", "Water Veil"],
+            "tier": "SM OU",
+            "height": 12,
+            "weight": 220,
+            "moves": []
+        },
+        "978": {
+            "types": ["Water", "Dragon"],
+            "name": "Tatsugiri",
+            "stats": [68, 50, 60, 120, 95, 82],
+            "abilities": ["Commander", "Storm Drain"],
+            "tier": "SM OU",
+            "height": 0.3,
+            "weight": 8,
+            "moves": []
+        },
+        "66514": {
+            "types": ["Water", "Dragon"],
+            "name": "Tatsugiri-Droopy",
+            "stats": [68, 50, 60, 120, 95, 82],
+            "abilities": ["Commander", "Storm Drain"],
+            "tier": "SM OU",
+            "height": 0.3,
+            "weight": 8,
+            "moves": []
+        },
+        "132050": {
+            "types": ["Water", "Dragon"],
+            "name": "Tatsugiri-Stretchy",
+            "stats": [68, 50, 60, 120, 95, 82],
+            "abilities": ["Commander", "Storm Drain"],
+            "tier": "SM OU",
+            "height": 0.3,
+            "weight": 8,
+            "moves": []
+        },
+        "979": {
             "types": ["Fighting", "Ghost"],
             "name": "Annihilape",
             "stats": [110, 115, 80, 50, 90, 90],
-            "abilities": [],
+            "abilities": ["Vital Spirit", "Inner Focus", "Defiant"],
+            "tier": "SM OU",
+            "height": 1.2,
+            "weight": 56,
+            "moves": []
+        },
+        "980": {
+            "types": ["Poison", "Ground"],
+            "name": "Clodsire",
+            "stats": [130, 75, 60, 45, 100, 20],
+            "abilities": ["Poison Point", "Water Absorb", "Unaware"],
+            "tier": "SM OU",
+            "height": 1.8,
+            "weight": 223,
+            "moves": []
+        },
+        "981": {
+            "types": ["Normal", "Psychic"],
+            "name": "Farigiraf",
+            "stats": [120, 90, 70, 110, 70, 60],
+            "abilities": ["Cud Chew", "Armor Tail", "Sap Sipper"],
+            "tier": "SM OU",
+            "height": 3.2,
+            "weight": 160,
+            "moves": []
+        },
+        "982": {
+            "types": ["Normal", "???"],
+            "name": "Dudunsparce",
+            "stats": [125, 100, 80, 85, 75, 55],
+            "abilities": ["Serene Grace", "Run Away", "Rattled"],
+            "tier": "SM OU",
+            "height": 3.6,
+            "weight": 39.2,
+            "moves": []
+        },
+        "66518": {
+            "types": ["Normal", "???"],
+            "name": "Dudunsparce-Three Segment",
+            "stats": [125, 100, 80, 85, 75, 55],
+            "abilities": ["Serene Grace", "Run Away", "Rattled"],
+            "tier": "SM OU",
+            "height": 4.5,
+            "weight": 47.4,
+            "moves": []
+        },
+        "983": {
+            "types": ["Dark", "Steel"],
+            "name": "Kingambit",
+            "stats": [100, 135, 120, 60, 85, 50],
+            "abilities": ["Defiant", "Supreme Overlord", "Pressure"],
+            "tier": "SM OU",
+            "height": 2,
+            "weight": 120,
+            "moves": []
+        },
+        "984": {
+            "types": ["Ground", "Fighting"],
+            "name": "Great Tusk",
+            "stats": [115, 131, 131, 53, 53, 87],
+            "abilities": ["Protosynthesis"],
+            "tier": "SM OU",
+            "height": 2.2,
+            "weight": 320,
+            "moves": []
+        },
+        "985": {
+            "types": ["Fairy", "Psychic"],
+            "name": "Scream Tail",
+            "stats": [115, 65, 99, 65, 115, 111],
+            "abilities": ["Protosynthesis"],
+            "tier": "SM OU",
+            "height": 1.2,
+            "weight": 8,
+            "moves": []
+        },
+        "986": {
+            "types": ["Grass", "Dark"],
+            "name": "Brute Bonnet",
+            "stats": [111, 127, 99, 79, 99, 55],
+            "abilities": ["Protosynthesis"],
+            "tier": "SM OU",
+            "height": 1.2,
+            "weight": 21,
+            "moves": []
+        },
+        "987": {
+            "types": ["Ghost", "Fairy"],
+            "name": "Flutter Mane",
+            "stats": [55, 55, 55, 135, 135, 135],
+            "abilities": ["Protosynthesis"],
+            "tier": "SM OU",
+            "height": 1.4,
+            "weight": 4,
+            "moves": []
+        },
+        "988": {
+            "types": ["Bug", "Fighting"],
+            "name": "Slither Wing",
+            "stats": [85, 135, 79, 85, 105, 81],
+            "abilities": ["Protosynthesis"],
+            "tier": "SM OU",
+            "height": 3.2,
+            "weight": 92,
+            "moves": []
+        },
+        "989": {
+            "types": ["Electric", "Ground"],
+            "name": "Sandy Shocks",
+            "stats": [85, 81, 97, 121, 85, 101],
+            "abilities": ["Protosynthesis"],
+            "tier": "SM OU",
+            "height": 2.3,
+            "weight": 60,
+            "moves": []
+        },
+        "990": {
+            "types": ["Ground", "Steel"],
+            "name": "Iron Treads",
+            "stats": [90, 112, 120, 72, 70, 106],
+            "abilities": ["Quark Drive"],
+            "tier": "SM OU",
+            "height": 0.9,
+            "weight": 240,
+            "moves": []
+        },
+        "991": {
+            "types": ["Ice", "Water"],
+            "name": "Iron Bundle",
+            "stats": [56, 80, 114, 124, 60, 136],
+            "abilities": ["Quark Drive"],
+            "tier": "SM OU",
+            "height": 0.6,
+            "weight": 11,
+            "moves": []
+        },
+        "992": {
+            "types": ["Fighting", "Electric"],
+            "name": "Iron Hands",
+            "stats": [154, 140, 108, 50, 68, 50],
+            "abilities": ["Quark Drive"],
+            "tier": "SM OU",
+            "height": 1.8,
+            "weight": 380.7,
+            "moves": []
+        },
+        "993": {
+            "types": ["Dark", "Flying"],
+            "name": "Iron Jugulis",
+            "stats": [94, 80, 86, 122, 80, 108],
+            "abilities": ["Quark Drive"],
+            "tier": "SM OU",
+            "height": 1.3,
+            "weight": 111,
+            "moves": []
+        },
+        "994": {
+            "types": ["Fire", "Poison"],
+            "name": "Iron Moth",
+            "stats": [80, 70, 60, 140, 110, 110],
+            "abilities": ["Quark Drive"],
+            "tier": "SM OU",
+            "height": 1.2,
+            "weight": 36,
+            "moves": []
+        },
+        "995": {
+            "types": ["Rock", "Electric"],
+            "name": "Iron Thorns",
+            "stats": [100, 134, 110, 70, 84, 72],
+            "abilities": ["Quark Drive"],
+            "tier": "SM OU",
+            "height": 1.6,
+            "weight": 303,
+            "moves": []
+        },
+        "996": {
+            "types": ["Ice", "Dragon"],
+            "name": "Frigibax",
+            "stats": [65, 75, 45, 35, 45, 55],
+            "abilities": ["Thermal Exchange", "Ice Body"],
+            "tier": "SM LC",
+            "height": 0.5,
+            "weight": 17,
+            "moves": []
+        },
+        "997": {
+            "types": ["Ice", "Dragon"],
+            "name": "Arctibax",
+            "stats": [90, 95, 66, 45, 65, 62],
+            "abilities": ["Thermal Exchange", "Ice Body"],
+            "tier": "SM PU",
+            "height": 0.8,
+            "weight": 30,
+            "moves": []
+        },
+        "998": {
+            "types": ["Ice", "Dragon"],
+            "name": "Baxcalibur",
+            "stats": [115, 145, 92, 75, 86, 87],
+            "abilities": ["Thermal Exchange", "Ice Body"],
+            "tier": "SM OU",
+            "height": 2.1,
+            "weight": 210,
+            "moves": []
+        },
+        "999": {
+            "types": ["Ghost", "???"],
+            "name": "Gimmighoul",
+            "stats": [45, 30, 70, 75, 70, 10],
+            "abilities": ["Rattled"],
+            "tier": "SM LC",
+            "height": 0.3,
+            "weight": 5,
+            "moves": []
+        },
+        "66535": {
+            "types": ["Ghost", "???"],
+            "name": "Gimmighoul-Roaming",
+            "stats": [45, 30, 25, 75, 45, 80],
+            "abilities": ["Run Away"],
+            "tier": "SM LC",
+            "height": 0.1,
+            "weight": 0.1,
+            "moves": []
+        },
+        "1000": {
+            "types": ["Ghost", "Steel"],
+            "name": "Gholdengo",
+            "stats": [87, 60, 95, 133, 91, 84],
+            "abilities": ["Good as Gold"],
+            "tier": "SM OU",
+            "height": 1.2,
+            "weight": 30,
+            "moves": []
+        },
+        "1001": {
+            "types": ["Dark", "Grass"],
+            "name": "Wo-Chien",
+            "stats": [85, 85, 100, 95, 135, 70],
+            "abilities": ["Tablets of Ruin"],
+            "tier": "SM OU",
+            "height": 1.5,
+            "weight": 74.2
+        },
+        "1002": {
+            "types": ["Dark", "Ice"],
+            "name": "Chien-Pao",
+            "stats": [80, 120, 80, 90, 65, 135, ],
+            "abilities": ["Sword of Ruin"],
+            "tier": "SM OU",
+            "height": 1.9,
+            "weight": 152.2
+        },
+        "1003": {
+            "types": ["Dark", "Ground"],
+            "name": "Ting-Lu",
+            "stats": [155, 110, 125, 55, 80, 45],
+            "abilities": ["Vessel of Ruin"],
+            "tier": "SM OU",
+            "height": 2.7,
+            "weight": 699.7
+        },
+        "1004": {
+            "types": ["Dark", "Fire"],
+            "name": "Chi-Yu",
+            "stats": [55, 80, 80, 135, 120, 100],
+            "abilities": ["Beads of Ruin"],
+            "tier": "SM OU",
+            "height": 0.4,
+            "weight": 4.9,
+            "moves": []
+        },
+        "1005": {
+            "types": ["Dragon", "Dark"],
+            "name": "Roaring Moon",
+            "stats": [105, 139, 71, 55, 101, 119],
+            "abilities": ["Protosynthesis"],
+            "tier": "SM OU",
+            "height": 2,
+            "weight": 380,
+            "moves": []
+        },
+        "1006": {
+            "types": ["Fairy", "Fighting"],
+            "name": "Iron Valiant",
+            "stats": [74, 130, 90, 120, 60, 116],
+            "abilities": ["Quark Drive"],
+            "tier": "SM OU",
+            "height": 1.4,
+            "weight": 35,
+            "moves": []
+        },
+        "1007": {
+            "types": ["Fighting", "Dragon"],
+            "name": "Koraidon",
+            "stats": [100, 135, 115, 85, 100, 135],
+            "abilities": ["Orichalcum Pulse"],
+            "tier": "SM Ubers",
+            "height": 2.5,
+            "weight": 303,
+            "moves": []
+        },
+        "66543": {
+            "types": ["Fighting", "Dragon"],
+            "name": "Koraidon-Limited",
+            "stats": [100, 135, 115, 85, 100, 135],
+            "abilities": ["Orichalcum Pulse"],
+            "tier": "SM Ubers",
+            "height": 3.5,
+            "weight": 303,
+            "moves": []
+        },
+        "132079": {
+            "types": ["Fighting", "Dragon"],
+            "name": "Koraidon-Sprinting",
+            "stats": [100, 135, 115, 85, 100, 135],
+            "abilities": ["Orichalcum Pulse"],
+            "tier": "SM Ubers",
+            "height": 3.5,
+            "weight": 303,
+            "moves": []
+        },
+        "197615": {
+            "types": ["Fighting", "Dragon"],
+            "name": "Koraidon-Swimming",
+            "stats": [100, 135, 115, 85, 100, 135],
+            "abilities": ["Orichalcum Pulse"],
+            "tier": "SM Ubers",
+            "height": 3.5,
+            "weight": 303,
+            "moves": []
+        },
+        "263151": {
+            "types": ["Fighting", "Dragon"],
+            "name": "Koraidon-Gliding",
+            "stats": [100, 135, 115, 85, 100, 135],
+            "abilities": ["Orichalcum Pulse"],
+            "tier": "SM Ubers",
+            "height": 3.5,
+            "weight": 303,
+            "moves": []
+        },
+        "1008": {
+            "types": ["Electric", "Dragon"],
+            "name": "Miraidon",
+            "stats": [100, 85, 100, 135, 115, 135],
+            "abilities": ["Hadron Engine"],
+            "tier": "SM Ubers",
+            "height": 3.5,
+            "weight": 240,
+            "moves": []
+        },
+        "66544": {
+            "types": ["Electric", "Dragon"],
+            "name": "Miraidon-Low Power",
+            "stats": [100, 85, 100, 135, 115, 135],
+            "abilities": ["Hadron Engine"],
+            "tier": "SM Ubers",
+            "height": 2.8,
+            "weight": 240,
+            "moves": []
+        },
+        "132080": {
+            "types": ["Electric", "Dragon"],
+            "name": "Miraidon-Drive",
+            "stats": [100, 85, 100, 135, 115, 135],
+            "abilities": ["Hadron Engine"],
+            "tier": "SM Ubers",
+            "height": 2.8,
+            "weight": 240,
+            "moves": []
+        },
+        "197616": {
+            "types": ["Electric", "Dragon"],
+            "name": "Miraidon-Aquatic",
+            "stats": [100, 85, 100, 135, 115, 135],
+            "abilities": ["Hadron Engine"],
+            "tier": "SM Ubers",
+            "height": 2.8,
+            "weight": 240,
+            "moves": []
+        },
+        "263152": {
+            "types": ["Electric", "Dragon"],
+            "name": "Miraidon-Glide",
+            "stats": [100, 85, 100, 135, 115, 135],
+            "abilities": ["Hadron Engine"],
+            "tier": "SM Ubers",
+            "height": 2.8,
+            "weight": 240,
+            "moves": []
+        },
+        "1009": { // placeholder
+            "types": ["Normal", "???"],
+            "name": "Paradox Suicune",
+            "stats": [1, 1, 1, 1, 1, 1],
+            "abilities": ["Protosynthesis"],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "1010": { // placeholder
+            "types": ["Normal", "???"],
+            "name": "Paradox Virizion",
+            "stats": [1, 1, 1, 1, 1, 1],
+            "abilities": ["Quark Drive"],
             "tier": "SM OU",
             "height": 0,
             "weight": 0
