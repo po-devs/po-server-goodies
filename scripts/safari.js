@@ -17375,7 +17375,7 @@ function Safari() {
            return;
         }
         if (!(golden || deluxe) && lastBaiters.indexOf(sys.name(src).toLowerCase()) !== -1) {
-            safaribot.sendHtmlMessage(src, "You just threw some " + baitName + " not too long ago. Let others have a turn! " + (baitCooldown > 0 ? "[Global cooldown: " + plural(baitCooldown, "second") + "] " : " ") + link("/" + command, "[Try Again]"), safchan);
+            safaribot.sendHtmlMessage(src, "You just threw some " + baitName + " not too long ago. Let others have a turn! " + (baitCooldown > 0 ? "[Global cooldown: " + plural(baitCooldown, "second") + "] " : " ") + "[" + link("/" + command, "Try Again") + "]", safchan);
             return;
         }
         player.cooldowns.lastBaits.push(now());
@@ -17403,18 +17403,18 @@ function Safari() {
             }*/
             if (golden) {
                 if (goldenBaitCooldown > 0) {
-                    safaribot.sendHtmlMessage(src, "Please wait " + plural(goldenBaitCooldown, "second") + " before trying to attract another Pokémon with " + an(baitName) + "! " + link("/" + command, "[Try Again]"), safchan);
+                    safaribot.sendHtmlMessage(src, "Please wait " + plural(goldenBaitCooldown, "second") + " before trying to attract another Pokémon with " + an(baitName) + "! [" + link("/" + command, "Try Again") + "]", safchan);
                     return;
                 }
             } else if (deluxe) {
                 if (deluxeBaitCooldown > 0) {
-                    safaribot.sendHtmlMessage(src, "Please wait " + plural(deluxeBaitCooldown, "second") + " before trying to attract another Pokémon with " + an(baitName) + "! " + link("/" + command, "[Try Again]"), safchan);
+                    safaribot.sendHtmlMessage(src, "Please wait " + plural(deluxeBaitCooldown, "second") + " before trying to attract another Pokémon with " + an(baitName) + "! [" + link("/" + command, "Try Again") + "]", safchan);
                     return;
                 }
             } else {
                 if (baitCooldown > 0) {
                     if (player.freebaits <= 0) {
-                        safaribot.sendHtmlMessage(src, "Please wait " + plural(baitCooldown, "second") + " before trying to attract another Pokémon with " + an(baitName) + "! " + link("/" + command, "[Try Again]"), safchan);
+                        safaribot.sendHtmlMessage(src, "Please wait " + plural(baitCooldown, "second") + " before trying to attract another Pokémon with " + an(baitName) + "! [" + link("/" + command, "Try Again") + "]", safchan);
                         return;
                     }
                     else {
@@ -17423,7 +17423,7 @@ function Safari() {
                 }
             }
             if (player.cooldowns.bait > now()) {
-                safaribot.sendMessage(src, "You can't use " + baitName + " now! Please wait " + timeLeftString(player.cooldowns.bait) + " before throwing again!", safchan);
+                safaribot.sendHtmlMessage(src, "You can't use " + baitName + " now! Please wait " + timeLeftString(player.cooldowns.bait) + " before throwing again! [" + link("/" + command, "Try Again") + "]", safchan);
                 return;
             }
         }
