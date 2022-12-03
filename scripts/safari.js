@@ -109,6 +109,7 @@ function Safari() {
     var langPack = null;
     var starters = [1, 4, 7];
     var maxConsecutiveCombo = 9999;
+    var auraHours = 24;
     
     // mostly any formes that contain significant type/BST differences from their base forme 
     var noDailyBonusForms = [328350, 66015, 197087, 131551, 262623, 328159, 66091, 66282, 131730, 66310, 131846, 197382, 262918, 328454, 393990, 459526, 66500];
@@ -959,6 +960,7 @@ function Safari() {
         spawnlessThrows: 0,
         burningAura: false,
         brilliantAura: false,
+        auraExpiry: 0,
         offlineSales: {},
         consecutiveCombo: 0,
         pokeFlashList: []
@@ -11737,9 +11739,9 @@ function Safari() {
             return "None";
         }
         if (player.brilliantAura) {
-            return "-{0}% Costume Cooldown, -{1}% Quest Cooldown, +{2}% Catch Rate, +{3}% Mega Evolution Time, +{4}% Z-Crystal Time".format(safari.getAuraEffect(player, "costumecd", 0) * 100, safari.getAuraEffect(player, "questcd", 0) * 100, Math.round(safari.getAuraEffect(player, "catchrate", 1) * 100 - 100), Math.round(safari.getAuraEffect(player, "extramega", 1) * 100 - 100), Math.round(safari.getAuraEffect(player, "extracrystal", 1) * 100 - 100));
+            return "-{0}% Costume Cooldown, -{1}% Quest Cooldown, +{2}% Catch Rate, +{3}% Mega Evolution Time, +{4}% Z-Crystal Time for the next {5}".format(safari.getAuraEffect(player, "costumecd", 0) * 100, safari.getAuraEffect(player, "questcd", 0) * 100, Math.round(safari.getAuraEffect(player, "catchrate", 1) * 100 - 100), Math.round(safari.getAuraEffect(player, "extramega", 1) * 100 - 100), Math.round(safari.getAuraEffect(player, "extracrystal", 1) * 100 - 100), plural(auraHours, "hour"));
         }
-        return "-{0}% Costume Cooldown, -{1}% Quest Cooldown, +{2}% Catch Rate".format(safari.getAuraEffect(player, "costumecd", 0) * 100, safari.getAuraEffect(player, "questcd", 0) * 100, Math.floor(safari.getAuraEffect(player, "catchrate", 1) * 100 - 100));
+        return "-{0}% Costume Cooldown, -{1}% Quest Cooldown, +{2}% Catch Rate for the next {3}".format(safari.getAuraEffect(player, "costumecd", 0) * 100, safari.getAuraEffect(player, "questcd", 0) * 100, Math.floor(safari.getAuraEffect(player, "catchrate", 1) * 100 - 100), plural(auraHours, "hour"));
     };
     this.getTier = function(pokeId) {
         if (ultraPokes.hasOwnProperty(pokeId+"")) {
@@ -13018,6 +13020,7 @@ function Safari() {
                         }
                     }
                     player.burningAura = true;
+                    player.auraExpiry = now() + hours(auraHours);
                     safaribot.sendHtmlMessage(src, "The Burning Aura granted you the following bonuses: " + safari.describeAuraEffects(player) + "!", safchan);
                     sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||caught the Pokémon-of-the-Day (" + poke(currentPokemon) + ") and received a Burning Aura.\n");
                 }
@@ -14200,10 +14203,10 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "<b>Your lead Pokémon is the current Pokémon-of-the-Day!</b>", safchan);
             }
             if (player.brilliantAura) {
-                safaribot.sendHtmlMessage(src, "<b>Your Brilliant Aura grants you the following bonuses:</b> " + safari.describeAuraEffects(player) + ".", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Your Brilliant Aura grants you the following bonuses:</b> " + safari.describeAuraEffects(player) + ". (Expires in " + timeLeftString(player.auraExpiry) + ")", safchan);
             }
             else if (player.burningAura) {
-                safaribot.sendHtmlMessage(src, "<b>Your Burning Aura grants you the following bonuses:</b> " + safari.describeAuraEffects(player) + ".", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Your Burning Aura grants you the following bonuses:</b> " + safari.describeAuraEffects(player) + ". (Expires in " + timeLeftString(player.auraExpiry) + ")", safchan);
             }
             if (player.cooldowns.costume > now()) {
                 safaribot.sendHtmlMessage(src, "<b>Costume Cooldown:</b> " + timeLeftString(player.cooldowns.costume) + ".", safchan);
@@ -17827,6 +17830,13 @@ function Safari() {
             player.records.burnAuraGaveHeal += 1;
             target.records.burnAuraReceivedHeal += 1;
             sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||purified " + targetName + " with Burn Heal, both received a Brilliant Aura.\n");
+
+            if (player.auraExpiry <= now()) {
+                player.auraExpiry = now() + hours(auraHours);
+            }
+            if (target.auraExpiry <= now()) {
+                target.auraExpiry = now() + hours(auraHours);
+            }
         }
         else {
             if (target.balls[item] >= getCap(item)) {
@@ -22468,15 +22478,16 @@ function Safari() {
                 safari.notification(player, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", "Login", true);
             }
             player.firstCelebrityRun = true;
-            if (player.burningAura) {
-                safaribot.sendMessage(src, "The power of your Burning Aura wore off...", safchan);
+            if (player.auraExpiry === 0) {
+                if (player.burningAura) {
+                    safaribot.sendMessage(src, "The power of your Burning Aura wore off...", safchan);
+                }
+                if (player.brilliantAura) {
+                    safaribot.sendMessage(src, "The power of your Brilliant Aura wore off...", safchan);
+                }
+                player.burningAura = false;
+                player.brilliantAura = false;
             }
-            if (player.brilliantAura) {
-                safaribot.sendMessage(src, "The power of your Brilliant Aura wore off...", safchan);
-            }
-            player.burningAura = false;
-            player.brilliantAura = false;
-            
             safari.trialsLogin(player);
             safari.bonusLogin(player);
             player.freebaits = 5;
@@ -64224,6 +64235,18 @@ function Safari() {
             if (p.options.androidTextFlow && sys.playersOfChannel(sys.channelId("Safari Android Spam")).contains(pid)) {
                 var spamChan = sys.channelId("Safari Android Spam") || safchan;
                 sys.sendMessage(pid, "", spamChan);
+            }
+            if (p.auraExpiry > 0 && p.auraExpiry <= now()) {
+                if (p.burningAura) {
+                    safaribot.sendMessage(pid, "The power of your Burning Aura wore off...", safchan);
+                    p.burningAura = false;
+                    needsUpdate = true;
+                }
+                if (p.brilliantAura) {
+                    safaribot.sendMessage(pid, "The power of your Brilliant Aura wore off...", safchan);
+                    p.brilliantAura = false;
+                    needsUpdate = true;
+                }
             }
             if (needsUpdate) {
                 safari.saveGame(p);
