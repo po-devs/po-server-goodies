@@ -103,12 +103,13 @@ function Safari() {
     var bonusClues = [];
     var bonusCluesInteract = [];
 
-    var highestDexNum = 906; // should be 1 more than the actual dex num
+    var highestDexNum = 1009; // should be 1 more than the actual dex num
     var cageMode = false;
     var cage = "<img src='data:image/png;base64,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'>";
     var langPack = null;
     var starters = [1, 4, 7];
     var maxConsecutiveCombo = 9999;
+    var nextClod = 0;
     var auraHours = 24;
     
     // mostly any formes that contain significant type/BST differences from their base forme 
@@ -353,6 +354,7 @@ function Safari() {
             dummy3: 0,
             battlepoint: 0,
             terashard: 0,
+            terajewel: 0,
             teraorb: 0
         },
         eventFlags: {
@@ -1228,7 +1230,7 @@ function Safari() {
             philosopherpebble: {name: "philosopherpebble", fullName: "Philosopher's Pebble", type: "alchemy", icon: 161, price: 2000, aliases: ["philosopher's pebble", "philosopher'spebble", "philosopherspebble", "philosopherpebble", "philosophers pebble", "philosopher pebble", "pebble"], tradable: true },
             ash: {name: "ash", fullName: "Sacred Ash", type: "alchemy", icon: 124, price: 10000, aliases: ["sacred ash", "sacredash", "ash", "sacred", "ash ketchum"], tradable: true },
 
-            //Pokéball related items
+            //Poké Ball related items
             dew: {name: "dew", fullName: "Mystical Dew", type: "alchemy", icon: 8017, price: 9999, aliases: ["dew", "mdew", "mysticdew", "mysticaldew", "mystical dew"], threshold: 400, tradable: false},
             hdew: {name: "hdew", fullName: "Harmonic Dew", type: "alchemy", icon: 162, price: 9999, aliases: ["hdew", "harmonicdew", "harmdew", "harmonic dew"], threshold: 400, tradable: false},
             ldew: {name: "ldew", fullName: "Legendary Dew", type: "alchemy", icon: 131, price: 9999, aliases: ["ldew", "legendarydew", "legenddew", "legendary dew"], threshold: 400, tradable: false},
@@ -1275,7 +1277,8 @@ function Safari() {
             cometshard: {name: "cometshard", fullName: "Comet Shard", type: "valuables", icon: 271, price: 15000, aliases:["cometshard", "comet", "cshard", "comet shard"], tradable: true},
             moonshard: {name: "moonshard", fullName: "Moon Shard", type: "alchemy", icon: 271, price: 3000, aliases:["moonshard", "moon", "moon shard", "mshard"], tradable: true},
             sunshard: {name: "sunshard", fullName: "Sun Shard", type: "alchemy", icon: 271, price: 3000, aliases:["sunshard", "sun", "sun shard", "sshard"], tradable: true},
-            terashard: {name: "terashard", fullName: "Tera Shard", type: "alchemy", icon: 271, price: 9999, aliases:["terashard", "tera", "tera shard", "tshard"], tradable: false}
+            terashard: {name: "terashard", fullName: "Tera Shard", type: "alchemy", icon: 271, price: 9999, aliases:["terashard", "tera", "tera shard", "tshard"], tradable: false},
+            terajewel: {name: "terajewel", fullName: "Tera Jewel", type: "alchemy", icon: 271, price: 9999, aliases:["terajewel", "tera jewel", "tjewel", "jewel"], tradable: false}
         };
     };
 
@@ -1309,7 +1312,7 @@ function Safari() {
         breeder: {
             icon: 379, name: "breeder", fullName: "PokeBreeder", aliases: ["pokébreeder", "breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], 
             acqReq: 15, record: "pokesEvolved", rate: 0.9, effect: "A master in evolution. Taps into years of experience in order to reduce the number of Rare Candies required for evolution. [Exp. Up item: Soothe Bell]", 
-            effect2: "Has slightly increased cooldown when throwing Pokéballs other than Safari or Love.",
+            effect2: "Has slightly increased cooldown when throwing Poké Balls other than Safari or Love.",
             noAcq: "Evolve {0} more Pokémon",
             expTypes: ["daycareplay", "bait", "wincontest", "catch"],
             expItem: "soothe",
@@ -1344,7 +1347,7 @@ function Safari() {
             icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], acqReq: 500, record: "itemsFound", rate: 0.1, rate2: 0.5,
             effect: "A master in scavenging. Uses knowledge from past finds to slightly increase the likelihood of finding an item with Itemfinder. Rarely, you can even find multiple items or exclusive items! [Exp. Up item: Relic Crown]",
             noAcq: "Find {0} more items",
-            effect2: "Has slightly increased cooldown when throwing Pokéballs other than Safari or Heavy.",
+            effect2: "Has slightly increased cooldown when throwing Poké Balls other than Safari or Heavy.",
             expTypes: ["findrare", "wincontest", "catch", "winmafia"],
             expItem: "crown",
             skills: {
@@ -1582,6 +1585,7 @@ function Safari() {
         battlepoint: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAIVBMVEUAAAAwMDD4+PjwcHD4sLDwoKC4qKhwUFCYcHCwYGD///8C+1qZAAAAAXRSTlMAQObYZgAAAAFiS0dECmjQ9FYAAAAHdElNRQflCxYGCShoBXbCAAAAcElEQVQY02NgIBcwCiBxhBQRPEYlJUM4T1hJyRgmx+jspGKiBOUJqRgbOympBEJ1KBsBFYI5wk5KymZlKqYgZYxANcrmHcUQCWMgqGiHSRgbwyQYQxESDAyCoXAJCG+6Kdw1QF4gwtGCocheECTJ9wCggxVEFBenTwAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0xMS0yMlQwNjowOTozNSswMDowMHrq0NsAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMTEtMjJUMDY6MDk6MzUrMDA6MDALt2hnAAAAAElFTkSuQmCC",
         teraorb: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAABGxJREFUSEvNlVtoHGUUx//fzGxmL9lr2ma3be5ubJNS7SWRlKLWSwPRBxHUl4KUIoogoqB9KD5YrfqgCMYHQdQHKRQvD9WKtVRQaulDxSbUhIRcmzSbnZ1kMtmd++X7ZDca2m16eSl4nuZyzv/H+f5zzhDc5SB3WR//C4AYj8c7o9HoVsEXugAaBI9h3TYHZFn+G4Byq1O4XQfNTY1NZ7fXd7SuD9YRgMHmXIi0BrprsBFlTB+dGnvZcq2vbwa5KaAhs+ndbZmON+vD6wMc4WDyFtwgg0OBoAvUeiEwMJQcDQNzl8+MX508AECuBq0JaExv/qC7ddfhx3t7kWnK4JfTpwEfWNaWYTACynyEHYKgF6jo5a7OYcy+cn4iN7kPgHstZC1A5xO7ewd7dj7AH3j9YCX3/Lk/8Ov3Z1DDAliABo8AlmNhoxurvJfm8iiaRVwuDR9XNa3cyWpUA6LtrdmxPRu76puyzTh4+AV41EP/R/2wr2qVIo/5WNA8WJyFOp6vQOenc3BcBzK3yGb1/A5VVQf/I1wHSCaTfQ9t2XNKCAWI71O0NLdiaWEJqqEghRgopfBAUSgFgKCBWvgwXRMFucBELwDdNogM5cicPP/eDQBRFPu6ex7+IU3CvKVaECyukuMyF8VaHQkxgQQJg4JBoaxsCUKKidnxGVCeMi9BCUc5pgra0vxi/kHHcYbK9asdvPL2h1OWojYPfvEj0hszsAUH2/beD7kgQ9Yk8CIYVEIII3CYBzACc7IIXVk5Oh8UOm8ivDnCsl3Nhe9O/HQvgOVVwDuffL6YbtudOvVpP6SpERx69SDykoQLP59DnI9CRQlIAVpOQ8DkoC6p8HUPgrnSqQcPTshnO5/aTrr338feOHTsLcdxjq0CMpnGz5576eiLm9q24NLvJxEo5eDPWmxBXSBMBAsLIUiaTILJMJYu5hlHuUot4yhjG3jS8Wg7enp3MIHnMTQwTvvf/zLLGJu+1uSappbs4a337DrKajiQaQmpUAJGyUDJ1lAielkUXU8+QlrbOxGL1aJufQJiWISiSpAWhrBUkPHnxeHl0eGJ1ybHpr+6zoPyTSwWyzbHGkaDAZHEw3EQtWwlgcO5sDibla/3Pt2HzS1txHVcGIYOo1iEKi/iyvgQctNzKPjKs/l8/lvGGFlxrCqSyeQ3HZn2Z4p2CWlrHUgVIJiKgJN9wjMOlDEU7eWKAiEEi+GiNzEzta5s7ppz8O/DcGdrx6UUF2sv+iXUBqNMqOGhuyZgUBJxghCoAIvZ4EUe4VikspMUS9WHciP7DMO4eLtVgWg02pNtaDsRMcRGT6SgrocN8XoQnlSGzbUdMAb4HoVjWdA408yZ0hFJkj6uPpGbbtNIJJJOJBJ/NXD1GeIB8boUAmIA4FaGxzFdFNVlSJziS4r0mKZpv1WL32DyGgmBdDq9PxaKPS+A28+Di4KVv3nfZ5ReMHz7+MzczMnyvltL/E4A1XUN5Q0BYLIyW3cQt/uj3YHErVPuOuAfnyAONX8MrRYAAAAASUVORK5CYII=",
         terashard: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAA79JREFUSEu1lH1Mm1UUxp9biwUGHfSl3cpH8AOn2JGMkQ2cyZZpRqzDzYFYAkuWQdUw2ZiB2gw6qhurOmMwCsxkRtFQvppJAkqc6bS4gWyjreg62VZbWKEkjA8pLW0p9DVNpnGG2haz++e9J8/vnHOfcwju8yH3WR+rBhQVFSkARCiVShkAR3h4+MO+ZF0ul/mfSa8KQFHU1pb2Dk3mli0Rzcpmx7jVOpgmEKQ31Nf39/X1CVcNoGmaEEI49Y2NUwkbnkRywnqaxQyD27NIqNgYfHj69FxdXR0PwOJfkJArKCkpOSk9Lq/mrGUTL03TNoeNuFweLHu9YK+JxLHKyrfb2treWhWAoqjUhsYzOq3uV1Z0NIe8sDcb0TFRmJ1dQHQUC07XEhjLbigUihPtra1yHySoCu62hq6pqenZsfM5oazqJJIeSobwxWzk7c6GdfIOPEvLWHAsYg2L4Jvurp+kUum2oAG+QC6Xe+D8d+qz3S3NYd9fNSIlVYD0zal4XVwIw283seB0geJR6FSpfj5eXZXjdDrHgwL4ss/IyHiiUvKmYXDISKwTU8jZswvqHy6jvLQQiet4kJ/6GE9nbcLmjDS6VFz8jEaj0QT1BzRNMwghD1RIJHoPI0rgcrjwyqv7YRy3gE9RcLndOHRQAmlVOSZsDsQwHPTRI0fWApgPCuALOlFb25OZtV3YP6AFZ308dNeNKMh9Fl7PEgx6AxbdbgzobmBr+qNzTZ/W55lMpguhzAG/tbPrNjuCzbw+MoGrQ8PYnpmGbVkbEc4Iw8VLV3BhwICNydTsl583vGY0GlX/Xj1+XeTrPZ/P/+iTJlVZl7ofNrsDJS8LsY4fi3huHG22jJGJmWmwCYG4uHjnyMjI330PWMFdW/KaW1oslj+8zOFbt8nh/c/DMjUHJouBMMLArRvD9Lhl7E57c9NLZrP5EgB6pcXptwKRSJQrq5aeU3b/CMFjjyDBeQ3XnLwl28yk+l2F4gu73X4RwBwA+39tZL+Aw2WHvhbn7ti9wOTi8k0zcp5Kx66cvD1ms7k7lBW/EoAUFBScKis/eiyOHQmdyQrbvA1nP3hPrtVqawF4/y8gsee8eig+LorTN6hFJDcJM+bfr1RUvJEZirC/OQgrLCw0SWTyRMPAt5ienseDsUl0qfjApvz8fINKpVoOFXJPi0Qi0cH3a2WfTVpM0PRrJ8embGd6e3s79Xr9L/5cEgh4D2Dvvn3vbEhJebyjo+Pc6OjoVwCcgQQCvftzke9+RV8HEgx6kkMV8hf/J9SBgihmEfQGAAAAAElFTkSuQmCC",
+        terajewel: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAABItJREFUSEu1Vl1LI2cYPUZjPrrbRlPXGE38alUC2bVJU1jRbAsSET+2XoRWFCndeGO8MCCsv0AoCBHvBFtEFFO8sBoletVWxIVud4oVdF2/SNRma80kjmsmMWssj0zAlUToRQdemIGZc973PM9zzqQh+ZUGQAQgHYAYQCYAGQCp8HoEAA/gHEAMwAWAOIDLm3AEdP2i58RKgBPoHQDK5ubmsvPzcywsLLwCEADwBgCRJUiIILGucG8S0K4Ti3ZO4HcJHEDp4ODgV5eXl3A4HD8C2BFITq+R0CkSKykBgdLOSRIJgPcE8AIA9z0ez5P09HRYLJbvAfwJ4EAgOQMQFSQjuehESQlIZwKWC+AKALkAPgJgWllZ+VIul6OysvInAM8BbAP4G0AIAJGEBSKqT1KCLADvA/gQAIFnA1ADqMjPzze53W7DyckJ2tvbmcPDQyJ4CeAvAKxAcgyAAxBMRZAnFosLrFZrtcfjkQSDwQ8AqHJzcz8eHh7+pLS0VM6yLE5PT8OdnZ1/+P3+LQCvs7KyTurr66NTU1PLsViMZPOnItCSHB6P56lOp/tifHzc63Q6z10uV4lGo5GmpaVBLBZDJpPB6/VGGhoadh0OR6bNZitcXV392WKxfCfI5ktFoAFQLJVKq0ZGRr6pqqoqD4fDCAaDUCgUYBgmSs8Gg0Gi0Wjg8/nAcRz29/c37Xb7aCQSWQGwB2A/FQF1C2n+QKlUPpqZmXmsUCjuRKNR7O7uRmw229XRh4aG8tRqtVStVmNtbe2N3W6fCQQCvwJYFWpCMiUtcp7QNWUAPgNg3tvbM8bjcZHJZPKyLHtEX2VnZ9+bnZ0tjMfjcbPZ/ALAEoDfANAAUlelrAG15D0aKgBGImBZtjoSiYj0ev2rQCBw9aFSqcxbWloqY1k2XlNTsywQEBENH22CSJKegAhyhL43AHjEcVw1z/MinU73DgHDMGUcx8X1ej0RkDyMUOB/biNQ3ZSI47hPMzMzRWq1+h2Jtre3C0OhULykpOT3JBK9TnWCfKHI95VK5edjY2OPtVrtXSryxsYG393dffWhy+VSGY1GGQ0dwzCnXV1dVORfBPugwTu8rU0LZTLZw4GBgW91Ol0FFVKhUIio/9fX16OhUAi1tbUSmgWfzxc/OzsT7ezsvOzp6fmB5/lnALy3tSnNQeni4uLToqKi6v7+/s3JycmM+fn58uLiYqlEIsHx8TG0Wi22trYiZrN5s7W19W1fX1+5z+dbrquro0GjQqecA5VYLFa3tLQ8dLvdEp7nyY/yVCpVxejoqCEnJ0eekZGBo6OjcEdHB+P3+8mL/DKZLNTU1BSdnp5+FovFSKKUNSBAMjsyObqnHKC6VBQUFJjm5uaMPM/DarW+ODg4SJgd6U3hQ45KpkdmR/e32nUixW7adQuZXWNj43QSu06kG+VCSrvOAECLgodygaKSTkMW8mBiYuIJbautrY0Ch2yBLIF2TeAETEHzVlhJT5AqMikfip1O59cXFxfo7e11CaZG/v+fIvN/D/3rtUn8tpBkJFey3xaShSRJ+dvyL+gA7CjZbduCAAAAAElFTkSuQmCC",
         //candybag:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAMUSURBVEhLtVRfSFNRGP/uvLkJ1YwMJvOlcLVrmyQ0yUjYS/VmPSib4Hv02mNlb6unqBB8qMfaU4q2qF6DBgY9KCUuUCIhcf0BkxXMbXo6v2/33N0771KhfnA45/tzvv/naEII+p/wmPuuMDw8LHp7e0Uqldp1VDtmYBiG0DSi3EjE5FTRurRGgZkV8vl8NDs7KzXc0dABDH+6fJxKB5op/Hje5DqxZhymr6fbWZ7L5dydwEH9CofDglKDwjDCAud6uX0p3WOxbpFMJiXLKXcQWHbj9bJGKxKJ8J3QqYgknTIHEYvF9mxcrUaBOaaoUCjwHgx28L4XoAfGE9kLOQzj4+NWYx1N1m4PCbNhNDk5SaOjN2UUkm+2D2dd16lSqTCvszNEi4uL1iSl02kxsjztaLrloKenR8wNdVoTszBUJDUWFaGRrtUCaUQbT30mp5oRdqtExWKRjc8PbvCC9E3eQ5s7GH+9qls0ByUv5vuCTAOOHpwPbvLeZF64km2myISXz4Bb5FezOkcO7pakFwaL/AAVHA4enC1bxrsmfBQIBqi9I0DX3+1zNR6VziHHuiF11N2H/SXeAcsBUlM1h3G0ZvVLntf0cpOrcQDy/Eqepj43MY2S9ge2+CcAXZuiW0f5AAWPNKac1Ud+5pmX3l7a4DO4KIuK3H4XZUOjOYNoNMoaMAblLrOmbsbXS1XXimsv6a9yrQpqtNlBPB7fNi3dU/u5DIoDZ4g8JycFPEQOG3ff62zc3+onf3NVG7qqMOxgbGxMuzOnMwM4J2t4JNDGzUM2uBCb8nLaWCelQRX5i98dPAw/19aZrs/aanJ6qdokKDySU4DmAXi5yKQoJ1hNDKKFI0Ruh914IpHg3Woynnni46ilcPGVl75VWuhQWyvTfwOC+SAfp7qrGoyz4y/CaKHGAKJ5vuzhN4CoAZUVGoiyfM//4H/Jbhz3Xsbu08DAwHYHAJxMXyjTCX/1VStpVn4boYNb1Nai0bUZne71VbgP9rIg8lAoRJlMxpwhFwcK1kORqkrFfgbqaVUWOxo6+Dcg+gOPizMCRY/02QAAAABJRU5ErkJggg==",
         // Not necessary since they're already in PO
         /*oran:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAHlBMVEUwMDBQUIDg6PiYoLi4wPhQoPBY0PhoaLhQeMj////bPOk9AAAACnRSTlP///////////8AsswszwAAAAFiS0dECfHZpewAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAC1SURBVHjaY5zJgABMDAQ439MRnO+PlAqAFAuInc4syCcOlUkPLfyrJADhfA8VfG9w1qUAzClVZGC+ZHy2HKLsAwOD3dnrNwqABnwv+PifkcWF4S9Y5sFHxv8MfxgU3EEchX/vPwBVPIDIALUpALEBWIaB4QBQgPkDkMM5mYHBAciWByv7r3yAgcFInmEmyG2dz5PAdoFlOCcA6QUMMyeAXdDZuYAhYeZPBgZGcBikQ+QZiQsQAE9FMeRhR/RDAAAAAElFTkSuQmCC",
@@ -1775,7 +1779,7 @@ function Safari() {
         "Like going on adventures with your friends? Use your teamwork to clear the Pyramid! Type " + link("/quest pyramid") + " to get started!",
         "Bored? Why not challenge the Arena! Type " + link("/quest arena:help") + " to see the strong trainers there!",
         "Look where you're walking while itemfindering!",
-        "Use different kinds of Pokéballs to catch different kinds of Pokémon! Type " + link("/itemhelp balls") + " to find out more!",
+        "Use different kinds of Poké Balls to catch different kinds of Pokémon! Type " + link("/itemhelp balls") + " to find out more!",
         "Remember to catch what you bait!",
         "Challenge your rivals with " + link("/challenge2") + "! Team up for a Tag Battle with " + link("/challenge3") + "!",
         "The Gym Leaders of legendary renown are waiting to battle you in " + link("/quest celebrity") + "!",
@@ -1866,7 +1870,7 @@ function Safari() {
             fossil: "A rare fossil often desired by archaeologists. Use it to enter the Pyramid without paying the entry fee by typing \"/quest pyramid:fossil:Name1:Name2\". You also receive " + (itemData.fossil.bonusRate * 100) + "% more points during that run.",
             form: "A form that you can fill to start an event. Use it with  \"/use form\" for more details.",
             pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack:[Amount to Use]\". Obtained from Official Events, Pyramid, and Detective",
-            fragment: "A fragment of a broken Pokéball. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball! Obtained from Itemfinder and when obtaining a Master Ball while having one already.",
+            fragment: "A fragment of a broken Poké Ball. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball! Obtained from Itemfinder and when obtaining a Master Ball while having one already.",
             materia: "A basic substance required for various alchemic creations. Obtained from Alchemy quest.",
             philosopher: "A legendary pink gem that is said to be capable of performing outstanding transformations. Obtained from League quest.",
             philosopherpebble: "An incompletely crystallized Philosopher's Stone. It still holds a fraction of the complete Stone's transformative power, so maybe you can make use of it somehow... Obtained from the weekly Celebrity leaderboards.",
@@ -1877,8 +1881,8 @@ function Safari() {
             soda: "Carbonated drink that reduces remaining cooldown for a quest, auction, burn heal or costume change to " + (itemData.soda.bonusRate * 100) + "%. Use with \"/use soda:[Quest]\". Obtained from Trivia event games.",
             cookie: "A delicious cookie that brings good luck in the form of a random buff for a limited time when eaten. Use with \"/use cookie\" (using another one will replace the previous effect).",
             cherry: "A tasty treat that keeps you energized during a Tower Challenge allowing you to deal more damage. Use with \"/use cherry\". Obtained from Alchemy.",
-            blkapricorn: "An acorn-shaped fruit that can be crafted into a Pokéball. Has a very strong flavor. Found with Itemfinder.",
-            whtapricorn: "An acorn-shaped fruit that can be crafted into a Pokéball. Has a very weak flavor. Obtained from Gachapon.",
+            blkapricorn: "An acorn-shaped fruit that can be crafted into a Poké Ball. Has a very strong flavor. Found with Itemfinder.",
+            whtapricorn: "An acorn-shaped fruit that can be crafted into a Poké Ball. Has a very weak flavor. Obtained from Gachapon.",
             shady: "A suspicious coin that's only accepted by some mongers. Obtained from Mafia Event games.",
             mail: "An envelope that can be used to send a message to another player's inbox. Use it with \"/mail Name:Message\".",
             crystal: "A mysterious crystal that gives a bonus based on the active Pokémon's primary type for " + itemData.crystal.duration + " minutes. Type \"/use crystal\" for more details.",
@@ -1886,16 +1890,19 @@ function Safari() {
             mushroom: "A large and rare mushroom. Eating one with \"/use mushroom\" makes you think you are in a different theme for the next " + itemData.mushroom.duration + " Pokémon that you bait.",
             brush: "A soft brush ideal for editing photos. Type \"/use brush\" for more details.",
             pokeblock: "A yummy nom. Feed it to your Pokémon in daycare!",
-            dew: "Can be used to make special Pokéballs. Use /quest arborist for more details.",
-            hdew: "Can be used to make special Pokéballs. Use /quest arborist for more details.",
-            ldew: "A mysterious substance radiating an aura of light. Can be used to create extremely rare Pokéballs. Use /quest arborist for more details.",
+            dew: "Can be used to make special Poké Balls. Use /quest arborist for more details.",
+            hdew: "Can be used to make special Poké Balls. Use /quest arborist for more details.",
+            ldew: "A mysterious substance radiating an aura of light. Can be used to create extremely rare Poké Balls. Use /quest arborist for more details.",
             easteregg: "A colorful ovaloid with surprising goodies inside. Can be used with /use easteregg, /use easteregg:10, /use easteregg:100, and /use easteregg:1000. Don't open until Easter!",
             //candybag: "A basket full of goodies. Can be used with /use candybag, /use candybag:10, /use candybag:100, and /use candybag:1000. Don't open until Halloween!",
             lucky: "Coins used to bet on which Celebrity you think will win the tournament.",
             celebrityTicket: "A ticket to battle the Celebrities. It can be used with /use celebrityticket to make your next challenge a reward run, and /use celebrityticket:[region] to pick a region to challenge next!",
             moonshard: "A shard that holds the power of the moon. Can unlock special Pokémon skills. Use /quest idol for more details.",
             sunshard: "A shard that holds the power of the sun. Can unlock special Pokémon skills. Use /quest idol for more details.",
-            battlepoint: "A unit of currency used in the Battle Tower shop. Obtainable from the Tower quest."
+            battlepoint: "A unit of currency used in the Battle Tower shop. Obtainable from the Tower quest.",
+            terashard: "A shard broken off a Tera Jewel, which holds some of the mysterious Terastal energy normally found only in Paldea. Obtained from wild Terastallized Pokémon.",
+            terajewel: "A brilliant jewel that holds some of the mysterious Terastal energy normally found only in Paldea. The energy is said to contain the power to crystallize, but it is too unstable to be of use in its current state.",
+            teraorb: "An orb that allows you to wield the Terastal energy of the Tera Jewel contained within it. What effect might it have? You can choose to activate or deactivate the orb with \"/use orb\". When activated, you will automatically deploy the orb on the next Pokémon you bait."
         };
         perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "% | With Rich Girl Costume: " + itemData.amulet.maxRate * 100 * costumeData["rich"].rate + "%). Obtained from Gachapon.",
@@ -1908,27 +1915,27 @@ function Safari() {
             lens: "A device that allows user to take photos of wild Pokémon. Chance for better quality photos increase for each additional " + itemData.lens.fullName + ". Obtained from Journal quest."
         };
         ballHelp = {
-            safari: "A standard issue Pokéball used to catch Pokémon. " + cdSeconds("safari"),
-            great: "A Pokéball that has a slightly increased catch rate. " + cdSeconds("great"),
-            ultra: "A high functioning Pokéball that has a better catch rate than a Great Ball. " + cdSeconds("ultra"),
-            master: "An extremely rare Pokéball that never fails to catch. " + cdSeconds("master") + " Obtained from Gachapon and Alchemist.",
-            premier: "A plain Pokéball gifted to you for your patronage. It works better when a Normal-type or a single-type Pokémon is active. " + cdSeconds("premier") + " Obtained by purchasing a lot of Pokéballs from the shop and Pyramid.",
-            luxury: "A comfortable Pokéball with an increased catch rate that is said to make one wealthy. " + cdSeconds("luxury") + " Obtained from Arborist and Itemfinder.",
-            myth: "An ancient Pokéball that ignores modern era catch modifiers. Said to be particularly effective against rare Pokémon. " + cdSeconds("myth") + " Obtained from Arborist.",
-            quick: "A somewhat different Pokéball that tends to get better priority during throws. " + cdSeconds("quick") + " Obtained from Arborist and Pyramid.",
-            level: "A slickly designed Pokéball that raises the stat levels of the lead Pokémon. " + cdSeconds("level") + " Obtained from Arborist and Pyramid.",
-            clone: "A mysterious Pokéball with a very low catch rate that can duplicate a pokémon's D.N.A. " + cdSeconds("clone") + " Obtained from Arborist and Pyramid.",
-            spy: "A stealthy Pokéball that cannot be tracked. A successful snag with this ball allows for quick follow-up action, but it has low priority. " + cdSeconds("spy") + ". Obtained from Arborist and Pyramid.",
-            mono: "A monochromatic Pokéball that enables your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Arborist.",
-            lightning: "A Pokéball with a lightning bolt design that comes out in a flash. " + cdSeconds("lightning") + " Obtained from Arborist.",
-            heavy: "An industrial Pokéball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("heavy") + " Cooldown is decreased when throwing this Ball on heavier Pokémon. Obtained from Arborist.",
-            photo: "A Pokéball riddled with memory chips capable of identifying Pokémon stored in the camera and catching them with higher likelihood. " + cdSeconds("photo") + " Obtained from Arborist.",
-            mirror: "A Pokéball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. Doubly effective in Similarity Mode. " + cdSeconds("mirror") + " Obtained from Arborist.",
-            love: "A Pokéball with a pink heart design that works better if the lead is in the same egg group as the target. It also increases the well-being of Pokémon in the daycare. " + cdSeconds("love") + " Obtained from Arborist.",
-            uturn: "A Pokéball with a dynamic design that enables the lead Pokémon to switch out after a successful catch. Catch rate is increased if the lead Pokémon is capable of learning U-Turn, Volt Switch, or Flip Turn. " + cdSeconds("uturn") + " Obtained from Arborist.",
-            inver: "A mysterious Pokéball that reverses the type advantage " + cdSeconds("inver") + " Obtained from Arborist.",
-            spirit: "A magical Pokéball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events. This Ball will return to you if it fails to catch a Pokémon. (Max capacity: 10)",
-            cherish: "A homey Pokéball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Arborist. This Ball will return to you if it fails to catch a Pokémon."
+            safari: "A standard issue Poké Ball used to catch Pokémon. " + cdSeconds("safari"),
+            great: "A Poké Ball that has a slightly increased catch rate. " + cdSeconds("great"),
+            ultra: "A high functioning Poké Ball that has a better catch rate than a Great Ball. " + cdSeconds("ultra"),
+            master: "An extremely rare Poké Ball that never fails to catch. " + cdSeconds("master") + " Obtained from Gachapon and Alchemist.",
+            premier: "A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type or a single-type Pokémon is active. " + cdSeconds("premier") + " Obtained by purchasing a lot of Poké Balls from the shop and Pyramid.",
+            luxury: "A comfortable Poké Ball with an increased catch rate that is said to make one wealthy. " + cdSeconds("luxury") + " Obtained from Arborist and Itemfinder.",
+            myth: "An ancient Poké Ball that ignores modern era catch modifiers. Said to be particularly effective against rare Pokémon. " + cdSeconds("myth") + " Obtained from Arborist.",
+            quick: "A somewhat different Poké Ball that tends to get better priority during throws. " + cdSeconds("quick") + " Obtained from Arborist and Pyramid.",
+            level: "A slickly designed Poké Ball that raises the stat levels of the lead Pokémon. " + cdSeconds("level") + " Obtained from Arborist and Pyramid.",
+            clone: "A mysterious Poké Ball with a very low catch rate that can duplicate a pokémon's D.N.A. " + cdSeconds("clone") + " Obtained from Arborist and Pyramid.",
+            spy: "A stealthy Poké Ball that cannot be tracked. A successful snag with this ball allows for quick follow-up action, but it has low priority. " + cdSeconds("spy") + ". Obtained from Arborist and Pyramid.",
+            mono: "A monochromatic Poké Ball that enables your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Arborist.",
+            lightning: "A Poké Ball with a lightning bolt design that comes out in a flash. " + cdSeconds("lightning") + " Obtained from Arborist.",
+            heavy: "An industrial Poké Ball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("heavy") + " Cooldown is decreased when throwing this Ball on heavier Pokémon. Obtained from Arborist.",
+            photo: "A Poké Ball riddled with memory chips capable of identifying Pokémon stored in the camera and catching them with higher likelihood. " + cdSeconds("photo") + " Obtained from Arborist.",
+            mirror: "A Poké Ball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. Doubly effective in Similarity Mode. " + cdSeconds("mirror") + " Obtained from Arborist.",
+            love: "A Poké Ball with a pink heart design that works better if the lead is in the same egg group as the target. It also increases the well-being of Pokémon in the daycare. " + cdSeconds("love") + " Obtained from Arborist.",
+            uturn: "A Poké Ball with a dynamic design that enables the lead Pokémon to switch out after a successful catch. Catch rate is increased if the lead Pokémon is capable of learning U-Turn, Volt Switch, or Flip Turn. " + cdSeconds("uturn") + " Obtained from Arborist.",
+            inver: "A mysterious Poké Ball that reverses the type advantage " + cdSeconds("inver") + " Obtained from Arborist.",
+            spirit: "A magical Poké Ball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events. This Ball will return to you if it fails to catch a Pokémon. (Max capacity: 10)",
+            cherish: "A homey Poké Ball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Arborist. This Ball will return to you if it fails to catch a Pokémon."
         };
         berryHelp = {
             oran:"A berry that can be used as an ingredient in bait. Can also restore 50 HP to the holder during rotation batttles. Give berries with /giveitem [berry].",
@@ -1963,6 +1970,8 @@ function Safari() {
     var shinyChance = 1024; //Chance for Shiny Pokémon
     var currentPokemon = null;
     var currentTypeOverride = null;
+    var spiritSpawn = false, wildSpirit = false;
+    var canSpawnTera = false, wildTera = false;
     var currentExtraBST = 0;
     var currentPokemonCount = 1;
     var lastPokemonCount = 1;
@@ -10007,7 +10016,7 @@ function Safari() {
     }
 
     /* Wild Pokemon & Contests */
-    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player, appearAs, baitType, themeOverride, spawnTest, spiritMon) {
+    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player, appearAs, baitType, themeOverride, spawnTest, spiritMon, teraMon) {
         var num,
             pokeId,
             goldenBonus = baitType === "golden" && player.records.goldenBaitUsed >= player.records.goldenBaitWeak,
@@ -10259,6 +10268,7 @@ function Safari() {
             currentThrows = getMaxThrows(num, amount, shiny, 0);
             throwAttempts = 0;
             pokeblockThrows = 0;
+            currentExtraBST = teraMon ? getBST(num) * 2 : 0;
 
             var disguise, appearance, multiplier = 1;
             if (appearAs) {
@@ -10665,6 +10675,8 @@ function Safari() {
         contestCount = contestDuration;
         contestMidPoint = false;
         spiritSpawn = true;
+        //canSpawnTera = true;
+        wildTera = false;
         wildSpirit = false;
         var themesListed = [].concat(nextTheme);
 
@@ -11867,6 +11879,7 @@ function Safari() {
         var isLegend = isLegendary(wild);
         var legendaryChance = isLegend ? 0.50 : 1;
         var spiritMonBonus = wildSpirit ? 0.50 : 1;
+        var teraChance = wildTera ? 0.5 : 1;
         var flowerGirlBonus = 1;
         var cherishBonus = Math.min(countDuplicates(pokeInfo.species(getInputPokemon(poke(leader)).num)), 10);
         var scaleColor = player.scaleDeadline >= now() ? player.scaleColor : null;
@@ -12141,14 +12154,21 @@ function Safari() {
             ballBonus = Math.min(itemData[ball].maxBonus, this.checkSimilarity(leader, wild, scaleColor));
 
             if (ball == "mirror") {
-                legendaryChance = 1;
-                eventChance = Math.max(0.75, eventChance);
-
                 if (this.hasCostumeSkill(player, "mirrorBallBoost")) {
                     costumeBonus *= costumeBoost(player);
-                } 
-                if (currentRules && currentRules.similarityMode) {
-                    ballBonus *= 2;
+                }
+                if (wildTera) {
+                    ballBonus = itemData[ball].ballBonus;
+                    if (!theory) {
+                        safaribot.sendHtmlMessage(sys.id(player.id), "<b><font color='#55a4a2'>The light of the Tera Jewels distorts the wild {0}'s power! You can't get an accurate {1} reading!</font></b>".format(poke(currentDisplay, true), finishName("mirror")), safchan);
+                    }
+                }
+                else {
+                    legendaryChance = 1;
+                    eventChance = Math.max(0.75, eventChance);
+                    if (currentRules && currentRules.similarityMode) {
+                        ballBonus *= 2;
+                    }
                 }
             }
         }
@@ -12563,7 +12583,7 @@ function Safari() {
 
             safaribot.sendHtmlMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball) + (player.options.showConsecutiveCombo ? " (Consecutive Catch Combo: " + addComma(player.consecutiveCombo) + ")" : "") + (amt > 0 ? (player.balls[ball] > 0 ? " [" + link("/" + ccatch + " " + ball, "Throw Again") + "]" : "") + " [" + link("/ballmacro", "Choose Another Action") + "]" : ""), safchan);
 
-            if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !ignoresWildAbilities(player) && !allBalls.filter(function(e) { return itemData[e].special }).contains(ball) && player.balls[ball] > 1 && chance(0.3)) {
+            if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !ignoresWildAbilities(player) && !allBalls.filter(function(e) { return itemData[e].special }).contains(ball) && player.balls[ball] > 1) {
                 safaribot.sendAll("The wild {0}'s Pressure used up an extra {1}...".format(poke(currentPokemon, true), finishName(ball)), safchan);
                 player.balls[ball] -= 1;
             }
@@ -12727,6 +12747,20 @@ function Safari() {
                             safaribot.sendMessage(src, "Unfortunately, you had to discard {0} as your bag was full!".format(readable(discarded)), safchan);
                         }
                     }
+                }
+            }
+            if (wildTera) {
+                var drop = [], gained = [], discarded = [];
+                var item = "1@terashard";
+                var stuff = giveStuff(player, item, true);
+                drop.push(translateStuff(item));
+                gained = gained.concat(stuff.gained);
+                discarded = discarded.concat(stuff.discarded);
+                if (drop.length > 0 && (gained.length > 0 || discarded.length > 0)) {
+                    sendAll("The lingering Terastal energy caused {0} to form!".format(readable(drop)));
+                }
+                if (discarded.length > 0) {
+                    safaribot.sendMessage(src, "Unfortunately, you had to discard {0} as your bag was full!".format(readable(discarded)), safchan);
                 }
             }
             player.records.pokesCaught += 1;
@@ -12905,8 +12939,8 @@ function Safari() {
                 cooldown += 500;
             }
             cooldown *= penalty;
-            if (isRare(currentPokemon) || ball === "master" || ball === "cherish" || wildEvent) {
-                sys.appendToFile(mythLog, now() + "|||" + (clonedAmount - cloneDiscarded > 0 ? (clonedAmount - cloneDiscarded + 1) + "x " : "") + (wildEvent ? "Event " : "") + (wildSpirit ? "Spirit Realm " : "") + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
+            if (isRare(currentPokemon) || ball === "master" || ball === "cherish" || wildEvent || wildTera) {
+                sys.appendToFile(mythLog, now() + "|||" + (clonedAmount - cloneDiscarded > 0 ? (clonedAmount - cloneDiscarded + 1) + "x " : "") + (wildEvent ? "Event " : "") + (wildSpirit ? "Spirit Realm " : "") + (wildTera ? "Terastallized " : "") + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
             }
             var active = leader;
             var activeNum = parseInt(active, 10);
@@ -13065,6 +13099,7 @@ function Safari() {
                 bufferThrows = {};
                 currentThrowers = [];
                 wildSpirit = false;
+                wildTera = false;
                 currentBaiter = null;
                 if (contestCount <= 150 && (!(contestMidPoint))) {
                     contestMidPoint = true;
@@ -13256,7 +13291,7 @@ function Safari() {
             "The wild {0} was actually just a well made PokéDoll!",
             "The wild {0} was actually a Poké Fan cosplaying as a {0}!",
             "The wild {0} turned into MissingNo and glitched out of existence!",
-            "The wild {0} was not really wild! Their owner called them back to their Pokéball!",
+            "The wild {0} was not really wild! Their owner called them back to their Poké Ball!",
             "The wild {0} was snatched up by a Team Rocket mecha!",
             "The wild {0} ate a Warp Seed and escaped via teleport!",
             "The wild {0} escaped through a hidden entrance to the Distortion World!",
@@ -13269,11 +13304,11 @@ function Safari() {
             "The wild {0} achieved nirvana and transcended to a higher plane!",
             "The wild {0} got bored and went to #" + ["Mafia", "Trivia", "Hangman", "Evolution Game", "Tournaments"].random() + "!",
             "The wild {0} paid its retreat cost and returned to the bench!",
-            "The wild {0} was caught, but the Pokéball containing it mysteriously vanished!",
+            "The wild {0} was caught, but the Poké Ball containing it mysteriously vanished!",
             "The wild {0} was divided by zero!"
         ];
-        if (isRare(currentPokemon) && !skipLog) {
-            sys.appendToFile(mythLog, now() + "|||" + (wildSpirit ? "Spirit Realm " : "") + poke(currentPokemon) + "::fled" + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + (currentThemeAlter ? " (" + contestThemes[currentTheme].alterName + ")" : "") + (currentThemeEffect ? " [" + cap(currentThemeEffect) + "]": "") + " contest" : "") + "::\n");
+        if ((isRare(currentPokemon) || wildTera) && !skipLog) {
+            sys.appendToFile(mythLog, now() + "|||" + (wildSpirit ? "Spirit Realm " : "") + (wildTera ? "Terastallized " : "") + poke(currentPokemon) + "::fled" + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + (currentThemeAlter ? " (" + contestThemes[currentTheme].alterName + ")" : "") + (currentThemeEffect ? " [" + cap(currentThemeEffect) + "]": "") + " contest" : "") + "::\n");
             runmsgs = ["The wild {0} was obliterated by a grumpy old safari coder!"];
         }
         if (canHaveAbility(currentPokemon, abilitynum("Run Away"))) {
@@ -13312,6 +13347,7 @@ function Safari() {
         currentPokemonCount = lastPokemonCount = 1;
         currentBaiter = null;
         wildSpirit = false;
+        wildTera = false;
         wildBallThrows = {};
         bufferThrows = {};
         currentThrowers = [];
@@ -13839,7 +13875,7 @@ function Safari() {
         if (!ignoreThrow) {
             currentThrows -= 2;
         }
-        if (currentThrows <= 0 && !wildEvent && !resolvingThrows) {
+        if (currentThrows <= 0 && !wildEvent && !wildTera && !resolvingThrows) {
             this.pokemonFlee();
         } else {
             this.changeWildMood(safari.getEffectiveLead(player));
@@ -14878,11 +14914,11 @@ function Safari() {
         var line3 = ["lightning", "heavy", "photo", "mirror", "uturn", "inver", "spirit", "cherish", "bait", "golden", "deluxe"];
         var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "hdew", "ldew"];
         var line5 = ["oran", "pecha", "razz", "bluk", "leppa", "tamato", "pinap", "nanab", "watmel", "petaya", "miracle", "platinum"];
-        var line6 = ["pack", "water", "soda", "cookie", "cherry", "gem", "mega", "crystal", "spray", "mail", "burn", "form"]
-        var line7 = ["celebrityTicket", "scale", "mushroom", "brush", "egg", "bright", "easteregg"];
+        var line6 = ["pack", "water", "soda", "cookie", "cherry", "gem", "mega", "crystal", "teraorb", "spray", "mail", "burn"]
+        var line7 = ["celebrityTicket", "scale", "mushroom", "brush", "egg", "bright", "easteregg", "form"];
         var line8 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens"];
         var line9 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard"];
-        var line10 = ["stick", "rock", "fossil", "coupon", "materia", "fragment", "sunshard", "moonshard", "philosopher", "philosopherpebble", "ash"];
+        var line10 = ["stick", "rock", "fossil", "coupon", "materia", "fragment", "sunshard", "moonshard", "terashard", "terajewel", "philosopher", "philosopherpebble", "ash"];
 
         if (["wallet", "utility", "utilities", "balls", "ball", "apricorn", "apricorns", "usable", "usables", "consumable", "consumables", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities", "berries", "berry"].indexOf(search) === -1) {
             search = "*";
@@ -17286,7 +17322,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "<b>Oh no! The " + pokeName + " broke free!</b>", safchan);
             }
             if (ballAmt <= 5) {
-                safaribot.sendHtmlMessage(src, "You only have " + ballAmt + " usable Pokéballs left! If you run out, you can " + link("/closestory", "«Quit»") + ".", safchan);
+                safaribot.sendHtmlMessage(src, "You only have " + ballAmt + " usable Poké Balls left! If you run out, you can " + link("/closestory", "«Quit»") + ".", safchan);
             }
         }
         player.cooldowns.ball = currentTime + cooldown;
@@ -22953,7 +22989,7 @@ function Safari() {
         // action = What the player did (catch a Pokémon, photo, finish a quest, etc)
         // target  = Action's target (Pokémon caught, photographed, quest finished, etc)
         // value  = How many of target this action accomplished (How many Pokémon were caught, how much money was earned, etc)
-        // data   = Other info (Pokémon used, Pokéball used, etc
+        // data   = Other info (Pokémon used, Poké Ball used, etc
         var e, m, p, g, src;
         if (player.missions) {
             for (e = 0; e < player.missions.length; e++) {
@@ -38983,7 +39019,7 @@ function Safari() {
                 return;
             }
 
-            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Alright, y'all. Let's help " + player.id.toCorrectCase() + " by making some darn good Pokéballs!!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Alright, y'all. Let's help " + player.id.toCorrectCase() + " by making some darn good Poké Balls!!", safchan);
             var lostPoke = false, lostRare = [];
             var ingUsed = {};
             for (var e in rec.ingredients) {
@@ -43404,7 +43440,7 @@ function Safari() {
         var searchedMons1 = 0;
         var searchedMons2 = 0;
         var searchedMons3 = 0;
-        var bakeDexNum = 906; // not using highest dex num here since these are probably floodgates we want to open manually per new gen
+        var bakeDexNum = 1009; // not using highest dex num here since these are probably floodgates we want to open manually per new gen
         for (var j = 0; j < bakeDexNum; j++) {
             for (var i = 0; i <= 62; i++) { // 62 for alcremie formes excluding finale. could probably rewrite this section to utilise getAllForms or something as a more elegant solution but i dont have energy for that :v
                 mon = getInputPokemon(poke(j + (65536 * i)));
@@ -58012,7 +58048,7 @@ function Safari() {
         var x, help = [
             "",
             separator,
-            "±Goal: Use your Pokéballs to catch Wild Pokémon that appear during contest times.",
+            "±Goal: Use your Poké Balls to catch Wild Pokémon that appear during contest times.",
             //"±Goal: You can trade those Pokémon with other players or simply brag about your collection.",
             "±Goal: To start playing, type /start to choose your starter Pokémon and receive 30 Safari Balls.",
             separator,
@@ -58021,7 +58057,7 @@ function Safari() {
             "±Contest: Different balls can be used to get a better chance, but they also may have higher cooldown between throws or other effects.",
             separator,
             "±Actions: Pokémon you caught can be sold to the NPC with /sell or traded with other players with /trade.",
-            "±Actions: You can use the money gained by selling Pokémon and logging in everyday to /buy more Pokéballs.",
+            "±Actions: You can use the money gained by selling Pokémon and logging in everyday to /buy more Poké Balls.",
             //"±Actions: You can set up to 6 Pokémon to be visible to anyone. Form your party with /party, and view others' party with /view.",
             "±Actions: Use /party to form your party. This can give you a small bonus when trying to catch Pokémon based on type effectiveness and stats.",
             "±Actions: You can dress up in costumes to gain different bonuses! Use /getcostumes to see how to obtain them and /dressup [costume name] to change into a costume!",
@@ -59420,6 +59456,15 @@ function Safari() {
             }
             if (command === "vb") {
                 showVolleyballInfo(src, commandData);
+                return true;
+            }
+            if (command === "clod") {
+                if (nextClod >= now()) {
+                    safaribot.sendMessage(src, "Please wait " + timeLeftString(nextClod) + "!", safchan);
+                    return true;
+                }
+                sys.sendHtmlAll("<font color='" + script.getColor(src) + "'><timestamp/><b>" + sys.name(src) + ":</b></font> <img src='data:image/png;base64,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'>", safchan);
+                nextClod = now() + 15000;
                 return true;
             }
             if (command === "vblegal" || command === "volleyballlegal") {
@@ -64002,6 +64047,8 @@ function Safari() {
 
         spiritSpawn = false;
         wildSpirit = false;
+        canSpawnTera = false;
+        wildTera = false;
         var currentGame = null;
 
         currentDay = ((getDay(now()) - 4) % 7) + 1;
@@ -64772,6 +64819,7 @@ function Safari() {
                     contestActivity = {};
                     contestForfeited = [];
                     wildSpirit = false;
+                    wildTera = false;
                     for (var e = 0; e < needsPechaCleared.length; e++) {
                         var p = getAvatarOff(needsPechaCleared[e]);
                         if (p) {
@@ -64834,6 +64882,11 @@ function Safari() {
                             spiritSpawn = false;
                             wildSpirit = true;
                             safari.createWild(null, null, amt, null, null, null, null, false, false, false, true);
+                        }
+                        if (false) {
+                            canSpawnTera = false;
+                            wildTera = true;
+                            safari.createWild(null, null, amt, null, null, null, null, false, false, false, false, true);
                         }
                         else {
                             safari.createWild(null, null, amt);
