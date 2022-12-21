@@ -109,12 +109,33 @@ function Safari() {
     var langPack = null;
     var starters = [1, 4, 7];
     var maxConsecutiveCombo = 9999;
+    var defaultRareBST = 550;
     var nextClod = 0;
     var auraHours = 24;
     
     // mostly any formes that contain significant type/BST differences from their base forme 
     var noDailyBonusForms = [328350, 66015, 197087, 131551, 262623, 328159, 66091, 66282, 131730, 66310, 131846, 197382, 262918, 328454, 393990, 459526, 66500];
     
+    var teraCrowns = {
+        "Normal": "",
+        "Fighting": "",
+        "Flying": "",
+        "Poison": "",
+        "Ground": "",
+        "Rock": "",
+        "Bug": "",
+        "Ghost": "",
+        "Steel": "",
+        "Fire": "",
+        "Water": "",
+        "Grass": "",
+        "Electric": "",
+        "Psychic": "",
+        "Ice": "",
+        "Dragon": "",
+        "Dark": "",
+        "Fairy": ""
+    };
     var base64Ribbons = {
         "winningRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABg1BMVEUAAABISFBISFBISFBHR1BISFBISFBISFBERE1ISFBISFBISFBFRU1HR1BHR1BDQ05ISFBISFBISFBISFBISFBISFBISFBISFBISFBISFBHR1BISFBGSE5GR01HSE5ISFBGR01ISFBISFBISFBISFBISFBISFBFRU1DQ0txcXmLi5NLS1VxcXje3qv19ZudnV1JSlCIiGbz827x8Vzr5Gual15TVFBVVVFLS0+cnVfn4WvHeefNlMLh22ro6F5KSlDJxmPTm8LBZv+2kpqqrlJJSVDLzFvy7GtYSW18Up7IyF309GCnq1J/W5XFdOupqV3KymCOkFaRjV/s5W2mplzBvWiXfYdVSmOUlVakomGthKOhXs2MjlakoGWmbbyrgqPAu2jExGCTk1u/umi/vGTAwV/AwGBOTlGVllrDw2BRUVF4eFZJSFJMR1lZTWiXXryYXr1eTm6sY9qtY9xiT3XAaPjBaPliT3TCaPu5Zu5kT3e2ZeqkYdFaTWlyU4tHSE////+9/yFBAAAAJ3RSTlMAAAOK1iMGf/zDIhXvxJXtD8UgwGNnajvdPOACx8fHr8BiEAEwQCFRUvzDAAAAAWJLR0SAZb2eaAAAAAd0SU1FB+UCAQwwHf17t9oAAAFkSURBVCjPY2BgYGRkYlbXYGFlBAJWFg11ZiZGRgYQYGRj59DU0ubkYmTk4tTW0uRgZ4NKcPPo6OrpG/Dy8fEa6Ovp6vBwwyT4DY2MTUzNzM3NTE2MjQz5YRICghaWVtY2tnZ2tjbWVpYWggJQCUYhYXsHRydnFxdnJ0cHe2EhqOVAGRFXN3dnD09PD2d3N1cRmDhQRtTVy9vH18/P18fby1UULg6S8A8IDAoODgoM8EeTCAkNC4+ICA8LDUGTiIyKDouJCYuOikSTiI2LT0hMTIiPi0WREHNNSk5JTUtLTUlOchVDkhCXSM/IBIOMdAlxJAlGSamsbDDIkpJEeAMkI5iTCwY5gsjiDAzSMnn5BUCQnycjzYAiIVtYVAwERYWy6BIlpWVAUFqCIVFeWlFZWVFajiFRVV1TUlJTXYUuIVdbVy8vX19XK4cmIVivoKikpKhQL4gqoayiqgZKPmqqKsoQEQDhh1GbWc+A3wAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wMi0wMVQxMjo0ODoyNSswMDowMI8o2sMAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDItMDFUMTI6NDg6MjUrMDA6MDD+dWJ/AAAAAElFTkSuQmCC",
         "victoryRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAB3VBMVEUAAABISFBISFBISFBHR1BISFBISFBISFBERE1ISFBISFBISFBFRU1HR1BHR1BDQ05ISFBISFBISFBISFBISFBISFBFRVBGRlBISFBGRlBISFBISFBISFBFSE9FR05ISFBISFBISFBISFBISFBJSFBISFBISFBISFBISFBISFBISFBISFBISFBISFBISFBFRU1DQ0txcXmLi5NLS1VxcXje3qv19ZudnV1JSlCIiGbz827x8Vzr5Gual15TVFBVVVFLS0+cnVfn4WvHeefNlMLh22ro6F5KSlDJxmPTm8LBZv+2kpqqrlJJSVDLzFvy7GtYSW18Up7IyF309GCnq1J/W5XFdOupqV3KymCOkFaRjV/s5W2mplzBvWiXfYdVSmOUlVakomGthKOhXs2YfYeMjlaEhVi6tWelbLyof6O2sWa6ul91dVbBwWDBwWG8t2iDgFxOUE5PUU5kZFSwsF5HSU5cTWxsUoJISU6UXbijYc1OR01OR1pGR05tUoKzZeS6Zu6aU2O+XqROSVV3VZLCafvBaPmbV4XOXpNQSVB4VZPDafzAaPhFSE/JYKNPSVV5VZTFaf+5Zu5RSU6fUlNRSU1tUoWnYdViT3WgUlNISFBISFFJSFFJSFD///9nG11tAAAAL3RSTlMAAAOK1iMGf/zDIhXvxJXtD8UgwGNn7e+A/jP9OP39OSrfP53tr908WvZiEPR1OihCwzMAAAABYktHRJ6fsqMLAAAAB3RJTUUH5QIBDDALCa8CiwAAAaRJREFUKM9jYGBgZGRi1jdgYWUEAlYWA31mJkZGBhBgZGPnMDQy5uRiZOTiNDYy5GBng0pw85iYmplb8PLx8VqYm5ma8HDDJPgtraxtbO3s7e1sbaytLPlhEgKCDo5Ozi6ubm6uLs5Ojg6CAlAJRiFhdw9PL28fH28vTw93YSGo5UAZEV8/f++AwMAAb38/XxGYOFBG1DcoOCQ0LCw0JDjIVxQuDpIIj4iMio6OiowIR5IAGRUTGxefkBAfFxuDMApseWJSckpqakpyUiLCcqBz3dPSMzKzsrOzMjPS09zhzuUWy8nNyy8oLCoqLMjPy80Rg/tcvLgkN620rLy8rDQtt6RYHCbBJiFZnFNRVllVVVlWkVMsKQELREYp6eqa2rr6hob6utqaamkpuLNkZBubmlta29paW5qbGmVlYB5hlJFr7+js6u7p6e7q7GiXI0JCvrexr3/CxEmTJk7o72vslYdLKChOnjJ12vQZM6ZPmzpzsqICXIJRSVll1uw5qqpzZs+aq6aOFOyMjBqawlra2lrCOrp6CHGwlDwXKPlwAYUh4gD/cG9+zeI+4wAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wMi0wMVQxMjo0ODowOCswMDowMKzavH4AAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDItMDFUMTI6NDg6MDgrMDA6MDDdhwTCAAAAAElFTkSuQmCC",
@@ -666,7 +687,10 @@ function Safari() {
             medalsWon: 0,
             wildsScared: 0,
             goodJournalSubmission: 0,
-            scientistPhotoSubmission: 0
+            scientistPhotoSubmission: 0,
+            teraMonsCaught: 0,
+            teraOrbsDeployed: 0,
+            teraOrbsSucceeded: 0
         },
         missionPoints: 0,
         photos: [],
@@ -967,7 +991,8 @@ function Safari() {
         auraExpiry: 0,
         offlineSales: {},
         consecutiveCombo: 0,
-        pokeFlashList: []
+        pokeFlashList: [],
+        teraActive: false
     }; // template end
 
     /* Item Variables */
@@ -1220,7 +1245,7 @@ function Safari() {
             easteregg: {name: "easteregg", fullName: "Easter Egg", type: "consumable", icon: 88, price: 5000, aliases: ["egg", "easter egg", "easteregg", "easter", "rainbowegg"], tradable: false, cap: 9999},
             //candybag: {name: "candybag", fullName: "Candy Bag", type: "consumable", icon: 88, price: 5000, aliases: ["bag", "candy bag", "candybag", "halloween", "treat", "treats"], tradable: false, cap: 9999},
             celebrityTicket: {name: "celebrityTicket", fullName: "Celebrity Ticket", type: "consumable", icon: 132, price: 5000, aliases: ["celebrityticket", "celebrity ticket", "celebrity"], tradable: true},
-            teraorb: {name: "teraorb", fullName: "Tera Orb", type: "consumable", icon: 132, price: 9999, aliases: ["teraorb", "tera orb", "orb"], tradable: false, cap: 1},
+            teraorb: {name: "teraorb", fullName: "Tera Orb", type: "consumable", icon: 132, price: 9999, aliases: ["teraorb", "tera orb", "orb"], tradable: false, rate: 0.01, cap: 1},
             lucky: {name: "lucky", fullName: "Lucky Coin", type: "valuables", icon: 272, price: 0, aliases: ["lucky", "luckycoin", "lucky coin", "luckycoins"], tradable: false},
 
             //Alchemy related items
@@ -1900,7 +1925,7 @@ function Safari() {
             moonshard: "A shard that holds the power of the moon. Can unlock special Pokémon skills. Use /quest idol for more details.",
             sunshard: "A shard that holds the power of the sun. Can unlock special Pokémon skills. Use /quest idol for more details.",
             battlepoint: "A unit of currency used in the Battle Tower shop. Obtainable from the Tower quest.",
-            terashard: "A shard broken off a Tera Jewel, which holds some of the mysterious Terastal energy normally found only in Paldea. Obtained from wild Terastallized Pokémon.",
+            terashard: "A shard broken off from a Tera Jewel, which holds some of the mysterious Terastal energy normally found only in Paldea. Obtained from wild Terastallized Pokémon.",
             terajewel: "A brilliant jewel that holds some of the mysterious Terastal energy normally found only in Paldea. The energy is said to contain the power to crystallize, but it is too unstable to be of use in its current state.",
             teraorb: "An orb that allows you to wield the Terastal energy of the Tera Jewel contained within it. What effect might it have? You can choose to activate or deactivate the orb with \"/use orb\". When activated, you will automatically deploy the orb on the next Pokémon you bait."
         };
@@ -10017,6 +10042,9 @@ function Safari() {
 
     /* Wild Pokemon & Contests */
     this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player, appearAs, baitType, themeOverride, spawnTest, spiritMon, teraMon) {
+        if (currentPokemon) {
+            this.pokemonFlee();
+        }
         var num,
             pokeId,
             goldenBonus = baitType === "golden" && player.records.goldenBaitUsed >= player.records.goldenBaitWeak,
@@ -10060,7 +10088,6 @@ function Safari() {
                     statCap = [810, 740, 695, 630, 605, 590][safari.events.spiritDuelsTeams.length - 2];
                     statMin = [480, 450, 420, 380, 320, 0][safari.events.spiritDuelsTeams.length - 2];
                     statCap -= (25 * sys.rand(0, 1));
-                    shiny = false;
                     for (i = 1; i < highestDexNum; i++) {
                         bst = getBST(i);
                         if (this.validForTheme(i, cTheme) && bst <= statCap && bst >= statMin) {
@@ -10108,6 +10135,9 @@ function Safari() {
                     for (h in include) {
                         id = include[h];
                         truebst = bst = "editBST" in theme && id in theme.editBST ? theme.editBST[id] : getBST(id);
+                        if (isRare(id) && theme.hasOwnProperty("editBST") && !theme.editBST.hasOwnProperty(""+id)) { // if rare mon and no editBST defined
+                            truebst = bst = Math.max(bst, defaultRareBST); // take the higher of its natural BST and defaultRareBST
+                        }
                         extrabstChance = 1;
                         if (bst > 600) {
                             extrabst = (bst - 600);
@@ -10192,6 +10222,9 @@ function Safari() {
                     do {
                         num = sys.rand(1, highestDexNum);
                         bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
+                        if (isRare(num) && defTheme.hasOwnProperty("editBST") && !defTheme.editBST.hasOwnProperty(""+num)) { // if rare mon and no editBST defined
+                            bst = Math.max(bst, defaultRareBST); // take the higher of its natural BST and defaultRareBST
+                        }
                         if (bst <= statCap) {
                             var typeBonus = this.checkEffective([atk1, atk2], [type1(num), type2(num)], player.costume === "inver");
                             if ((typeBonus > 1)) {
@@ -10211,6 +10244,9 @@ function Safari() {
                             do {
                                 num = sys.rand(1, highestDexNum);
                                 bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
+                                if (isRare(num) && defTheme.hasOwnProperty("editBST") && !defTheme.editBST.hasOwnProperty(""+num)) { // if rare mon and no editBST defined
+                                    bst = Math.max(bst, defaultRareBST); // take the higher of its natural BST and defaultRareBST
+                                }
                                 pokeId = poke(num + (shiny ? "" : 0));
                             } while (!pokeId || bst > statCap || (isLegendary(pokeId) && bst >= 600));
                         } else {
@@ -10222,6 +10258,9 @@ function Safari() {
                     do {
                         num = sys.rand(1, highestDexNum);
                         bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
+                        if (isRare(num) && defTheme.hasOwnProperty("editBST") && !defTheme.editBST.hasOwnProperty(""+num)) { // if rare mon and no editBST defined
+                            bst = Math.max(bst, defaultRareBST); // take the higher of its natural BST and defaultRareBST
+                        }
                         pokeId = poke(num + (shiny ? "" : 0));
                     } while (!pokeId || bst > statCap || (isLegendary(pokeId) && bst >= 600));
                 }
@@ -10262,13 +10301,32 @@ function Safari() {
             if (noShinySprite.indexOf(num) !== -1) {
                 shiny = false;
             }
+            if (spiritMon) {
+                amount = 1;
+                shiny = false;
+                wildSpirit = true;
+            }
+            if (teraMon) {
+                amount = 1;
+                currentExtraBST += Math.round(getBST(num) * 1.5);
+                wildTera = true;
+                if (themeOverride || currentTheme) {
+                    var theme = contestThemes[themeOverride || currentTheme];
+                    var favouredTypes = theme.teraTypes ? theme.teraTypes : Object.keys(effectiveness);
+                    if (chance(0.5)) {
+                        currentTypeOverride = favouredTypes.random();
+                    }
+                }
+                if (currentTypeOverride === null) {
+                    currentTypeOverride = Object.keys(effectiveness).random();
+                }
+            }
             pokeId = poke(num + (shiny ? "" : 0));
             currentPokemon = shiny ? "" + num : num;
             currentPokemonCount = lastPokemonCount = amount;
             currentThrows = getMaxThrows(num, amount, shiny, 0);
             throwAttempts = 0;
             pokeblockThrows = 0;
-            currentExtraBST = teraMon ? getBST(num) * 2 : 0;
 
             var disguise, appearance, multiplier = 1;
             if (appearAs) {
@@ -10325,6 +10383,9 @@ function Safari() {
             if (spiritMon) {
                 displayId = "Spirit Realm " + displayId;
             }
+            if (teraMon) {
+                displayId = "<b><font color='#55a4a2'>Terastallized " + displayId + "</font></b>";
+            }
             var appmsg;
             if (isPortaled) {
                 appmsg = "A wild {2}{0} came through the portal! <i>(BST: {1})</i>".format(displayId, displayBST, term);
@@ -10332,6 +10393,9 @@ function Safari() {
                 appmsg = wildPokemonMessage.format(displayId, displayBST, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
             }
             var sprite = "<a href='po:send//bst " + currentPokemonDisplay + "'>" + (cageMode ? cage : pokeInfo.sprite(currentPokemonDisplay)) + "</a>";
+            if (teraMon) {
+                sprite = "<img src='" + teraCrowns[currentTypeOverride] + "'><br>" + sprite;
+            }
 
             /*var cTheme = currentTheme;
             var isGhost = false;
@@ -10544,9 +10608,6 @@ function Safari() {
                 if (canHaveAbility(leader, abilitynum("Simple"))) {
                     abilityMessageList[pid].push("Your {0}'s Simple intensifies type matchups!".format(poke(leader, true)));
                 }
-                if (canHaveAbility(leader, abilitynum("Sniper")) && currentBaiter !== null && currentBaiter !== player.id) {
-                    abilityMessageList[pid].push("Your {0}'s Sniper boosts your catch rate against Pokémon baited by others!".format(poke(leader, true)));
-                }
                 if (canHaveAbility(leader, abilitynum("Speed Boost"))) {
                     abilityMessageList[pid].push("Your {0}'s Speed Boost gives you a better chance of throwing before others!".format(poke(leader, true)));
                 }
@@ -10571,7 +10632,21 @@ function Safari() {
                 if (canHaveAbility(leader, abilitynum("Skill Link"))) {
                     abilityMessageList[pid].push("Your {0}'s Skill Link prevents your Consecutive Catch Combo from resetting!".format(poke(leader, true)));
                 }
-                var ignoreRules = [12, 109, 20]; // Oblivious, Unaware, Own Tempo
+                if (canHaveAbility(leader, abilitynum("Supreme Overlord")) && player.party.length < 6) {
+                    abilityMessageList[pid].push("Your {0}'s Supreme Overlord grants it strength from its {1}!".format(poke(leader, true), player.party.length === 5 ? "missing comrade" : plural(6 - player.party.length, "missing comrade")));
+                }
+                if (canHaveAbility(leader, abilitynum("Wind Power")) && hasType(currentDisplay, "Flying")) {
+                    abilityMessageList[pid].push("Your {0}'s Wind Power prepares it to catch a breeze!".format(poke(leader, true)));
+                }
+                var snipeAbilities = [97, 289]; // Sniper, Opportunist
+                if (currentBaiter !== null && currentBaiter !== player.id) {
+                    for (var i = 0; i < snipeAbilities.length; i++) {
+                        if (canHaveAbility(leader, snipeAbilities[i])) {
+                            abilityMessageList[pid].push("Your {0}'s {1} boosts your catch rate against Pokémon baited by others!".format(poke(leader, true), abilityOff(snipeAbilities[i])));
+                        }
+                    }
+                }
+                var ignoreRules = [12, 109, 20, 282]; // Oblivious, Unaware, Own Tempo, Good as Gold
                 var defyRules = [128, 181]; // Defiant, Competitive
                 if (contestCount > 0 && currentRules) {
                     for (var i = 0; i < ignoreRules.length; i++) {
@@ -10675,7 +10750,6 @@ function Safari() {
         contestCount = contestDuration;
         contestMidPoint = false;
         spiritSpawn = true;
-        //canSpawnTera = true;
         wildTera = false;
         wildSpirit = false;
         var themesListed = [].concat(nextTheme);
@@ -11370,6 +11444,9 @@ function Safari() {
         }
         
         var bst = theme.editBST[pokeNum] || getBST(pokeNum);
+        if (isRare(pokeNum) && theme.hasOwnProperty("editBST") && !theme.editBST.hasOwnProperty(""+pokeNum)) { // if rare mon and no editBST defined
+            bst = Math.max(bst, defaultRareBST); // take the higher of its natural BST and defaultRareBST
+        }
         if (bst > theme.maxBST) {
             return false;
         }
@@ -11423,6 +11500,9 @@ function Safari() {
             return true;
         }
         var bst = theme.editBST[pokeId] || getBST(pokeId);
+        if (isRare(pokeId) && theme.hasOwnProperty("editBST") && !theme.editBST.hasOwnProperty(""+pokeId)) { // if rare mon and no editBST defined
+            bst = Math.max(bst, defaultRareBST); // take the higher of its natural BST and defaultRareBST
+        }
         if (bst > theme.maxBST) {
             return false;
         }
@@ -11874,7 +11954,7 @@ function Safari() {
                 }
             }
         }
-        var shinyChance = isShiny ? 0.30 : 1;
+        var shinyMultiplier = isShiny ? 0.30 : 1;
         var eventChance = wildEvent ? 0.4 : 1;
         var isLegend = isLegendary(wild);
         var legendaryChance = isLegend ? 0.50 : 1;
@@ -11944,6 +12024,7 @@ function Safari() {
         }
 
         var userStats = (getBST(leader));
+        var statsBonus = 0;
         if (!(currentRules && currentRules.invertedBST)) {
             if (userStats <= 600 && this.hasCostumeSkill(player, "useLowBST")) {
                 userStats = Math.min(userStats + Math.floor(this.getCostumeLevel(player) * 3.5), 600);
@@ -11957,17 +12038,23 @@ function Safari() {
         if ((currentRules && currentRules.invertedBST) || this.getFortune(player, "invertbst", 0) || currentThemeEffect == "distortion") {
             userStats -= evioBonus;
             userStats -= (cherishBonus * 6);
+            if (canHaveAbility(trueLeader, abilitynum("Supreme Overlord")) && player.party.length < 6) {
+                userStats = Math.round(userStats * (1 - (0.0364 * (6 - player.party.length)))); // maximum of 18.2% decrease for solo, takes Kingambit to 450 BST
+            }
             statsBonus = (userStats - wildStats) / -8000;
         }
         else {
             userStats += 0 + (ball === "level" ? 80 : 0) + (player.costume === "flower" && type2(leader) === "???" ? 50 : 0);
             userStats += (cherishBonus * 6);
-            var statsBonus = (userStats - wildStats) / 8000;
+            if (canHaveAbility(trueLeader, abilitynum("Supreme Overlord")) && player.party.length < 6) {
+                userStats = Math.round(userStats * (1 + (0.0364 * (6 - player.party.length)))); // maximum of 18.2% increase for solo, takes Kingambit to 650 BST
+            }
+            statsBonus = (userStats - wildStats) / 8000;
         }
         var wildWeight = getWeight(wild);
         var typeBonus;
         var pType1 = type1(leader), pType2 = type2(leader), wType1 = type1(wild), wType2 = type2(wild);
-        var pType3 = canHaveAbility(leader, abilitynum("Steelworker")) && !hasType(leader, "Steel") ? "Steel" : null;
+        var pType3 = canHaveAbility(trueLeader, abilitynum("Steelworker")) && !hasType(leader, "Steel") ? "Steel" : null;
         
         if (currentTypeOverride) {
             wType1 = currentTypeOverride;
@@ -11975,9 +12062,9 @@ function Safari() {
         var inverse = currentThemeEffect == "distortion" || (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(usingPokemon, abilitynum("Contrary")) && !ignoresWildAbilities(player));
         var select = {
             levitate: canHaveAbility(usingPokemon, abilitynum("Levitate")) && !ignoresWildAbilities(player),
-            scrappy: canHaveAbility(leader, abilitynum("Scrappy")),
-            tintedLens: canHaveAbility(leader, abilitynum("Tinted Lens")),
-            simple: canHaveAbility(leader, abilitynum("Simple"))
+            scrappy: canHaveAbility(trueLeader, abilitynum("Scrappy")),
+            tintedLens: canHaveAbility(trueLeader, abilitynum("Tinted Lens")),
+            simple: canHaveAbility(trueLeader, abilitynum("Simple"))
         };
         if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0) || currentThemeEffect == "distortion") {
             if (ball === "mono") {
@@ -12049,7 +12136,7 @@ function Safari() {
             if (this.hasCostumeSkill(player, "mythBallBoost")) {
                 costumeBonus *= costumeBoost(player);
             }
-            shinyChance = 1;
+            shinyMultiplier = 1;
             legendaryChance = 1;
             eventChance = Math.max(0.75, eventChance);
             if (isRare(wild)) {
@@ -12285,7 +12372,7 @@ function Safari() {
             }
         }
         var auraBoost = safari.getAuraEffect(player, "catchrate", 1);
-        var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff * abilityBoost * auraBoost + anyballbuff, 0.01) * eventChance;
+        var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyMultiplier * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff * abilityBoost * auraBoost + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true && !theory) {
             if (player.helds.length > 0 && player.helds[0] == 2 && !needsPechaCleared.contains(player.id.toLowerCase())) {
                 player.berries.pecha = true;
@@ -12693,7 +12780,7 @@ function Safari() {
                     if (ball === "spy" || safari.hasCostumeSkill(player, "permanentStealthThrow"))
                         safaribot.sendMessage(src, "The power of your {0} made {1} stealthily appear out of thin air!".format(poke(trueLeader, true), readable(drop)), safchan);
                     else
-                        sendAll("The power of {0}'s {1} made {2} appear out of thin air!".format(playerDisplayName, poke(leader, true), readable(drop)));
+                        sendAll("The power of {0}'s {1} made {2} appear out of thin air!".format(playerDisplayName, poke(trueLeader, true), readable(drop)));
                 }
                 if (discarded.length > 0) {
                     //if (ball === "spy")
@@ -12750,6 +12837,7 @@ function Safari() {
                 }
             }
             if (wildTera) {
+                player.records.teraMonsCaught += 1;
                 var drop = [], gained = [], discarded = [];
                 var item = "1@terashard";
                 var stuff = giveStuff(player, item, true);
@@ -12758,6 +12846,20 @@ function Safari() {
                 discarded = discarded.concat(stuff.discarded);
                 if (drop.length > 0 && (gained.length > 0 || discarded.length > 0)) {
                     sendAll("The lingering Terastal energy caused {0} to form!".format(readable(drop)));
+                }
+                if (discarded.length > 0) {
+                    safaribot.sendMessage(src, "Unfortunately, you had to discard {0} as your bag was full!".format(readable(discarded)), safchan);
+                }
+            }
+            if (canHaveAbility(trueLeader, abilitynum("Wind Power")) && hasType(currentPokemon, "Flying")) {
+                var drop = [], gained = [], discarded = [];
+                var item = randomSample({ "5": 7, "10": 3 }) + "@permfinder";
+                var stuff = giveStuff(player, item, true);
+                drop.push(translateStuff(item));
+                gained = gained.concat(stuff.gained);
+                discarded = discarded.concat(stuff.discarded);
+                if (drop.length > 0 && (gained.length > 0 || discarded.length > 0)) {
+                    safaribot.sendMessage(src, "Your {0}'s Wind Power generated {1}!".format(poke(trueLeader, true), readable(drop)), safchan);
                 }
                 if (discarded.length > 0) {
                     safaribot.sendMessage(src, "Unfortunately, you had to discard {0} as your bag was full!".format(readable(discarded)), safchan);
@@ -13182,7 +13284,7 @@ function Safari() {
                 safaribot.sendMessage(src, keepMsg, safchan);
             }
             
-            if (canHaveAbility(currentPokemon, abilitynum("Color Change")) && !ignoresWildAbilities(player)) {
+            if (canHaveAbility(currentPokemon, abilitynum("Color Change")) && !ignoresWildAbilities(player) && !wildTera) {
                 if (type2(leader) !== "???") { // If has 2 types
                     currentTypeOverride = [type1(leader), type2(leader)].random(); // Pick a random one
                 }
@@ -14249,6 +14351,9 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Your party and battles are currently <b>{0} other players</b>! Use /options view:[on|off] to change it.".format(player.options.visible ? "visible to" : "hidden from"), safchan);
             if (safari.validDailyBoost(player)) {
                 safaribot.sendHtmlMessage(src, "<b>Your lead Pokémon is the current Pokémon-of-the-Day!</b>", safchan);
+            }
+            if (player.teraActive) {
+                safaribot.sendHtmlMessage(src, "<b><font color='#55a4a2'>Your Tera Orb is currently active!</font></b>", safchan);
             }
             if (player.brilliantAura) {
                 safaribot.sendHtmlMessage(src, "<b>Your Brilliant Aura grants you the following bonuses:</b> " + safari.describeAuraEffects(player) + ". (Expires in " + timeLeftString(player.auraExpiry) + ")", safchan);
@@ -15979,7 +16084,7 @@ function Safari() {
         }
         else if (commandData === "*" || commandData === "1") {
             sys.sendMessage(src, "*** Player Records | Page 1 ***", safchan);
-            sys.sendMessage(src, "±Pokémon: {0} Pokémon caught in {1} attempts ({2}). Performed {3}, {4}, and {5}. Used {7} and regained {8}. Stole {6} Pokémon from NPCs.".format(addComma(rec.pokesCaught), addComma(rec.pokesCaught+rec.pokesNotCaught), percentage(rec.pokesCaught, rec.pokesCaught+rec.pokesNotCaught), plural(rec.pokesEvolved, "Evolution"), plural(rec.megaEvolutions, "Mega Evolution"), plural(rec.pokesCloned, "Cloning"), addComma(rec.pokesStolen), plural(rec.devolutions, "spray"), plural(rec.devolutionDust, "dust")), safchan);
+            sys.sendMessage(src, "±Pokémon: {0} Pokémon caught in {1} attempts ({2}). Performed {3}, {4}, and {5}. Used {7} and regained {8}. Stole {6} Pokémon from NPCs. Caught {9} Terastallized Pokémon.".format(addComma(rec.pokesCaught), addComma(rec.pokesCaught+rec.pokesNotCaught), percentage(rec.pokesCaught, rec.pokesCaught+rec.pokesNotCaught), plural(rec.pokesEvolved, "Evolution"), plural(rec.megaEvolutions, "Mega Evolution"), plural(rec.pokesCloned, "Cloning"), addComma(rec.pokesStolen), plural(rec.devolutions, "spray"), plural(rec.devolutionDust, "dust"), addComma(rec.teraMonsCaught)), safchan);
             sys.sendMessage(src, "±Bait: Used {0} and {6} with {1} ({2}) and {3} ({4}). Used {7}. Snagged {5} Pokémon away from other Players.".format(plural(rec.baitUsed, "bait"), plural(rec.baitAttracted, "success"), percentage(rec.baitAttracted, rec.baitUsed + rec.goldenBaitUsed), plural(rec.baitNothing, "failure"), percentage(rec.baitNothing, rec.baitUsed + rec.goldenBaitUsed), rec.notBaitedCaught, plural(rec.goldenBaitUsed, "golden"), plural(rec.deluxeBaitUsed, "deluxe")), safchan);
             var earnings = rec.pokeSoldEarnings + rec.luxuryEarnings + rec.pawnEarnings + rec.collectorEarnings + rec.rocksWalletEarned + rec.rocksWindowEarned - rec.rocksWindowLost - rec.rocksWalletLost + rec.pokeRaceEarnings + rec.pyramidMoney + rec.towerEarnings;
             var silverEarnings = rec.scientistEarnings + rec.arenaPoints + rec.pyramidSilver + rec.towerSilver + rec.pokeRaceSilver + rec.luxurySilver;
@@ -15991,7 +16096,7 @@ function Safari() {
             sys.sendMessage(src, "±{0}: Hit by {1} ({2} evasion, {3}). Caught {4}. Scared away {5} wild Pokémon.".format(finishName("rock"), plural(onMe, "rock"), percentage(rec.rocksDodged, rec.rocksDodged + onMe), plural(rec.rocksDodged, "dodge"), plural(rec.rocksCaught, "throw"), addComma(rec.wildsScared)), safchan);
             sys.sendMessage(src, "±Game: {0} Consecutive Logins{1}. Won {2} contests and {4}. Found {3} items with the Itemfinder.".format(addComma(rec.consecutiveLogins), (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : ""), addComma(rec.contestsWon), addComma(rec.itemsFound), plural(rec.medalsWon, "medal")), safchan);
             sys.sendMessage(src, "±Game: Opened {0} and used {1}. Hatched {2} and {3} with {4} being a Rare Pokémon! Gave {5} and received {6}.".format(plural(rec.packsOpened, "pack"), plural(rec.gemsUsed, "gem"), plural(rec.eggsHatched, "egg"), plural(rec.brightEggsHatched, "bright"), addComma(rec.rareHatched), plural(rec.burnGiven, "burn"), plural(rec.burnReceived, "burn")), safchan);
-            sys.sendMessage(src, "±Game: Used {0} and won {1}. Ate {2} and {3}, and used {4} and {5}. Sent {6} and retouched {7}.".format(plural(rec.shadyUsed, "shady"), plural(rec.mongerAuctionsWon, "Monger Auction"), plural(rec.cookiesEaten, "cookie"), plural(rec.mushroomsEaten, "mushroom"), plural(rec.scalesUsed, "scale"), plural(rec.crystalsUsed, "crystal"), plural(rec.mailsSent, "mail"), plural(rec.photosRetouched, "Photograph")), safchan);
+            sys.sendMessage(src, "±Game: Used {0} and won {1}. Ate {2} and {3}, and used {4} and {5}. Sent {6} and retouched {7}. Deployed {8} with {9} being successful.".format(plural(rec.shadyUsed, "shady"), plural(rec.mongerAuctionsWon, "Monger Auction"), plural(rec.cookiesEaten, "cookie"), plural(rec.mushroomsEaten, "mushroom"), plural(rec.scalesUsed, "scale"), plural(rec.crystalsUsed, "crystal"), plural(rec.mailsSent, "mail"), plural(rec.photosRetouched, "Photograph"), plural(rec.teraOrbsDeployed, "teraorb"), addComma(rec.teraOrbsSucceeded)), safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, link("/records 2","«Next Page»"),safchan);
         }
@@ -19048,6 +19153,12 @@ function Safari() {
         if (cantBecause(src, "use an item", ["item", "contest", "auction", "battle", "event", "tutorial", "pyramid", "baking"], item)) {
             return;
         }
+        if (item === "teraorb") {
+            player.teraActive = !player.teraActive;
+            safaribot.sendMessage(src, "Your {0} was {1}!".format(finishName("teraorb"), player.teraActive ? "activated" : "deactivated"), safchan);
+            this.saveGame(player);
+            return;
+        }
         if (item === "gem") {
             var chars = player.balls.itemfinder,
                 limit = getCap("permfinder");
@@ -20115,14 +20226,20 @@ function Safari() {
             if (possibleResults.contains("none")) {
                 possibleResults.splice(possibleResults.indexOf("none"), 1);
             }
-            player.balls.mushroom -= 1;
+            var toConsume = 1;
+            if (canHaveAbility(player.party[0], abilitynum("Mycelium Might")) && player.balls.mushroom >= 2) {
+                toConsume = 2;
+                safaribot.sendMessage(src, "Your {0}'s Mycelium Might caused you to consume {1} instead of 1!".format(poke(player.party[0], true), plural(2, "mushroom")), safchan);
+            }
+            player.balls.mushroom -= toConsume;
             player.mushroomTheme = possibleResults.random();
             var dur = itemData.mushroom.duration;
             if (this.hasCostumeSkill(player, "extendedMushroom")) {
                 dur = Math.floor(dur * 1.5);
             }
+            dur *= toConsume;
             player.mushroomDeadline = dur;
-            player.records.mushroomsEaten += 1;
+            player.records.mushroomsEaten += toConsume;
             this.saveGame(player);
             safaribot.sendHtmlMessage(src, "You ate a suspicious " + finishName("mushroom") + "! As you get dizzier and dizzier, you start thinking that you are in " + link("/themerares " + player.mushroomTheme, an(themeName(player.mushroomTheme) + " environment")) + " for the next " + player.mushroomDeadline + " Pokémon that you bait! (Effect can be cancelled with " + link("/shroomcancel", false, true) + ")", safchan);
             this.updateShop(player, "mushroom");
@@ -39289,7 +39406,7 @@ function Safari() {
         var trainerSprite = '<img src="' + base64trainers.alchemist + '">';
         
         var info = getInputPokemon(opt.replace("%25", "%")); // zygarde-10% gets html_escaped into -10%25
-        var eligible = { "570": { "cost": 2, "forms": [570, 66106] }, "571": { "cost": 2, "forms": [571, 66107] }, "628": { "cost": 2, "forms": [628, 66164] }, "705": { "cost": 2, "forms": [705, 66241] }, "706": { "cost": 2, "forms": [706, 66242] }, "713": { "cost": 2, "forms": [713, 66249] }, "724": { "cost": 3, "forms": [724, 66260] }, "902": { "cost": 1, "forms": [902, 66438], "pebble": true }, "905": { "cost": 5, "forms": [905, 66441] }, "58": { "cost": 2, "forms": [58, 65594] }, "59": { "cost": 2, "forms": [59, 65595] }, "100": { "cost": 2, "forms": [100, 65636] }, "101": { "cost": 2, "forms": [101, 65637] }, "157": { "cost": 3, "forms": [157, 65693] }, "211": { "cost": 2, "forms": [211, 65747] }, "215": { "cost": 2, "forms": [215, 65751] }, "483": { "cost": 5, "forms": [483, 66019] }, "484": { "cost": 5, "forms": [484, 66020] }, "503": { "cost": 3, "forms": [503, 66039] }, "549": { "cost": 2, "forms": [549, 66085] }, "172": { "cost": 20, "forms": [172, 65708], "pebble": true }, "201": { "cost": 1, "forms": [201, 65737, 131273, 196809, 262345, 327881, 393417, 458953, 524489, 590025, 655561, 721097, 786633, 852169, 917705, 983241, 1048777, 1114313, 1179849, 1245385, 1310921, 1376457, 1441993, 1507529, 1573065, 1638601, 1704137, 1769673], "pebble": true }, "412": { "cost": 1, "forms": [412, 65948, 131484], "pebble": true }, "422": { "cost": 1, "forms": [422, 65958], "pebble": true }, "423": { "cost": 1, "forms": [423, 65959], "pebble": true }, "550": { "cost": 2, "forms": [550, 66086, 131622] }, "585": { "cost": 1, "forms": [585, 66121, 131657, 197193], "pebble": true }, "586": { "cost": 1, "forms": [586, 66122, 131658, 197194], "pebble": true }, "666": { "cost": 1, "forms": [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778], "pebble": true }, "669": { "cost": 1, "forms": [669, 66205, 131741, 197277, 262813], "pebble": true }, "671": { "cost": 1, "forms": [671, 66207, 131743, 197279, 262815], "pebble": true }, "710": { "cost": 1, "forms": [710, 66246, 131782, 197318], "pebble": true }, "711": { "cost": 1, "forms": [711, 66247, 131783, 197319], "pebble": true }, "741": { "cost": 1, "forms": [741, 66277, 131813, 197349], "pebble": true }, "745": { "cost": 20, "forms": [745, 66281, 131817], "pebble": true }, "351": { "cost": 15, "forms": [351, 65887, 131423, 262495], "pebble": true }, "413": { "cost": 1, "forms": [413, 65949, 131485], "pebble": true }, "421": { "cost": 10, "forms": [421, 65957], "pebble": true }, "676": { "cost": 15, "forms": [676, 66212, 131748, 197284, 262820, 328356, 393892, 459428, 524964, 590500], "pebble": true }, "19": { "cost": 2, "forms": [19, 65555] }, "20": { "cost": 2, "forms": [20, 65556] }, "25": { "cost": 20, "forms": [25, 65561, 131097, 196633, 262169, 327705, 458777, 524313, 589849, 655385, 720921, 786457, 851993], "pebble": true }, "26": { "cost": 2, "forms": [26, 65562] }, "27": { "cost": 2, "forms": [27, 65563] }, "28": { "cost": 2, "forms": [28, 65564] }, "37": { "cost": 2, "forms": [37, 65573] }, "38": { "cost": 2, "forms": [38, 65574] }, "50": { "cost": 2, "forms": [50, 65586] }, "51": { "cost": 2, "forms": [51, 65587] }, "52": { "cost": 2, "forms": [52, 65588, getForm(52, 2)] }, "53": { "cost": 2, "forms": [53, 65589] }, "74": { "cost": 2, "forms": [74, 65610] }, "75": { "cost": 2, "forms": [75, 65611] }, "76": { "cost": 2, "forms": [76, 65612] }, "88": { "cost": 2, "forms": [88, 65624] }, "89": { "cost": 2, "forms": [89, 65625] }, "103": { "cost": 2, "forms": [103, 65639] }, "105": { "cost": 2, "forms": [105, 65641] }, "670": { "cost": 6, "forms": [670, 66206, 131742, 197278, 262814, 328350] }, "678": { "cost": 2, "forms": [678, 66214], "pebble": true }, "681": { "cost": 1, "forms": [681, 66217] }, "658": { "cost": 4, "forms": [658, 131730] }, "746": { "cost": 2, "forms": [746, 66282] }, "774": { "cost": 20, "forms": [774, 66310, 131846, 197382, 262918, 328454, 393990, 459526], "pebble": true }, "801": { "cost": 4, "forms": [801, 66337] }, "386": { "cost": 5, "forms": [386, 65922, 131458, 196994] }, "487": { "cost": 5, "forms": [487, 66023] }, "641": { "cost": 5, "forms": [641, 66177] }, "642": { "cost": 5, "forms": [642, 66178] }, "645": { "cost": 5, "forms": [645, 66181] }, "647": { "cost": 5, "forms": [647, 66183] }, "649": { "cost": 5, "forms": [649, 66185, 131721, 197257, 262793] }, "479": { "cost": 3, "forms": [479, 66015, 131551, 197087, 262623, 328159] }, "492": { "cost": 4, "forms": [492, 66028] }, "555": { "cost": 3, "forms": [555, 66091, getForm(555, 2)] }, "648": { "cost": 4, "forms": [648, 66184] }, "773": { "cost": 1, "forms": [773, 66309, 131845, 197381, 262917, 328453, 393989, 459525, 525061, 590597, 656133, 721669, 787205, 852741, 918277, 983813, 1049349, 1114885] }, "493": { "cost": 10, "forms": [493, 66029, 131565, 197101, 262637, 328173, 393709, 459245, 524781, 590317, 655853, 721389, 786925, 852461, 917997, 983533, 1049069, 1114605] }, "646": { "cost": 10, "forms": [646, 66182, 131718] }, "718": { "cost": 15, "forms": [718, 66254, 131790] }, "720": { "cost": 10, "forms": [720, 66256] }, "77": {"cost": 2, "forms": [77, getForm(77, 1)]}, "78": {"cost": 2, "forms": [78, getForm(78, 1)]}, "263": {"cost": 2, "forms": [263, getForm(263, 1)]}, "264": {"cost": 2, "forms": [264, getForm(264, 1)]}, "562": {"cost": 2, "forms": [562, getForm(562, 1)]}, "122": {"cost": 2, "forms": [122, getForm(122, 1)]}, "110": {"cost": 2, "forms": [110, getForm(110, 1)]}, "222": {"cost": 2, "forms": [222, getForm(222, 1)]}, "83": { "cost": 2, "forms": [83, 65619] }, "554": { "cost": 3, "forms": [554, 66090] }, "618": { "cost": 2, "forms": [618, 66154] }, "79": { "cost": 2, "forms": [79, 65615] }, "80": { "cost": 2, "forms": [80, 131152] }, "199": { "cost": 2, "forms": [199, 65735] }, "845": { "cost": 1, "forms": [845, 66381, 131917] }, "849": { "cost": 1, "forms": [849, 66385], "pebble": true }, "875": { "cost": 20, "forms": [875, 66411], "pebble": true }, "877": { "cost": 20, "forms": [877, 66413], "pebble": true }, "893": { "cost": 4, "forms": [893, 66429] }, "144": { "cost": 5, "forms": [144, 65680] }, "145": { "cost": 5, "forms": [145, 65681] }, "146": { "cost": 5, "forms": [146, 65682] }, "876": { "cost": 1, "forms": [876, 66412], "pebble": true }, "194": { "cost": 2, "forms": [194, 65730] }, "128": { "cost": 2, "forms": [128, 65664, 131200, 196736] }, "916": { "cost": 2, "forms": [916, 66452], "pebble": true }, "925": { "cost": 1, "forms": [925, 66461] }, "931": { "cost": 2, "forms": [931, 66467, 132003, 197539], "pebble": true }, "964": { "cost": 3, "forms": [964, 66500] }, "978": { "cost": 2, "forms": [978, 66514, 132050], "pebble": true }, "982": { "cost": 1, "forms": [982, 66518] }, "999": { "cost": 1, "forms": [999, 66535], "pebble": true }, "1007": { "cost": 5, "forms": [1007, 66543, 132079, 197615, 263151] }, "1008": { "cost": 5, "forms": [1008, 66544, 132080, 197616, 263152] } };
+        var eligible = { "570": { "cost": 2, "forms": [570, 66106] }, "571": { "cost": 2, "forms": [571, 66107] }, "628": { "cost": 2, "forms": [628, 66164] }, "705": { "cost": 2, "forms": [705, 66241] }, "706": { "cost": 2, "forms": [706, 66242] }, "713": { "cost": 2, "forms": [713, 66249] }, "724": { "cost": 3, "forms": [724, 66260] }, "902": { "cost": 1, "forms": [902, 66438], "pebble": true }, "905": { "cost": 5, "forms": [905, 66441] }, "58": { "cost": 2, "forms": [58, 65594] }, "59": { "cost": 2, "forms": [59, 65595] }, "100": { "cost": 2, "forms": [100, 65636] }, "101": { "cost": 2, "forms": [101, 65637] }, "157": { "cost": 3, "forms": [157, 65693] }, "211": { "cost": 2, "forms": [211, 65747] }, "215": { "cost": 2, "forms": [215, 65751] }, "483": { "cost": 5, "forms": [483, 66019] }, "484": { "cost": 5, "forms": [484, 66020] }, "503": { "cost": 3, "forms": [503, 66039] }, "549": { "cost": 2, "forms": [549, 66085] }, "172": { "cost": 20, "forms": [172, 65708], "pebble": true }, "201": { "cost": 1, "forms": [201, 65737, 131273, 196809, 262345, 327881, 393417, 458953, 524489, 590025, 655561, 721097, 786633, 852169, 917705, 983241, 1048777, 1114313, 1179849, 1245385, 1310921, 1376457, 1441993, 1507529, 1573065, 1638601, 1704137, 1769673], "pebble": true }, "412": { "cost": 1, "forms": [412, 65948, 131484], "pebble": true }, "422": { "cost": 1, "forms": [422, 65958], "pebble": true }, "423": { "cost": 1, "forms": [423, 65959], "pebble": true }, "550": { "cost": 2, "forms": [550, 66086, 131622] }, "585": { "cost": 1, "forms": [585, 66121, 131657, 197193], "pebble": true }, "586": { "cost": 1, "forms": [586, 66122, 131658, 197194], "pebble": true }, "666": { "cost": 1, "forms": [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778], "pebble": true }, "669": { "cost": 1, "forms": [669, 66205, 131741, 197277, 262813], "pebble": true }, "671": { "cost": 1, "forms": [671, 66207, 131743, 197279, 262815], "pebble": true }, "710": { "cost": 1, "forms": [710, 66246, 131782, 197318], "pebble": true }, "711": { "cost": 1, "forms": [711, 66247, 131783, 197319], "pebble": true }, "741": { "cost": 1, "forms": [741, 66277, 131813, 197349], "pebble": true }, "745": { "cost": 20, "forms": [745, 66281, 131817], "pebble": true }, "351": { "cost": 15, "forms": [351, 65887, 131423, 262495], "pebble": true }, "413": { "cost": 1, "forms": [413, 65949, 131485], "pebble": true }, "421": { "cost": 10, "forms": [421, 65957], "pebble": true }, "676": { "cost": 15, "forms": [676, 66212, 131748, 197284, 262820, 328356, 393892, 459428, 524964, 590500], "pebble": true }, "19": { "cost": 2, "forms": [19, 65555] }, "20": { "cost": 2, "forms": [20, 65556] }, "25": { "cost": 20, "forms": [25, 65561, 131097, 196633, 262169, 327705, 458777, 524313, 589849, 655385, 720921, 786457, 851993], "pebble": true }, "26": { "cost": 2, "forms": [26, 65562] }, "27": { "cost": 2, "forms": [27, 65563] }, "28": { "cost": 2, "forms": [28, 65564] }, "37": { "cost": 2, "forms": [37, 65573] }, "38": { "cost": 2, "forms": [38, 65574] }, "50": { "cost": 2, "forms": [50, 65586] }, "51": { "cost": 2, "forms": [51, 65587] }, "52": { "cost": 2, "forms": [52, 65588, getForm(52, 2)] }, "53": { "cost": 2, "forms": [53, 65589] }, "74": { "cost": 2, "forms": [74, 65610] }, "75": { "cost": 2, "forms": [75, 65611] }, "76": { "cost": 2, "forms": [76, 65612] }, "88": { "cost": 2, "forms": [88, 65624] }, "89": { "cost": 2, "forms": [89, 65625] }, "103": { "cost": 2, "forms": [103, 65639] }, "105": { "cost": 2, "forms": [105, 65641] }, "670": { "cost": 6, "forms": [670, 66206, 131742, 197278, 262814, 328350] }, "678": { "cost": 2, "forms": [678, 66214], "pebble": true }, "681": { "cost": 1, "forms": [681, 66217] }, "658": { "cost": 4, "forms": [658, 131730] }, "746": { "cost": 2, "forms": [746, 66282] }, "774": { "cost": 20, "forms": [774, 66310, 131846, 197382, 262918, 328454, 393990, 459526], "pebble": true }, "801": { "cost": 4, "forms": [801, 66337] }, "386": { "cost": 5, "forms": [386, 65922, 131458, 196994] }, "487": { "cost": 5, "forms": [487, 66023] }, "641": { "cost": 5, "forms": [641, 66177] }, "642": { "cost": 5, "forms": [642, 66178] }, "645": { "cost": 5, "forms": [645, 66181] }, "647": { "cost": 5, "forms": [647, 66183] }, "649": { "cost": 5, "forms": [649, 66185, 131721, 197257, 262793] }, "479": { "cost": 3, "forms": [479, 66015, 131551, 197087, 262623, 328159] }, "492": { "cost": 4, "forms": [492, 66028] }, "555": { "cost": 3, "forms": [555, 66091, getForm(555, 2)] }, "648": { "cost": 4, "forms": [648, 66184] }, "773": { "cost": 1, "forms": [773, 66309, 131845, 197381, 262917, 328453, 393989, 459525, 525061, 590597, 656133, 721669, 787205, 852741, 918277, 983813, 1049349, 1114885] }, "493": { "cost": 10, "forms": [493, 66029, 131565, 197101, 262637, 328173, 393709, 459245, 524781, 590317, 655853, 721389, 786925, 852461, 917997, 983533, 1049069, 1114605] }, "646": { "cost": 10, "forms": [646, 66182, 131718] }, "718": { "cost": 15, "forms": [718, 66254, 131790] }, "720": { "cost": 10, "forms": [720, 66256] }, "77": {"cost": 2, "forms": [77, getForm(77, 1)]}, "78": {"cost": 2, "forms": [78, getForm(78, 1)]}, "263": {"cost": 2, "forms": [263, getForm(263, 1)]}, "264": {"cost": 2, "forms": [264, getForm(264, 1)]}, "562": {"cost": 2, "forms": [562, getForm(562, 1)]}, "122": {"cost": 2, "forms": [122, getForm(122, 1)]}, "110": {"cost": 2, "forms": [110, getForm(110, 1)]}, "222": {"cost": 2, "forms": [222, getForm(222, 1)]}, "83": { "cost": 2, "forms": [83, 65619] }, "554": { "cost": 3, "forms": [554, 66090] }, "618": { "cost": 2, "forms": [618, 66154] }, "79": { "cost": 2, "forms": [79, 65615] }, "80": { "cost": 2, "forms": [80, 131152] }, "199": { "cost": 2, "forms": [199, 65735] }, "845": { "cost": 1, "forms": [845, 66381, 131917] }, "849": { "cost": 1, "forms": [849, 66385], "pebble": true }, "875": { "cost": 20, "forms": [875, 66411], "pebble": true }, "877": { "cost": 20, "forms": [877, 66413], "pebble": true }, "893": { "cost": 4, "forms": [893, 66429] }, "144": { "cost": 5, "forms": [144, 65680] }, "145": { "cost": 5, "forms": [145, 65681] }, "146": { "cost": 5, "forms": [146, 65682] }, "876": { "cost": 1, "forms": [876, 66412], "pebble": true }, "194": { "cost": 2, "forms": [194, 65730] }, "128": { "cost": 2, "forms": [128, 65664, 131200, 196736] }, "916": { "cost": 2, "forms": [916, 66452], "pebble": true }, "925": { "cost": 1, "forms": [925, 66461] }, "931": { "cost": 2, "forms": [931, 66467, 132003, 197539], "pebble": true }, "964": { "cost": 5, "forms": [964, 66500] }, "978": { "cost": 2, "forms": [978, 66514, 132050], "pebble": true }, "982": { "cost": 1, "forms": [982, 66518] }, "999": { "cost": 1, "forms": [999, 66535], "pebble": true }, "1007": { "cost": 5, "forms": [1007, 66543, 132079, 197615, 263151] }, "1008": { "cost": 5, "forms": [1008, 66544, 132080, 197616, 263152] } };
         eligible["869"] = { "cost": 8, "forms": [], "pebble": true };
         for (var i = 0; i < 63; i++) { // Alcremie
             eligible["869"].forms.push(869 + 65536 * i);
@@ -43471,14 +43588,14 @@ function Safari() {
                 val = 0;
                 eggval = 0;
                 bst = getBST(mon.num);
-                if (ultraBeasts.concat([892, 66428, 898]).contains(mon.num)) { // [urshifu, urshifu-rapid strike, calyrex]
+                if (ultraBeasts.concat([892, 66428, 898]).contains(mon.num) || paradoxPokemon.contains(mon.num)) { // [urshifu, urshifu-rapid strike, calyrex]
                     bst = 600;
                 }
                 if (regionalEvos.concat([789, 891]).contains(mon.num)) { // [cosmog, kubfu]
                     bst = Math.max(bst, 510);
                     rareForm = true;
                 }
-                if ((legendaries.contains(mon.num)) || ultraBeasts.contains(mon.num)) {
+                if ((legendaries.contains(mon.num)) || ultraBeasts.contains(mon.num) || paradoxPokemon.contains(mon.num)) {
                     if (bst >= 650) {
                         if (chance((aggregateScore - 276) * 0.007)) {
                             eggval = 20;
@@ -43589,7 +43706,7 @@ function Safari() {
                 if (bst > 590) {
                     hits -= 1;
                 }
-                if (((legendaries.contains(mon.num) || ultraBeasts.contains(mon.num)) && hits > 0)) {
+                if (((legendaries.contains(mon.num) || ultraBeasts.contains(mon.num) || paradoxPokemon.contains(mon.num)) && hits > 0)) {
                     hits *= 0.5;
                     if (bst > 580) {
                         hits -= 1;
@@ -50282,7 +50399,7 @@ function Safari() {
         if (hasType(poke, "Water")) {
             t = Math.floor(t * 0.8);
         }
-        if (canHaveAbility(poke, abilitynum("Ripen"))) {
+        if (canHaveAbility(poke, abilitynum("Ripen")) || canHaveAbility(poke, abilitynum("Seed Sower"))) {
             amt = (amt * 1.5);
             t = Math.floor(t * 0.75);
         }
@@ -64880,12 +64997,10 @@ function Safari() {
                         }
                         if (safari.events.spiritDuelsEnabled && spiritSpawn && chance(0.3) && contestCount < 150) {
                             spiritSpawn = false;
-                            wildSpirit = true;
                             safari.createWild(null, null, amt, null, null, null, null, false, false, false, true);
                         }
                         if (false) {
                             canSpawnTera = false;
-                            wildTera = true;
                             safari.createWild(null, null, amt, null, null, null, null, false, false, false, false, true);
                         }
                         else {
