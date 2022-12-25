@@ -1855,7 +1855,91 @@ function Safari() {
         //specials
         "GuardianDeity": { name: "Guardian of Alola", special: [785, 786, 787, 788], effect: "golden", chance: 1, npcBuff: 0.12, description: "increase the likelihood of high BST Pokémon appearing from Golden Baits " },
     };
-    
+    var abilityEffects = {
+        "237": "[Lead] Any failed Ball throws are instantly refunded to you at a 100% chance.", // Ball Fetch
+        "34": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Chlorophyll
+        "181": "[Lead] Increases your catch rate by an amount equal to 2 buffs if your lead is nerfed during a contest.", // Competitive
+        "14": "[Lead] Your chance of finding a held item after catching a Pokémon (if that species can hold an item) is increased.<br>- If the held item rate is more than or equal to 50%: +10% chance<br>- If the held item rate is between 20% and 49%: +20% chance<br>- If the held item rate is 19% or below: 2x chance<br>For wild held Berries in Contests:<br>- If the Berry rate is more than or equal to 50%: +10% chance<br>- If the Berry rate is 49% or below: +20% chance", // Compound Eyes
+        "128": "[Lead] Increases your catch rate by an amount equal to 2 buffs if your lead is nerfed during a contest.", // Defiant
+        "87": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Dry Skin
+        "122": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Flower Gift
+        "119": "[Lead] Your chance of finding a held item after catching a Pokémon (if that species can hold an item) is increased.<br>- If the held item rate is more than or equal to 50%: +10% chance<br>- If the held item rate is between 20% and 49%: +20% chance<br>- If the held item rate is 19% or below: 2x chance<br>For wild held Berries in Contests:<br>- If the Berry rate is more than or equal to 50%: +10% chance<br>- If the Berry rate is 49% or below: +20% chance", // Frisk
+        "182": "[Lead] You gain greatly increased priority when throwing Balls. Does not work for taking photos.", // Gale Wings
+        "93": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Hydration
+        "115": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Hail] contests.", // Ice Body
+        "248": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Hail] contests.", // Ice Face
+        "35": "[Lead] Your chance of successfully baiting is increased by 30%. This does not work on Deluxe Bait.", // Illuminate
+        "150": "[Lead] Your lead Pokémon will transform into any current wild Pokémon.<br>1. Viewing your party will display your lead's transformed sprite. The transformed Pokémon's original species name is still shown, however. Shininess is dependent on the wild Pokémon; even if your lead is Shiny, it will transform into a regular colour if the wild Pokémon is not Shiny.<br>2. The transformation is temporary and will wear off after the wild Pokémon is gone.<br>3. Your catch rate is calculated as if your lead is the actual transformed Pokémon. During a contest, your lead will be buffed/nerfed depending on whether the current wild Pokémon is buffed/nerfed. For all other non-catch rate-related purposes, your lead is still considered its original species. The wild Pokémon's ability will not be copied.", // Imposter
+        "151": "[Lead] Reveals a wild Pokémon's true form to you if it is disguised as another Pokémon.", // Infiltrator
+        "22": "[Lead] The wild Pokémon's BST is decreased (only for you) by 30% if your lead Pokémon has a higher BST, and 10% if not.", // Intimidate
+        "51": "[Lead] Increases your chance of taking higher quality photos.", // Keen Eye
+        "102": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Leaf Guard
+        "187": "[Lead] Your chance of finding a held item after catching a Pokémon (if that species can hold an item) is increased.<br>- If the held item rate is more than or equal to 50%: +10% chance<br>- If the held item rate is between 20% and 49%: +20% chance<br>- If the held item rate is 19% or below: 2x chance<br>For wild held Berries in Contests:<br>- If the Berry rate is more than or equal to 50%: +10% chance<br>- If the Berry rate is 49% or below: +20% chance", // Magician
+        "104": "[Lead] You will completely ignore the effects of any wild Pokémon's ability.", // Mold Breaker
+        "256": "[Lead] You will completely ignore the effects of any wild Pokémon's ability.", // Neutralizing Gas
+        "12": "[Lead] You will ignore the effects of Contest buffs and nerfs.", // Oblivious
+        "20": "[Lead] You will ignore the effects of Contest buffs and nerfs.", // Own Tempo
+        "124": "[Lead] Your chance of finding a held item after catching a Pokémon (if that species can hold an item) is increased.<br>- If the held item rate is more than or equal to 50%: +10% chance<br>- If the held item rate is between 20% and 49%: +20% chance<br>- If the held item rate is 19% or below: 2x chance<br>For wild held Berries in Contests:<br>- If the Berry rate is more than or equal to 50%: +10% chance<br>- If the Berry rate is 49% or below: +20% chance", // Pickpocket
+        "158": "[Lead] You will gain increased priority when taking photos.", // Prankster
+        "44": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Rain Dish
+        "159": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sandstorm] contests.", // Sand Force
+        "146": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sandstorm] contests.", // Sand Rush
+        "8": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sandstorm] contests.", // Sand Veil
+        "113": "[Lead] If your lead Pokémon is Normal or Fighting-type, their Normal or Fighting-type will be calculated as 1x effectiveness against wild Ghost-types, except during inverted type matchups.", // Scrappy
+        "86": "[Lead] Your type modifier against wild Pokémon is doubled if super-effective and halved if not very effective. For example, a resistance of 0.5x is amplified to become 0.25x, and a 2x type advantage is amplified to become 4x. Neutral or full immunity matchups are not affected.", // Simple
+        "92": "[Lead] Prevents you from losing Consecutive Catch Combo even when failing a capture.", // Skill Link
+        "221": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Hail] contests.", // Slush Rush
+        "97": "[Lead] Increases your catch rate by 1.3x when trying to catch Pokémon baited by other people.", // Sniper
+        "81": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Hail] contests.", // Snow Cloak
+        "94": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Solar Power
+        "3": "[Lead] You gain slightly increased priority when throwing Balls. Does not work for taking photos.", // Speed Boost
+        "225": "[Lead] Your lead's type effectiveness against wild Pokémon is calculated as if it has Steel as a 3rd type.", // Steelworker
+        "1": "[Lead] Your chance of successfully baiting is decreased by 20%. This does not work on Deluxe Bait.", // Stench
+        "105": "[Lead] Your chance of finding a held item after catching a Pokémon (if that species can hold an item) is increased.<br>- If the held item rate is more than or equal to 50%: +10% chance<br>- If the held item rate is between 20% and 49%: +20% chance<br>- If the held item rate is 19% or below: 2x chance<br>For wild held Berries in Contests:<br>- If the Berry rate is more than or equal to 50%: +10% chance<br>- If the Berry rate is 49% or below: +20% chance", // Super Luck
+        "33": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Swift Swim
+        "101": "[Lead] If you throw a Ball with a weaker bonus multiplier than the Great Ball, that Ball's bonus multiplier will be boosted to the same level as the Great Ball.", // Technician
+        "164": "[Lead] You will completely ignore the effects of any wild Pokémon's ability.", // Teravolt
+        "110": "[Lead] If your type effectiveness multiplier against the wild Pokémon is less than or equal to 0.5x, the multiplier is doubled.", // Tinted Lens
+        "163": "[Lead] You will completely ignore the effects of any wild Pokémon's ability.", // Turboblaze
+        "109": "[Lead] You will ignore the effects of Contest buffs and nerfs.", // Unaware
+        "282": "[Lead] You will ignore the effects of Contest buffs and nerfs.", // Good as Gold
+        "289": "[Lead] Increases your catch rate by 1.3x when trying to catch Pokémon baited by other people.", // Opportunist
+        "267": "[Lead] Your chance of successfully baiting is increased by 30%. This does not work on Deluxe Bait.", // Lingering Aroma
+        "265": "[Lead] You gain greatly increased priority when throwing Balls. Does not work for taking photos.", // Quick Draw
+        "144": "[Lead] Upon successfully switching out with a Switch Ball, the Switch Ball will not be consumed.", // Regenerator
+        "296": "[Lead] You will completely ignore the effects of any wild Pokémon's ability. When using Big Mushrooms, you will automatically consume 2 at once, gaining double the amount of spawns for the same theme.", // Mycelium Might
+        "276": "[Lead] Your Itemfinder gains 5 or 10 charges after catching a Flying-type Pokémon.", // Wind Power
+        "292": "[Lead] Your lead Pokémon's BST increases by 3.64% for each empty slot in your party, up to a maximum of 18.2% if it is the only Pokémon in your party.", // Supreme Overlord
+        "280": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Protosynthesis
+        "281": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Orihalcum Pulse
+        "287": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Quark Drive
+        "288": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Hadron Engine
+
+        "16": "[Wild] The wild Pokémon's type changes into your lead Pokémon's type whenever it breaks out of a Ball. If your lead Pokémon has two types, one is chosen at random. If it breaks out of a Spy Ball, the type will be listed as unknown.", // Color Change
+        "126": "[Wild] The wild Pokémon's catch rate is calculated using inverted type effectiveness. This does not stack with the Inver costume, Inver Balls, or the Inverted Type Matchup Contest rule.", // Contrary
+        "129": "[Wild] The wild Pokémon loses 5 BST whenever it breaks out of a Ball, up to a maximum of 25.", // Defeatist
+        "222": "[Wild] The wild Pokémon has a 50% chance of fleeing immediately after each failed capture (once Ball preparation phase is over).", // Emergency Exit
+        "26": "[Wild] The wild Pokémon gains an immunity to the Ground-type. This immunity is typeless and therefore has no effect on Resistance Mode or inverted type effectiveness.", // Levitate
+        "153": "[Wild] The wild Pokémon gains 5 BST whenever it breaks out of a Ball, up to a maximum of 25.", // Moxie
+        "46": "[Wild] The wild Pokémon causes you to use up 1 extra Ball whenever you catch it. This does not work on rare, special Balls.", // Pressure
+        "50": "[Wild] The wild Pokémon flees after fewer failed captures than usual.", // Run Away
+        "207": "[Wild] The wild Pokémon has a 50% chance of fleeing immediately after each failed capture (once Ball preparation phase is over).", // Wimp Out
+        "25": "[Wild] The wild Pokémon will be instantly caught by any Ball if your lead has at least 2x effectiveness against it. If you have less than 2x effectiveness, the catch rate will be calculated as if it were immune to your lead.", // Wonder Guard
+        "199": "[Wild] The wild Pokémon prevents the use of Quick Balls and Lightning Balls against it.", // Dazzling
+        "214": "[Wild] The wild Pokémon prevents the use of Quick Balls and Lightning Balls against it.", // Queenly Majesty
+        "295": "[Wild] The wild Pokémon prevents the use of Quick Balls and Lightning Balls against it.", // Armor Tail
+        "240": "[Wild] The wild Pokémon prevents the use of Mirror Balls against it.", // Mirror Armor
+        "283": "[Wild] The wild Pokémon decreases your lead Pokémon's BST by 25%.", // Vessel of Ruin
+        "284": "[Wild] The wild Pokémon decreases your lead Pokémon's BST by 25%.", // Sword of Ruin
+        "285": "[Wild] The wild Pokémon decreases your lead Pokémon's BST by 25%.", // Tablets of Ruin
+        "286": "[Wild] The wild Pokémon decreases your lead Pokémon's BST by 25%.", // Beads of Ruin
+        
+        "268": "[Misc] When growing Berries in the Daycare, a Pokémon with this ability will produce 1.5x more Berries in 25% less time than usual. Does not stack with Ripen.", // Seed Sower
+        "247": "[Misc] When growing Berries in the Daycare, a Pokémon with this ability will produce 1.5x more Berries in 25% less time than usual. Does not stack with Seed Sower.", // Ripen
+        "139": "[Misc] When growing Berries in the Daycare, a Pokémon with this ability will produce 1.8x more Berries than usual.", // Harvest
+        "82": "[Misc] When growing Berries in the Daycare, a Pokémon with this ability will produce 70% fewer Berries, but in 60% less time than usual.", // Gluttony
+        "167": "[Misc] When growing Berries in the Daycare, a Pokémon with this ability will produce 20% fewer Berries, but in 55% less time than usual." // Cheek Pouch
+};
     function getCrystalEffect(num) {
         for (var x in zCrystalData) {
             if (!(zCrystalData[x].special)) {
@@ -2103,6 +2187,7 @@ function Safari() {
     var contestForfeited = [];
     var contestantsCount = {};
     var contestantsWild = [];
+    var contestCombo = 0;
     var currentTheme;
     var currentThemeAlter;
     var currentThemeEffect;
@@ -3413,7 +3498,7 @@ function Safari() {
         return ret.filter(function(e) { return excludeSelf ? e !== num : true });
     }
     function ignoresWildAbilities(player) {
-        var abilities = [104, 163, 164, 256]; // Mold Breaker, Turboblaze, Teravolt, Neutralizing Gas
+        var abilities = [104, 163, 164, 256, 296]; // Mold Breaker, Turboblaze, Teravolt, Neutralizing Gas, Mycelium Might
         var leader = safari.getEffectiveLead(player, true);
         for (var a in abilities) {
             if (canHaveAbility(leader, abilities[a])) {
@@ -8731,7 +8816,7 @@ function Safari() {
             "name": "Curious Medicine"
         },
         "267": {
-            "name:": "Lingering Aroma"
+            "name": "Lingering Aroma"
         },
         "268": {
             "name": "Seed Sower"
@@ -9188,7 +9273,7 @@ function Safari() {
         return [65594, 65595, 65636, 65637, 65693, 65747, 65751, 66019, 66020, 66039, 66085, 131622, 66106, 66107, 66164, 66241, 66242, 66249, 66260].contains(parseInt(pokeNum, 10));
     }
     function isPaldeanForm(pokeNum) {
-        return [65564, 131266, 196802, 65730].contains(parseInt(pokeNum, 10));
+        return [65664, 131200, 196736, 65730].contains(parseInt(pokeNum, 10));
     }
     function getPokeColor(pokeNum) {
         var c, id = parseInt(pokeNum, 10);
@@ -10298,7 +10383,7 @@ function Safari() {
                 shiny = true; // wild botd mon has 2x chance to be shiny
                 amount = 1;
             }
-            if (noShinySprite.indexOf(num) !== -1) {
+            if (noShinySprite.indexOf(num) !== -1 && !makeShiny) {
                 shiny = false;
             }
             if (spiritMon) {
@@ -10497,6 +10582,23 @@ function Safari() {
         if (canHaveAbility(currentPokemon, abilitynum("Wonder Guard"))) {
             wildAbilityMessageList.push("The wild {0} {1} protected by Wonder Guard!".format(poke(currentDisplay, true), is_are));
         }
+        if (canHaveAbility(currentPokemon, abilitynum("Mirror Armor"))) {
+            wildAbilityMessageList.push("The wild {0} {1} protected from {2} due to Mirror Armor!".format(poke(currentDisplay, true), is_are, es(finishName("mirror"))));
+        }
+        var ruinAbilities = [283, 284, 285, 286]; // Vessel of Ruin, Sword of Ruin, Tablets of Ruin, Beads of Ruin
+        for (var i = 0; i < ruinAbilities.length; i++) {
+            if (canHaveAbility(currentPokemon, ruinAbilities[i])) {
+                wildAbilityMessageList.push("The wild {0} {1} reducing the power of surrounding Pokémon due to {2}!".format(poke(currentDisplay, true), is_are, abilityOff(ruinAbilities[i])));
+                break;
+            }
+        }
+        var fastCounterAbilities = [199, 214, 295]; // Dazzling, Queenly Majesty, Armor Tail
+        for (var i = 0; i < fastCounterAbilities.length; i++) {
+            if (canHaveAbility(currentPokemon, fastCounterAbilities[i])) {
+                wildAbilityMessageList.push("The wild {0} {1} protected from {2} due to {3}!".format(poke(currentDisplay, true), is_are, readable(["quick", "lightning"].map(finishName).map(es)), abilityOff(fastCounterAbilities[i])));
+                break;
+            }
+        }
         for (var e in toSend) {
             var pid = toSend[e];
 
@@ -10577,7 +10679,7 @@ function Safari() {
             }
             if (player.options.leadAbilityMessages) {
                 var getIgnorableAbilities = function(id) {
-                    var ignorable = ["Color Change", "Contrary", "Defeatist", "Emergency Exit", "Levitate", "Moxie", "Pressure", "Run Away", "Wimp Out", "Wonder Guard"].map(abilitynum);
+                    var ignorable = ["Color Change", "Contrary", "Defeatist", "Emergency Exit", "Levitate", "Moxie", "Pressure", "Run Away", "Wimp Out", "Wonder Guard", "Armor Tail", "Queenly Majesty", "Dazzling", "Mirror Armor", "Tablets of Ruin", "Sword of Ruin", "Beads of Ruin", "Vessel of Ruin"].map(abilitynum);
                     var ret = [];
                     for (var i = 0; i < ignorable.length; i++) {
                         if (canHaveAbility(id, ignorable[i])) {
@@ -10611,9 +10713,6 @@ function Safari() {
                 if (canHaveAbility(leader, abilitynum("Speed Boost"))) {
                     abilityMessageList[pid].push("Your {0}'s Speed Boost gives you a better chance of throwing before others!".format(poke(leader, true)));
                 }
-                if (canHaveAbility(leader, abilitynum("Gale Wings"))) {
-                    abilityMessageList[pid].push("Your {0}'s Gale Wings gives you a much better chance of throwing before others!".format(poke(leader, true)));
-                }
                 if (canHaveAbility(leader, abilitynum("Prankster"))) {
                     abilityMessageList[pid].push("Your {0}'s Prankster gives you a better chance of taking photos before others!".format(poke(leader, true)));
                 }
@@ -10638,11 +10737,18 @@ function Safari() {
                 if (canHaveAbility(leader, abilitynum("Wind Power")) && hasType(currentDisplay, "Flying")) {
                     abilityMessageList[pid].push("Your {0}'s Wind Power prepares it to catch a breeze!".format(poke(leader, true)));
                 }
+                var superPrioAbilities = [182, 265]; // Gale Wings, Quick Draw
+                for (var i = 0; i < superPrioAbilities.length; i++) {
+                    if (canHaveAbility(leader, superPrioAbilities[i])) {
+                        abilityMessageList[pid].push("Your {0}'s {1} gives you a much better chance of throwing before others!".format(poke(leader, true), abilityOff(superPrioAbilities[i])));
+                    }
+                }
                 var snipeAbilities = [97, 289]; // Sniper, Opportunist
                 if (currentBaiter !== null && currentBaiter !== player.id) {
                     for (var i = 0; i < snipeAbilities.length; i++) {
                         if (canHaveAbility(leader, snipeAbilities[i])) {
                             abilityMessageList[pid].push("Your {0}'s {1} boosts your catch rate against Pokémon baited by others!".format(poke(leader, true), abilityOff(snipeAbilities[i])));
+                            break;
                         }
                     }
                 }
@@ -10672,9 +10778,9 @@ function Safari() {
 
                 var abilBoosted = [];
                 if (currentThemeEffect == "rain") {
-                    abilBoosted = [abilitynum("Swift Swim"), abilitynum("Hydration"), abilitynum("Rain Dish"), abilitynum("Dry Skin")];
+                    abilBoosted = [abilitynum("Swift Swim"), abilitynum("Hydration"), abilitynum("Rain Dish"), abilitynum("Dry Skin"), abilitynum("Quark Drive"), abilitynum("Hadron Engine")];
                 } else if (currentThemeEffect == "sunny") {
-                    abilBoosted = [abilitynum("Chlorophyll"), abilitynum("Solar Power"), abilitynum("Flower Gift"), abilitynum("Leaf Guard")];
+                    abilBoosted = [abilitynum("Chlorophyll"), abilitynum("Solar Power"), abilitynum("Flower Gift"), abilitynum("Leaf Guard"), abilitynum("Protosynthesis"), abilitynum("Orichalcum Pulse")];
                 } else if (currentThemeEffect == "sandstorm") {
                     abilBoosted = [abilitynum("Sand Rush"), abilitynum("Sand Veil"), abilitynum("Sand Force")];
                 } else if (currentThemeEffect == "hail") {
@@ -10750,6 +10856,7 @@ function Safari() {
         contestCount = contestDuration;
         contestMidPoint = false;
         spiritSpawn = true;
+        canSpawnTera = true;
         wildTera = false;
         wildSpirit = false;
         var themesListed = [].concat(nextTheme);
@@ -11819,6 +11926,43 @@ function Safari() {
 
        sys.sendMessage(src, "", safchan);
     };
+    this.showAbilityReference = function(src, ability, pageNum) {
+        if (ability && isNaN(ability)) {
+            ability = abilitynum(ability);
+        }
+        var colorTags = function(str) {
+            return str
+                .replace("[Lead]", toColor("<b>[Lead]</b>", "green"))
+                .replace("[Wild]", toColor("<b>[Wild]</b>", "red"))
+                .replace("[Misc]", toColor("<b>[Misc]</b>", "brown"));
+        }
+        sys.sendMessage(src, "", safchan);
+        safaribot.sendHtmlMessage(src, "<u>Safari Ability Effect Reference</u>", safchan);
+        if (abilityEffects.hasOwnProperty(ability)) {
+            safaribot.sendHtmlMessage(src, "{0}: {1}".format(link("/find ability:" + abilityOff(ability), abilityOff(ability)), colorTags(abilityEffects[ability])), safchan);
+        }
+        else {
+            var keys = Object.keys(abilityEffects).sort(function(a, b) { return abilityOff(a) < abilityOff(b) ? -1 : 1 });
+            var displayLimit = 10,
+                pageNum = Math.abs(parseInt(pageNum)) || 0;
+            var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
+            for (var i = 0; i < page.length; i++) {
+                ability = page[i];
+                var pageContent = "{0}: {1}".format(
+                    link("/find ability:" + abilityOff(ability), abilityOff(ability)),
+                    colorTags(abilityEffects[ability])      
+                );
+                safaribot.sendHtmlMessage(src, "-" + pageContent, safchan);
+                if (i === page.length-1) {
+                    var pageControls = (page.contains(keys[0]) ? "" : link("/abref 0:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/abref 0:" + (pageNum+1), "«Next Page»"));
+                    if (pageControls) {
+                        sys.sendMessage(src, "", safchan);
+                        safaribot.sendHtmlMessage(src, pageControls, safchan);
+                    }
+                }
+            }
+        }
+    };
     this.getAuraEffect = function(player, type, def) {
         if (!player) {
             return def;
@@ -11959,7 +12103,7 @@ function Safari() {
         var isLegend = isLegendary(wild);
         var legendaryChance = isLegend ? 0.50 : 1;
         var spiritMonBonus = wildSpirit ? 0.50 : 1;
-        var teraChance = wildTera ? 0.5 : 1;
+        var teraChance = wildTera ? 0.75 : 1;
         var flowerGirlBonus = 1;
         var cherishBonus = Math.min(countDuplicates(pokeInfo.species(getInputPokemon(poke(leader)).num)), 10);
         var scaleColor = player.scaleDeadline >= now() ? player.scaleColor : null;
@@ -12034,6 +12178,13 @@ function Safari() {
         if (userStats <= itemData.eviolite.threshold) {
             evioBonus = getPerkBonus(player, "eviolite");
             userStats += evioBonus;
+        }
+        var ruinAbilities = [283, 284, 285, 286]; // Vessel of Ruin, Sword of Ruin, Tablets of Ruin, Beads of Ruin
+        for (var i = 0; i < ruinAbilities.length; i++) {
+            if (canHaveAbility(usingPokemon, ruinAbilities[i]) && !ignoresWildAbilities(player)) {
+                userStats = Math.round(userStats * 0.75);
+                break;
+            }
         }
         if ((currentRules && currentRules.invertedBST) || this.getFortune(player, "invertbst", 0) || currentThemeEffect == "distortion") {
             userStats -= evioBonus;
@@ -12277,7 +12428,7 @@ function Safari() {
                     break;
                 }
             }
-            var ignoreRules = [12, 109, 20]; // Oblivious, Unaware, Own Tempo
+            var ignoreRules = [12, 109, 20, 282]; // Oblivious, Unaware, Own Tempo, Good as Gold
             for (var i = 0; i < ignoreRules.length; i++) {
                 if (canHaveAbility(trueLeader, ignoreRules[i])) {
                     rulesMod = [1, false];
@@ -12348,9 +12499,9 @@ function Safari() {
         if (currentThemeEffect) {
             var abilBoosted = [];
             if (currentThemeEffect == "rain") {
-                abilBoosted = [abilitynum("Swift Swim"), abilitynum("Hydration"), abilitynum("Rain Dish"), abilitynum("Dry Skin")];
+                abilBoosted = [abilitynum("Swift Swim"), abilitynum("Hydration"), abilitynum("Rain Dish"), abilitynum("Dry Skin"), abilitynum("Quark Drive"), abilitynum("Hadron Engine")];
             } else if (currentThemeEffect == "sunny") {
-                abilBoosted = [abilitynum("Chlorophyll"), abilitynum("Solar Power"), abilitynum("Flower Gift"), abilitynum("Leaf Guard")];
+                abilBoosted = [abilitynum("Chlorophyll"), abilitynum("Solar Power"), abilitynum("Flower Gift"), abilitynum("Leaf Guard"), abilitynum("Protosynthesis"), abilitynum("Orichalcum Pulse")];
             } else if (currentThemeEffect == "sandstorm") {
                 abilBoosted = [abilitynum("Sand Rush"), abilitynum("Sand Veil"), abilitynum("Sand Force")];
             } else if (currentThemeEffect == "hail") {
@@ -12372,7 +12523,7 @@ function Safari() {
             }
         }
         var auraBoost = safari.getAuraEffect(player, "catchrate", 1);
-        var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyMultiplier * legendaryChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff * abilityBoost * auraBoost + anyballbuff, 0.01) * eventChance;
+        var finalChance = Math.max((tierChance + statsBonus) * timelinemod * typeBonus * shinyMultiplier * legendaryChance * teraChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff * abilityBoost * auraBoost + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true && !theory) {
             if (player.helds.length > 0 && player.helds[0] == 2 && !needsPechaCleared.contains(player.id.toLowerCase())) {
                 player.berries.pecha = true;
@@ -12501,6 +12652,19 @@ function Safari() {
         if (wildEvent && ball == "master") {
             safaribot.sendMessage(src, "This is an Event Pokémon, you cannot use " + es(finishName("master")) + "!", safchan);
             return;
+        }
+        if (ball === "mirror" && canHaveAbility(currentPokemon, abilitynum("Mirror Armor")) && !ignoresWildAbilities(player)) {
+            safaribot.sendMessage(src, "The wild Pokémon's ability prevents the use of this Ball!", safchan);
+            return;
+        }
+        if (["quick", "lightning"].contains(ball) && !ignoresWildAbilities(player)) {
+            var fastCounterAbilities = [199, 214, 295]; // Dazzling, Queenly Majesty, Armor Tail
+            for (var i = 0; i < fastCounterAbilities.length; i++) {
+                if (canHaveAbility(currentPokemon, fastCounterAbilities[i])) {
+                    safaribot.sendMessage(src, "The wild Pokémon's ability prevents the use of this Ball!", safchan);
+                    return;
+                }
+            }
         }
         if (ball === "spirit" && (safari.spiritDuelsCanSignup(src, player, true))) { // || !safari.inSpiritTeam(src, player))) {
             safaribot.sendHtmlMessage(src, "You can't throw " + es(finishName("spirit")) + " without signing up for " + link("/spiritduels", "Spirit Duels") + " first!", safchan);
@@ -12673,6 +12837,7 @@ function Safari() {
             if (canHaveAbility(currentPokemon, abilitynum("Pressure")) && !ignoresWildAbilities(player) && !allBalls.filter(function(e) { return itemData[e].special }).contains(ball) && player.balls[ball] > 1) {
                 safaribot.sendAll("The wild {0}'s Pressure used up an extra {1}...".format(poke(currentPokemon, true), finishName(ball)), safchan);
                 player.balls[ball] -= 1;
+                this.updateShop(player, ball);
             }
             if (baitCooldown <= 5) {
                 baitCooldown = sys.rand(5, 8);
@@ -12975,6 +13140,11 @@ function Safari() {
             }
             if (ball == "uturn" && player.party.length > 1) {
                 safaribot.sendAll(playerDisplayName + "'s " + playerDisplayMon + " switched out after catching the " + pokeName + "!" , safchan);
+                if (canHaveAbility(trueLeader, abilitynum("Regenerator")) && player.balls.uturn < getCap("uturn")) {
+                    player.balls.uturn += 1;
+                    safaribot.sendMessage(src, "Your {0}'s Regenerator restored your {1}!".format(poke(trueLeader, true), finishName("uturn")), safchan);
+                    this.updateShop(player, "uturn");
+                } 
                 var oldLead = trueLeader;
                 player.party = player.party.slice(1).concat([oldLead]);
                 if (currentThemeEffect == "past") {
@@ -13126,6 +13296,7 @@ function Safari() {
                 if (player.options.showContestCaptures) {
                     sys.sendHtmlMessage(src, toColor("<timestamp/><b>±Contest:</b> ", "#3daa68") + "(Caught {0}, BST {1})".format(contestCatchers[nameLower].length, add(contestCatchers[nameLower].map(getBST))), safchan);
                 }
+                contestCombo += 1;
             }
             if (player.costume === "fisherman" && safari.hasCostumeSkill(player, "reelOtherPokeballs") && chance(0.5)) {
                 var validReels = Object.keys(wildBallThrows).filter(function(e) { return !itemData[e].special });
@@ -13424,6 +13595,9 @@ function Safari() {
         }
         if (customFlee) {
             runmsgs = [customFlee];
+        }
+        if (contestCount > 0) {
+            contestCombo = 0;
         }
         if (lastEscapedMons) {
             var bst = getBST(currentPokemon);
@@ -17588,13 +17762,17 @@ function Safari() {
         var finalChance = itemData[item].successRate + perkBonus + this.getFortune(player, "honey", 0);
         
         if (!deluxe) {
-            if (canHaveAbility(player.party[0], abilitynum("Illuminate"))) {
-                safaribot.sendMessage(src, "Your {0} is emitting a beautiful glow due to its Illuminate that helps attract wild Pokémon!".format(poke(player.party[0], true)), safchan);
-                finalChance *= 1.3
+            var baitBoostAbilities = [35, 267]; // Illuminate, Lingering Aroma
+            for (var i = 0; i < baitBoostAbilities.length; i++) {
+                if (canHaveAbility(player.party[0], baitBoostAbilities[i])) {
+                    safaribot.sendMessage(src, "Your {0}'s {1} helps attract wild Pokémon!".format(poke(player.party[0], true), abilityOff(baitBoostAbilities[i])), safchan);
+                    finalChance *= 1.3;
+                    break;
+                }
             }
-            else if (canHaveAbility(player.party[0], abilitynum("Stench"))) {
+            if (canHaveAbility(player.party[0], abilitynum("Stench"))) {
                 safaribot.sendMessage(src, "Your {0} is emitting a repugnant odor due to its Stench that seems very unappealing to wild Pokémon...".format(poke(player.party[0], true)), safchan);
-                finalChance *= 0.95
+                finalChance *= 0.8;
             }
         }
         var rollCap = persist ? 100 : 1;
@@ -17666,8 +17844,19 @@ function Safari() {
                             }
                             safari.createWild(mon, null, 1, null, null, player, null, false, null);
                         } else {
+                            var teraSuccess = false;
+                            if (player.teraActive) {
+                                player.records.teraOrbsDeployed += 1;
+                                if (chance(itemData.teraorb.rate)) {
+                                    teraSuccess = true;
+                                    player.records.teraOrbsSucceeded += 1;
+                                }
+                                else {
+                                    
+                                }
+                            }
                             var where = player.mushroomDeadline > 0 ? player.mushroomTheme : null;
-                            safari.createWild(null, null, 1, null, safari.getEffectiveLead(player, true), player, null, golden ? "golden" : "bait", where);
+                            safari.createWild(null, teraSuccess, 1, null, safari.getEffectiveLead(player, true), player, null, golden ? "golden" : "bait", where);
                         }
                         if (golden) {
                             goldenBaitCooldown = itemData[item].successCD + sys.rand(0,9);
@@ -20229,7 +20418,7 @@ function Safari() {
             var toConsume = 1;
             if (canHaveAbility(player.party[0], abilitynum("Mycelium Might")) && player.balls.mushroom >= 2) {
                 toConsume = 2;
-                safaribot.sendMessage(src, "Your {0}'s Mycelium Might caused you to consume {1} instead of 1!".format(poke(player.party[0], true), plural(2, "mushroom")), safchan);
+                safaribot.sendMessage(src, "Your {0}'s Mycelium Might caused you to consume {1} instead of 1!".format(poke(player.party[0], true), plural(toConsume, "mushroom")), safchan);
             }
             player.balls.mushroom -= toConsume;
             player.mushroomTheme = possibleResults.random();
@@ -58401,6 +58590,7 @@ function Safari() {
             "/changealt: To pass your Safari data to another alt.",
             "/themespawns: Show Pokémon that appear in a specified theme.",
             "/themerares: Show rare Pokémon that appear in a specified theme.",
+            "/abilityref [ability]: Shows Safari-specific effects for the specified Ability. If no Ability is specified, all Abilities that have effects will be listed.",
             "/options: View and set miscellaneous settings and options for Safari",
             "/contestforfeit: Allows you to withdraw from any ongoing contest.",
             "/rockscare: Allows you to scare a wild Pokémon away. You can only scare Pokémon that haven't been interacted with for " + plural(rockScareThreshold/1000, "second") + ".",
@@ -58858,6 +59048,12 @@ function Safari() {
             }
             if (command === "themerare" || command === "themerares") {
                 safari.showThemeRares(src, commandData);
+                return true;
+            }
+            if (["abilityreference", "abilityref", "abref", "abreference"].contains(command)) {
+                commandData = commandData.split(":");
+                var ability = commandData[0], pageNum = commandData[1] || 0;
+                safari.showAbilityReference(src, ability, pageNum);
                 return true;
             }
             if (command === "bait" || command === "b") {
@@ -61726,6 +61922,7 @@ function Safari() {
                     nextTheme = null;
                     contestCatchers = {};
                     contestActivity = {};
+                    contestCombo = 0;
                     checkUpdate();
                 } else {
                     safaribot.sendMessage(src, "You can't skip a contest if there's none running or about to start!", safchan);
@@ -64540,7 +64737,7 @@ function Safari() {
                                     if (canHaveAbility(lead, abilitynum("Speed Boost"))) {
                                         throwChances[i] += size;
                                     }
-                                    if (canHaveAbility(lead, abilitynum("Gale Wings"))) {
+                                    if (canHaveAbility(lead, abilitynum("Gale Wings")) || canHaveAbility(lead, abilitynum("Quick Draw"))) {
                                         throwChances[i] += size * 3;
                                     }
                                     if (p.costume === "backpacker") {
@@ -64934,6 +65131,7 @@ function Safari() {
                     currentRules = null;
                     contestCatchers = {};
                     contestActivity = {};
+                    contestCombo = 0;
                     contestForfeited = [];
                     wildSpirit = false;
                     wildTera = false;
@@ -64999,7 +65197,7 @@ function Safari() {
                             spiritSpawn = false;
                             safari.createWild(null, null, amt, null, null, null, null, false, false, false, true);
                         }
-                        if (false) {
+                        if (chance(0.01 * contestCombo) && canSpawnTera) {
                             canSpawnTera = false;
                             safari.createWild(null, null, amt, null, null, null, null, false, false, false, false, true);
                         }
