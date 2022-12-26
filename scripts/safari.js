@@ -1914,6 +1914,7 @@ function Safari() {
         "281": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Orihalcum Pulse
         "287": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Quark Drive
         "288": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Hadron Engine
+        "278": "[Lead] Only activates when you are in a contest. If your lead has this Ability and a Dondozo is in the second slot of your party, your lead's BST is calculated by taking the higher of each individual stat between your lead and Dondozo. Additionally, your lead will inherit all of Dondozo's Ability effects, if any. Once this Ability activates, you cannot modify your party in any way, and you will be unable to use Switch Balls. Forfeiting a contest will deactivate this Ability.", // Commander
 
         "16": "[Wild] The wild Pokémon's type changes into your lead Pokémon's type whenever it breaks out of a Ball. If your lead Pokémon has two types, one is chosen at random. If it breaks out of a Spy Ball, the type will be listed as unknown.", // Color Change
         "126": "[Wild] The wild Pokémon's catch rate is calculated using inverted type effectiveness. This does not stack with the Inver costume, Inver Balls, or the Inverted Type Matchup Contest rule.", // Contrary
@@ -7992,7 +7993,7 @@ function Safari() {
             "moves": [movenum("Fire Fang"), movenum("Leafage"), movenum("Leer"), movenum("Spicy Extract"), movenum("Flamethrower"), movenum("Bite"), movenum("Growth"), movenum("Razor Leaf"), movenum("Sunny Day"), movenum("Bullet Seed"), movenum("Headbutt"), movenum("Zen Headbutt"), movenum("Worry Seed"), movenum("Crunch"), movenum("Seed Bomb"), movenum("Solar Beam"), movenum("Overheat"), movenum("Take Down"), movenum("Scary Face"), movenum("Protect"), movenum("Thief"), movenum("Trailblaze"), movenum("Facade"), movenum("Magical Leaf"), movenum("Endure"), movenum("Sandstorm"), movenum("Sleep Talk"), movenum("Grass Knot"), movenum("Stomping Tantrum"), movenum("Rest"), movenum("Substitute"), movenum("Will-O-Wisp"), movenum("Giga Drain"), movenum("Energy Ball"), movenum("Helping Hand"), movenum("Grassy Terrain"), movenum("Fire Blast"), movenum("Giga Impact"), movenum("Leaf Storm"), movenum("Hyper Beam"), movenum("Tera Blast"), movenum("Ingrain"), movenum("Leech Seed"), movenum("Rage Powder"), movenum("Rollout")]
         },
         "953": {
-            "types": ["Bug", ""],
+            "types": ["Bug", "???"],
             "name": "Rellor",
             "stats": [41, 50, 60, 31, 58, 30],
             "abilities": ["Compound Eyes", "Shed Skin"],
@@ -8253,7 +8254,7 @@ function Safari() {
             "moves": [movenum("Tackle"), movenum("Supersonic"), movenum("Water Gun"), movenum("Tickle"), movenum("Flail"), movenum("Rest"), movenum("Sleep Talk"), movenum("Dive"), movenum("Noble Roar"), movenum("Soak"), movenum("Body Slam"), movenum("Aqua Tail"), movenum("Rain Dance"), movenum("Order Up"), movenum("Heavy Slam"), movenum("Double-Edge"), movenum("Wave Crash"), movenum("Take Down"), movenum("Scary Face"), movenum("Protect"), movenum("Ice Fang"), movenum("Water Pulse"), movenum("Chilling Water"), movenum("Facade"), movenum("Bulldoze"), movenum("Avalanche"), movenum("Endure"), movenum("Zen Headbutt"), movenum("Waterfall"), movenum("Stomping Tantrum"), movenum("Rock Slide"), movenum("Body Press"), movenum("Substitute"), movenum("Crunch"), movenum("Liquidation"), movenum("Surf"), movenum("Hydro Pump"), movenum("Earthquake"), movenum("Giga Impact"), movenum("Outrage"), movenum("Hyper Beam"), movenum("Tera Blast"), movenum("Curse"), movenum("Fissure"), movenum("Thrash"), movenum("Yawn")]
         },
         "978": {
-            "types": ["Water", "Dragon"],
+            "types": ["Dragon", "Water"],
             "name": "Tatsugiri",
             "stats": [68, 50, 60, 120, 95, 82],
             "abilities": ["Commander", "Storm Drain"],
@@ -8263,7 +8264,7 @@ function Safari() {
             "moves": [movenum("Water Gun"), movenum("Splash"), movenum("Harden"), movenum("Helping Hand"), movenum("Water Pulse"), movenum("Soak"), movenum("Taunt"), movenum("Memento"), movenum("Muddy Water"), movenum("Nasty Plot"), movenum("Mirror Coat"), movenum("Dragon Pulse"), movenum("Take Down"), movenum("Protect"), movenum("Chilling Water"), movenum("Facade"), movenum("Icy Wind"), movenum("Endure"), movenum("Rain Dance"), movenum("Sleep Talk"), movenum("Rest"), movenum("Dragon Dance"), movenum("Substitute"), movenum("Surf"), movenum("Baton Pass"), movenum("Hydro Pump"), movenum("Giga Impact"), movenum("Outrage"), movenum("Hyper Beam"), movenum("Draco Meteor"), movenum("Tera Blast"), movenum("Counter"), movenum("Rapid Spin")]
         },
         "66514": {
-            "types": ["Water", "Dragon"],
+            "types": ["Dragon", "Water"],
             "name": "Tatsugiri-Droopy",
             "stats": [68, 50, 60, 120, 95, 82],
             "abilities": ["Commander", "Storm Drain"],
@@ -8273,7 +8274,7 @@ function Safari() {
             "moves": [movenum("Water Gun"), movenum("Splash"), movenum("Harden"), movenum("Helping Hand"), movenum("Water Pulse"), movenum("Soak"), movenum("Taunt"), movenum("Memento"), movenum("Muddy Water"), movenum("Nasty Plot"), movenum("Mirror Coat"), movenum("Dragon Pulse"), movenum("Take Down"), movenum("Protect"), movenum("Chilling Water"), movenum("Facade"), movenum("Icy Wind"), movenum("Endure"), movenum("Rain Dance"), movenum("Sleep Talk"), movenum("Rest"), movenum("Dragon Dance"), movenum("Substitute"), movenum("Surf"), movenum("Baton Pass"), movenum("Hydro Pump"), movenum("Giga Impact"), movenum("Outrage"), movenum("Hyper Beam"), movenum("Draco Meteor"), movenum("Tera Blast"), movenum("Counter"), movenum("Rapid Spin")]
         },
         "132050": {
-            "types": ["Water", "Dragon"],
+            "types": ["Dragon", "Water"],
             "name": "Tatsugiri-Stretchy",
             "stats": [68, 50, 60, 120, 95, 82],
             "abilities": ["Commander", "Storm Drain"],
@@ -8463,7 +8464,7 @@ function Safari() {
             "moves": [movenum("Electric Terrain"), movenum("Rock Throw"), movenum("Fire Fang"), movenum("Ice Fang"), movenum("Iron Defense"), movenum("Thunder Fang"), movenum("Screech"), movenum("Rock Tomb"), movenum("Bite"), movenum("Charge"), movenum("Rock Slide"), movenum("Sandstorm"), movenum("Wild Charge"), movenum("Pin Missile"), movenum("Earthquake"), movenum("Stealth Rock"), movenum("Stone Edge"), movenum("Giga Impact"), movenum("Take Down"), movenum("Scary Face"), movenum("Protect"), movenum("Low Kick"), movenum("Charge Beam"), movenum("Facade"), movenum("Bulldoze"), movenum("Snarl"), movenum("Metal Claw"), movenum("Fling"), movenum("Dragon Tail"), movenum("Endure"), movenum("Volt Switch"), movenum("Sunny Day"), movenum("Rain Dance"), movenum("Dig"), movenum("Brick Break"), movenum("Body Slam"), movenum("Fire Punch"), movenum("Thunder Punch"), movenum("Ice Punch"), movenum("Electro Ball"), movenum("Rock Blast"), movenum("Dragon Claw"), movenum("Thunder Wave"), movenum("Stomping Tantrum"), movenum("Rest"), movenum("Taunt"), movenum("Swords Dance"), movenum("Body Press"), movenum("Spikes"), movenum("Eerie Impulse"), movenum("Iron Head"), movenum("Dragon Dance"), movenum("Power Gem"), movenum("Substitute"), movenum("Crunch"), movenum("Heavy Slam"), movenum("Flamethrower"), movenum("Thunderbolt"), movenum("Earth Power"), movenum("Ice Beam"), movenum("Fire Blast"), movenum("Blizzard"), movenum("Focus Blast"), movenum("Hyper Beam"), movenum("Thunder"), movenum("Tera Blast")]
         },
         "996": {
-            "types": ["Ice", "Dragon"],
+            "types": ["Dragon", "Ice"],
             "name": "Frigibax",
             "stats": [65, 75, 45, 35, 45, 55],
             "abilities": ["Thermal Exchange", "Ice Body"],
@@ -8473,7 +8474,7 @@ function Safari() {
             "moves": [movenum("Tackle"), movenum("Leer"), movenum("Dragon Tail"), movenum("Icy Wind"), movenum("Dragon Breath"), movenum("Focus Energy"), movenum("Bite"), movenum("Ice Fang"), movenum("Dragon Claw"), movenum("Take Down"), movenum("Ice Beam"), movenum("Crunch"), movenum("Icicle Crash"), movenum("Protect"), movenum("Facade"), movenum("Avalanche"), movenum("Endure"), movenum("Rain Dance"), movenum("Snowscape"), movenum("Dig"), movenum("Body Slam"), movenum("Sleep Talk"), movenum("Rest"), movenum("Swords Dance"), movenum("Substitute"), movenum("Dragon Pulse"), movenum("Helping Hand"), movenum("Blizzard"), movenum("Outrage"), movenum("Draco Meteor"), movenum("Tera Blast"), movenum("Aqua Tail"), movenum("Dragon Rush"), movenum("Freeze-Dry"), movenum("Icicle Spear")]
         },
         "997": {
-            "types": ["Ice", "Dragon"],
+            "types": ["Dragon", "Ice"],
             "name": "Arctibax",
             "stats": [90, 95, 66, 45, 65, 62],
             "abilities": ["Thermal Exchange", "Ice Body"],
@@ -8483,7 +8484,7 @@ function Safari() {
             "moves": [movenum("Tackle"), movenum("Leer"), movenum("Dragon Tail"), movenum("Icy Wind"), movenum("Dragon Breath"), movenum("Focus Energy"), movenum("Bite"), movenum("Ice Fang"), movenum("Take Down"), movenum("Ice Beam"), movenum("Crunch"), movenum("Icicle Crash"), movenum("Scary Face"), movenum("Protect"), movenum("Facade"), movenum("Aerial Ace"), movenum("Avalanche"), movenum("Endure"), movenum("Rain Dance"), movenum("Snowscape"), movenum("Dig"), movenum("Brick Break"), movenum("Body Slam"), movenum("Sleep Talk"), movenum("Dragon Claw"), movenum("Rest"), movenum("Swords Dance"), movenum("Iron Head"), movenum("Substitute"), movenum("Dragon Pulse"), movenum("Helping Hand"), movenum("Blizzard"), movenum("Outrage"), movenum("Draco Meteor"), movenum("Tera Blast"), movenum("Aqua Tail"), movenum("Dragon Rush"), movenum("Freeze-Dry"), movenum("Icicle Spear")]
         },
         "998": {
-            "types": ["Ice", "Dragon"],
+            "types": ["Dragon", "Ice"],
             "name": "Baxcalibur",
             "stats": [115, 145, 92, 75, 86, 87],
             "abilities": ["Thermal Exchange", "Ice Body"],
@@ -8513,7 +8514,7 @@ function Safari() {
             "moves": [movenum("Astonish"), movenum("Tackle"), movenum("Take Down"), movenum("Protect"), movenum("Confuse Ray"), movenum("Thief"), movenum("Hex"), movenum("Night Shade"), movenum("Endure"), movenum("Sleep Talk"), movenum("Reflect"), movenum("Light Screen"), movenum("Rest"), movenum("Power Gem"), movenum("Substitute"), movenum("Shadow Ball"), movenum("Nasty Plot"), movenum("Tera Blast")]
         },
         "1000": {
-            "types": ["Ghost", "Steel"],
+            "types": ["Steel", "Ghost"],
             "name": "Gholdengo",
             "stats": [87, 60, 95, 133, 91, 84],
             "abilities": ["Good as Gold"],
@@ -10441,12 +10442,6 @@ function Safari() {
                 }
             }
             currentDisplay = (disguise ? appearance : num) + (shiny ? "" : 0);
-            var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
-            var currentId = poke(currentPokemonDisplay, true);
-            var displayId = currentId.split("");
-            displayId.splice(sys.rand(1, displayId.length - 1), 0, permObj.get("widthJoiner") || "");
-            displayId = displayId.join("");
-
             if (currentDisplay === currentPokemon) {
                 disguise = false;
             }
@@ -10460,82 +10455,9 @@ function Safari() {
                 currentPokemonAction = "eating";
             }
 
-            currentDisplayBST = displayBST = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
-            displayBST = (displayBST + "").split("");
-            displayBST.splice(sys.rand(1, displayBST.length - 1), 0, permObj.get("widthJoiner") || "");
-            displayBST = displayBST.join("");
-            var term = amount >= 4 ? "horde of " : ["", "pair of ", "group of "][amount-1];
-            if (spiritMon) {
-                displayId = "Spirit Realm " + displayId;
-            }
-            if (teraMon) {
-                displayId = "<b><font color='#55a4a2'>Terastallized " + displayId + "</font></b>";
-            }
-            var appmsg;
-            if (isPortaled) {
-                appmsg = "A wild {2}{0} came through the portal! <i>(BST: {1})</i>".format(displayId, displayBST, term);
-            } else {
-                appmsg = wildPokemonMessage.format(displayId, displayBST, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
-            }
-            var sprite = "<a href='po:send//bst " + currentPokemonDisplay + "'>" + (cageMode ? cage : pokeInfo.sprite(currentPokemonDisplay)) + "</a>";
-            if (teraMon) {
-                sprite = "<img src='" + teraCrowns[currentTypeOverride] + "'><br>" + sprite;
-            }
-
-            /*var cTheme = currentTheme;
-            var isGhost = false;
-            if (cTheme) {
-                var theme = contestThemes[cTheme];
-                if (theme.disguises && theme.notDisguised && (!(theme.notDisguised.contains(currentPokemon)))) {
-                    isGhost = true;
-                    wildEvent = false;
-                    var wildPokemonMessage2 = "A {1}wild Trick-or-treater appeared!: <i>(BST: {0}) (Types: {2}{3}) ({4}: {5})";
-                    var type_1 = (chance(0.5) ? type1(currentPokemon) : Object.keys(effectiveness).random());
-                    var type_2 = (chance(0.5) ? type2(currentPokemon) : (chance(0.7) ? (Object.keys(effectiveness).random()) : "???"));
-                    if (chance(0.4) && (type_2 !== "???")) {
-                        var pl = type_1;
-                        type_1 = type_2;
-                        type_2 = pl;
-                    }
-                    if (type_2 == "???") {
-                        type_2 = "";
-                    } else {
-                        type_2 = "/" + type_2;
-                    }
-                    var statName = ["HP", "Attack", "Defense", "Special Attack", "Special Defense", "Speed"].random();
-                    var statVal = getStatsNamed(currentPokemon)[statName];
-                    if (chance(0.33)) {
-                        statVal = Math.round(50 + (100 * Math.random()) - (25 * Math.random()) - (25 * Math.random()));
-                    } else if (chance(0.5)) {
-                        statVal = Math.round(statVal + (3 * Math.random()) - (3 * Math.random()));
-                    }
-                    if (chance(0.15)) {
-                        currentDisplayBST = Math.round(300 + (175 * Math.random()) + (175 * Math.random()) - (50 * Math.random()) - (50 * Math.random()));
-                    } else if (chance(0.25)) {
-                        currentDisplayBST = Math.round(200 + (50 * Math.random()) + (150 * Math.random()));
-                    } else if (chance(0.15)) {
-                        currentDisplayBST = Math.round(200 - (30 * Math.random()) + (150 * Math.random()));
-                    } else if (chance(0.6)) {
-                        currentDisplayBST = Math.round(currentDisplayBST + (5 * Math.random()) - (5 * Math.random()));
-                    }
-                    appmsg = wildPokemonMessage2.format(currentDisplayBST, term, type_1, type_2, statName, statVal);
-                    sprite = "<img src='" + ghostSprite + "'>";
-                }
-            }*/
-
+            currentDisplayBST = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
             var mandatoryDisplay = isRare(currentDisplay) || wildEvent;
-            if (amount > 1) {
-                var ret = [];
-                ret += "<hr><center>" + appmsg + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "");
-                for (var i = 0; i < amount; i++) {
-                    ret += sprite;
-                }
-                ret += "</center><hr>";
-                sendAll(ret, true, true, false, mandatoryDisplay);
-            } else {
-                sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + ((wildEvent || isRare(currentDisplay) && contestCount > 0) ? "<br/>All ball cooldowns were reset!" : "") + "</center><hr>", true, true, false, mandatoryDisplay);
-            }
-
+            safari.spawnDisplay(false, mandatoryDisplay, false, isPortaled ? "A wild {2}{0} came through the portal! <i>(BST: {1})</i>" : null);
             safari.afterSpawnDisplay(false, mandatoryDisplay);
 
             preparationPhase = sys.rand(5, 8);
@@ -10558,6 +10480,98 @@ function Safari() {
             }
             lastWild = now();
             lastWildAction = now();
+        }
+    };
+    this.spawnDisplay = function(src, mandatoryDisplay, channelJoin, customMessage) {
+        var currentId = poke(currentDisplay, true);
+        var displayId = currentId.split("");
+        var shiny = typeof currentDisplay === "string";
+        displayId.splice(sys.rand(1, displayId.length - 1), 0, permObj.get("widthJoiner") || "");
+        displayId = displayId.join("");
+        
+        var displayBST = currentDisplayBST;
+        displayBST = (displayBST + "").split("");
+        displayBST.splice(sys.rand(1, displayBST.length - 1), 0, permObj.get("widthJoiner") || "");
+        displayBST = displayBST.join("");
+        var term = currentPokemonCount >= 4 ? "horde of " : ["", "pair of ", "group of "][currentPokemonCount-1];
+        if (wildSpirit) {
+            displayId = "Spirit Realm " + displayId;
+        }
+        if (wildTera) {
+            displayId = "<b><font color='#55a4a2'>Terastallized " + displayId + "</font></b>";
+        }
+        var appmsg;
+        if (customMessage) {
+            appmsg = customMessage.format(displayId, displayBST, term);
+        } else {
+            appmsg = wildPokemonMessage.format(displayId, displayBST, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
+        }
+        var sprite = "<a href='po:send//bst " + currentDisplay + "'>" + (cageMode ? cage : pokeInfo.sprite(currentDisplay)) + "</a>";
+        if (wildTera) {
+            sprite = "<img src='" + teraCrowns[currentTypeOverride] + "'><br>" + sprite;
+        }
+
+        /*var cTheme = currentTheme;
+        var isGhost = false;
+        if (cTheme) {
+            var theme = contestThemes[cTheme];
+            if (theme.disguises && theme.notDisguised && (!(theme.notDisguised.contains(currentPokemon)))) {
+                isGhost = true;
+                wildEvent = false;
+                var wildPokemonMessage2 = "A {1}wild Trick-or-treater appeared!: <i>(BST: {0}) (Types: {2}{3}) ({4}: {5})";
+                var type_1 = (chance(0.5) ? type1(currentPokemon) : Object.keys(effectiveness).random());
+                var type_2 = (chance(0.5) ? type2(currentPokemon) : (chance(0.7) ? (Object.keys(effectiveness).random()) : "???"));
+                if (chance(0.4) && (type_2 !== "???")) {
+                    var pl = type_1;
+                    type_1 = type_2;
+                    type_2 = pl;
+                }
+                if (type_2 == "???") {
+                    type_2 = "";
+                } else {
+                    type_2 = "/" + type_2;
+                }
+                var statName = ["HP", "Attack", "Defense", "Special Attack", "Special Defense", "Speed"].random();
+                var statVal = getStatsNamed(currentPokemon)[statName];
+                if (chance(0.33)) {
+                    statVal = Math.round(50 + (100 * Math.random()) - (25 * Math.random()) - (25 * Math.random()));
+                } else if (chance(0.5)) {
+                    statVal = Math.round(statVal + (3 * Math.random()) - (3 * Math.random()));
+                }
+                if (chance(0.15)) {
+                    currentDisplayBST = Math.round(300 + (175 * Math.random()) + (175 * Math.random()) - (50 * Math.random()) - (50 * Math.random()));
+                } else if (chance(0.25)) {
+                    currentDisplayBST = Math.round(200 + (50 * Math.random()) + (150 * Math.random()));
+                } else if (chance(0.15)) {
+                    currentDisplayBST = Math.round(200 - (30 * Math.random()) + (150 * Math.random()));
+                } else if (chance(0.6)) {
+                    currentDisplayBST = Math.round(currentDisplayBST + (5 * Math.random()) - (5 * Math.random()));
+                }
+                appmsg = wildPokemonMessage2.format(currentDisplayBST, term, type_1, type_2, statName, statVal);
+                sprite = "<img src='" + ghostSprite + "'>";
+            }
+        }*/
+        if (currentPokemonCount > 1) {
+            var ret = [];
+            ret += "<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "");
+            for (var i = 0; i < currentPokemonCount; i++) {
+                ret += sprite;
+            }
+            ret += "</center><hr>";
+            if (src) {
+                sys.sendHtmlMessage(src, ret, safchan);
+            }
+            else {
+                sendAll(ret, true, true, false, mandatoryDisplay);
+            }
+        } else {
+            var ret = "<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + ((wildEvent || isRare(currentDisplay) && contestCount > 0) ? "<br/>All ball cooldowns were reset!" : "") + "</center><hr>";
+            if (src) {
+                sys.sendHtmlMessage(src, ret, safchan);
+            }
+            else {
+                sendAll(ret, true, true, false, mandatoryDisplay);
+            }
         }
     };
     this.afterSpawnDisplay = function(src, mandatoryDisplay) {
@@ -10688,6 +10702,10 @@ function Safari() {
                     }
                     return ret;
                 };
+                if (canHaveAbility(leader, abilitynum("Commander")) && player.party[1] == 977 && contestCount > 0 && !contestForfeited.contains(player.idnum)) { // Dondozo
+                    abilityMessageList[pid].push("Your {0} acts as a Commander to your {1}, allowing them to battle together!".format(poke(leader, true), poke(player.party[1], true)));
+                    leader = player.party[1]; // swap out the leader variable here to automatically trigger Dondozo's ability messages. does not affect actual effective party lead
+                }
                 var ignorable = getIgnorableAbilities(currentDisplay);
                 if (ignore && ignorable.length > 0) {
                     abilityMessageList[pid].push("Your {0}'s {1} bypasses the wild {2}'s {3}!".format(poke(leader, true), abilityOff(ignore), poke(currentDisplay, true), readable(ignorable.map(abilityOff))));
@@ -11937,7 +11955,7 @@ function Safari() {
                 .replace("[Misc]", toColor("<b>[Misc]</b>", "brown"));
         }
         sys.sendMessage(src, "", safchan);
-        safaribot.sendHtmlMessage(src, "<u>Safari Ability Effect Reference</u>", safchan);
+        safaribot.sendHtmlMessage(src, "<u><b>Safari Ability Effect Reference</b></u>", safchan);
         if (abilityEffects.hasOwnProperty(ability)) {
             safaribot.sendHtmlMessage(src, "{0}: {1}".format(link("/find ability:" + abilityOff(ability), abilityOff(ability)), colorTags(abilityEffects[ability])), safchan);
         }
@@ -12168,6 +12186,13 @@ function Safari() {
         }
 
         var userStats = (getBST(leader));
+        if (canHaveAbility(leader, abilitynum("Commander")) && player.party[1] == 977 && contestCount > 0 && !contestForfeited.contains(player.idnum)) { // Dondozo check
+            var currentStats = getStats(leader), supportStats = getStats(player.party[1]);
+            for (var i = 0; i < currentStats.length; i++) {
+                currentStats[i] = Math.max(currentStats[i], supportStats[i]);
+            }
+            userStats = add(currentStats);
+        }
         var statsBonus = 0;
         if (!(currentRules && currentRules.invertedBST)) {
             if (userStats <= 600 && this.hasCostumeSkill(player, "useLowBST")) {
@@ -12430,7 +12455,7 @@ function Safari() {
             }
             var ignoreRules = [12, 109, 20, 282]; // Oblivious, Unaware, Own Tempo, Good as Gold
             for (var i = 0; i < ignoreRules.length; i++) {
-                if (canHaveAbility(trueLeader, ignoreRules[i])) {
+                if (canHaveAbility(trueLeader, ignoreRules[i]) || (contestCount > 0 && canHaveAbility(trueLeader, abilitynum("Commander")) && player.party[1] == 977 && !contestForfeited.contains(player.idnum))) { // Dondozo check
                     rulesMod = [1, false];
                     break;
                 }
@@ -12654,17 +12679,21 @@ function Safari() {
             return;
         }
         if (ball === "mirror" && canHaveAbility(currentPokemon, abilitynum("Mirror Armor")) && !ignoresWildAbilities(player)) {
-            safaribot.sendMessage(src, "The wild Pokémon's ability prevents the use of this Ball!", safchan);
+            safaribot.sendMessage(src, "The wild Pokémon's Ability prevents the use of this Ball!", safchan);
             return;
         }
         if (["quick", "lightning"].contains(ball) && !ignoresWildAbilities(player)) {
             var fastCounterAbilities = [199, 214, 295]; // Dazzling, Queenly Majesty, Armor Tail
             for (var i = 0; i < fastCounterAbilities.length; i++) {
                 if (canHaveAbility(currentPokemon, fastCounterAbilities[i])) {
-                    safaribot.sendMessage(src, "The wild Pokémon's ability prevents the use of this Ball!", safchan);
+                    safaribot.sendMessage(src, "The wild Pokémon's Ability prevents the use of this Ball!", safchan);
                     return;
                 }
             }
+        }
+        if (ball === "uturn" && canHaveAbility(trueLeader, abilitynum("Commander")) && player.party[1] == 977 && contestCount > 0 && !contestForfeited.contains(player.idnum)) {
+            safaribot.sendMessage(src, "You can't use {0} while Commander is active!".format(es(finishName("uturn"))), safchan);
+            return;
         }
         if (ball === "spirit" && (safari.spiritDuelsCanSignup(src, player, true))) { // || !safari.inSpiritTeam(src, player))) {
             safaribot.sendHtmlMessage(src, "You can't throw " + es(finishName("spirit")) + " without signing up for " + link("/spiritduels", "Spirit Duels") + " first!", safchan);
@@ -14636,6 +14665,10 @@ function Safari() {
             }
         }
 
+        if (contestCount > 0 && canHaveAbility(this.getEffectiveLead(player, true), abilitynum("Commander")) && player.party[1] == 977 && !contestForfeited.contains(player.idnum)) { // Dondozo check
+            safaribot.sendMessage(src, "You can't modify your party while Commander is active!", safchan);
+            return;
+        }
         if (action === "add") {
             if (player.tutorial.inTutorial && info.name !== "Pikachu") {
                 if (cantBecause(src, reason, ["tutorial"])) {
@@ -15407,7 +15440,7 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "How to use /find:", safchan);
             safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Color, Move, Ability, Shiny, NotEvolved, CanEvolve, HasEvolved, FinalForm, CanMega, IsMyth, IsRare, Duplicate, Duplicate+, Region, Theme or Tier) and a value to find Pokémon in your box. Examples: ", safchan);
-            safaribot.sendMessage(src, "For Name: Type any part of the Pokémon's name. e.g.: /find name LUG (both Lugia and Slugma will be displayed, among others with LUG on the name)", safchan);
+            safaribot.sendMessage(src, "For Name: Type any part of the Pokémon's name. e.g.: /find name LUG (both Lugia and Slugma will be displayed, among others with LUG on the name). To search for EXACT name, put a \"=\" in front of the name, e.g. /find name =Lugia", safchan);
             safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
             safaribot.sendMessage(src, "For Move: Type any move. e.g.: /find move tackle (will show all Pokémon that can learn Tackle)", safchan);
             safaribot.sendMessage(src, "For Ability: Type any ability. e.g.: /find ability overgrow (will show all Pokémon that can have Overgrow)", safchan);
@@ -15594,12 +15627,19 @@ function Safari() {
             if (val === TYPE_NULL_NAME.toLowerCase()) {
                 val = sys.pokemon(772).toLowerCase();
             }
+            val = val.replace(/é/g, "e");
+            var exact = false;
+            if (val[0] === "=") {
+                exact = true;
+                val = val.slice(1);
+            }
             current.forEach(function(x){
-                if (pokePlain(x).toLowerCase().replace(/é/g, "e").indexOf(val.replace(/é/g, "e")) !== -1) {
+                var compName = pokePlain(x).toLowerCase().replace(/é/g, "e");
+                if (exact ? compName === val : compName.indexOf(val) !== -1) {
                     list.push(x);
                 }
             });
-            return "with " + val + " in their name";
+            return exact ? "with exact name = " + val : "with " + val + " in their name";
         }
         if (crit == "start") {
             val = val.toLowerCase();
@@ -17850,9 +17890,10 @@ function Safari() {
                                 if (chance(itemData.teraorb.rate)) {
                                     teraSuccess = true;
                                     player.records.teraOrbsSucceeded += 1;
+                                    safaribot.sendHtmlAll("", safchan);
                                 }
                                 else {
-                                    
+                                    safaribot.sendHtmlAll("", safchan);
                                 }
                             }
                             var where = player.mushroomDeadline > 0 ? player.mushroomTheme : null;
@@ -56361,10 +56402,10 @@ function Safari() {
             if (currentRules) {
                 safaribot.sendHtmlMessage(src, "Contest's Rules: " + this.translateRules(currentRules, true), safchan);
             }
+            safaribot.sendHtmlMessage(src, "Current Contest Combo: " + addComma(contestCombo), safchan);
             var shownTime = contestCount;
             safaribot.sendHtmlMessage(src, "Time until the Contest ends: " + (hasExtension ? toColor(timeString(contestExtensionLimit - contestExtension) + " [Event Extension]", "crimson") : timeString(shownTime)) + ".", safchan);
         } else {
-
             safaribot.sendMessage(src, "Time until next Contest: " + timeString(contestCooldown) + ".", safchan);
             if (nextTheme) {
                 safaribot.sendMessage(src, "Next Contest's theme: " + (nextTheme !== "none" ? themeName(nextTheme) : "Default") + ".", safchan);
@@ -59887,7 +59928,7 @@ function Safari() {
                 var bst = getBST(info.num);
                 safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + (pokeInfo.forme(info.num) > 0 ? "-" + pokeInfo.forme(info.num) : "") + (pokeInfo.species(info.num) !== info.num ? " (" + info.num + "). " : ". ") + info.name + "'s BST is " + bst + (bst <= itemData.eviolite.threshold ? " (" + (bst + itemData.eviolite.maxRate * (player && player.costume === "preschooler" ? costumeData["preschooler"].rate2 : 1)) + " with max " + es(finishName("eviolite")) + ")" : "") + statsmsg, safchan);
                 safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Tier: " + safari.getTier(info.num) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) + ", Height: " + getHeight(info.num) + " m, Weight: " + getWeight(info.num) + " kg.", safchan);
-                safaribot.sendHtmlMessage(src, "Abilities: " + readable([0, 1, 2].map(function(e) { return getPokeAbility(info.num, e) }).filter(function(e) { return !!e }).map(abilityOff)) + ".", safchan);
+                safaribot.sendHtmlMessage(src, "Abilities: " + readable([0, 1, 2].map(function(e) { return getPokeAbility(info.num, e) }).filter(function(e) { return !!e }).map(function(e) { return e in abilityEffects ? link("/abref " + e, abilityOff(e)) : abilityOff(e) })) + ".", safchan);
                 if (opt.contains("effectiveness")) {
                     safaribot.sendHtmlMessage(src, efmsg.join(", "), safchan);
                     safaribot.sendHtmlMessage(src, efmsg2.join(", "), safchan);
@@ -59918,7 +59959,7 @@ function Safari() {
                             conditionals.push(addComma(shinyRequired) + " if shiny");
                         }
 
-                        safaribot.sendMessage(src, info.name + " requires " + plural(candiesRequired, "rare") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + (conditionals.length > 0 ? " (" + conditionals.join(", ") + ")" : "") + ". ", safchan);
+                        safaribot.sendHtmlMessage(src, info.name + " requires " + plural(candiesRequired, "rare") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(function(e) { return link("/bst " + e, poke(e)) }), "or") : link("/bst " + evo, poke(evo))) + (conditionals.length > 0 ? " (" + conditionals.join(", ") + ")" : "") + ". ", safchan);
                     }
                 }
                 if (!isMega(info.num) && info.num in megaEvolutions) {
@@ -64451,14 +64492,7 @@ function Safari() {
             this.showNextContest(src);
             sys.sendMessage(src, "*** ******************************************** ***", safchan);
             if (currentPokemon && (!(currentTheme && contestThemes[currentTheme].disguises))) {
-                var appmsg = currentPokemonCount > 1 ? "There are wild {0}! <i>(BST: {1})</i>" : "There's a wild {0}! <i>(BST: {1})</i>";
-                appmsg = appmsg.format(poke(currentDisplay, true), currentDisplayBST);
-                var shiny = typeof currentPokemon === "string";
-                var sprite = "";
-                for (var i = 0; i < currentPokemonCount; i++) {
-                    sprite += "<a href='po:send//bst " + currentDisplay + "'>" + pokeInfo.sprite(currentDisplay) + "</a>";;
-                }
-                sys.sendHtmlMessage(src, "<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + ((wildEvent || (isRare(currentDisplay) && contestCount > 0)) ? "<br/>All ball cooldowns were reset!" : "") + "</center><hr>", safchan);
+                safari.spawnDisplay(src, false, true, "There's a wild {2}{0}! <i>(BST: {1})</i>");
                 safari.afterSpawnDisplay(src, true);
             }
             else {
@@ -65199,7 +65233,7 @@ function Safari() {
                         }
                         if (chance(0.01 * contestCombo) && canSpawnTera) {
                             canSpawnTera = false;
-                            safari.createWild(null, null, amt, null, null, null, null, false, false, false, false, true);
+                            safari.createWild(null, null, 1, null, null, null, null, false, false, false, false, true);
                         }
                         else {
                             safari.createWild(null, null, amt);
