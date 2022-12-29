@@ -1860,61 +1860,63 @@ function Safari() {
         "34": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Chlorophyll
         "181": "[Lead] Increases your catch rate by an amount equal to 2 buffs if your lead is nerfed during a contest.", // Competitive
         "14": "[Lead] Your chance of finding a held item after catching a Pokémon (if that species can hold an item) is increased.<br>- If the held item rate is more than or equal to 50%: +10% chance<br>- If the held item rate is between 20% and 49%: +20% chance<br>- If the held item rate is 19% or below: 2x chance<br>For wild held Berries in Contests:<br>- If the Berry rate is more than or equal to 50%: +10% chance<br>- If the Berry rate is 49% or below: +20% chance", // Compound Eyes
-        "128": "[Lead] Increases your catch rate by an amount equal to 2 buffs if your lead is nerfed during a contest.", // Defiant
+        "128": 181, // Defiant
         "87": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Dry Skin
-        "122": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Flower Gift
-        "119": "[Lead] Your chance of finding a held item after catching a Pokémon (if that species can hold an item) is increased.<br>- If the held item rate is more than or equal to 50%: +10% chance<br>- If the held item rate is between 20% and 49%: +20% chance<br>- If the held item rate is 19% or below: 2x chance<br>For wild held Berries in Contests:<br>- If the Berry rate is more than or equal to 50%: +10% chance<br>- If the Berry rate is 49% or below: +20% chance", // Frisk
+        "122": 34, // Flower Gift
+        "119": 14, // Frisk
         "182": "[Lead] You gain greatly increased priority when throwing Balls. Does not work for taking photos.", // Gale Wings
-        "93": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Hydration
+        "93": 87, // Hydration
         "115": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Hail] contests.", // Ice Body
-        "248": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Hail] contests.", // Ice Face
+        "248": 115, // Ice Face
         "35": "[Lead] Your chance of successfully baiting is increased by 30%. This does not work on Deluxe Bait.", // Illuminate
         "150": "[Lead] Your lead Pokémon will transform into any current wild Pokémon.<br>1. Viewing your party will display your lead's transformed sprite. The transformed Pokémon's original species name is still shown, however. Shininess is dependent on the wild Pokémon; even if your lead is Shiny, it will transform into a regular colour if the wild Pokémon is not Shiny.<br>2. The transformation is temporary and will wear off after the wild Pokémon is gone.<br>3. Your catch rate is calculated as if your lead is the actual transformed Pokémon. During a contest, your lead will be buffed/nerfed depending on whether the current wild Pokémon is buffed/nerfed. For all other non-catch rate-related purposes, your lead is still considered its original species. The wild Pokémon's ability will not be copied.", // Imposter
         "151": "[Lead] Reveals a wild Pokémon's true form to you if it is disguised as another Pokémon.", // Infiltrator
         "22": "[Lead] The wild Pokémon's BST is decreased (only for you) by 30% if your lead Pokémon has a higher BST, and 10% if not.", // Intimidate
         "51": "[Lead] Increases your chance of taking higher quality photos.", // Keen Eye
-        "102": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Leaf Guard
-        "187": "[Lead] Your chance of finding a held item after catching a Pokémon (if that species can hold an item) is increased.<br>- If the held item rate is more than or equal to 50%: +10% chance<br>- If the held item rate is between 20% and 49%: +20% chance<br>- If the held item rate is 19% or below: 2x chance<br>For wild held Berries in Contests:<br>- If the Berry rate is more than or equal to 50%: +10% chance<br>- If the Berry rate is 49% or below: +20% chance", // Magician
+        "102": 34, // Leaf Guard
+        "187": 14, // Magician
         "104": "[Lead] You will completely ignore the effects of any wild Pokémon's ability.", // Mold Breaker
-        "256": "[Lead] You will completely ignore the effects of any wild Pokémon's ability.", // Neutralizing Gas
+        "256": 104, // Neutralizing Gas
         "12": "[Lead] You will ignore the effects of Contest buffs and nerfs.", // Oblivious
-        "20": "[Lead] You will ignore the effects of Contest buffs and nerfs.", // Own Tempo
-        "124": "[Lead] Your chance of finding a held item after catching a Pokémon (if that species can hold an item) is increased.<br>- If the held item rate is more than or equal to 50%: +10% chance<br>- If the held item rate is between 20% and 49%: +20% chance<br>- If the held item rate is 19% or below: 2x chance<br>For wild held Berries in Contests:<br>- If the Berry rate is more than or equal to 50%: +10% chance<br>- If the Berry rate is 49% or below: +20% chance", // Pickpocket
+        "20": 12, // Own Tempo
+        "124": 14, // Pickpocket
         "158": "[Lead] You will gain increased priority when taking photos.", // Prankster
-        "44": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Rain Dish
+        "44": 87, // Rain Dish
         "159": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sandstorm] contests.", // Sand Force
-        "146": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sandstorm] contests.", // Sand Rush
-        "8": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sandstorm] contests.", // Sand Veil
+        "146": 159, // Sand Rush
+        "8": 159, // Sand Veil
         "113": "[Lead] If your lead Pokémon is Normal or Fighting-type, their Normal or Fighting-type will be calculated as 1x effectiveness against wild Ghost-types, except during inverted type matchups.", // Scrappy
         "86": "[Lead] Your type modifier against wild Pokémon is doubled if super-effective and halved if not very effective. For example, a resistance of 0.5x is amplified to become 0.25x, and a 2x type advantage is amplified to become 4x. Neutral or full immunity matchups are not affected.", // Simple
         "92": "[Lead] Prevents you from losing Consecutive Catch Combo even when failing a capture.", // Skill Link
-        "221": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Hail] contests.", // Slush Rush
+        "221": 115, // Slush Rush
         "97": "[Lead] Increases your catch rate by 1.3x when trying to catch Pokémon baited by other people.", // Sniper
-        "81": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Hail] contests.", // Snow Cloak
-        "94": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Solar Power
+        "81": 115, // Snow Cloak
+        "94": 34, // Solar Power
         "3": "[Lead] You gain slightly increased priority when throwing Balls. Does not work for taking photos.", // Speed Boost
         "225": "[Lead] Your lead's type effectiveness against wild Pokémon is calculated as if it has Steel as a 3rd type.", // Steelworker
         "1": "[Lead] Your chance of successfully baiting is decreased by 20%. This does not work on Deluxe Bait.", // Stench
-        "105": "[Lead] Your chance of finding a held item after catching a Pokémon (if that species can hold an item) is increased.<br>- If the held item rate is more than or equal to 50%: +10% chance<br>- If the held item rate is between 20% and 49%: +20% chance<br>- If the held item rate is 19% or below: 2x chance<br>For wild held Berries in Contests:<br>- If the Berry rate is more than or equal to 50%: +10% chance<br>- If the Berry rate is 49% or below: +20% chance", // Super Luck
-        "33": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Swift Swim
+        "105": 14, // Super Luck
+        "33": 87, // Swift Swim
         "101": "[Lead] If you throw a Ball with a weaker bonus multiplier than the Great Ball, that Ball's bonus multiplier will be boosted to the same level as the Great Ball.", // Technician
-        "164": "[Lead] You will completely ignore the effects of any wild Pokémon's ability.", // Teravolt
+        "164": 104, // Teravolt
         "110": "[Lead] If your type effectiveness multiplier against the wild Pokémon is less than or equal to 0.5x, the multiplier is doubled.", // Tinted Lens
-        "163": "[Lead] You will completely ignore the effects of any wild Pokémon's ability.", // Turboblaze
-        "109": "[Lead] You will ignore the effects of Contest buffs and nerfs.", // Unaware
-        "282": "[Lead] You will ignore the effects of Contest buffs and nerfs.", // Good as Gold
-        "289": "[Lead] Increases your catch rate by 1.3x when trying to catch Pokémon baited by other people.", // Opportunist
-        "267": "[Lead] Your chance of successfully baiting is increased by 30%. This does not work on Deluxe Bait.", // Lingering Aroma
-        "265": "[Lead] You gain greatly increased priority when throwing Balls. Does not work for taking photos.", // Quick Draw
+        "163": 104, // Turboblaze
+        "109": 12, // Unaware
+        "282": 12, // Good as Gold
+        "289": 97, // Opportunist
+        "267": 35, // Lingering Aroma
+        "265": 182, // Quick Draw
         "144": "[Lead] Upon successfully switching out with a Switch Ball, the Switch Ball will not be consumed.", // Regenerator
         "296": "[Lead] You will completely ignore the effects of any wild Pokémon's ability. When using Big Mushrooms, you will automatically consume 2 at once, gaining double the amount of spawns for the same theme.", // Mycelium Might
         "276": "[Lead] Your Itemfinder gains 5 or 10 charges after catching a Flying-type Pokémon.", // Wind Power
-        "292": "[Lead] Your lead Pokémon's BST increases by 3.64% for each empty slot in your party, up to a maximum of 18.2% if it is the only Pokémon in your party.", // Supreme Overlord
-        "280": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Protosynthesis
-        "281": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Orihalcum Pulse
-        "287": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Quark Drive
-        "288": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Hadron Engine
+        "292": "[Lead] Only activates when you are in a contest. Your lead Pokémon's BST increases by 3.64% for each empty slot in your party, up to a maximum of 18.2% if it is the only Pokémon in your party. Once this Ability activates, you cannot modify your party in any way, and you will be unable to use Switch Balls. Forfeiting a contest will deactivate this Ability.", // Supreme Overlord
+        "280": 34, // Protosynthesis
+        "281": 34, // Orihalcum Pulse
+        "287": 87, // Quark Drive
+        "288": 87, // Hadron Engine
         "278": "[Lead] Only activates when you are in a contest. If your lead has this Ability and a Dondozo is in the second slot of your party, your lead's BST is calculated by taking the higher of each individual stat between your lead and Dondozo. Additionally, your lead will inherit all of Dondozo's Ability effects, if any. Once this Ability activates, you cannot modify your party in any way, and you will be unable to use Switch Balls. Forfeiting a contest will deactivate this Ability.", // Commander
+        "60": 14, // Sticky Hold
+        "53": 14, // Pickup
 
         "16": "[Wild] The wild Pokémon's type changes into your lead Pokémon's type whenever it breaks out of a Ball. If your lead Pokémon has two types, one is chosen at random. If it breaks out of a Spy Ball, the type will be listed as unknown.", // Color Change
         "126": "[Wild] The wild Pokémon's catch rate is calculated using inverted type effectiveness. This does not stack with the Inver costume, Inver Balls, or the Inverted Type Matchup Contest rule.", // Contrary
@@ -1924,3271 +1926,25 @@ function Safari() {
         "153": "[Wild] The wild Pokémon gains 5 BST whenever it breaks out of a Ball, up to a maximum of 25.", // Moxie
         "46": "[Wild] The wild Pokémon causes you to use up 1 extra Ball whenever you catch it. This does not work on rare, special Balls.", // Pressure
         "50": "[Wild] The wild Pokémon flees after fewer failed captures than usual.", // Run Away
-        "207": "[Wild] The wild Pokémon has a 50% chance of fleeing immediately after each failed capture (once Ball preparation phase is over).", // Wimp Out
+        "207": 222, // Wimp Out
         "25": "[Wild] The wild Pokémon will be instantly caught by any Ball if your lead has at least 2x effectiveness against it. If you have less than 2x effectiveness, the catch rate will be calculated as if it were immune to your lead.", // Wonder Guard
         "199": "[Wild] The wild Pokémon prevents the use of Quick Balls and Lightning Balls against it.", // Dazzling
-        "214": "[Wild] The wild Pokémon prevents the use of Quick Balls and Lightning Balls against it.", // Queenly Majesty
-        "295": "[Wild] The wild Pokémon prevents the use of Quick Balls and Lightning Balls against it.", // Armor Tail
+        "214": 199, // Queenly Majesty
+        "295": 199, // Armor Tail
         "240": "[Wild] The wild Pokémon prevents the use of Mirror Balls against it.", // Mirror Armor
         "283": "[Wild] The wild Pokémon decreases your lead Pokémon's BST by 25%.", // Vessel of Ruin
-        "284": "[Wild] The wild Pokémon decreases your lead Pokémon's BST by 25%.", // Sword of Ruin
-        "285": "[Wild] The wild Pokémon decreases your lead Pokémon's BST by 25%.", // Tablets of Ruin
-        "286": "[Wild] The wild Pokémon decreases your lead Pokémon's BST by 25%.", // Beads of Ruin
+        "284": 283, // Sword of Ruin
+        "285": 283, // Tablets of Ruin
+        "286": 283, // Beads of Ruin
+        "23": "[Wild] Prevents the use of Switch Balls if your lead Pokémon is not Ghost-type.", // Shadow Tag
+        "71": "[Wild] Prevents the use of Switch Balls if your lead Pokémon is neither Flying-type nor Ghost-type.", // Arena Trap
+        "42": "[Wild] Prevents the use of Switch Balls if your lead Pokémon is Steel-type and not Ghost-type.", // Magnet Pull
         
         "268": "[Misc] When growing Berries in the Daycare, a Pokémon with this ability will produce 1.5x more Berries in 25% less time than usual. Does not stack with Ripen.", // Seed Sower
         "247": "[Misc] When growing Berries in the Daycare, a Pokémon with this ability will produce 1.5x more Berries in 25% less time than usual. Does not stack with Seed Sower.", // Ripen
         "139": "[Misc] When growing Berries in the Daycare, a Pokémon with this ability will produce 1.8x more Berries than usual.", // Harvest
         "82": "[Misc] When growing Berries in the Daycare, a Pokémon with this ability will produce 70% fewer Berries, but in 60% less time than usual.", // Gluttony
         "167": "[Misc] When growing Berries in the Daycare, a Pokémon with this ability will produce 20% fewer Berries, but in 55% less time than usual." // Cheek Pouch
-};
-    function getCrystalEffect(num) {
-        for (var x in zCrystalData) {
-            if (!(zCrystalData[x].special)) {
-                continue;
-            }
-            if (zCrystalData[x].special.contains(num)) {
-                return x;
-            }
-        }
-        return type1(num);
-    };
-
-    var itemHelp, perkHelp, ballHelp, berryHelp;
-    var allBalls;
-    updateItemData();
-    var updateItemHelp = function() {
-        itemHelp = {
-            silver: "Rare coins that can be used to purchase valuable items. Obtained from quests and contests.",
-            bait: "A tasty treat used to attract wild Pokémon. Has " + an(itemData.bait.successRate*100) + "% success rate with an approximate " + itemData.bait.successCD + " second cooldown on success, and an approximate " + itemData.bait.failCD + " second cooldown on failure. Use with \"/bait\".",
-            golden: "A premium bait used to attract wild Pokémon. Has " + an(itemData.golden.successRate*100) + "% success rate and can be used more often than normal Baits. Use with \"/gbait\".",
-            deluxe: "A customizable bait. Made from /quest baking.",
-            gacha: "A ticket that allows you to try the Gachapon Machine to get a random reward! " + cdSeconds("gacha") + " Use with \"/gacha\".",
-            rock: "A small rock that can be thrown at another player for amusement. " + cdSeconds("rock", "throwCD") + " Use with \"/rock [Player]\". Can also be used to scare unwanted Pokémon away with \"/rockscare\". You can only scare Pokémon that haven't been interacted with for " + plural(rockScareThreshold/1000, "second") + ".",
-            rare: "Can be smashed and transformed into around " + (itemData.rare.charges + Math.floor(itemData.rare.maxVar/2)) + " Candy Dusts. Use with \"/use rare\". Found with Itemfinder and obtained in Pyramid.",
-            dust: "What you obtain after smashing a Rare Candy into powder. Has the power to evolve Pokémon. Use with \"/evolve [Pokémon]\".",
-            spray: "A spray that affects the genetic code of a Pokémon, making them devolve and generating some Candy Dust. Use with \"/spray [Pokémon]\". Obtained from Prize Packs and Pyramid.",
-            mega: "A mysterious stone that allows certain Pokémon to undergo a powerful transformation. It is said to wear off in approximately " + itemData.mega.duration + " days. Use with \"/mega [Pokémon]\". Obtained from Official Events, Pyramid, Alchemy, and Prize Packs.",
-            valuables: "The items Pearl, Stardust, Big Pearl, Star Piece, Nugget, Big Nugget and Comet Shard can be sold for a varying amount of money. Sell with \"/pawn [Item]\". Obtained from Gachapon, found with Itemfinder, and rewarded from Contests.",
-            itemfinder: "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day. Use with \"/finder\".",
-            gem: "An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day! Use with \"/use gem\". Obtained from Gachapon and quests.",
-            box: "Increases number of Pokémon that can be owned by " + itemData.box.bonusRate + " each. Can only acquire by purchasing.",
-            stick: "Legendary Stick of the almighty Farfetch'd that provides a never ending wave of prods and pokes unto your enemies and other nefarious evil-doers. " + cdSeconds("stick") + " Use with \"/stick [Player]\".",
-            salt: "A pile of salt that makes the holder increasingly unlucky the more they have.",
-            burn: "A potion used to purify Burning Aura into Brilliant Aura, in exchange, you also get Brilliant Aura. Use /burn [player] to give it to someone who may need it. Obtainable via Gachapon.",
-            entry: "A Raffle Entry that can win a spectacular prize if you own the correct one at the time of drawing. Simply hold onto your ticket safely until the time of the drawing. Nothing more is needed on your part!",
-            coupon: "A coupon holding a special offer to those interested in decorating their Secret Base. Can be traded for a Decoration at the Decor.",
-            fossil: "A rare fossil often desired by archaeologists. Use it to enter the Pyramid without paying the entry fee by typing \"/quest pyramid:fossil:Name1:Name2\". You also receive " + (itemData.fossil.bonusRate * 100) + "% more points during that run.",
-            form: "A form that you can fill to start an event. Use it with  \"/use form\" for more details.",
-            pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack:[Amount to Use]\". Obtained from Official Events, Pyramid, and Detective",
-            fragment: "A fragment of a broken Poké Ball. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball! Obtained from Itemfinder and when obtaining a Master Ball while having one already.",
-            materia: "A basic substance required for various alchemic creations. Obtained from Alchemy quest.",
-            philosopher: "A legendary pink gem that is said to be capable of performing outstanding transformations. Obtained from League quest.",
-            philosopherpebble: "An incompletely crystallized Philosopher's Stone. It still holds a fraction of the complete Stone's transformative power, so maybe you can make use of it somehow... Obtained from the weekly Celebrity leaderboards.",
-            ash: "An extremely rare material useful in transmutation. Obtained from clearing Celebrity quest on Normal or harder.",
-            egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg:[Amount to Use]\". Obtained from Pyramid quest.",
-            bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright:[Amount to Use]\". Obtained from Pyramid quest.",
-            water: "Water with high mineral content that increases your stamina at Pyramid by " + (itemData.water.bonusRate * 100) + "%. Use with \"/use water\".",
-            soda: "Carbonated drink that reduces remaining cooldown for a quest, auction, burn heal or costume change to " + (itemData.soda.bonusRate * 100) + "%. Use with \"/use soda:[Quest]\". Obtained from Trivia event games.",
-            cookie: "A delicious cookie that brings good luck in the form of a random buff for a limited time when eaten. Use with \"/use cookie\" (using another one will replace the previous effect).",
-            cherry: "A tasty treat that keeps you energized during a Tower Challenge allowing you to deal more damage. Use with \"/use cherry\". Obtained from Alchemy.",
-            blkapricorn: "An acorn-shaped fruit that can be crafted into a Poké Ball. Has a very strong flavor. Found with Itemfinder.",
-            whtapricorn: "An acorn-shaped fruit that can be crafted into a Poké Ball. Has a very weak flavor. Obtained from Gachapon.",
-            shady: "A suspicious coin that's only accepted by some mongers. Obtained from Mafia Event games.",
-            mail: "An envelope that can be used to send a message to another player's inbox. Use it with \"/mail Name:Message\".",
-            crystal: "A mysterious crystal that gives a bonus based on the active Pokémon's primary type for " + itemData.crystal.duration + " minutes. Type \"/use crystal\" for more details.",
-            scale: "A mysterious scale that shines in rainbow colors. Use with \"/use scale\" to make your active Pokémon's color count as a different one for " + itemData.scale.duration + " minutes.",
-            mushroom: "A large and rare mushroom. Eating one with \"/use mushroom\" makes you think you are in a different theme for the next " + itemData.mushroom.duration + " Pokémon that you bait.",
-            brush: "A soft brush ideal for editing photos. Type \"/use brush\" for more details.",
-            pokeblock: "A yummy nom. Feed it to your Pokémon in daycare!",
-            dew: "Can be used to make special Poké Balls. Use /quest arborist for more details.",
-            hdew: "Can be used to make special Poké Balls. Use /quest arborist for more details.",
-            ldew: "A mysterious substance radiating an aura of light. Can be used to create extremely rare Poké Balls. Use /quest arborist for more details.",
-            easteregg: "A colorful ovaloid with surprising goodies inside. Can be used with /use easteregg, /use easteregg:10, /use easteregg:100, and /use easteregg:1000. Don't open until Easter!",
-            //candybag: "A basket full of goodies. Can be used with /use candybag, /use candybag:10, /use candybag:100, and /use candybag:1000. Don't open until Halloween!",
-            lucky: "Coins used to bet on which Celebrity you think will win the tournament.",
-            celebrityTicket: "A ticket to battle the Celebrities. It can be used with /use celebrityticket to make your next challenge a reward run, and /use celebrityticket:[region] to pick a region to challenge next!",
-            moonshard: "A shard that holds the power of the moon. Can unlock special Pokémon skills. Use /quest idol for more details.",
-            sunshard: "A shard that holds the power of the sun. Can unlock special Pokémon skills. Use /quest idol for more details.",
-            battlepoint: "A unit of currency used in the Battle Tower shop. Obtainable from the Tower quest.",
-            terashard: "A shard broken off from a Tera Jewel, which holds some of the mysterious Terastal energy normally found only in Paldea. Obtained from wild Terastallized Pokémon.",
-            terajewel: "A brilliant jewel that holds some of the mysterious Terastal energy normally found only in Paldea. The energy is said to contain the power to crystallize, but it is too unstable to be of use in its current state.",
-            teraorb: "An orb that allows you to wield the Terastal energy of the Tera Jewel contained within it. What effect might it have? You can choose to activate or deactivate the orb with \"/use orb\". When activated, you will automatically deploy the orb on the next Pokémon you bait."
-        };
-        perkHelp = {
-            amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "% | With Rich Girl Costume: " + itemData.amulet.maxRate * 100 * costumeData["rich"].rate + "%). Obtained from Gachapon.",
-            soothe: "A bell with a comforting chime that calms the owner and their Pokémon. Reduces delay after a successful catch by " + toFixed(itemData.soothe.bonusRate * 100, 2) + "% (Max Rate: " + itemData.soothe.maxRate * 100 + "% | With Rich Girl Costume: " + itemData.soothe.maxRate * 100 * costumeData["rich"].rate + "%). Obtained from Gachapon.",
-            scarf: "A fashionable scarf made of the finest silk. Wearing it allows you to lead a more luxurious life and grants you " + itemData.scarf.bonusRate * 100 + "% more money from Luxury Balls (Max Rate: " + itemData.scarf.maxRate * 100 + "% | With Backpacker Costume: " + itemData.scarf.maxRate * 100 * costumeData["backpacker"].rate + "%). Obtained from Gachapon.",
-            battery: " A high-capacity battery that can increase the uses of Item Finder by " + itemData.battery.bonusRate + " per day. (Max Rate: " + itemData.battery.maxRate + " | With Backpacker Costume: " + itemData.battery.maxRate * costumeData["backpacker"].rate + "). Obtained from Gachapon.",
-            honey: "Sweet-smelling Combee Honey that, when applied to bait, increases the chance of a Pokémon being attracted by " + itemData.honey.bonusRate * 100 + "% (Max Rate: " + itemData.honey.maxRate * 100 + "% | With Backpacker Costume: " + itemData.honey.maxRate * 100 * costumeData["backpacker"].rate + "%). Found with Itemfinder.",
-            crown: "A rare crown with mysterious properties that brings good fortune to its owner. Increases rate of pawned items by " + itemData.crown.bonusRate * 100 + "% (Max Rate: " + itemData.crown.maxRate * 100 + "% | With Rich Girl Costume: " + itemData.crown.maxRate * 100 * costumeData["rich"].rate + "%). Found with Itemfinder.",
-            eviolite: "A mysterious gem that automatically powers up Pokémon with 420 BST or less by " + itemData.eviolite.bonusRate + ". (Max Rate: " + itemData.eviolite.maxRate + " | With Preschooler Costume: " + itemData.eviolite.maxRate * costumeData["preschooler"].rate2 + "). Found with Itemfinder.",
-            lens: "A device that allows user to take photos of wild Pokémon. Chance for better quality photos increase for each additional " + itemData.lens.fullName + ". Obtained from Journal quest."
-        };
-        ballHelp = {
-            safari: "A standard issue Poké Ball used to catch Pokémon. " + cdSeconds("safari"),
-            great: "A Poké Ball that has a slightly increased catch rate. " + cdSeconds("great"),
-            ultra: "A high functioning Poké Ball that has a better catch rate than a Great Ball. " + cdSeconds("ultra"),
-            master: "An extremely rare Poké Ball that never fails to catch. " + cdSeconds("master") + " Obtained from Gachapon and Alchemist.",
-            premier: "A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type or a single-type Pokémon is active. " + cdSeconds("premier") + " Obtained by purchasing a lot of Poké Balls from the shop and Pyramid.",
-            luxury: "A comfortable Poké Ball with an increased catch rate that is said to make one wealthy. " + cdSeconds("luxury") + " Obtained from Arborist and Itemfinder.",
-            myth: "An ancient Poké Ball that ignores modern era catch modifiers. Said to be particularly effective against rare Pokémon. " + cdSeconds("myth") + " Obtained from Arborist.",
-            quick: "A somewhat different Poké Ball that tends to get better priority during throws. " + cdSeconds("quick") + " Obtained from Arborist and Pyramid.",
-            level: "A slickly designed Poké Ball that raises the stat levels of the lead Pokémon. " + cdSeconds("level") + " Obtained from Arborist and Pyramid.",
-            clone: "A mysterious Poké Ball with a very low catch rate that can duplicate a pokémon's D.N.A. " + cdSeconds("clone") + " Obtained from Arborist and Pyramid.",
-            spy: "A stealthy Poké Ball that cannot be tracked. A successful snag with this ball allows for quick follow-up action, but it has low priority. " + cdSeconds("spy") + ". Obtained from Arborist and Pyramid.",
-            mono: "A monochromatic Poké Ball that enables your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Arborist.",
-            lightning: "A Poké Ball with a lightning bolt design that comes out in a flash. " + cdSeconds("lightning") + " Obtained from Arborist.",
-            heavy: "An industrial Poké Ball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("heavy") + " Cooldown is decreased when throwing this Ball on heavier Pokémon. Obtained from Arborist.",
-            photo: "A Poké Ball riddled with memory chips capable of identifying Pokémon stored in the camera and catching them with higher likelihood. " + cdSeconds("photo") + " Obtained from Arborist.",
-            mirror: "A Poké Ball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. Doubly effective in Similarity Mode. " + cdSeconds("mirror") + " Obtained from Arborist.",
-            love: "A Poké Ball with a pink heart design that works better if the lead is in the same egg group as the target. It also increases the well-being of Pokémon in the daycare. " + cdSeconds("love") + " Obtained from Arborist.",
-            uturn: "A Poké Ball with a dynamic design that enables the lead Pokémon to switch out after a successful catch. Catch rate is increased if the lead Pokémon is capable of learning U-Turn, Volt Switch, or Flip Turn. " + cdSeconds("uturn") + " Obtained from Arborist.",
-            inver: "A mysterious Poké Ball that reverses the type advantage " + cdSeconds("inver") + " Obtained from Arborist.",
-            spirit: "A magical Poké Ball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events. This Ball will return to you if it fails to catch a Pokémon. (Max capacity: 10)",
-            cherish: "A homey Poké Ball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Arborist. This Ball will return to you if it fails to catch a Pokémon."
-        };
-        berryHelp = {
-            oran:"A berry that can be used as an ingredient in bait. Can also restore 50 HP to the holder during rotation batttles. Give berries with /giveitem [berry].",
-            pecha:"A berry that can be used as an ingredient in bait. Can also help a Pokémon overcome a nerf in contests. Give berries with /giveitem [berry].",
-            razz:"A berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
-            bluk:"A berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
-            leppa:"A berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
-            tamato:"An uncommon berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
-            pinap:"An uncommon berry that can be used as an ingredient in bait. Allows its holder to fight better in the Battle Tower if its BST is unique on its team. Give berries with /giveitem [berry].",
-            nanab:"An uncommon berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
-            watmel:"An uncommon berry that can be used as an ingredient in bait. When hatching a Pokémon that shares an Egg Group with its holder, it increases the chance of the hatched Pokémon to be Shiny. If multiple Pokémon in your party are holding this berry and have the same Egg Group as the hatched Pokémon, only the first holder's berry will take effect. Give berries with /giveitem [berry].",
-            petaya:"An uncommon berry that can be used as an ingredient in bait. Can help a Pokémon evolve when it assists in captures. Give berries with /giveitem [berry].",
-            miracle:"A rare berry that can be used as an ingredient in bait. Allows its holder to survive a KO-ing move in rotation battles. Give berries with /giveitem [berry].",
-            platinum:"A rare berry that can be used as an ingredient in bait. As an ingredient, it is unmatched, and it can cause the bait to attract rare Pokémon forms."
-        };
-        allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "spirit", "lightning", "level", "photo", "mirror", "uturn", "love", "inver", "cherish", "master"];
-    };
-    updateItemHelp();
-    var currentItems = Object.keys(itemData);
-    var retiredItems = [];
-    var allItems = currentItems.concat(retiredItems, "permfinder");
-    var allCostumes = Object.keys(costumeData);
-
-    var decorations = {};
-    var missionsData = {};
-    var trialsData = {};
-    var SECRET_BASE_WIDTH = 7;
-    var SECRET_BASE_HEIGHT = 5;
-
-
-    /* Wild Pokemon Variables */
-    var shinyChance = 1024; //Chance for Shiny Pokémon
-    var currentPokemon = null;
-    var currentTypeOverride = null;
-    var spiritSpawn = false, wildSpirit = false;
-    var canSpawnTera = false, wildTera = false;
-    var currentExtraBST = 0;
-    var currentPokemonCount = 1;
-    var lastPokemonCount = 1;
-    var currentDisplay = null;
-    var currentDisplayBST = 0;
-    var currentPokemonAction = null;
-    var currentPokemonMood = null;
-    var currentPokemonMoodRate = null;
-    var wildAbilityBoost = 5;
-    var wildAbilityBoostLimit = wildAbilityBoost * 5;
-    var wildBallThrows = {};
-    var currentThrowers = [];
-    var maxThrows = 10;
-    var pokeblockThrows = 0;
-    var currentThrows;
-    var throwAttempts;
-    var preparationPhase = 0;
-    var preparationThrows = {};
-    var bufferThrows = {};
-    var preparationFirst = null;
-    var rockScareThreshold = 15000;
-    var lastWild = 0;
-    var lastWildAction = 0;
-    var wildEvent = false;
-    var currentBaiter = null;
-    var resolvingThrows = false;
-    var catchTierChance = [0.20, 0.18, 0.14, 0.10, 0.065, 0.0275];
-    var tiers = ["SM LC", "SM PU", "SM NU", "SM LU", "SM UU", "SM OU", "SM Ubers"];
-    
-    /* Leaderboard Variables */
-    var celebrityPKs = {};
-    var recentPlayers = {};
-    var leaderboards = {};
-    var monthlyLeaderboards = {};
-    var lastLeaderboards;
-    var lastLeaderboardUpdate;
-    //Adding a variable that already exists on player.records here will automatically make it available as a leaderboard
-    //To add stuff not on player.records, you must add an exception on this.updateLeaderboards()
-    var leaderboardTypes = {
-        // totalPokes: { desc: "by Pokémon owned", alts: ["totalpokes"], alias: "owned" },
-        pokesCaught: { desc: "by successful catches", alts: ["caught", "pokescaught"], alias: "caught" },
-        // pokesEvolved: { desc: "by successful evolutions", alts: ["evolve", "evolved", "pokesevolved"], alias: "evolved" },
-        // bst: { desc: "by total BST of Pokémon owned", alts: [], alias: "bst" },
-        contestsWon: { desc: "by contests won", alts: ["contest", "contests", "contestswon"], alias: "contest" },
-        earnings: { desc: "by money earned from NPC, quests, events and Luxury Balls", alts: ["earned", "earnings", "money", "$"], alias: "earnings", isMoney: true },
-        // money: { desc: "by money", alts: ["$"], alias: "money", isMoney: true },
-        // pokeSoldEarnings: { desc: "by money gained with selling Pokémon", alts: ["sold", "sell", "pokesoldearnings"], alias: "sold", isMoney: true },
-        // luxuryEarnings: { desc: "by money gained with Luxury Balls", alts: ["luxury", "luxuryball", "luxury ball", "luxuryearnings"], alias: "luxury", isMoney: true },
-        // consecutiveLogins: { desc: "by longest streak of consecutive days login", alts: ["login", "logins", "consecutivelogins"], alias: "login" },
-        pokesCloned: { desc: "by successful clones", alts: ["clone", "clones", "cloned", "clone ball", "pokescloned"], alias: "cloned" },
-        // gachasUsed: { desc: "by tickets used for Gachapon", alts: ["gacha", "gachasused"], alias: "gacha" },
-        // itemsFound: { desc: "by items found with Itemfinder", alts: ["found", "itemsfound", "items found"], alias: "found" },
-        collectorEarnings: { desc: "by money received from the Collector", alts: ["collector", "collector money", "collectormoney", "collector $", "collectorearnings"], alias: "collector", isMoney: true },
-        // collectorGiven: { desc: "by Pokémon given to the Collector", alts: ["collector", "collector pokémon", "collectorpokémon", "collector pokemon", "collector poke", "collectorpoke", "collectorgiven"], alias: "collector" },
-        towerHighest: { desc: "by best old Battle Tower run", alts: ["old tower", "oldbattletower", "old battle tower", "oldtowerhighest"], alias: "old tower" },
-        towerHighestNew: { desc: "by best Battle Tower run", alts: ["tower", "battletower", "battle tower", "towerhighest"], alias: "tower" },
-        arenaPoints: { desc: "by Arena points", alts: ["points", "arena", "arenapoints", "arena points"], alias: "arena points" },
-        salt: { desc: "by saltiest players", alts: ["salt", "salty"], alias: "salt" },
-        pokesStolen: { desc: "by Pokémon stolen from NPCs", alts: ["stolen", "pokesstolen"], alias: "stolen" },
-        // topQuizScore: { desc: "by best score in Quiz", alts: ["quiz", "score", "quizscore", "quiz score", "topquizscore"], alias: "quiz" },
-        celebrityScore: { desc: "by best Normal Celebrity score", alts: ["celebrity", "celebrityscore", "celebrity score", "celeb", "celebrity normal", "celebrityscore normal", "celebrity score normal", "celeb normal"], alias: "celebrity" },
-        celebrityScoreEasy: { desc: "by best Easy Celebrity score", alts: ["celebrity easy", "celebrityscore easy", "celebrity score easy", "celeb easy"], alias: "celebrity easy" },
-        celebrityScoreHard: { desc: "by best Hard Celebrity score", alts: ["celebrity hard", "celebrityscore hard", "celebrity score hard", "celeb hard"], alias: "celebrity hard" },
-        celebrityScoreExpert: { desc: "by best Expert Celebrity score", alts: ["celebrity expert", "celebrityscore expert", "celebrity score expert", "celeb expert"], alias: "celebrity expert" },
-        celebrityScoreSuperExpert: { desc: "by best Super Expert Celebrity score", alts: ["celebrity super expert", "celebrityscore super expert", "celebrity score super expert", "celeb super expert"], alias: "celebrity super expert" },
-        celebrityScoreAbyssal: { desc: "by best Abyssal Celebrity score", alts: ["celebrity abyssal", "celebrityscore abyssal", "celebrity score abyssal", "celeb abyssal"], alias: "celebrity abyssal" },
-        pyramidScore: { desc: "by best Pyramid score", alts: ["pyramid", "pyramidscore", "pyramid score", "pyr"], alias: "pyramid" },
-        // pyramidTotalScore: { desc: "by total Pyramid points", alts: ["pyramidtotal", "pyramid total", "pyramidtotalscore"], alias: "pyramid total" },
-        pyramidFinished: { desc: "by cleared Pyramid runs", alts: ["pyramidfinished", "pyramid finished"], alias: "pyramid finished" },
-        eliteCleared: { desc: "by cleared Elite Four challenges", alts: ["elite", "elite four", "elitefour", "elite4", "e4", "elite 4", "e 4", "elite cleared", "elite four cleared", "elite 4 cleared"], alias: "elite four cleared" },
-        baseValue: { desc: "by most valuable Secret Base", alts: ["base", "secretbase", "secret base",], alias: "base" },
-        journalPoints: { desc: "by most photo points", alts: ["photos", "photo", "photo points", "photo points"], alias: "photo" },
-        missionPoints: { desc: "by most mission points earned", alts: ["missions", "mission", "mission points", "mission point"], alias: "mission" },
-        casesSolved: { desc: "by most Detective cases solved", alts: ["detective", "cases", "detective cases", "detective solved", "detectivesolved", "cases solved", "casessolved"], alias: "detective" },
-        fastestCaseSolved: { desc: "by fastest Detective case solved", alts: ["detective fastest", "detectivefastest", "detective speed", "detectivespeed", "detective speedrun", "detectivespeedrun"], alias: "detective fastest" }
-    };
-    var monthlyLeaderboardTypes = {
-        pokesCaught: { desc: "by successful catches during this week", alts: ["caught weekly"], alias: "caught weekly", lastAlias: "caught last", file: "scriptdata/safari/weeklyPokesCaught.txt", lastDesc: "by successful catches during the last week", reward: true  },
-        contestsWon: { desc: "by contests won during this week", alts: ["contest weekly", "contests weekly"], alias: "contest weekly", lastAlias: "contest last", file: "scriptdata/safari/weeklyContestsWon.txt", lastDesc: "by contests won during the last week", reward: true },
-        collectorEarnings: { desc: "by money received from the Collector during this week", alts: ["collector weekly", "collector money weekly", "collectormoney weekly", "collector $ weekly"], alias: "collector weekly",  lastAlias: "collector last",isMoney: true, file: "scriptdata/safari/weeklyCollectorEarnings.txt", lastDesc: "by money received from the Collector during the last week", reward: true },
-        arenaPoints: { desc: "by Arena points won this week", alts: ["arena weekly"], alias: "arena weekly",  lastAlias: "arena last", file: "scriptdata/safari/weeklyArenaPoints.txt", lastDesc: "by Arena points won during the last week", reward: true },
-        towerHighestNew: { desc: "by best Battle Tower run this week", alts: ["tower weekly", "battletower weekly", "battle tower weekly", "towerhighest weekly"], alias: "tower weekly",  lastAlias: "tower last", file: "scriptdata/safari/weeklyTowerHighest.txt", lastDesc: "by best Battle Tower run during the last week", reward: true },
-        journalPoints: { desc: "by Photo points won this week", alts: ["photo weekly", "journal weekly"], alias: "photo weekly",  lastAlias: "photo last", file: "scriptdata/safari/weeklyPhotoPoints.txt", lastDesc: "by Photo points won during the last week", reward: true },
-        pyramidScore: { desc: "by Pyramid score this week", alts: ["pyramid weekly", "pyr weekly"], alias: "pyramid weekly",  lastAlias: "pyramid last", file: "scriptdata/safari/weeklyPyramidScore.txt", lastDesc: "by Pyramid points won during the last week", reward: true },
-        celebrityScore: { desc: "by best Normal Celebrity score this week", alts: ["celebrity weekly", "celebrityscore weekly", "celebrity score weekly", "celeb weekly", "celebrity normal weekly", "celebrityscore normal weekly", "celebrity score normal weekly", "celeb normal weekly"], alias: "celebrity weekly", lastAlias: "celebrity normal last", file: "scriptdata/safari/weeklyCelebrityScore.txt", lastDesc: "by best Normal Celebrity score during the last week", reward: true },
-        celebrityScoreEasy: { desc: "by best Easy Celebrity score this week", alts: ["celebrity easy weekly", "celebrityscore easy weekly", "celebrity score easy weekly", "celeb easy weekly"], alias: "celebrity easy weekly", lastAlias: "celebrity easy last", file: "scriptdata/safari/weeklyCelebrityScoreEasy.txt", lastDesc: "by best Easy Celebrity score during the last week", reward: false },
-        celebrityScoreHard: { desc: "by best Hard Celebrity score this week", alts: ["celebrity hard weekly", "celebrityscore hard weekly", "celebrity score hard weekly", "celeb hard weekly"], alias: "celebrity hard weekly", lastAlias: "celebrity hard last", file: "scriptdata/safari/weeklyCelebrityScoreHard.txt", lastDesc: "by best Hard Celebrity score during the last week", reward: true },
-        celebrityScoreExpert: { desc: "by best Expert Celebrity score this week", alts: ["celebrity expert weekly", "celebrityscore expert weekly", "celebrity score expert weekly", "celeb expert weekly"], alias: "celebrity expert weekly", lastAlias: "celebrity expert last", file: "scriptdata/safari/weeklyCelebrityScoreExpert.txt", lastDesc: "by best Expert Celebrity score during the last week", reward: true },
-        celebrityScoreSuperExpert: { desc: "by best Super Expert Celebrity score this week", alts: ["celebrity super expert weekly", "celebrityscore super expert weekly", "celebrity score super expert weekly", "celeb super expert weekly"], alias: "celebrity super expert weekly", lastAlias: "celebrity super expert last", file: "scriptdata/safari/weeklyCelebrityScoreSuperExpert.txt", lastDesc: "by best Super Expert Celebrity score during the last week", reward: true },
-        celebrityScoreAbyssal: { desc: "by best Abyssal Celebrity score this week", alts: ["celebrity abyssal weekly", "celebrityscore abyssal weekly", "celebrity score abyssal weekly", "celeb abyssal weekly"], alias: "celebrity abyssal weekly", lastAlias: "celebrity abyssal last", file: "scriptdata/safari/weeklyCelebrityScoreAbyssal.txt", lastDesc: "by best Abyssal Celebrity score during the last week", reward: true }
-    };
-
-    /* Contest Variables */
-    var contestDuration = 300; //Contest lasts for 5 minutes
-    var contestCount = 0;
-    var contestExtension = 0;
-    var contestExtensionLimit = 600; // event extension limit, 10 minutes
-    var contestMidPoint = false; //whether the contest is half over (checked after wild caught);
-    var contestCatchers = {};
-    var contestActivity = {};
-    var contestBroadcast = true; //Determines whether Tohjo gets notified
-    var contestCooldownLength = 1800; //1 contest every 30 minutes
-    var contestCooldown = (SESSION.global() && SESSION.global().safariContestCooldown ? SESSION.global().safariContestCooldown : contestCooldownLength);
-    var contestForfeited = [];
-    var contestantsCount = {};
-    var contestantsWild = [];
-    var contestCombo = 0;
-    var currentTheme;
-    var currentThemeAlter;
-    var currentThemeEffect;
-    var currentThemeFlavor;
-    var currentThemeSecondary;
-    var chosenThemes;
-    var contestVotes;
-    var contestVotingCooldown = 4;
-    var contestVotingCount = (SESSION.global() && SESSION.global().contestVotingCount ? SESSION.global().contestVotingCount : contestVotingCooldown);
-    var generations = ["None", "Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar", "Paldea"];
-    var nextTheme;
-    var currentRules;
-    var nextRules;
-    var RULES_NERF = 0.95;
-    var RULES_BUFF = 0.25;
-    var RULES_NERF_CAP = 0.5;
-    var defaultRules = {
-        "onlyTypes": { //Picks one of the random sets and excludes all types not in that array
-            "chance": 0,
-            "sets": [
-                ["Water", "Fire", "Grass"],
-                ["Dark", "Fighting", "Psychic"]
-            ]
-        },
-        "excludeTypes": { //onlyTypes has priority over excludeTypes; if a set from onlyTypes is used, excludeTypes will be skipped
-            "Normal" : 0.015,
-            "Fighting" : 0.06,
-            "Flying" : 0.06,
-            "Poison" : 0.06,
-            "Ground" : 0.06,
-            "Rock" : 0.06,
-            "Bug" : 0.06,
-            "Ghost" : 0.06,
-            "Steel" : 0.06,
-            "Fire" : 0.06,
-            "Water" : 0.06,
-            "Grass" : 0.06,
-            "Electric" : 0.06,
-            "Psychic" : 0.06,
-            "Ice" : 0.06,
-            "Dragon" : 0.06,
-            "Dark" : 0.06,
-            "Fairy" : 0.06
-        },
-        "bonusTypes": { //Excluded types have priority over bonus types. If a type is picked by both, it will only count for exclude.
-            "Normal" : 0.06,
-            "Fighting" : 0.06,
-            "Flying" : 0.06,
-            "Poison" : 0.06,
-            "Ground" : 0.06,
-            "Rock" : 0.06,
-            "Bug" : 0.06,
-            "Ghost" : 0.06,
-            "Steel" : 0.06,
-            "Fire" : 0.06,
-            "Water" : 0.06,
-            "Grass" : 0.06,
-            "Electric" : 0.06,
-            "Psychic" : 0.06,
-            "Ice" : 0.06,
-            "Dragon" : 0.06,
-            "Dark" : 0.06,
-            "Fairy" : 0.06
-        },
-        "excludeBalls": {
-            "safari": 0,
-            "great": 0.02,
-            "ultra": 0.08,
-            "master": 0.10,
-            "myth": 0.125,
-            "luxury": 0.125,
-            "quick": 0.15,
-            "level": 0.125,
-            "spy": 0.125,
-            "clone": 0.125,
-            "premier": 0.125,
-            "mono": 0.10
-        },
-        "buffBalls": {},
-        "bst": { //Both min and max are optional. It's possible to have only one of them in this object
-            "minChance": 0,
-            "min": [230, 400],
-            "maxChance": 0.12,
-            "max": [490, 535]
-        },
-        "noLegendaries": {
-            "chance": 0.07
-        },
-        "shiny": {
-            "nerf": 0,
-            "buff": 0.05
-        },
-        "singleType": {
-            "nerf": 0,
-            "buff": 0.13
-        },
-        "dualType": {
-            "nerf": 0,
-            "buff": 0
-        },
-        "inver": {
-            "chance": 0.12
-        },
-        "invertedBST": {
-            "chance": 0.08
-        },
-        "defensive": {
-            "chance": 0.10
-        },
-        "generation": {
-            "kanto": {"nerf": 0.03, "buff": 0.03},
-            "johto": {"nerf": 0.03, "buff": 0.03},
-            "hoenn": {"nerf": 0.03, "buff": 0.03},
-            "sinnoh": {"nerf": 0.03, "buff": 0.03},
-            "unova": {"nerf": 0.03, "buff": 0.03},
-            "kalos": {"nerf": 0.03, "buff": 0.03}
-        },
-        "color": {
-            "red": {"nerf": 0.025, "buff": 0.025},
-            "blue": {"nerf": 0.025, "buff": 0.025},
-            "green": {"nerf": 0.025, "buff": 0.025},
-            "yellow": {"nerf": 0.025, "buff": 0.025},
-            "purple": {"nerf": 0.025, "buff": 0.025},
-            "pink": {"nerf": 0.025, "buff": 0.025},
-            "brown": {"nerf": 0.025, "buff": 0.025},
-            "black": {"nerf": 0.025, "buff": 0.025},
-            "gray": {"nerf": 0.025, "buff": 0.025},
-            "white": {"nerf": 0.025, "buff": 0.025}
-        },
-        "rewards": {
-            "sets": {
-                "defaultSet": {
-                    "gacha": 10
-                },
-                "whtapricorn": {
-                    "gacha": 10,
-                    "whtapricorn": 10
-                },
-                "blkapricorn": {
-                    "gacha": 10,
-                    "blkapricorn": 6
-                },
-                "grnapricorn": {
-                    "gacha": 10,
-                    "grnapricorn": 10
-                },
-                "bluapricorn": {
-                    "gacha": 10,
-                    "bluapricorn": 8
-                },
-                "ylwapricorn": {
-                    "gacha": 10,
-                    "ylwapricorn": 12
-                },
-                "redapricorn": {
-                    "gacha": 10,
-                    "redapricorn": 6
-                },
-                "pnkapricorn": {
-                    "gacha": 10,
-                    "pnkapricorn": 8
-                },
-                "silver": {
-                    "gacha": 15,
-                    "silver": 3
-                },
-                "gem": {
-                    "gacha": 10,
-                    "gem": 2
-                },
-                "nugget": {
-                    "gacha": 10,
-                    "nugget": 1
-                },
-                "dust": {
-                    "gacha": 10,
-                    "rare": 1
-                },
-                "rock": {
-                    "gacha": 15,
-                    "rock": 20
-                },
-                "fragment": {
-                    "fragment": 1
-                }
-            },
-            "chance": {
-                "whtapricorn": 0.11,
-                "blkapricorn": 0.11,
-                "bluapricorn": 0.11,
-                "pnkapricorn": 0.11,
-                "ylwapricorn": 0.10,
-                "grnapricorn": 0.10,
-                "redapricorn": 0.10,
-                "silver": 0.05,
-                "gem": 0.05,
-                "nugget": 0.05,
-                "dust": 0.05,
-                "rock": 0.05,
-                "fragment": 0.01
-            }
-        }
-    };
-    /* Theme Syntax:
-        forest: {
-            types: ["Grass", "Bug"], //Types that will be included. Pokémon only needs to match one of these types
-            excludeTypes: [], //Types that will be excluded even if it matches the type above
-            include: [16, 17, 18, 25, 163, 164], //Pokémon that do not match any of the criteria above, but will be included anyway
-            exclude: [492, 649], //Pokémon that matches all of the previous criteria, but will be excluded anyway,
-            editBST: { "289": 600 }, //Makes a pokémon count as a different BST for this theme. In the example, Pokémon #289 (Slaking) will be considered a 600 BST Pokémon for this theme.
-            ceilBST: 600, //Choose a different maximum BST for pokémon to spawn. Optional, defaults to 600.
-            floorBST: 300 //Choose a different minimum BST for pokémon to spawn. Optional, defaults to 300.
-        }
-    */
-    var contestThemes = {};
-
-    /* Events Variables */
-    var currentEvent;
-    var currentGame;
-    var stopEventJoins = false;
-    var watchCountMax = 3;
-
-    /* Bait Variables */
-    var lastBaiters = [];
-    var lastBaitersAmount = 3; //Amount of people that need to bait before you can
-    var lastBaitersDecay = lastBaitersDecayTime = 15; //Seconds before the first entry in lastBaiters is purged
-    var successfulBaitCount = 15;
-    var nextGachaSpawn = 0;
-    var baitCooldownLength = 0;
-    var baitCooldown = (SESSION.global() && SESSION.global().safariBaitCooldown ? SESSION.global().safariBaitCooldown : baitCooldownLength);
-    var releaseCooldownLength = 180; //1 release every 3 minutes
-    var releaseCooldown = (SESSION.global() && SESSION.global().safariReleaseCooldown ? SESSION.global().safariReleaseCooldown : releaseCooldownLength);
-    var goldenBaitCooldown = (SESSION.global() && SESSION.global().safariGoldenBaitCooldown ? SESSION.global().safariGoldenBaitCooldown: 0);
-    var deluxeBaitCooldown = (SESSION.global() && SESSION.global().safariDeluxeBaitCooldown? SESSION.global().safariDeluxeBaitCooldown: 0);
-
-    /* Pokemon Variables */
-    var effectiveness = {
-        "Normal": { "Rock": 0.5, "Ghost": 0, "Steel": 0.5 },
-        "Fighting": { "Normal": 2, "Flying": 0.5, "Poison": 0.5, "Rock": 2, "Bug": 0.5, "Ghost": 0, "Steel": 2, "Psychic": 0.5, "Ice": 2, "Dark": 2, "Fairy": 0.5 },
-        "Flying": { "Fighting": 2, "Rock": 0.5, "Bug": 2, "Steel": 0.5, "Grass": 2, "Electric": 0.5 },
-        "Poison": { "Poison": 0.5, "Ground": 0.5, "Rock": 0.5, "Ghost": 0.5, "Steel": 0, "Grass": 2, "Fairy": 2 },
-        "Ground": { "Flying": 0, "Poison": 2, "Rock": 2, "Bug": 0.5, "Steel": 2, "Fire": 2, "Grass": 0.5, "Electric": 2 },
-        "Rock": { "Fighting": 0.5, "Flying": 2, "Ground": 0.5, "Bug": 2, "Steel": 0.5, "Fire": 2, "Ice": 2 },
-        "Bug": { "Fighting": 0.5, "Flying": 0.5, "Poison": 0.5, "Ghost": 0.5, "Steel": 0.5, "Fire": 0.5, "Grass": 2, "Psychic": 2, "Dark": 2, "Fairy": 0.5 },
-        "Ghost": { "Normal": 0, "Ghost": 2, "Psychic": 2, "Dark": 0.5 },
-        "Steel": { "Rock": 2, "Steel": 0.5, "Fire": 0.5, "Water": 0.5, "Electric": 0.5, "Ice": 2, "Fairy": 2 },
-        "Fire": { "Rock": 0.5, "Bug": 2, "Steel": 2, "Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 2, "Dragon": 0.5 },
-        "Water": { "Ground": 2, "Rock": 2, "Fire": 2, "Water": 0.5, "Grass": 0.5, "Dragon": 0.5 },
-        "Grass": { "Flying": 0.5, "Poison": 0.5, "Ground": 2, "Rock": 2, "Bug": 0.5, "Steel": 0.5, "Fire": 0.5, "Water": 2, "Grass": 0.5, "Dragon": 0.5 },
-        "Electric": { "Flying": 2, "Ground": 0, "Water": 2, "Grass": 0.5, "Electric": 0.5, "Dragon": 0.5 },
-        "Psychic": { "Fighting": 2, "Poison": 2, "Steel": 0.5, "Psychic": 0.5, "Dark": 0 },
-        "Ice": { "Flying": 2, "Ground": 2, "Steel": 0.5, "Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 0.5, "Dragon": 2 },
-        "Dragon": { "Steel": 0.5, "Dragon": 2, "Fairy": 0 },
-        "Dark": { "Fighting": 0.5, "Ghost": 2, "Psychic": 2, "Dark": 0.5, "Fairy": 0.5 },
-        "Fairy": { "Fighting": 2, "Poison": 0.5, "Steel": 0.5, "Fire": 0.5, "Dragon": 2, "Dark": 2 }
-    };
-    var immuneMultiplier = 0.15;
-    var pokeInfo = {
-        species: function(poke) {
-            return poke & ((1 << 16) - 1);
-        },
-        forme: function(poke) {
-            return poke >> 16;
-        },
-        shiny: function(poke) {
-            return typeof poke === "string";
-        },
-        readableNum: function(poke) {
-            var ret = [];
-            ret += pokeInfo.species(poke);
-            if (pokeInfo.forme(poke) > 0) {
-                ret += "-";
-                ret += pokeInfo.forme(poke);
-            }
-            return ret;
-        },
-        icon: function(p, shinyBG) {
-            var p2 = p;
-            var pcheck = p2%65536;
-            var uic;
-            //Pumpkaboo/Gourgeist icon hack
-            if (pcheck === 710 || pcheck === 711) {
-                p2 = pcheck;
-            }
-            if (ultraPokes.hasOwnProperty(p2+"")) {
-                var species = pokeInfo.species(p2), form = pokeInfo.forme(p2);
-                var key = species + (form > 0 ? "-" + form : "");
-                uic = resources.icons.get(key);
-                if (!(uic)) {
-                    uic = 'icon:' + p2%65536;
-                }
-                return '<img src="' + uic + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
-            }
-           return '<img src="icon:' + p2 + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
-        },
-        sprite: function(pk) {
-            var shiny = pokeInfo.shiny(pk);
-            if (ultraPokes.hasOwnProperty(pk+"")) {
-                var species = pokeInfo.species(pk), form = pokeInfo.forme(pk);
-                var key = species + (form > 0 ? "-" + form : "");
-                if (shiny) {
-                    return "<img src='" + resources.shiny.get(key) + "'>";
-                } else {
-                    return "<img src='" + resources.sprites.get(key) + "'>";
-                }
-            }
-            
-            var ret = [];
-            ret += "<img src='pokemon:num=";
-            ret += pk;
-            if (shiny) {
-                // PO has Magearna's shiny sprites mixed up. The shiny sprite for Magearna is actually the shiny sprite for Magearna-Pokeball
-                // Magearna's real shiny is identical to normal Magearna (blame GameFreak)
-                if (pk === "801") {
-                    return "<img src='pokemon:num=801'>";
-                } else if (pk === "66337") {
-                    return "<img src='pokemon:num=801&shiny=true'>";
-                } else {
-                    ret += "&shiny=true";
-                }
-            }
-            // ret += "&gen=7'>";
-            /* Start of temporary hack due to windows client bug with shiny sprites. Enable the line above and remove this block once the client can properly show shiny sprites for non-gen 7 Pokémon*/
-            var g = 6, id = parseInt(pk, 10), sp = pokeInfo.species(id);
-            var withback = false;
-            if ((sp >= 722 && sp < 803) || [131730, 66254, 131790, 458777, 524313, 589849, 655385, 720921, 786457, 65555, 65556, 65562, 65563, 65564, 65573, 65574, 65586, 65587, 65588, 65589, 65610, 65611, 65612, 65624, 65625, 65639, 65641].contains(id)) {
-                g = 7;
-                if (shiny) {
-                    withback = false;
-                }
-            }
-            // ret += "&gen="+g+"'>";
-            ret += "&gen="+g+(withback ? "&back=true" : "") +"'>";
-            /* End of temporary hack */
-            
-            return ret;
-        },
-        valid: function(pk) {
-            if (ultraPokes.hasOwnProperty(pk+"")) {
-                return true;
-            }
-            return pokePlain(pk) !== "Missingno";
-        },
-        calcForme: function(base, forme) {
-            return parseInt(base,10) + parseInt(forme << 16, 10);
-        }
-    };
-    var wildForms = {
-        "201": 27,
-        "412": 2,
-        "413": 2,
-        "422": 1,
-        "423": 1,
-        "550": 1,
-        "585": 3,
-        "586": 3,
-        "666": 17,
-        "669": 4,
-        "670": 4,
-        "671": 4,
-        "678": 1,
-        "710": 3,
-        "711": 3,
-        "741": 3,
-        "745": 1,
-        "849": 1,
-        "869": 62,
-        "876": 1,
-        "916": 1,
-        "931": 3,
-        "978": 2
-    };
-    var noShinySprite = [ // These Pokemon have no shiny sprites at all, so they should not be allowed to be shiny. This list includes Pikachu forms (except Pikachu-Cosplay), Castform forms, Rotom-Pokedex, Alcremie forms, and Eternamax Eternatus
-        65561,131097,196633,262169,327705,458777,524313,589849,655385,720921,786457,851993,65887,131423,262495,393695,66405,131941,197477,263013,328549,394085,459621,525157,590693,656229,721765,787301,852837,918373,983909,1049445,1114981,1180517,1246053,1311589,1377125,1442661,1508197,1573733,1639269,1704805,1770341,1835877,1901413,1966949,2032485,2098021,2163557,2229093,2294629,2360165,2425701,2491237,2556773,2622309,2687845,2753381,2818917,2884453,2949989,3015525,3081061,3146597,3212133,3277669,3343205,3408741,3474277,3539813,3605349,3670885,3736421,3801957,3867493,3933029,3998565,4064101,66426
-    ];
-    var contestMoves = {"1":"Tough","2":"Tough","3":"Cute","4":"Tough","5":"Tough","6":"Clever","7":"Tough","8":"Beautiful","9":"Cool","10":"Tough","11":"Tough","12":"Cool","13":"Cool","14":"Beautiful","15":"Cool","16":"Clever","17":"Cool","18":"Clever","19":"Clever","20":"Tough","21":"Tough","22":"Cool","23":"Tough","24":"Cool","25":"Cool","26":"Cool","27":"Cool","28":"Cute","29":"Tough","30":"Cool","31":"Cool","32":"Cool","33":"Tough","34":"Tough","35":"Tough","36":"Tough","37":"Tough","38":"Tough","39":"Cute","40":"Clever","41":"Cool","42":"Cool","43":"Cool","44":"Tough","45":"Cute","46":"Cool","47":"Cute","48":"Clever","49":"Cool","50":"Clever","51":"Clever","52":"Cute","53":"Beautiful","54":"Beautiful","55":"Cute","56":"Beautiful","57":"Beautiful","58":"Beautiful","59":"Beautiful","60":"Beautiful","61":"Beautiful","62":"Beautiful","63":"Cool","64":"Cool","65":"Cool","66":"Cool","67":"Tough","68":"Tough","69":"Tough","70":"Tough","71":"Clever","72":"Clever","73":"Clever","74":"Beautiful","75":"Cool","76":"Cool","77":"Clever","78":"Clever","79":"Clever","80":"Beautiful","81":"Clever","82":"Cool","83":"Beautiful","84":"Cool","85":"Cool","86":"Cool","87":"Cool","88":"Tough","89":"Tough","90":"Tough","91":"Tough","92":"Clever","93":"Clever","94":"Clever","95":"Clever","96":"Beautiful","97":"Cool","98":"Cool","99":"Tough","100":"Cool","101":"Clever","102":"Cute","103":"Clever","104":"Cool","105":"Clever","106":"Tough","107":"Cute","108":"Clever","109":"Clever","110":"Cute","111":"Cute","112":"Cool","113":"Beautiful","114":"Beautiful","115":"Clever","116":"Cool","117":"Tough","118":"Cute","119":"Clever","120":"Beautiful","121":"Cute","122":"Cute","123":"Tough","124":"Tough","125":"Tough","126":"Beautiful","127":"Tough","128":"Tough","129":"Cool","130":"Tough","131":"Cool","132":"Tough","133":"Cute","134":"Clever","135":"Cute","136":"Cool","137":"Tough","138":"Clever","139":"Clever","140":"Cute","141":"Clever","142":"Beautiful","143":"Cool","144":"Clever","145":"Cute","146":"Cool","147":"Beautiful","148":"Beautiful","149":"Clever","150":"Cute","151":"Tough","152":"Tough","153":"Beautiful","154":"Tough","155":"Tough","156":"Cute","157":"Tough","158":"Cool","159":"Cute","160":"Beautiful","161":"Beautiful","162":"Tough","163":"Cool","164":"Cute","165":"Tough","166":"Clever","167":"Cool","168":"Tough","169":"Clever","170":"Clever","171":"Clever","172":"Beautiful","173":"Cute","174":"Tough","175":"Cute","176":"Beautiful","177":"Cool","178":"Beautiful","179":"Cool","180":"Tough","181":"Beautiful","182":"Cute","183":"Cool","184":"Tough","185":"Clever","186":"Cute","187":"Cute","188":"Tough","189":"Cute","190":"Tough","191":"Clever","192":"Cool","193":"Clever","194":"Clever","195":"Beautiful","196":"Beautiful","197":"Cool","198":"Tough","199":"Clever","200":"Cool","201":"Tough","202":"Clever","203":"Tough","204":"Cute","205":"Cute","206":"Cool","207":"Cute","208":"Cute","209":"Cool","210":"Cool","211":"Cool","212":"Beautiful","213":"Cute","214":"Cute","215":"Beautiful","216":"Cute","217":"Cute","218":"Cute","219":"Beautiful","220":"Clever","221":"Beautiful","222":"Tough","223":"Cool","224":"Cool","225":"Cool","226":"Cute","227":"Cute","228":"Clever","229":"Cool","230":"Cute","231":"Cool","232":"Cool","233":"Cool","234":"Beautiful","235":"Clever","236":"Beautiful","237":"Clever","238":"Cool","239":"Cool","240":"Beautiful","241":"Beautiful","242":"Tough","243":"Beautiful","244":"Clever","245":"Cool","246":"Tough","247":"Clever","248":"Clever","249":"Tough","250":"Beautiful","251":"Clever","252":"Cute","253":"Cute","254":"Tough","255":"Tough","256":"Tough","257":"Beautiful","258":"Beautiful","259":"Tough","260":"Clever","261":"Beautiful","262":"Tough","263":"Cute","264":"Tough","265":"Tough","266":"Cute","267":"Beautiful","268":"Clever","269":"Clever","270":"Clever","271":"Clever","272":"Cute","273":"Cute","274":"Cute","275":"Clever","276":"Tough","277":"Beautiful","278":"Clever","279":"Tough","280":"Cool","281":"Cute","282":"Clever","283":"Tough","284":"Beautiful","285":"Clever","286":"Clever","287":"Cute","288":"Tough","289":"Clever","290":"Clever","291":"Beautiful","292":"Tough","293":"Clever","294":"Beautiful","295":"Clever","296":"Clever","297":"Beautiful","298":"Cute","299":"Beautiful","300":"Cute","301":"Beautiful","302":"Clever","303":"Cute","304":"Cool","305":"Clever","306":"Cool","307":"Beautiful","308":"Beautiful","309":"Cool","310":"Clever","311":"Beautiful","312":"Clever","313":"Cute","314":"Cool","315":"Beautiful","316":"Clever","317":"Clever","318":"Beautiful","319":"Clever","320":"Clever","321":"Cute","322":"Cool","323":"Beautiful","324":"Beautiful","325":"Clever","326":"Cool","327":"Cool","328":"Clever","329":"Beautiful","330":"Tough","331":"Cool","332":"Cool","333":"Beautiful","334":"Tough","335":"Cute","336":"Cool","337":"Cool","338":"Cool","339":"Beautiful","340":"Cute","341":"Tough","342":"Clever","343":"Cute","344":"Cool","345":"Beautiful","346":"Cute","347":"Clever","348":"Cool","349":"Cool","350":"Tough","351":"Cool","352":"Beautiful","353":"Cool","354":"Clever","355":"Cool","356":"Clever","357":"Cute","358":"Tough","359":"Tough","360":"Beautiful","361":"Cute","362":"Tough","363":"Cool","364":"Clever","365":"Cute","366":"Cool","367":"Tough","368":"Beautiful","369":"Cute","370":"Tough","371":"Tough","372":"Beautiful","373":"Cute","374":"Tough","375":"Cool","376":"Cool","377":"Cute","378":"Tough","379":"Cool","380":"Tough","381":"Cute","382":"Cute","383":"Cool","384":"Beautiful","385":"Cute","386":"Cool","387":"Cute","388":"Beautiful","389":"Clever","390":"Clever","391":"Cool","392":"Beautiful","393":"Cute","394":"Cool","395":"Cool","396":"Beautiful","397":"Tough","398":"Tough","399":"Cool","400":"Beautiful","401":"Cute","402":"Tough","403":"Cool","404":"Beautiful","405":"Cute","406":"Clever","407":"Tough","408":"Beautiful","409":"Tough","410":"Cool","411":"Cool","412":"Beautiful","413":"Cute","414":"Clever","415":"Cool","416":"Tough","417":"Cute","418":"Tough","419":"Cool","420":"Beautiful","421":"Cute","422":"Cool","423":"Cool","424":"Beautiful","425":"Clever","426":"Clever","427":"Cool","428":"Clever","429":"Cute","430":"Clever","431":"Tough","432":"Beautiful","433":"Cute","434":"Clever","435":"Cool","436":"Tough","437":"Cute","438":"Tough","439":"Tough","440":"Cool","441":"Tough","442":"Tough","443":"Cool","444":"Tough","445":"Beautiful","446":"Cool","447":"Clever","448":"Clever","449":"Beautiful","450":"Tough","451":"Beautiful","452":"Tough","453":"Beautiful","454":"Clever","455":"Clever","456":"Clever","457":"Tough","458":"Clever","459":"Cool","460":"Beautiful","461":"Beautiful","462":"Tough","463":"Tough","464":"Clever","465":"Cool","466":"Beautiful","467":"Cool","468":"Cute","469":"Tough","470":"Clever","471":"Clever","472":"Clever","473":"Beautiful","474":"Beautiful","475":"Beautiful","476":"Clever","477":"Clever","478":"Clever","479":"Tough","480":"Cool","481":"Beautiful","482":"Tough","483":"Beautiful","484":"Tough","485":"Clever","486":"Cool","487":"Cute","488":"Cool","489":"Tough","490":"Clever","491":"beautiful","492":"Clever","493":"Cute","494":"Cute","495":"Cute","496":"Beautiful","497":"beautiful","498":"Tough","499":"Beautiful","500":"Clever","501":"Cool","502":"Clever","503":"Tough","504":"Tough","505":"Beautiful","506":"Clever","507":"Tough","508":"Clever","509":"Cool","510":"Tough","511":"Clever","512":"Cool","513":"Clever","514":"Cool","515":"Tough","516":"Cool","517":"Beautiful","518":"Beautiful","519":"Beautiful","520":"Beautiful","521":"Cool","522":"Cute","523":"Tough","524":"Beautiful","525":"Tough","526":"Tough","527":"beautiful","528":"Tough","529":"Tough","530":"Tough","531":"Cute","532":"Tough","533":"Cool","534":"Cool","535":"Tough","536":"Cool","537":"Tough","538":"Cute","539":"Cool","540":"Cool","541":"Cute","542":"Tough","543":"Tough","544":"Clever","545":"Cool","546":"Cool","547":"beautiful","548":"beautiful","549":"beautiful","550":"Beautiful","551":"beautiful","552":"beautiful","553":"beautiful","554":"Beautiful","555":"Tough","556":"beautiful","557":"Cool","558":"beautiful","559":"Cool","560":"Cute","561":"Tough","562":"Clever","563":"Beautiful","564":"Cute","565":"Beautiful","566":"Tough","567":"Clever","568":"Beautiful","569":"Beautiful","570":"Beautiful","571":"Cute","572":"Beautiful","573":"Beautiful","574":"Tough","575":"Cute","576":"Cool","577":"Clever","578":"Cool","579":"Cute","580":"Cute","581":"Cute","582":"Cool","583":"Beautiful","584":"Tough","585":"Cute","586":"Cute","587":"Clever","588":"Clever","589":"Clever","590":"Clever","591":"Cool","592":"Beautiful","593":"Beautiful","594":"Beautiful","595":"Cool","596":"Beautiful","597":"Clever","598":"Cool","599":"Beautiful","600":"Cool","601":"Clever","602":"Tough","603":"Tough","604":"Tough","605":"Tough","606":"Clever","607":"Clever","608":"Cute","609":"Cute","610":"Cool","611":"Beautiful","612":"Beautiful","613":"Beautiful","614":"Clever","615":"Cute","616":"Beautiful","617":"Tough","618":"Beautiful","619":"Cool","620":"Beautiful","621":"Tough"};
-    var evolutions = {
-        "1": { "evo": 2, "candies": 207 }, "2": { "evo": 3, "candies": 656 }, "65561": { "evo": -1, "candies": 0 }, "131097": { "evo": -1, "candies": 0 }, "196633": { "evo": -1, "candies": 0 }, "262169": { "evo": -1, "candies": 0 }, "327705": { "evo": -1, "candies": 0 }, "393241": { "evo": -1, "candies": 0 }, "458777": { "evo": -1, "candies": 0 }, "524313": { "evo": -1, "candies": 0 }, "589849": { "evo": -1, "candies": 0 }, "655385": { "evo": -1, "candies": 0 }, "720921": { "evo": -1, "candies": 0 }, "786457": { "evo": -1, "candies": 0 }, "851993": { "evo": -1, "candies": 0 }, "4": { "evo": 5, "candies": 207 }, "5": { "evo": 6, "candies": 668 }, "7": { "evo": 8, "candies": 207 }, "8": { "evo": 9, "candies": 663 }, "10": { "evo": 11, "candies": 105 }, "11": { "evo": 12, "candies": 332 }, "13": { "evo": 14, "candies": 105 }, "14": { "evo": 15, "candies": 332 }, "16": { "evo": 17, "candies": 178 }, "17": { "evo": 18, "candies": 402 }, "19": { "evo": 20, "candies": 347 }, "65555": { "evo": 65556, "candies": 347 }, "21": { "evo": 22, "candies": 371 }, "23": { "evo": 24, "candies": 368 }, "25": { "evo": 26, "candies": 407 }, "27": { "evo": 28, "candies": 378 }, "65563": { "evo": 65564, "candies": 378 }, "29": { "evo": 30, "candies": 186 }, "30": { "evo": 31, "candies": 424 }, "32": { "evo": 33, "candies": 186 }, "33": { "evo": 34, "candies": 424 }, "35": { "evo": 36, "candies": 406 }, "37": { "evo": 38, "candies": 424 }, "65573": { "evo": 65574, "candies": 424 }, "39": { "evo": 40, "candies": 365 }, "41": { "evo": 42, "candies": 232 }, "42": { "evo": 169, "candies": 449 }, "43": { "evo": 44, "candies": 201 }, "44": { "evo": [45, 182], "candies": 412 }, "46": { "evo": 47, "candies": 340 }, "48": { "evo": 49, "candies": 378 }, "50": { "evo": 51, "candies": 340 }, "65586": { "evo": 65587, "candies": 340 }, "52": { "evo": 53, "candies": 370 }, "65588": { "evo": 65589, "candies": 370 }, "54": { "evo": 55, "candies": 420 }, "56": { "evo": 57, "candies": 382 }, "58": { "evo": 59, "candies": 466 }, "60": { "evo": 61, "candies": 196 }, "61": { "evo": [62, 186], "candies": 424 }, "63": { "evo": 64, "candies": 204 }, "64": { "evo": 65, "candies": 575 }, "66": { "evo": 67, "candies": 207 }, "67": { "evo": 68, "candies": 424 }, "69": { "evo": 70, "candies": 199 }, "70": { "evo": 71, "candies": 412 }, "72": { "evo": 73, "candies": 433 }, "74": { "evo": 75, "candies": 199 }, "65610": { "evo": 65611, "candies": 199 }, "75": { "evo": 76, "candies": 416 }, "65611": { "evo": 65612, "candies": 416 }, "77": { "evo": 78, "candies": 420 }, "79": { "evo": [80, 199], "candies": 412 }, "81": { "evo": 82, "candies": 237 }, "82": { "evo": 462, "candies": 449 }, "84": { "evo": 85, "candies": 386 }, "86": { "evo": 87, "candies": 399 }, "88": { "evo": 89, "candies": 420 }, "65624": { "evo": 65625, "candies": 420 }, "90": { "evo": 91, "candies": 441 }, "92": { "evo": 93, "candies": 207 }, "93": { "evo": 94, "candies": 575 }, "95": { "evo": 208, "candies": 428 }, "96": { "evo": 97, "candies": 406 }, "98": { "evo": 99, "candies": 399 }, "100": { "evo": 101, "candies": 403 }, "102": { "evo": 103, "candies": 437 }, "104": { "evo": 105, "candies": 357 }, "108": { "evo": 463, "candies": 433 }, "109": { "evo": 110, "candies": 412 }, "111": { "evo": 112, "candies": 247 }, "112": { "evo": 464, "candies": 449 }, "113": { "evo": 242, "candies": 621 }, "114": { "evo": 465, "candies": 449 }, "116": { "evo": 117, "candies": 224 }, "117": { "evo": 230, "candies": 454 }, "118": { "evo": 119, "candies": 378 }, "120": { "evo": 121, "candies": 437 }, "123": { "evo": 212, "candies": 420 }, "125": { "evo": 466, "candies": 454 }, "126": { "evo": 467, "candies": 454 }, "129": { "evo": 130, "candies": 454 }, "133": { "evo": [470, 471, 135, 134, 136, 196, 197, 700], "candies": 656 }, "137": { "evo": 233, "candies": 263 }, "138": { "evo": 139, "candies": 416 }, "140": { "evo": 141, "candies": 416 }, "147": { "evo": 148, "candies": 214 }, "148": { "evo": 149, "candies": 699 }, "152": { "evo": 153, "candies": 207 }, "153": { "evo": 154, "candies": 656 }, "155": { "evo": 156, "candies": 207 }, "156": { "evo": 157, "candies": 668 }, "158": { "evo": 159, "candies": 207 }, "159": { "evo": 160, "candies": 663 }, "161": { "evo": 162, "candies": 349 }, "163": { "evo": 164, "candies": 371 }, "165": { "evo": 166, "candies": 328 }, "167": { "evo": 168, "candies": 328 }, "170": { "evo": 171, "candies": 386 }, "172": { "evo": 25, "candies": 163 }, "65708": { "evo": -1, "candies": 0 }, "173": { "evo": 35, "candies": 165 }, "174": { "evo": 39, "candies": 138 }, "175": { "evo": 176, "candies": 207 }, "176": { "evo": 468, "candies": 627 }, "177": { "evo": 178, "candies": 395 }, "179": { "evo": 180, "candies": 186 }, "180": { "evo": 181, "candies": 428 }, "183": { "evo": 184, "candies": 353 }, "187": { "evo": 188, "candies": 173 }, "188": { "evo": 189, "candies": 386 }, "190": { "evo": 424, "candies": 405 }, "191": { "evo": 192, "candies": 357 }, "193": { "evo": 469, "candies": 433 }, "194": { "evo": 195, "candies": 361 }, "198": { "evo": 430, "candies": 424 }, "200": { "evo": 429, "candies": 416 }, "204": { "evo": 205, "candies": 391 }, "207": { "evo": 472, "candies": 428 }, "209": { "evo": 210, "candies": 378 }, "215": { "evo": 461, "candies": 428 }, "216": { "evo": 217, "candies": 420 }, "218": { "evo": 219, "candies": 344 }, "220": { "evo": 221, "candies": 230 }, "221": { "evo": 473, "candies": 445 }, "223": { "evo": 224, "candies": 403 }, "228": { "evo": 229, "candies": 420 }, "231": { "evo": 232, "candies": 420 }, "233": { "evo": 474, "candies": 449 }, "236": { "evo": [107, 106, 237], "candies": 382 }, "238": { "evo": 124, "candies": 382 }, "239": { "evo": 125, "candies": 250 }, "240": { "evo": 126, "candies": 252 }, "246": { "evo": 247, "candies": 209 }, "247": { "evo": 248, "candies": 699 }, "252": { "evo": 253, "candies": 207 }, "253": { "evo": 254, "candies": 663 }, "255": { "evo": 256, "candies": 207 }, "256": { "evo": 257, "candies": 663 }, "258": { "evo": 259, "candies": 207 }, "259": { "evo": 260, "candies": 669 }, "261": { "evo": 262, "candies": 353 }, "263": { "evo": 264, "candies": 353 }, "265": { "evo": [266, 268], "candies": 105 }, "266": { "evo": 267, "candies": 332 }, "268": { "evo": 269, "candies": 323 }, "270": { "evo": 271, "candies": 173 }, "271": { "evo": 272, "candies": 552 }, "273": { "evo": 274, "candies": 173 }, "274": { "evo": 275, "candies": 403 }, "276": { "evo": 277, "candies": 361 }, "278": { "evo": 279, "candies": 361 }, "280": { "evo": 281, "candies": 142 }, "281": { "evo": [282, 475], "candies": 435 }, "283": { "evo": 284, "candies": 348 }, "285": { "evo": 286, "candies": 386 }, "287": { "evo": 288, "candies": 224 }, "288": { "evo": 289, "candies": 781 }, "290": { "evo": [291, 292], "candies": 291 }, "293": { "evo": 294, "candies": 184 }, "294": { "evo": 295, "candies": 412 }, "296": { "evo": 297, "candies": 398 }, "298": { "evo": 183, "candies": 128 }, "299": { "evo": 476, "candies": 441 }, "300": { "evo": 301, "candies": 319 }, "304": { "evo": 305, "candies": 219 }, "305": { "evo": 306, "candies": 610 }, "307": { "evo": 308, "candies": 344 }, "309": { "evo": 310, "candies": 399 }, "315": { "evo": 407, "candies": 433 }, "316": { "evo": 317, "candies": 392 }, "318": { "evo": 319, "candies": 386 }, "320": { "evo": 321, "candies": 420 }, "322": { "evo": 323, "candies": 575 }, "325": { "evo": 326, "candies": 395 }, "328": { "evo": 329, "candies": 173 }, "329": { "evo": 330, "candies": 598 }, "331": { "evo": 332, "candies": 399 }, "333": { "evo": 334, "candies": 412 }, "339": { "evo": 340, "candies": 393 }, "341": { "evo": 342, "candies": 393 }, "343": { "evo": 344, "candies": 420 }, "345": { "evo": 346, "candies": 416 }, "347": { "evo": 348, "candies": 416 }, "349": { "evo": [350], "candies": 454 }, "353": { "evo": 354, "candies": 382 }, "355": { "evo": 356, "candies": 232 }, "356": { "evo": 477, "candies": 441 }, "360": { "evo": 202, "candies": 340 }, "361": { "evo": [362, 478], "candies": 403 }, "363": { "evo": 364, "candies": 209 }, "364": { "evo": 365, "candies": 445 }, "366": { "evo": [367, 368], "candies": 407 }, "371": { "evo": 372, "candies": 214 }, "372": { "evo": 373, "candies": 699 }, "374": { "evo": 375, "candies": 214 }, "375": { "evo": 376, "candies": 699 }, "387": { "evo": 388, "candies": 207 }, "388": { "evo": 389, "candies": 656 }, "390": { "evo": 391, "candies": 207 }, "391": { "evo": 392, "candies": 668 }, "393": { "evo": 394, "candies": 207 }, "394": { "evo": 395, "candies": 663 }, "396": { "evo": 397, "candies": 173 }, "397": { "evo": 398, "candies": 407 }, "399": { "evo": 400, "candies": 344 }, "401": { "evo": 402, "candies": 323 }, "403": { "evo": 404, "candies": 185 }, "404": { "evo": 405, "candies": 439 }, "406": { "evo": 315, "candies": 204 }, "408": { "evo": 409, "candies": 416 }, "410": { "evo": 411, "candies": 416 }, "412": { "evo": [413, 414], "candies": 356 }, "415": { "evo": 416, "candies": 398 }, "418": { "evo": 419, "candies": 416 }, "420": { "evo": 421, "candies": 378 }, "422": { "evo": 423, "candies": 399 }, "425": { "evo": 426, "candies": 418 }, "427": { "evo": 428, "candies": 403 }, "431": { "evo": 432, "candies": 380 }, "433": { "evo": 358, "candies": 357 }, "434": { "evo": 435, "candies": 402 }, "436": { "evo": 437, "candies": 420 }, "438": { "evo": 185, "candies": 344 }, "439": { "evo": 122, "candies": 386 }, "440": { "evo": 113, "candies": 230 }, "443": { "evo": 444, "candies": 209 }, "444": { "evo": 445, "candies": 699 }, "446": { "evo": 143, "candies": 454 }, "447": { "evo": 448, "candies": 604 }, "449": { "evo": 450, "candies": 441 }, "451": { "evo": 452, "candies": 420 }, "453": { "evo": 454, "candies": 412 }, "456": { "evo": 457, "candies": 386 }, "458": { "evo": 226, "candies": 391 }, "459": { "evo": 460, "candies": 415 }, "495": { "evo": 496, "candies": 211 }, "496": { "evo": 497, "candies": 660 }, "498": { "evo": 499, "candies": 213 }, "499": { "evo": 500, "candies": 660 }, "501": { "evo": 502, "candies": 211 }, "502": { "evo": 503, "candies": 660 }, "504": { "evo": 505, "candies": 353 }, "506": { "evo": 507, "candies": 189 }, "507": { "evo": 508, "candies": 420 }, "509": { "evo": 510, "candies": 375 }, "511": { "evo": 512, "candies": 418 }, "513": { "evo": 514, "candies": 418 }, "515": { "evo": 516, "candies": 418 }, "517": { "evo": 518, "candies": 409 }, "519": { "evo": 520, "candies": 183 }, "520": { "evo": 521, "candies": 410 }, "522": { "evo": 523, "candies": 417 }, "524": { "evo": 525, "candies": 199 }, "525": { "evo": 526, "candies": 433 }, "527": { "evo": 528, "candies": 357 }, "529": { "evo": 530, "candies": 427 }, "532": { "evo": 533, "candies": 207 }, "533": { "evo": 534, "candies": 424 }, "535": { "evo": 536, "candies": 196 }, "536": { "evo": 537, "candies": 428 }, "540": { "evo": 541, "candies": 194 }, "541": { "evo": 542, "candies": 420 }, "543": { "evo": 544, "candies": 184 }, "544": { "evo": 545, "candies": 407 }, "546": { "evo": 547, "candies": 403 }, "548": { "evo": 549, "candies": 403 }, "551": { "evo": 552, "candies": 179 }, "552": { "evo": 553, "candies": 597 }, "554": { "evo": 555, "candies": 403 }, "557": { "evo": 558, "candies": 399 }, "559": { "evo": 560, "candies": 410 }, "562": { "evo": 563, "candies": 406 }, "564": { "evo": 565, "candies": 416 }, "566": { "evo": 567, "candies": 652 }, "568": { "evo": 569, "candies": 398 }, "570": { "evo": 571, "candies": 428 }, "572": { "evo": 573, "candies": 395 }, "574": { "evo": 575, "candies": 199 }, "575": { "evo": 576, "candies": 412 }, "577": { "evo": 578, "candies": 189 }, "578": { "evo": 579, "candies": 412 }, "580": { "evo": 581, "candies": 397 }, "582": { "evo": 583, "candies": 201 }, "583": { "evo": 584, "candies": 449 }, "585": { "evo": 586, "candies": 399 }, "588": { "evo": 589, "candies": 416 }, "590": { "evo": 591, "candies": 390 }, "592": { "evo": 593, "candies": 403 }, "595": { "evo": 596, "candies": 396 }, "597": { "evo": 598, "candies": 411 }, "599": { "evo": 600, "candies": 224 }, "600": { "evo": 601, "candies": 437 }, "602": { "evo": 603, "candies": 207 }, "603": { "evo": 604, "candies": 433 }, "605": { "evo": 606, "candies": 407 }, "607": { "evo": 608, "candies": 189 }, "608": { "evo": 609, "candies": 598 }, "610": { "evo": 611, "candies": 209 }, "611": { "evo": 612, "candies": 621 }, "613": { "evo": 614, "candies": 407 }, "616": { "evo": 617, "candies": 416 }, "619": { "evo": 620, "candies": 428 }, "622": { "evo": 623, "candies": 555 }, "624": { "evo": 625, "candies": 412 }, "627": { "evo": 628, "candies": 428 }, "629": { "evo": 630, "candies": 428 }, "633": { "evo": 634, "candies": 214 }, "634": { "evo": 635, "candies": 699 }, "636": { "evo": 637, "candies": 462 }, "650": { "evo": 651, "candies": 207 }, "651": { "evo": 652, "candies": 663 }, "653": { "evo": 654, "candies": 209 }, "654": { "evo": 655, "candies": 668 }, "656": { "evo": 657, "candies": 207 }, "657": { "evo": 658, "candies": 663 }, "659": { "evo": 660, "candies": 355 }, "661": { "evo": 662, "candies": 195 }, "662": { "evo": 663, "candies": 624 }, "664": { "evo": 665, "candies": 109 }, "665": { "evo": [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778], "candies": 345 }, "667": { "evo": 668, "candies": 426 }, "669": { "evo": 670, "candies": 189 }, "670": { "evo": 671, "candies": 464 }, "328350": { "evo": -1, "candies": 0 }, "672": { "evo": 673, "candies": 446 }, "674": { "evo": 675, "candies": 416 }, "677": { "evo": [678, 66214], "candies": 391 }, "679": { "evo": 680, "candies": 228 }, "680": { "evo": 681, "candies": 598 }, "682": { "evo": 683, "candies": 388 }, "684": { "evo": 685, "candies": 403 }, "686": { "evo": 687, "candies": 405 }, "688": { "evo": 689, "candies": 420 }, "690": { "evo": 691, "candies": 415 }, "692": { "evo": 693, "candies": 420 }, "694": { "evo": 695, "candies": 404 }, "696": { "evo": 697, "candies": 438 }, "698": { "evo": 699, "candies": 651 }, "704": { "evo": 705, "candies": 231 }, "705": { "evo": 706, "candies": 699 }, "708": { "evo": 709, "candies": 398 }, "710": { "evo": 711, "candies": 415 }, "712": { "evo": 713, "candies": 432 }, "714": { "evo": 715, "candies": 449 }, "722": { "evo": 723, "candies": 214 }, "723": { "evo": 724, "candies": 663 }, "725": { "evo": 726, "candies": 214 }, "726": { "evo": 727, "candies": 663 }, "728": { "evo": 729, "candies": 214 }, "729": { "evo": 730, "candies": 663 }, "731": { "evo": 732, "candies": 181 }, "732": { "evo": 733, "candies": 407 }, "734": { "evo": 735, "candies": 351 }, "736": { "evo": 737, "candies": 204 }, "737": { "evo": 738, "candies": 420 }, "739": { "evo": 740, "candies": 402 }, "742": { "evo": 743, "candies": 390 }, "744": { "evo": [745, 66281], "candies": 409 }, "747": { "evo": 748, "candies": 416 }, "749": { "evo": 750, "candies": 420 }, "751": { "evo": 752, "candies": 381 }, "753": { "evo": 754, "candies": 403 }, "755": { "evo": 756, "candies": 340 }, "757": { "evo": 758, "candies": 403 }, "759": { "evo": 760, "candies": 420 }, "761": { "evo": 762, "candies": 148 }, "762": { "evo": 763, "candies": 428 }, "767": { "evo": 768, "candies": 445 }, "769": { "evo": 770, "candies": 403 }, "772": { "evo": 773, "candies": 599 }, "782": { "evo": 783, "candies": 214 }, "783": { "evo": 784, "candies": 699 }, "789": { "evo": 790, "candies": 39999 }, "790": { "evo": [791, 792], "candies": 9999999 }, "803": { "evo": 804, "candies": 9999999 }, "808": { "evo": 809, "candies": 9999999 }, "810": { "evo": 811, "candies": 207 }, "811": { "evo": 812, "candies": 656 }, "813": { "evo": 814, "candies": 207 }, "814": { "evo": 815, "candies": 656 }, "816": { "evo": 817, "candies": 207 }, "817": { "evo": 818, "candies": 656 }, "819": { "evo": 820, "candies": 310 }, "821": { "evo": 822, "candies": 178 }, "822": { "evo": 823, "candies": 402 }, "824": { "evo": 825, "candies": 130 }, "825": { "evo": 826, "candies": 323 }, "827": { "evo": 828, "candies": 375 }, "829": { "evo": 830, "candies": 420 }, "831": { "evo": 832, "candies": 350 }, "833": { "evo": 834, "candies": 406 }, "835": { "evo": 836, "candies": 432 }, "837": { "evo": 838, "candies": 270 }, "838": { "evo": 839, "candies": 610 }, "840": { "evo": [841, 842], "candies": 510 }, "843": { "evo": 844, "candies": 480 }, "846": { "evo": 847, "candies": 433 }, "848": { "evo": [849, 66385], "candies": 480 }, "850": { "evo": 851, "candies": 498 }, "852": { "evo": 853, "candies": 444 }, "854": { "evo": 855, "candies": 496 }, "856": { "evo": 857, "candies": 290 }, "857": { "evo": 858, "candies": 412 }, "859": { "evo": 860, "candies": 290 }, "860": { "evo": 861, "candies": 412 }, "65799": { "evo": 65800, "candies": 353 }, "65800": { "evo": 862, "candies": 508 }, "131124": { "evo": 863, "candies": 451 }, "65758": { "evo": 864, "candies": 680 }, "65619": { "evo": 865, "candies": 617 }, "65658": { "evo": 866, "candies": 629 }, "66098": { "evo": 867, "candies": 470 }, "868": { "evo": [869, 66405, 131941, 197477, 263013, 328549, 394085, 459621, 525157, 590693, 656229, 721765, 787301, 852837, 918373, 983909, 1049445, 1114981, 1180517, 1246053, 1311589, 1377125, 1442661, 1508197, 1573733, 1639269, 1704805, 1770341, 1835877, 1901413, 1966949, 2032485, 2098021, 2163557, 2229093, 2294629, 2360165, 2425701, 2491237, 2556773, 2622309, 2687845, 2753381, 2818917, 2884453, 2949989, 3015525, 3081061, 3146597, 3212133, 3277669, 3343205, 3408741, 3474277, 3539813, 3605349, 3670885, 3736421, 3801957, 3867493, 3933029, 3998565, 4064101], "candies": 410 }, "872": { "evo": 873, "candies": 346 }, "878": { "evo": 879, "candies": 470 }, "885": { "evo": 886, "candies": 214 }, "886": { "evo": 887, "candies": 699 }, "65613": { "evo": 65614, "candies": 540 }, "66090": { "evo": 131627, "candies": 530 }, "65615": { "evo": [131152, 65735], "candies": 412 }, "891": { "evo": [892, 66428], "candies": 999999 }, "65594": { "evo": 65595, "candies": 466 }, "65636": { "evo": 65637, "candies": 403 }, "65747": { "evo": 904, "candies": 420 }, "65751": { "evo": 903, "candies": 428 }, "131622": { "evo": [902, 66438], "candies": 478 }, "66106": { "evo": 66107, "candies": 428 }, "66241": { "evo": 66242, "candies": 699 }, "65730": { "evo": 980, "candies": 340 }, "906": { "evo": 907, "candies": 207 }, "907": { "evo": 908, "candies": 656 }, "909": { "evo": 910, "candies": 207 }, "910": { "evo": 911, "candies": 656 }, "912": { "evo": 913, "candies": 207 }, "913": { "evo": 914, "candies": 656 }, "915": { "evo": [916, 66452], "candies": 351 }, "917": { "evo": 918, "candies": 328 }, "919": { "evo": 920, "candies": 378 }, "921": { "evo": 922, "candies": 199 }, "922": { "evo": 923, "candies": 412 }, "924": { "evo": [66461], "candies": 397 }, "926": { "evo": 927, "candies": 402 }, "928": { "evo": 929, "candies": 204 }, "929": { "evo": 930, "candies": 433 }, "932": { "evo": 933, "candies": 270 }, "933": { "evo": 934, "candies": 610 }, "935": { "evo": [936, 937], "candies": 498 }, "938": { "evo": 939, "candies": 410 }, "940": { "evo": 941, "candies": 410 }, "942": { "evo": 943, "candies": 407 }, "944": { "evo": 945, "candies": 406 }, "946": { "evo": 947, "candies": 444 }, "948": { "evo": 949, "candies": 433 }, "951": { "evo": 952, "candies": 406 }, "953": { "evo": 954, "candies": 397 }, "955": { "evo": 956, "candies": 404 }, "957": { "evo": 958, "candies": 207 }, "958": { "evo": 959, "candies": 424 }, "960": { "evo": 961, "candies": 340 }, "963": { "evo": 964, "candies": 375 }, "965": { "evo": 966, "candies": 470 }, "969": { "evo": 970, "candies": 498 }, "971": { "evo": 972, "candies": 409 }, "974": { "evo": 975, "candies": 651 }, "996": { "evo": 997, "candies": 214 }, "997": { "evo": 998, "candies": 699 }, "999": { "evo": 1000, "candies": 462 }, "66535": { "evo": -1, "candies": 0 }
-    };
-    for (var i = 0; i < 100; i++) { // tandemaus
-        evolutions[924].evo.push(925);
-    }
-    var devolutions = {
-        "2": 1, "3": 2, "5": 4, "6": 5, "8": 7, "9": 8, "11": 10, "12": 11, "14": 13, "15": 14, "17": 16, "18": 17, "20": 19, "22": 21, "24": 23, "65562": 25, "26": 25, "28": 27, "30": 29, "31": 30, "33": 32, "34": 33, "36": 35, "38": 37, "40": 39, "42": 41, "169": 42, "44": 43, "45": 44, "182": 44, "47": 46, "49": 48, "51": 50, "53": 52, "55": 54, "57": 56, "59": 58, "61": 60, "62": 61, "186": 61, "64": 63, "65": 64, "67": 66, "68": 67, "70": 69, "71": 70, "73": 72, "75": 74, "76": 75, "78": 77, "80": 79, "199": 79, "82": 81, "462": 82, "85": 84, "87": 86, "89": 88, "91": 90, "93": 92, "94": 93, "208": 95, "97": 96, "99": 98, "101": 100, "103": 102, "105": 104, "463": 108, "110": 109, "112": 111, "464": 112, "242": 113, "465": 114, "117": 116, "230": 117, "119": 118, "121": 120, "212": 123, "466": 125, "467": 126, "130": 129, "470": 133, "471": 133, "135": 133, "134": 133, "136": 133, "196": 133, "197": 133, "700": 133, "233": 137, "139": 138, "141": 140, "148": 147, "149": 148, "153": 152, "154": 153, "156": 155, "157": 156, "159": 158, "160": 159, "162": 161, "164": 163, "166": 165, "168": 167, "171": 170, "25": 172, "65561": -1, "131097": -1, "196633": -1, "262169": -1, "327705": -1, "393241": -1, "458777": -1, "524313": -1, "589849": -1, "655385": -1, "720921": -1, "786457": -1, "851993": -1, "35": 173, "39": 174, "176": 175, "468": 176, "178": 177, "180": 179, "181": 180, "184": 183, "188": 187, "189": 188, "424": 190, "192": 191, "469": 193, "195": 194, "430": 198, "429": 200, "205": 204, "472": 207, "210": 209, "461": 215, "217": 216, "219": 218, "221": 220, "473": 221, "224": 223, "229": 228, "232": 231, "474": 233, "107": 236, "106": 236, "237": 236, "124": 238, "125": 239, "126": 240, "247": 246, "248": 247, "253": 252, "254": 253, "256": 255, "257": 256, "259": 258, "260": 259, "262": 261, "264": 263, "266": 265, "268": 265, "267": 266, "269": 268, "271": 270, "272": 271, "274": 273, "275": 274, "277": 276, "279": 278, "281": 280, "282": 281, "475": 281, "284": 283, "286": 285, "288": 287, "289": 288, "291": 290, "292": 290, "294": 293, "295": 294, "297": 296, "183": 298, "476": 299, "301": 300, "305": 304, "306": 305, "308": 307, "310": 309, "407": 315, "317": 316, "319": 318, "321": 320, "323": 322, "326": 325, "329": 328, "330": 329, "332": 331, "334": 333, "340": 339, "342": 341, "344": 343, "346": 345, "348": 347, "350": 349, "354": 353, "356": 355, "477": 356, "202": 360, "362": 361, "478": 361, "364": 363, "365": 364, "367": 366, "368": 366, "372": 371, "373": 372, "375": 374, "376": 375, "388": 387, "389": 388, "391": 390, "392": 391, "394": 393, "395": 394, "397": 396, "398": 397, "400": 399, "402": 401, "404": 403, "405": 404, "315": 406, "409": 408, "411": 410, "413": 412, "414": 412, "416": 415, "419": 418, "421": 420, "423": 422, "426": 425, "428": 427, "432": 431, "358": 433, "435": 434, "437": 436, "185": 438, "122": 439, "113": 440, "444": 443, "445": 444, "143": 446, "448": 447, "450": 449, "452": 451, "454": 453, "457": 456, "226": 458, "460": 459, "496": 495, "497": 496, "499": 498, "500": 499, "502": 501, "503": 502, "505": 504, "507": 506, "508": 507, "510": 509, "512": 511, "514": 513, "516": 515, "518": 517, "520": 519, "521": 520, "523": 522, "525": 524, "526": 525, "528": 527, "530": 529, "533": 532, "534": 533, "536": 535, "537": 536, "541": 540, "542": 541, "544": 543, "545": 544, "547": 546, "549": 548, "552": 551, "553": 552, "555": 554, "66091": 554, "558": 557, "560": 559, "563": 562, "565": 564, "567": 566, "569": 568, "571": 570, "573": 572, "575": 574, "576": 575, "578": 577, "579": 578, "581": 580, "583": 582, "584": 583, "586": 585, "589": 588, "591": 590, "593": 592, "596": 595, "598": 597, "600": 599, "601": 600, "603": 602, "604": 603, "606": 605, "608": 607, "609": 608, "611": 610, "612": 611, "614": 613, "617": 616, "620": 619, "623": 622, "625": 624, "628": 627, "630": 629, "634": 633, "635": 634, "637": 636, "651": 650, "652": 651, "654": 653, "655": 654, "657": 656, "658": 657, "660": 659, "662": 661, "663": 662, "665": 664, "666": 665, "668": 667, "670": 669, "328350": -1, "671": 670, "673": 672, "675": 674, "678": 677, "680": 679, "681": 680, "683": 682, "685": 684, "687": 686, "689": 688, "691": 690, "693": 692, "695": 694, "697": 696, "699": 698, "705": 704, "706": 705, "709": 708, "711": 710, "713": 712, "715": 714, "723": 722, "724": 723, "726": 725, "727": 726, "729": 728, "730": 729, "732": 731, "733": 732, "735": 734, "737": 736, "738": 737, "740": 739, "743": 742, "745": 744, "131817": -1, "66281": 744, "748": 747, "750": 749, "752": 751, "754": 753, "756": 755, "758": 757, "760": 759, "762": 761, "763": 762, "768": 767, "770": 769, "773": 772, "783": 782, "784": 783, "790": 789, "791": 790, "792": 790, "804": 803, "811": 810, "812": 811, "814": 813, "815": 814, "817": 816, "818": 817, "820": 819, "822": 821, "823": 822, "825": 824, "826": 825, "828": 827, "830": 829, "832": 831, "834": 833, "836": 835, "838": 837, "839": 838, "841": 840, "842": 840, "844": 843, "847": 846, "849": 848, "66385": 848, "851": 850, "853": 852, "855": 854, "857": 856, "858": 857, "860": 859, "861": 860, "862": 65800, "65800": 65799, "863": 131124, "864": 65758, "865": 65619, "866": 65658, "867": 66098, "869": 868, "873": 872, "879": 878, "886": 885, "887": 886, "65614": 65613, "197163": 66090, "131627": 66090, "131152": 65615, "892": 891, "66428": 891, "65735": 65615, "555": 554, "66091": 554, "131627": 66090, "197163": 66090, "131152": 65615, "65611": 65610, "65595": 65594, "65637": 65636, "65693": 156, "66039": 502, "66085": 548, "66107": 66106, "66164": 627, "66241": 704, "66242": 66241, "66249": 712, "66260": 723, "899": 234, "900": 123, "901": 217, "902": 131622, "66438": 131622, "903": 65751, "904": 65747, "907": 906, "908": 907, "910": 909, "911": 910, "913": 912, "914": 913, "916": 915, "66452": 915, "918": 917, "920": 919, "922": 921, "923": 922, "925": 924, "66461": 924, "927": 926, "929": 928, "930": 929, "933": 932, "934": 933, "936": 935, "937": 935, "939": 938, "941": 940, "943": 942, "945": 944, "947": 946, "949": 948, "952": 951, "954": 953, "956": 955, "958": 957, "959": 958, "961": 960, "964": 963, "66500": 963, "966": 965, "970": 969, "972": 971, "975": 974, "979": 57, "980": 65730, "981": 203, "982": 206, "66518": 206, "983": 625, "997": 996, "998": 997, "1000": 999
-    };
-    var megaEvolutions = {
-        "3":[65539],"6":[65542, 131078],"9":[65545],"15":[65551],"18":[65554],"65":[65601],"80":[65616],"94":[65630],"115":[65651],"127":[65663],"130":[65666],"142":[65678],"150":[65686, 131222],"181":[65717],"208":[65744],"212":[65748],"214":[65750],"229":[65765],"248":[65784],"254":[65790],"257":[65793],"260":[65796],"282":[65818],"302":[65838],"303":[65839],"306":[65842],"308":[65844],"310":[65846],"319":[65855],"323":[65859],"334":[65870],"354":[65890],"359":[65895],"362":[65898],"373":[65909],"376":[65912],"380":[65916],"381":[65917],"382":[65918],"383":[65919],"384":[65920],"428":[65964],"445":[65981],"448":[65984],"460":[65996],"475":[66011],"531":[66067],"719":[66255]
-    };
-    var megaPokemon = [
-        65539,65542,131078,65545,65551,65554,65601,65616,65630,65651,65663,65666,65678,65686,131222,65717,65744,65748,65750,65765,65784,65790,65793,65796,65818,65838,65839,65842,65844,65846,65855,65859,65870,65890,65895,65898,65909,65912,65916,65917,65918,65919,65920,65964,65981,65984,65996,66011,66067,66255
-    ];
-    var eggdata = {1:["Monster","Grass"],2:["Monster","Grass"],3:["Monster","Grass"],4:["Monster","Dragon"],5:["Monster","Dragon"],6:["Monster","Dragon"],7:["Monster","Water1"],8:["Monster","Water1"],9:["Monster","Water1"],10:["Bug"],11:["Bug"],12:["Bug"],13:["Bug"],14:["Bug"],15:["Bug"],16:["Flying"],17:["Flying"],18:["Flying"],19:["Field"],20:["Field"],21:["Flying"],22:["Flying"],23:["Field"],24:["Field"],25:["Field","Fairy"],26:["Field","Fairy"],27:["Field"],28:["Field"],29:["Monster","Field"],30:["Undiscovered"],31:["Undiscovered"],32:["Monster","Field"],33:["Monster","Field"],34:["Monster","Field"],35:["Fairy"],36:["Fairy"],37:["Field"],38:["Field"],39:["Fairy"],40:["Fairy"],41:["Flying"],42:["Flying"],43:["Grass"],44:["Grass"],45:["Grass"],46:["Bug","Grass"],47:["Bug","Grass"],48:["Bug"],49:["Bug"],50:["Field"],51:["Field"],52:["Field"],53:["Field"],54:["Water1","Field"],55:["Water1","Field"],56:["Field"],57:["Field"],58:["Field"],59:["Field"],60:["Water1"],61:["Water1"],62:["Water1"],63:["Human-Like"],64:["Human-Like"],65:["Human-Like"],66:["Human-Like"],67:["Human-Like"],68:["Human-Like"],69:["Grass"],70:["Grass"],71:["Grass"],72:["Water3"],73:["Water3"],74:["Mineral"],75:["Mineral"],76:["Mineral"],77:["Field"],78:["Field"],79:["Monster","Water1"],80:["Monster","Water1"],81:["Mineral"],82:["Mineral"],83:["Flying","Field"],84:["Flying"],85:["Flying"],86:["Water1","Field"],87:["Water1","Field"],88:["Amorphous"],89:["Amorphous"],90:["Water3"],91:["Water3"],92:["Amorphous"],93:["Amorphous"],94:["Amorphous"],95:["Mineral"],96:["Human-Like"],97:["Human-Like"],98:["Water3"],99:["Water3"],100:["Mineral"],101:["Mineral"],102:["Grass"],103:["Grass"],104:["Monster"],105:["Monster"],106:["Human-Like"],107:["Human-Like"],108:["Monster"],109:["Amorphous"],110:["Amorphous"],111:["Monster","Field"],112:["Monster","Field"],113:["Fairy"],114:["Grass"],115:["Monster"],116:["Water1","Dragon"],117:["Water1","Dragon"],118:["Water2"],119:["Water2"],120:["Water3"],121:["Water3"],122:["Human-Like"],123:["Bug"],124:["Human-Like"],125:["Human-Like"],126:["Human-Like"],127:["Bug"],128:["Field"],129:["Water2","Dragon"],130:["Water2","Dragon"],131:["Monster","Water1"],132:["Ditto"],133:["Field"],134:["Field"],135:["Field"],136:["Field"],137:["Mineral"],138:["Water1","Water3"],139:["Water1","Water3"],140:["Water1","Water3"],141:["Water1","Water3"],142:["Flying"],143:["Monster"],144:["Undiscovered"],145:["Undiscovered"],146:["Undiscovered"],147:["Water1","Dragon"],148:["Water1","Dragon"],149:["Water1","Dragon"],150:["Undiscovered"],151:["Undiscovered"],152:["Grass"],153:["Grass"],154:["Grass"],155:["Field"],156:["Field"],157:["Field"],158:["Monster"],159:["Monster"],160:["Monster"],161:["Field"],162:["Field"],163:["Flying"],164:["Flying"],165:["Bug"],166:["Bug"],167:["Bug"],168:["Bug"],169:["Flying"],170:["Water2"],171:["Water2"],172:["Undiscovered"],173:["Undiscovered"],174:["Undiscovered"],175:["Undiscovered"],176:["Fairy","flying"],177:["Flying"],178:["Flying"],179:["Monster","Field"],180:["Monster","Field"],181:["Monster","Field"],182:["Grass"],183:["Water1","Fairy"],184:["Water1","Fairy"],185:["Mineral"],186:["Water1"],187:["Fairy","Grass"],188:["Fairy","Grass"],189:["Fairy","Grass"],190:["Field"],191:["Grass"],192:["Grass"],193:["Bug"],194:["Water1","Field"],195:["Water1","Field"],196:["Field"],197:["Field"],198:["Flying"],199:["Monster","Water1"],200:["Amorphous"],201:["Undiscovered"],202:["Amorphous"],203:["Field"],204:["Bug"],205:["Bug"],206:["Field"],207:["Bug"],208:["Mineral"],209:["Field","Fairy"],210:["Field","Fairy"],211:["Water2"],212:["Bug"],213:["Bug"],214:["Bug"],215:["Field"],216:["Field"],217:["Field"],218:["Amorphous"],219:["Amorphous"],220:["Field"],221:["Field"],222:["Water1","Water3"],223:["Water1","Water2"],224:["Water1","Water2"],225:["Water1","Field"],226:["Water1"],227:["Flying"],228:["Field"],229:["Field"],230:["Water1","Dragon"],231:["Field"],232:["Field"],233:["Mineral"],234:["Field"],235:["Field"],236:["Undiscovered"],237:["Human-Like"],238:["Undiscovered"],239:["Undiscovered"],240:["Undiscovered"],241:["Field"],242:["Fairy"],243:["Undiscovered"],244:["Undiscovered"],245:["Undiscovered"],246:["Monster"],247:["Monster"],248:["Monster"],249:["Undiscovered"],250:["Undiscovered"],251:["Undiscovered"],252:["Monster","Dragon"],253:["Monster","Dragon"],254:["Monster","Dragon"],255:["Field"],256:["Field"],257:["Field"],258:["Monster","Water1"],259:["Monster","Water1"],260:["Monster","Water1"],261:["Field"],262:["Field"],263:["Field"],264:["Field"],265:["Bug"],266:["Bug"],267:["Bug"],268:["Bug"],269:["Bug"],270:["Water1","Grass"],271:["Water1","Grass"],272:["Water1","Grass"],273:["Grass","Field"],274:["Grass","Field"],275:["Grass","Field"],276:["Flying"],277:["Flying"],278:["Water1","Flying"],279:["Water1","Flying"],280:["Amorphous","Human-Like"],281:["Amorphous","Human-Like"],282:["Amorphous","Human-Like"],283:["Water1","bug"],284:["Water1","bug"],285:["Fairy","Grass"],286:["Fairy","Grass"],287:["Field"],288:["Field"],289:["Field"],290:["Bug"],291:["Bug"],292:["Mineral"],293:["Monster","Field"],294:["Monster","Field"],295:["Monster","Field"],296:["Human-Like"],297:["Human-Like"],298:["Undiscovered"],299:["Mineral"],300:["Field","Fairy"],301:["Field","Fairy"],302:["Human-Like"],303:["Field","Fairy"],304:["Monster"],305:["Monster"],306:["Monster"],307:["Human-Like"],308:["Human-Like"],309:["Field"],310:["Field"],311:["Fairy"],312:["Fairy"],313:["Grass","Human-Like"],314:["Grass","Human-Like"],315:["Fairy","Grass"],316:["Amorphous"],317:["Amorphous"],318:["Water2"],319:["Water2"],320:["Water2","Field"],321:["Water2","Field"],322:["Field"],323:["Field"],324:["Field"],325:["Field"],326:["Field"],327:["Field","Human-Like"],328:["Bug","Dragon"],329:["Bug","Dragon"],330:["Bug","Dragon"],331:["Grass","Human-Like"],332:["Grass","Human-Like"],333:["Flying","Dragon"],334:["Flying","Dragon"],335:["Field"],336:["Field","Dragon"],337:["Mineral"],338:["Mineral"],339:["Water2"],340:["Water2"],341:["Water1","Water3"],342:["Water1","Water3"],343:["Mineral"],344:["Mineral"],345:["Water3"],346:["Water3"],347:["Water3"],348:["Water3"],349:["Water1","Dragon"],350:["Water1","Dragon"],351:["Fairy","Amorphous"],352:["Field"],353:["Amorphous"],354:["Amorphous"],355:["Amorphous"],356:["Amorphous"],357:["Grass","Monster"],358:["Amorphous"],359:["Field"],360:["Undiscovered"],361:["Fairy","Mineral"],362:["Fairy","Mineral"],363:["Water1","Field"],364:["Water1","Field"],365:["Water1","Field"],366:["Water1"],367:["Water1"],368:["Water1"],369:["Water1","Water2"],370:["Water2"],371:["Dragon"],372:["Dragon"],373:["Dragon"],374:["Mineral"],375:["Mineral"],376:["Mineral"],377:["Undiscovered"],378:["Undiscovered"],379:["Undiscovered"],380:["Undiscovered"],381:["Undiscovered"],382:["Undiscovered"],383:["Undiscovered"],384:["Undiscovered"],385:["Undiscovered"],386:["Undiscovered"],387:["Grass","Monster"],388:["Grass","Monster"],389:["Grass","Monster"],390:["Field","Human-Like"],391:["Field","Human-Like"],392:["Field","Human-Like"],393:["Water1","Field"],394:["Water1","Field"],395:["Water1","Field"],396:["Flying"],397:["Flying"],398:["Flying"],399:["Water1","Field"],400:["Water1","Field"],401:["Bug"],402:["Bug"],403:["Field"],404:["Field"],405:["Field"],406:["Undiscovered"],407:["Fairy","Grass"],408:["Monster"],409:["Monster"],410:["Monster"],411:["Monster"],412:["Bug"],413:["Bug"],414:["Bug"],415:["Bug"],416:["Bug"],417:["Field","Fairy"],418:["Water1","Field"],419:["Water1","Field"],420:["Fairy","Grass"],421:["Fairy","Grass"],422:["Water1","Amorphous"],423:["Water1","Amorphous"],424:["Field"],425:["Amorphous"],426:["Amorphous"],427:["Field","Human-Like"],428:["Field","Human-Like"],429:["Amorphous"],430:["Flying"],431:["Field"],432:["Field"],433:["Undiscovered"],434:["Field"],435:["Field"],436:["Mineral"],437:["Mineral"],438:["Undiscovered"],439:["Undiscovered"],440:["Undiscovered"],441:["Flying"],442:["Amorphous"],443:["Monster","Dragon"],444:["Monster","Dragon"],445:["Monster","Dragon"],446:["Undiscovered"],447:["Undiscovered"],448:["Field","Human-Like"],449:["Field"],450:["Field"],451:["Bug","Water3"],452:["Bug","Water3"],453:["Human-Like"],454:["Human-Like"],455:["Grass"],456:["Water2"],457:["Water2"],458:["Undiscovered"],459:["Monster","Grass"],460:["Monster","Grass"],461:["Field"],462:["Mineral"],463:["Monster"],464:["Monster","Field"],465:["Grass"],466:["Human-Like"],467:["Human-Like"],468:["Flying","Fairy"],469:["Bug"],470:["Field"],471:["Field"],472:["Bug"],473:["Field"],474:["Mineral"],475:["Amorphous","Human-Like"],476:["Mineral"],477:["Amorphous"],478:["Fairy","Mineral"],479:["Amorphous"],480:["Undiscovered"],481:["Undiscovered"],482:["Undiscovered"],483:["Undiscovered"],484:["Undiscovered"],485:["Undiscovered"],486:["Undiscovered"],487:["Undiscovered"],488:["Undiscovered"],489:["Water1","Fairy"],490:["Water1","Fairy"],491:["Undiscovered"],492:["Undiscovered"],493:["Undiscovered"],494:["Undiscovered"],495:["Field","Grass"],496:["Field","Grass"],497:["Field","Grass"],498:["Field"],499:["Field"],500:["Field"],501:["Field"],502:["Field"],503:["Field"],504:["Field"],505:["Field"],506:["Field"],507:["Field"],508:["Field"],509:["Field"],510:["Field"],511:["Field"],512:["Field"],513:["Field"],514:["Field"],515:["Field"],516:["Field"],517:["Field"],518:["Field"],519:["Flying"],520:["Flying"],521:["Flying"],522:["Field"],523:["Field"],524:["Mineral"],525:["Mineral"],526:["Mineral"],527:["Field","Flying"],528:["Field","Flying"],529:["Field"],530:["Field"],531:["Fairy"],532:["Human-Like"],533:["Human-Like"],534:["Human-Like"],535:["Water1"],536:["Water1"],537:["Water1"],538:["Human-Like"],539:["Human-Like"],540:["Bug"],541:["Bug"],542:["Bug"],543:["Bug"],544:["Bug"],545:["Bug"],546:["Grass","Fairy"],547:["Grass","Fairy"],548:["Grass"],549:["Grass"],550:["Water2"],551:["Field"],552:["Field"],553:["Field"],554:["Field"],555:["Field"],556:["Grass"],557:["Bug","Mineral"],558:["Bug","Mineral"],559:["Field","Dragon"],560:["Field","Dragon"],561:["Flying"],562:["Mineral","Amorphous"],563:["Mineral","Amorphous"],564:["Water1","Water3"],565:["Water1","Water3"],566:["Flying","Water3"],567:["Flying","Water3"],568:["Mineral"],569:["Mineral"],570:["Field"],571:["Field"],572:["Field"],573:["Field"],574:["Human-Like"],575:["Human-Like"],576:["Human-Like"],577:["Amorphous"],578:["Amorphous"],579:["Amorphous"],580:["Water1","Flying"],581:["Water1","Flying"],582:["Mineral"],583:["Mineral"],584:["Mineral"],585:["Field"],586:["Field"],587:["Field"],588:["Bug"],589:["Bug"],590:["Grass"],591:["Grass"],592:["Amorphous"],593:["Amorphous"],594:["Water1","Water2"],595:["Bug"],596:["Bug"],597:["Grass","Mineral"],598:["Grass","Mineral"],599:["Mineral"],600:["Mineral"],601:["Mineral"],602:["Amorphous"],603:["Amorphous"],604:["Amorphous"],605:["Human-Like"],606:["Human-Like"],607:["Amorphous"],608:["Amorphous"],609:["Amorphous"],610:["Monster","Dragon"],611:["Monster","Dragon"],612:["Monster","Dragon"],613:["Field"],614:["Field"],615:["Mineral"],616:["Bug"],617:["Bug"],618:["Water1","Amorphous"],619:["Field","Human-Like"],620:["Field","Human-Like"],621:["Dragon","Monster"],622:["Mineral"],623:["Mineral"],624:["Human-Like"],625:["Human-Like"],626:["Field"],627:["Flying"],628:["Flying"],629:["Flying"],630:["Flying"],631:["Field"],632:["Bug"],633:["Dragon"],634:["Dragon"],635:["Dragon"],636:["Bug"],637:["Bug"],638:["Undiscovered"],639:["Undiscovered"],640:["Undiscovered"],641:["Undiscovered"],642:["Undiscovered"],643:["Undiscovered"],644:["Undiscovered"],645:["Undiscovered"],646:["Undiscovered"],647:["Undiscovered"],648:["Undiscovered"],649:["Undiscovered"],650:["Field"],651:["Field"],652:["Field"],653:["Field"],654:["Field"],655:["Field"],656:["Water1"],657:["Water1"],658:["Water1"],659:["Field"],660:["Field"],661:["Flying"],662:["Flying"],663:["Flying"],664:["Bug"],665:["Bug"],666:["Bug"],667:["Field"],668:["Field"],669:["Fairy"],670:["Fairy"],671:["Fairy"],672:["Field"],673:["Field"],674:["Field","Human-Like"],675:["Field","Human-Like"],676:["Field"],677:["Field"],678:["Field"],679:["Mineral"],680:["Mineral"],681:["Mineral"],682:["Fairy"],683:["Fairy"],684:["Fairy"],685:["Fairy"],686:["Water1","Water2"],687:["Water1","Water2"],688:["Water3"],689:["Water3"],690:["Water1","Dragon"],691:["Water1","Dragon"],692:["Water1","Water3"],693:["Water1","Water3"],694:["Monster","Dragon"],695:["Monster","Dragon"],696:["Monster","Dragon"],697:["Monster","Dragon"],698:["Monster"],699:["Monster"],700:["Field"],701:["Human-Like","Flying"],702:["Field","Fairy"],703:["Fairy","Mineral"],704:["Dragon"],705:["Dragon"],706:["Dragon"],707:["Mineral"],708:["Grass","Amorphous"],709:["Grass","Amorphous"],710:["Amorphous"],711:["Amorphous"],712:["Monster","Mineral"],713:["Monster","Mineral"],714:["Flying","Dragon"],715:["Flying","Dragon"],716:["Undiscovered"],717:["Undiscovered"],718:["Undiscovered"],719:["Undiscovered"],720:["Undiscovered"],721:["Undiscovered"],722:["Flying"],723:["Flying"],724:["Flying"],725:["Field"],726:["Field"],727:["Field"],728:["Water1","Field"],729:["Water1","Field"],730:["Water1","Field"],731:["Flying"],732:["Flying"],733:["Flying"],734:["Field"],735:["Field"],736:["Bug"],737:["Bug"],738:["Bug"],739:["Water3"],740:["Water3"],741:["Flying"],742:["Bug","Fairy"],743:["Bug","Fairy"],744:["Field"],745:["Field"],746:["Water2"],747:["Water1"],748:["Water1"],749:["Field"],750:["Field"],751:["Water1","Bug"],752:["Water1","Bug"],753:["Grass"],754:["Grass"],755:["Grass"],756:["Grass"],757:["Monster","Dragon"],758:["Monster","Dragon"],759:["Field"],760:["Field"],761:["Grass"],762:["Grass"],763:["Grass"],764:["Grass"],765:["Field"],766:["Field"],767:["Bug","Water3"],768:["Bug","Water3"],769:["Amorphous"],770:["Amorphous"],771:["Water1"],772:["Undiscovered"],773:["Undiscovered"],774:["Mineral"],775:["Field"],776:["Monster","Dragon"],777:["Field","Fairy"],778:["Amorphous"],779:["Water2"],780:["Monster","Dragon"],781:["Mineral"],782:["Dragon"],783:["Dragon"],784:["Dragon"],785:["Undiscovered"],786:["Undiscovered"],787:["Undiscovered"],788:["Undiscovered"],789:["Undiscovered"],790:["Undiscovered"],791:["Undiscovered"],792:["Undiscovered"],793:["Undiscovered"],794:["Undiscovered"],795:["Undiscovered"],796:["Undiscovered"],797:["Undiscovered"],798:["Undiscovered"],799:["Undiscovered"],800:["Undiscovered"],801:["Undiscovered"],802:["Undiscovered"],803:["Undiscovered"],804:["Undiscovered"],805:["Undiscovered"],806:["Undiscovered"],807:["Undiscovered"],808:["Undiscovered"],809:["Undiscovered"],810:["Field","Grass"],811:["Field","Grass"],812:["Field","Human-Like"],813:["Field","Human-Like"],814:["Field","Human-Like"],815:["Field","Human-Like"],816:["Field","Water1"],817:["Field","Water1"],818:["Field","Water1"],819:["Field"],820:["Field"],821:["Flying"],822:["Flying"],823:["Flying"],824:["Bug"],825:["Bug"],826:["Bug"],827:["Field"],828:["Field"],829:["Grass"],830:["Grass"],831:["Field"],832:["Field"],833:["Monster","Water1"],834:["Monster","Water1"],835:["Field"],836:["Field"],837:["Mineral"],838:["Mineral"],839:["Mineral"],840:["Grass","Dragon"],841:["Grass","Dragon"],842:["Grass","Dragon"],843:["Field","Dragon"],844:["Field","Dragon"],845:["Water1","Flying"],846:["Water2"],847:["Water2"],848:["Undiscovered"],849:["Human-Like"],850:["Bug"],851:["Bug"],852:["Water1","Human-Like"],853:["Water1","Human-Like"],854:["Mineral","Amorphous"],855:["Mineral","Amorphous"],856:["Fairy"],857:["Fairy"],858:["Fairy"],859:["Fairy","Human-Like"],860:["Fairy","Human-Like"],861:["Fairy","Human-Like"],862:["Field"],863:["Field"],864:["Water1","Water3"],865:["Flying","Field"],866:["Human-Like"],867:["Mineral","Amorphous"],868:["Fairy","Amorphous"],869:["Fairy","Amorphous"],870:["Fairy","Mineral"],871:["Water1","Amorphous"],872:["Bug"],873:["Bug"],874:["Mineral"],875:["Water1","Field"],876:["Fairy"],877:["Field","Fairy"],878:["Field","Mineral"],879:["Field","Mineral"],880:["Undiscovered"],881:["Undiscovered"],882:["Undiscovered"],883:["Undiscovered"],884:["Mineral","Dragon"],885:["Amorphous","Dragon"],886:["Amorphous","Dragon"],887:["Amorphous","Dragon"],888:["Undiscovered"],889:["Undiscovered"],890:["Undiscovered"],891:["Undiscovered"],892:["Undiscovered"],893:["Undiscovered"],894:["Undiscovered"],895:["Undiscovered"],896:["Undiscovered"],897:["Undiscovered"],898:["Undiscovered"],899:["Field"],900:["Bug"],901:["Field"],902:["Water2"],903:["Field"],904:["Water2"],905:["Undiscovered"],"906":["Field","Grass"],"907":["Field","Grass"],"908":["Field","Grass"],"909":["Field"],"910":["Field"],"911":["Field"],"912":["Flying","Water 1"],"913":["Flying","Water 1"],"914":["Flying","Water 1"],"915":["Field"],"916":["Field"],"917":["Bug"],"918":["Bug"],"919":["Bug"],"920":["Bug"],"921":["Field"],"922":["Field"],"923":["Field"],"924":["Field","Fairy"],"925":["Field","Fairy"],"926":["Field","Mineral"],"927":["Field","Mineral"],"928":["Grass"],"929":["Grass"],"930":["Grass"],"931":["Flying"],"932":["Mineral"],"933":["Mineral"],"934":["Mineral"],"935":["Human-Like"],"936":["Human-Like"],"937":["Human-Like"],"938":["Water 1"],"939":["Water 1"],"940":["Water 1","Flying"],"941":["Water 1","Flying"],"942":["Field"],"943":["Field"],"944":["Field"],"945":["Field"],"946":["Grass"],"947":["Grass"],"948":["Grass"],"949":["Grass"],"950":["Water 3"],"951":["Grass"],"952":["Grass"],"953":["Bug"],"954":["Bug"],"955":["Flying"],"956":["Flying"],"957":["Fairy"],"958":["Fairy"],"959":["Fairy"],"960":["Water 3"],"961":["Water 3"],"962":["Flying"],"963":["Field","Water 2"],"964":["Field","Water 2"],"965":["Mineral"],"966":["Mineral"],"967":["Field"],"968":["Field"],"969":["Mineral"],"970":["Mineral"],"971":["Field"],"972":["Field"],"973":["Flying"],"974":["Field"],"975":["Field"],"976":["Water 2"],"977":["Water 2"],"978":["Water 2"],"979":["Field"],"980":["Water 1","Field"],"981":["Field"],"982":["Field"],"983":["Human-Like"],"984":["Undiscovered"],"985":["Undiscovered"],"986":["Undiscovered"],"987":["Undiscovered"],"988":["Undiscovered"],"989":["Undiscovered"],"990":["Undiscovered"],"991":["Undiscovered"],"992":["Undiscovered"],"993":["Undiscovered"],"994":["Undiscovered"],"995":["Undiscovered"],"996":["Dragon","Mineral"],"997":["Dragon","Mineral"],"998":["Dragon","Mineral"],"999":["Undiscovered"],"1000":["Undiscovered"],"1001":["Undiscovered"],"1002":["Undiscovered"],"1003":["Undiscovered"],"1004":["Undiscovered"],"1005":["Undiscovered"],"1006":["Undiscovered"],"1007":["Undiscovered"],"1008":["Undiscovered"]};
-    var legendaries = [
-        144,145,146,150,151,243,244,245,249,250,251,377,378,379,380,381,382,383,384,385,386,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,638,639,640,641,642,643,644,645,646,647,648,649,716,717,718,719,720,721,785,786,787,788,789,790,791,792,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809,888,889,890,891,892,893,894,895,896,897,898,905,1001,1002,1003,1004,1007,1008
-    ];
-    var ultraBeasts = [ // Have their BST set to 600
-        773,772,785,786,787,788,790,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809
-    ];
-    var paradoxPokemon = [
-        984,985,986,987,988,989,990,991,992,993,994,995,1005,1006
-    ];
-    var regionalEvos = [ // Have their BST set to 560
-        862,863,864,865,866,867,899,900,901,902,903,904,979,980,981,982,66518,983
-    ];
-    var pokeColors = {
-        "red": [4, 5, 6, 45, 46, 47, 98, 99, 100, 101, 118, 119, 124, 126, 129, 136, 165, 166, 168, 193, 212, 218, 219, 224, 225, 233, 240, 250, 255, 256, 257, 265, 308, 318, 323, 338, 341, 342, 262495, 380, 383, 386, 401, 402, 131485, 467, 474, 479, 498, 499, 500, 513, 514, 538, 543, 545, 553, 554, 555, 557, 558, 560, 616, 617, 621, 624, 625, 628, 631, 653, 654, 655, 661, 662, 663, 697, 717, 725, 726, 727, 741, 66281, 66310, 131846, 776, 787, 794, 66337, 826, 850, 851, 889, 131484, 131657, 590490, 1049242, 721562, 1245850, 65682, 909,910,911,935,936,950,961,66514,988,991,1004,1007,66543,132079,197615,263151],
-        "blue": [1377125, 1442661, 1508197, 1573733, 1639269, 1704805, 1770341, 7, 8, 9, 65564, 29, 30, 31, 65574, 43, 44, 65588, 65589, 55, 60, 61, 62, 72, 73, 114, 116, 117, 130, 131, 134, 138, 139, 144, 147, 148, 158, 159, 160, 170, 171, 183, 184, 189, 194, 195, 202, 214, 230, 231, 245, 258, 259, 260, 276, 277, 283, 284, 294, 295, 298, 307, 319, 320, 321, 333, 334, 340, 131423, 358, 360, 363, 364, 365, 366, 367, 371, 373, 374, 375, 376, 378, 381, 382, 393, 394, 395, 403, 404, 405, 408, 409, 65958, 65959, 443, 444, 445, 447, 448, 453, 454, 456, 457, 458, 465, 471, 482, 489, 490, 501, 502, 503, 515, 516, 524, 525, 526, 527, 528, 535, 536, 537, 539, 66091, 564, 565, 580, 588, 603, 604, 605, 615, 633, 634, 635, 638, 642, 656, 657, 658, 678, 686, 687, 692, 693, 698, 699, 712, 713, 716, 728, 729, 730, 738, 746, 747, 748, 328454, 393990, 775, 789, 790, 131872, 816, 817, 818, 821, 822, 824, 845, 853, 875, 881, 883, 888, 787098, 1114778, 524954, 912,913,914,66467,937,963,964,66500,969,970,977,993,66535,1008,66544,132080,197616,263152],
-        "yellow": [14, 15, 25, 26, 27, 28, 38, 52, 131124, 53, 54, 77, 78, 96, 97, 103, 125, 135, 145, 146, 155, 156, 157, 172, 181, 191, 192, 203, 206, 213, 239, 243, 267, 279, 291, 296, 310, 311, 312, 322, 337, 385, 414, 415, 416, 433, 466, 480, 488, 494, 540, 542, 559, 563, 566, 567, 595, 596, 612, 619, 647, 694, 695, 702, 66277, 742, 743, 197382, 778, 785, 66336, 197408, 807, 825, 835, 836, 4064101, 3670885, 3736421, 3801957, 3867493, 3933029, 3998565, 4784997, 4850533, 4916069, 4981605, 5047141, 5112677, 5178213, 870, 877, 878, 894, 197274, 1835877, 1901413, 1966949, 2032485, 2098021, 2163557, 2229093,921,922,923,926,132003,938,941,948,955,956,132050,982,66518,994,1000],
-        "green": [918373, 983909, 1049445, 1114981, 1180517, 1, 2, 3, 10, 11, 69, 70, 71, 65624, 65625, 123, 152, 153, 154, 167, 177, 178, 182, 186, 188, 246, 248, 251, 252, 253, 254, 269, 270, 271, 272, 286, 309, 315, 316, 329, 330, 331, 332, 346, 352, 357, 384, 387, 388, 389, 406, 407, 412, 413, 436, 437, 455, 469, 470, 492, 495, 496, 497, 511, 512, 541, 546, 547, 548, 549, 550, 556, 568, 569, 577, 578, 579, 610, 611, 66154, 622, 623, 640, 641, 650, 651, 652, 701, 718, 737, 751, 752, 764, 262918, 781, 797, 810, 811, 812, 829, 830, 833, 834, 840, 841, 842, 843, 844, 1246053, 1311589, 879, 880, 882, 885, 886, 887, 895, 898, 66121, 328346, 983706, 459418, 902, 906,907,908,918,928,929,930,931,939,951,952,954,967,995,1005],
-        "black": [65542, 65555, 65556, 143, 197, 198, 201, 215, 228, 229, 303, 325, 336, 344, 353, 354, 355, 356, 430, 441, 446, 461, 477, 487, 491, 522, 523, 561, 562, 608, 609, 644, 664, 665, 66254, 131790, 731, 732, 733, 757, 758, 771, 796, 799, 800, 837, 838, 839, 893, 66428, 897, 131970, 904,940,949,983],
-        "brown": [3212133, 3277669, 3343205, 3408741, 3408741, 3474277, 3539813, 3605349, 13, 16, 17, 18, 20, 21, 22, 65562, 37, 50, 51, 56, 57, 58, 59, 63, 64, 65, 74, 75, 76, 83, 84, 85, 104, 105, 106, 107, 115, 120, 127, 128, 133, 140, 141, 149, 161, 162, 163, 164, 185, 216, 217, 220, 221, 234, 237, 244, 263, 273, 274, 275, 285, 287, 289, 292, 297, 324, 327, 328, 343, 349, 377, 390, 391, 392, 396, 397, 398, 399, 400, 65949, 418, 419, 427, 428, 438, 449, 450, 473, 485, 504, 505, 506, 534, 551, 552, 586, 606, 618, 626, 629, 630, 645, 659, 660, 667, 668, 672, 673, 679, 680, 681, 688, 689, 690, 691, 696, 708, 709, 710, 711, 721, 722, 723, 724, 734, 735, 744, 745, 131817, 749, 750, 769, 770, 774, 819, 820, 827, 828, 846, 847, 852, 863, 4195173, 4260709, 4326245, 4391781, 4457317, 4522853, 4588389, 65948, 197193, 131738, 393882, 918170, 852634, 900, 901,66452,927,932,933,934,942,946,947,953,980,981,999,1001,1003],
-        "purple": [19, 23, 24, 32, 33, 34, 41, 42, 48, 49, 88, 89, 90, 91, 92, 93, 94, 65641, 109, 110, 121, 132, 142, 150, 169, 190, 196, 205, 207, 210, 226, 236, 268, 301, 302, 314, 317, 326, 345, 65916, 65917, 421, 422, 423, 424, 425, 426, 429, 434, 435, 442, 451, 452, 472, 484, 509, 510, 574, 575, 576, 620, 649, 704, 705, 706, 714, 715, 720, 739, 197349, 755, 756, 761, 762, 763, 459526, 788, 792, 803, 804, 823, 848, 849, 854, 855, 861, 866, 871, 876, 890, 262810, 65680, 984],
-        "gray": [66, 67, 68, 65610, 65611, 65612, 81, 82, 95, 65646, 111, 112, 200, 204, 208, 211, 223, 227, 232, 247, 261, 262, 290, 299, 304, 305, 306, 313, 339, 347, 348, 351, 361, 362, 369, 379, 410, 411, 431, 432, 462, 464, 476, 507, 508, 519, 520, 521, 529, 530, 532, 533, 544, 570, 571, 572, 573, 589, 597, 598, 599, 600, 601, 632, 639, 646, 677, 703, 707, 736, 767, 768, 772, 773, 777, 782, 783, 784, 801, 802, 805, 808, 809, 814, 862, 867, 874, 891, 892, 66428, 656026, 899, 903,915,916,919,920,943,944,945,965,966,976,979,986,987,989,990,992,996,997,998],
-        "white": [12, 65563, 65573, 65613, 65614, 86, 87, 65658, 175, 176, 179, 65758, 235, 249, 65799, 264, 266, 278, 280, 281, 282, 288, 335, 65887, 359, 372, 417, 459, 460, 468, 475, 478, 483, 486, 493, 66067, 66090, 197163, 131627, 581, 582, 583, 584, 587, 590, 591, 592, 593, 602, 607, 613, 614, 627, 636, 637, 643, 648, 666, 669, 670, 671, 674, 675, 676, 66214, 684, 685, 740, 765, 766, 780, 791, 793, 795, 798, 806, 813, 815, 831, 832, 864, 865, 868, 869, 66405, 131941, 197477, 263013, 328549, 394085, 872, 873, 884, 896, 66434, 66202,917,924,925,66461,197539,960,962,971,972,974,975,1002,1006],
-        "pink": [2753381, 2818917, 2884453, 2949989, 3015525, 3081061, 3146597, 459621, 525157, 590693, 656229, 721765, 787301, 852837, 35, 36, 39, 40, 79, 80, 102, 108, 113, 122, 137, 151, 173, 174, 180, 187, 199, 209, 222, 238, 241, 242, 293, 300, 350, 368, 370, 420, 65957, 439, 440, 463, 481, 517, 518, 531, 585, 594, 682, 683, 700, 719, 131813, 753, 754, 759, 760, 779, 786, 856, 857, 858, 859, 860, 3605349, 3670885, 3736421, 3801957, 3867493, 3933029, 3998565, 65615, 131152, 65735, 1180314, 905,957,958,959,968,973,978,985]
-    };
-
-    /* Quest Variables */
-    var arenaOpponents = {
-        nub: {
-            name: "Trainer Nub",
-            party: [19,50,316,582,116,27,194,207,200,570,489,"235",236,624,513,511,417,147],
-            power: [10, 60],
-            postArgs: {
-                rewardAmt: 0,
-                moneyReward: 5,
-                cooldown: 0.1667,
-                noRecords: true,
-                taunt: true
-            },
-            desc: "Arena NPC"
-        },
-        pink: {
-            name: "Trainer Pink",
-            party: ["36",80,222,700,594,706,65838,472,205,423,308,620,368,429,510,151],
-            power: [60, 130],
-            postArgs: {
-                rewardAmt: 1,
-                cooldown: 1
-            },
-            desc: "Arena NPC"
-        },
-        mustard: {
-            name: "Trainer Mustard",
-            party: [65,131743,38,203,"26",560,297,563,145,71,479,65964,15,28,135],
-            power: [90, 170],
-            postArgs: {
-                rewardAmt: 2,
-                cooldown: 1.25
-            },
-            desc: "Arena NPC"
-        },
-        lorekeeper: {
-            name: "Trainer Lorekeeper",
-            party: [65844,376,887,214,867,748,62,719,31,642,"776",702,812,342,836],
-            power: [110, 150],
-            postArgs: {
-                rewardAmt: 3,
-                cooldown: 1.5
-            },
-            desc: "Arena NPC"
-        },
-        cyan: {
-            name: "Trainer Cyan",
-            party: [448,202,539,476,635,593,376,"171",65959,445,66091,214,378,658,465],
-            power: [110, 200],
-            postArgs: {
-                rewardAmt: 3,
-                cooldown: 1.75
-            },
-            desc: "Arena NPC"
-        },
-        crimson: {
-            name: "Trainer Crimson",
-            party: [131078,101,625,"663",212,342,553,538,721,149,45,197087,168,571,213, 308, 702, 702],
-            power: [150, 300],
-            postArgs: {
-                rewardAmt: 6,
-                cooldown: 2.5
-            },
-            desc: "Arena NPC"
-        },
-        rainbow: {
-            name: "Trainer Rainbow",
-            party: [721,483,66023,462,272,442,411,227,429,563,323,208,630,373,65790,230,"59",66217],
-            power: [200, 380],
-            postArgs: {
-                rewardAmt: 10,
-                cooldown: 5
-            },
-            desc: "Arena NPC"
-        }
-    };
-    var recipeData = {};
-    var eliteData = [];
-    var eliteHall = [];
-    var pyrBonusMons = [];
-    var journalDoneDeadline = 3*60*1000;
-    
-    /* Photo Variables */
-    var photoQuality = ["Disastrous", "Terrible", "Awful", "Bad", "Poor", "Okay", "Good", "Great", "Superb", "Excellent", "Perfect"];
-    var photoActions = {
-        Any: ["eating", "playing", "dancing", "sleeping", "jumping", "singing", "whistling", "running", "standing still", "sitting", "walking", "stretching", "crying", "laughing", "yawning", "attacking", "smiling", "protecting itself"],
-        Positive: ["eating", "playing", "dancing", "sleeping", "singing", "whistling", "stretching", "smiling"],
-        Neutral: ["jumping", "walking", "standing still", "sitting", "laughing", "yawning"],
-        Negative: ["running", "crying", "attacking", "protecting itself"],
-        Normal: ["spinning", "screaming"],
-        Fighting: ["punching", "kicking"],
-        Flying: ["flying", "flapping their wings"],
-        Poison: ["exhaling poison", "releasing some gas"],
-        Ground: ["digging a hole", "throwing sand"],
-        Rock: ["digging a hole", "throwing rocks"],
-        Bug: ["hiding", "spreading powder"],
-        Ghost: ["vanishing", "cursing"],
-        Steel: ["hardening", "charging"],
-        Fire: ["overheating", "breathing fire"],
-        Water: ["swimming", "diving"],
-        Grass: ["releasing spores", "releasing petals"],
-        Electric: ["releasing sparks", "charging"],
-        Psychic: ["meditating", "teleporting"],
-        Ice: ["swimming", "cooling"],
-        Dragon: ["howling", "rampaging"],
-        Dark: ["taunting", "hiding"],
-        Fairy: ["winking", "casting a spell"]
-    };
-    var photoMood = {
-        Positive: ["happy", "relaxed", "confident", "lively", "docile"],
-        Neutral: ["indifferent", "calm", "distracted", "lazy"],
-        Negative: ["angry", "anxious", "scared", "tired", "sad"]
-    };
-    
-    /* Misc Variables */
-    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false, "arborist": false, "decoration": false, "league": false, "celebrity": false, "journal": false, "monger": false, "baking": false, "idol": false, "detective": false};
-    var tradeRequests = {};
-    var challengeRequests = {};
-    var challengeRequests2 = [];
-    var pyramidRequests = {};
-    var bakingRequests = {};
-    var currentBattles = [];
-    var currentPyramids = [];
-    var currentBakings = [];
-    var currentAuctions = [];
-    var lastContests = [];
-    var gachaJackpotAmount = 200; //Jackpot for gacha tickets. Number gets divided by 10 later.
-    var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
-    var allTrackers = (SESSION.global() && SESSION.global().allTrackers ? SESSION.global().allTrackers : ["blinky"]);
-    var dailyBoost;
-    var scientistQuest;
-    var photographQuest;
-    var ccatch = "ccatch";
-    var ccatch2 = "ccatchh";
-    var pendingActiveChanges = {};
-    var allowedSharedIPNames = [];
-    var forbiddenNames = ["on", "off", "cancel", "name"];
-    var TYPE_NULL_NAME = "TypeNullName";
-    var colorTranslations = {
-        "darkorchid": "#9932CC",
-        "darkgreen": "#006400",
-        "darkorange": "#FF8C00",
-        "goldenrod": "#DAA520",
-        "lightblue": "#ADD8E6",
-        "crimson": "#DC143C",
-        "peru": "#CD853F",
-        "palevioletred": "#DB7093",
-        "orangered": "#FF4500",
-        "tomato": "#FF6347"
-    };
-    
-    var resources = {
-        sprites: {},
-        shiny: {},
-        icons: {},
-        $: {
-            sprites: {
-                file: "scriptdata/safari/sprites.txt",
-                url: Config.base_url + "scriptdata/safari/sprites.txt",
-                type: "MemoryHash"
-            },
-            shiny: {
-                file: "scriptdata/safari/shiny.txt",
-                url: Config.base_url + "scriptdata/safari/shiny.txt",
-                type: "MemoryHash"
-            },
-            icons: {
-                file: "scriptdata/safari/icons.txt",
-                url: Config.base_url + "scriptdata/safari/icons.txt",
-                type: "MemoryHash"
-            },
-            u: {
-                file: "scriptdata/safari/u.txt",
-                url: Config.base_url + "scriptdata/safari/u.txt",
-                type: "MemoryHash"
-            }
-        }
-    };    
-    
-    }
-
-    /* Safari Functions */
-    function loadResource(r) {
-        var resource = resources.$[r];
-        var file = resource.file;
-        if (resource.type === "MemoryHash") {
-            resources[r] = new MemoryHash(file);
-            return null;
-        } else if (resource.type === "JavaScript") {
-            resources[r] = require(file);
-            return null;
-        } else {
-            try {
-                resources[r] = JSON.parse(sys.getFileContent(file));
-                return null;
-            } catch (err) {
-                return "An error occurred while loading Safari resource '" + resource.file.split("/").pop() + "'. (Error: " + err + ")";
-            }
-        }
-    }
-    function downloadResource(r) {
-        var resource = resources.$[r];
-        try {
-            sys.webCall(resource.url, function (resp) {
-                sys.writeToFile(resource.file, resp);
-                ret = loadResource(r);
-                if (ret !== null) {
-                    safaribot.sendAll(ret, staffchannel);
-                }
-            });
-            return null;
-        } catch (err) {
-            return "Couldn't download '" + resource.file.split("/").pop() + "'. (Error: " + err + ")";
-        }
-    }
-    function getAvatar(src) {
-        if (SESSION.users(src)) {
-            return SESSION.users(src).safari;
-        }
-    }
-    function getAvatarOff(name) {
-        var id = sys.id(name);
-        var player;
-        if (id) {
-            player = getAvatar(id);
-        }
-        if (!player) {
-            player = rawPlayers.get(name.toLowerCase());
-            if (player) {
-                player = JSON.parse(player);
-            }
-        }
-        return player;
-    }
-    function hasSave(name) {
-        if (Object.keys(rawPlayers.hash).contains(name.toLowerCase())) {
-            return true;
-        }
-        return false;
-    }
-    function isPlaying(name) {
-        var id = sys.id(name);
-        if (!id) {
-            return false;
-        }
-        if (!getAvatar(id)) {
-            return false;
-        }
-        if (!sys.isInChannel(id, safchan)) {
-            return false;
-        }
-        return true;
-    }
-    function currentThemeName(obj) {
-        if (obj.hasOwnProperty("day" + currentDay + "name") && !obj.useDefaultName) {
-            return obj["day" + currentDay + "name"];
-        }
-        return obj.name;
-    }
-    function themeName(obj) {
-        if (Array.isArray(obj)) {
-            return readable(obj.map(function(x){
-                if (x === "none") {
-                    return "Default";
-                } else {
-                    return currentThemeName(contestThemes[x]);
-                }
-            }), "or");
-        }
-        if (obj in contestThemes) {
-            return currentThemeName(contestThemes[obj]);
-        }
-        return "Default";
-    }
-    function getAllThemeNames(commandLink) {
-        return Object.keys(contestThemes).filter(function(e) {
-            return e !== "none";
-        }).map(function(e) {
-            return (commandLink ? link("/" + commandLink + " " + e, contestThemes[e].name) : contestThemes[e].name);
-        });
-    }
-    function loadLastId () {
-        try {
-            return parseInt(permObj.get("lastIdAssigned"), 10);
-        } catch (err) {
-            return 0;
-        }
-    }
-    function validPlayers (scope, src, tar, selfmsg) {
-        var self = (scope === "self" || scope === "both");
-        if (self) {
-            var player = getAvatar(src);
-            if (!player) {
-                safaribot.sendHtmlMessage(src, "You need to enter the game first! Type /start for that. If you already had a save previously but can no longer find/access it, please contact a {0}!".format(link("/cauth", "Safari Admin")), safchan);
-                return false;
-            }
-        }
-
-        var other = (scope === "target" || scope === "both");
-        if (other) {
-            var targetId = sys.id(tar);
-            if (!targetId || !sys.isInChannel(targetId, safchan)) {
-                safaribot.sendMessage(src, "No such person!", safchan);
-                return false;
-            }
-            var allowShared = allowedSharedIPNames.contains(sys.name(src)) || allowedSharedIPNames.contains(tar.toLowerCase()) || sys.ip(src) === "::1%0";
-            if ((targetId == src || (sys.ip(targetId) === sys.ip(src) && !allowShared)) && selfmsg) {
-                safaribot.sendMessage(src, selfmsg, safchan);
-                return false;
-            }
-            var target = getAvatar(targetId);
-            if (!target) {
-                safaribot.sendMessage(src, "This person doesn't have a Safari Save!", safchan);
-                return false;
-            }
-        }
-        return true;
-    }
-    function canLosePokemon(src, data, verb, cantBecause, loseCount, ignoreShop) {
-        if (!validPlayers("self", src)) {
-            return;
-        }
-        if (!cantBecause) {
-            /*if (contestCount > 0) {
-                safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during a contest!", safchan);
-                return false;
-            }*/
-            if (safari.isBattling(sys.name(src))) {
-                safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during a battle!", safchan);
-                return;
-            }
-            if (currentEvent && currentEvent.isInEvent(sys.name(src))) {
-                safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during an event!", safchan);
-                return;
-            }
-        }
-        var amt = loseCount || 1;
-
-        var player = getAvatar(src);
-        if (player.pokemon.length <= amt) {
-            safaribot.sendMessage(src, "You can't " + verb + " your remaining Pokémon!", safchan);
-            return false;
-        }
-        var input = typeNull(data).split(":");
-        var info = getInputPokemon(input[0]);
-        var id = info.id;
-        if (!info.num) {
-            safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
-            return false;
-        }
-        if (player.pokemon.indexOf(id) == -1) {
-            safaribot.sendMessage(src, "You do not have that Pokémon!", safchan);
-            return false;
-        }
-        var count = countRepeated(player.pokemon, id);
-        if (amt > 1 && amt > count) {
-            safaribot.sendMessage(src, "You do not have " + amt + " of that Pokémon!", safchan);
-            return false;
-        }
-        if (player.party.length == 1 && player.party[0] === id && count <= 1) {
-            safaribot.sendMessage(src, "You can't " + verb + " the only Pokémon in your party!", safchan);
-            return false;
-        }
-        var pCount = countRepeated(player.party, id);
-        if (amt > 1 && pCount === player.party.length && amt >= pCount && count <= amt) {
-            safaribot.sendMessage(src, "You can't " + verb + " all the Pokémon in your party!", safchan);
-            return false;
-        }
-        if (player.starter === id && count <= amt) {
-            safaribot.sendMessage(src, "You can't " + verb + " your starter Pokémon!", safchan);
-            return false;
-        }
-        if (player.story.box.contains(id) && count <= amt) {
-            safaribot.sendMessage(src, "You can't " + verb + " " + poke(id) + "! It is required in Story Mode!", safchan);
-            return false;
-        }
-        if (!ignoreShop && info.input in player.shop && player.shop[info.input].limit >= count) {
-            safaribot.sendMessage(src, "You need to remove " + info.name + " from your shop before you can " + verb + " it!", safchan);
-            return false;
-        }
-        if (pokeInfo.forme(info.num) > 0 && isMega(info.num)) {
-            safaribot.sendMessage(src, "You can't " + verb + " a Pokémon while they are Mega Evolved!", safchan);
-            return false;
-        }
-        return true;
-    }
-    function chance(value) {
-        return Math.random() < value;
-    }
-    function cantBecause(src, action, arr, item, silent) {
-        var player = getAvatar(src);
-        if (arr.contains("tutorial")) {
-            if (player.tutorial.inTutorial) {
-                if (!silent)
-                    safaribot.sendHtmlMessage(src, "You cannot " + action + " at this stage in the tutorial! If you forgot what to do, use " + link("/tutorial") + ".", safchan);
-                return true;
-            }
-        }
-
-        if (item) {
-            if (!(item in itemData)) {
-                if (!silent)
-                    safaribot.sendMessage(src,  item + " is not a valid item!", safchan);
-                return true;
-            }
-            if (arr.contains("item")) {
-                if (player.balls[item] < 1) {
-                    if (!silent)
-                        safaribot.sendMessage(src, "You don't have any " + finishName(item) + "!", safchan);
-                    return true;
-                }
-            }
-        }
-        if (arr.contains("contest")) {
-            if (contestCount > 0 && !contestForfeited.contains(player.idnum)) {
-                if (!silent)
-                    safaribot.sendMessage(src, "You can't " + action + " during a contest!", safchan);
-                return true;
-            }
-        }
-        /*if (arr.contains("distortion")) {
-            if ((contestCount > 0 && !contestForfeited.contains(player.idnum)) && currentThemeEffect == "distortion") {
-                if (!silent)
-                    safaribot.sendMessage(src, "You can't " + action + " during the twisted dimensions!", safchan);
-                return true;
-            }
-        }*/
-        if (arr.contains("wild")) {
-            if ((currentPokemon && contestCount === 0) || (currentPokemon && contestCount > 0 && !contestForfeited.contains(player.idnum))) {
-                if (!silent)
-                    safaribot.sendMessage(src, "You can't " + action + " while a Wild Pokemon is out!", safchan);
-                return true;
-            }
-        }
-        if (arr.contains("precontest")) {
-            if (contestCooldown <= 181) {
-                if (!silent)
-                    safaribot.sendMessage(src, "You can't " + action + " with less than 3 minutes before the next contest starts!", safchan);
-                return true;
-            }
-        }
-        if (arr.contains("auction")) {
-            if (safari.isInAuction(sys.name(src))) {
-                if (!silent)
-                    safaribot.sendMessage(src, "You can't " + action + " while participating in an auction!", safchan);
-                return true;
-            }
-        }
-        if (arr.contains("battle")) {
-            if (safari.isBattling(sys.name(src))) {
-                if (!silent)
-                    safaribot.sendMessage(src, "You can't " + action + " during a battle!", safchan);
-                return true;
-            }
-        }
-        if (arr.contains("story")) {
-            if ((contestCount > 0 && !contestForfeited.contains(player.idnum))) {
-                if (!silent)
-                    safaribot.sendMessage(src, "You can't " + action + " during Story Mode!", safchan);
-                return true;
-            }
-        }
-        if (arr.contains("event") && currentEvent) {
-            if (currentEvent.isInEvent(sys.name(src))) {
-                if (!silent)
-                    safaribot.sendMessage(src, "You can't " + action + " during an event!", safchan);
-                return true;
-            }
-        }
-        if (arr.contains("event") && currentGame) {
-            if (currentGame.playerInGame(sys.name(src))) {
-                if (!silent)
-                    safaribot.sendMessage(src, "You can't " + action + " during an event!", safchan);
-                return true;
-            }
-        }
-        if (arr.contains("pyramid")) {
-            for (var p in currentPyramids) {
-                if (currentPyramids[p].isInPyramid(sys.name(src))) {
-                    if (!silent)
-                        safaribot.sendMessage(src, "You can't " + action + " while inside the Pyramid!", safchan);
-                    return true;
-                }
-            }
-        }
-        if (arr.contains("baking")) {
-            for (var p in currentBakings) {
-                if (currentBakings[p].isInKitchen(sys.name(src))) {
-                    if (!silent)
-                        safaribot.sendMessage(src, "You can't " + action + " while Baking!", safchan);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    function tutorMsg(src, mess) {
-        if (![".", "?", "!"].contains(mess.charAt(mess.length-1))) {
-            mess = mess + ".";
-        }
-        tutorbot.sendHtmlMessage(src, toColor(mess, "DarkOrchid"), safchan);
-    }
-    function advanceTutorial(src, step) {
-        var player = getAvatar(src);
-        player.tutorial.step = step;
-        safari.progressTutorial(src, step);
-    }
-    function welcomePack(src, complete) {
-        var player = getAvatar(src);
-        player.tutorial.inTutorial = false;
-
-        var rew = [];
-        if (complete) {
-            var cash = 300;
-            player.money = cash;
-            var giftpack = { safari: 30, great: 5, ultra: 1, dust: 100, itemfinder: 30, golden: 5};
-            for (var e in giftpack) {
-                if (giftpack.hasOwnProperty(e)) {
-                    player.balls[e] = giftpack[e];
-                    rew.push(plural(giftpack[e], e));
-                }
-            }
-            player.balls.permfinder = 0;
-            player.records.goldenBaitWeak = 5;
-
-            var johto;
-            switch (player.starter) {
-                case 1: johto = 155; player.pokemon.push(155); break;
-                case 4: johto = 158; player.pokemon.push(158); break;
-                case 7: johto = 152; player.pokemon.push(152); break;
-            }
-            safaribot.sendMessage(src, "You received $" + cash + ", " + rew.join(", ") + ", and " + an(pokePlain(johto)) + "!", safchan);
-            tutorbot.sendHtmlMessage(src, toColor("One last advice: You can use " + link("/gbait") + " to use " + an(finishName("golden")) + ", a special and more efficient bait!", "DarkOrchid"), safchan);
-            //sys.sendAll("", safchan);
-            //tutorbot.sendHtmlAll(toColor(Congratulations to <b>" + html_escape(sys.name(src)) + "</b> on completing the tutorial!", "DarkOrchid"), safchan);
-            //sys.sendAll("", safchan);
-        } else {
-            var cash = 300;
-            player.money = cash;
-            var giftpack = { safari: 30, great: 5, itemfinder: 15 };
-            for (var e in giftpack) {
-                if (giftpack.hasOwnProperty(e)) {
-                    player.balls[e] = giftpack[e];
-                    rew.push(plural(giftpack[e], e));
-                }
-            }
-            safaribot.sendMessage(src, "You received $" + cash + ", " + readable(rew, "and") + "!", safchan);
-        }
-    }
-    function resetVars(saveContest) {
-        preparationPhase = 0;
-        preparationThrows = {};
-        preparationFirst = null;
-        baitCooldown = sys.rand(4,7);
-        goldenBaitCooldown = sys.rand(8,10);
-        deluxeBaitCooldown = 1;
-        currentPokemon = null;
-        currentTypeOverride = null;
-        currentExtraBST = 0;
-        currentDisplay = null;
-        currentDisplayBST = 0;
-        wildEvent = false;
-        wildBallThrows = {};
-        bufferThrows = {};
-        currentThrowers = [];
-        currentPokemonCount = 1;
-        lastPokemonCount = 1;
-        currentBaiter = null;
-        if (!saveContest) {
-            currentTheme = null;
-            currentThemeAlter = false;
-            if (currentThemeEffect) {
-                if (currentThemeEffect == "portal") {
-                    safaribot.sendHtmlAll("The portal was sealed!", safchan);
-                } else if (currentThemeEffect == "past") {
-                    safaribot.sendHtmlAll("The timeline was reverted!", safchan);
-                } else if (currentThemeEffect == "distortion") {
-                    safaribot.sendHtmlAll("The twisted dimensions returned to normal!", safchan);
-                } else if (["rain","hail","sand","sun"].contains(currentThemeEffect)) {
-                    safaribot.sendHtmlAll("The effects of the weather wore off!", safchan);
-                }                
-            }
-            currentThemeEffect = false;
-            currentThemeSecondary = false;
-            chosenThemes = null;                
-            currentThemeFlavor = null;
-            contestVotes = null;
-        }
-    }
-    function getMaxThrows(num, count, shiny, thrown, boost) {
-        var amt = maxThrows;
-        var bst = getBST(num);
-        if (inclusive(bst, 0, 360)) {
-            amt += 7;
-        } else if (inclusive(bst, 360, 420)) {
-            amt += 5;
-        } else if (inclusive(bst, 420, 520)) {
-            amt += 3;
-        } else if (!isRare(num)) {
-            amt += 1;
-        } //else {
-          //  amt -= 1;
-        //}
-        amt += 3 * count;
-        amt -= 3 * shiny;
-        var pokeblockVal = Math.round((pokeblockThrows >= 3 ? 10 : (pokeblockThrows == 2 ? 8 : pokeblockThrows == 1 ? 5 : 0)) * (boost ? 1.5 : 1));
-        return Math.floor(Math.max(maxThrows, amt) * 0.5) + pokeblockVal - thrown;
-    }
-
-    /* Message Functions */
-    function sendAll(mess, html, system, bypass, rareWild) {
-        var players = sys.playersOfChannel(safchan).filter(function(x) {
-            if (rareWild) { // special case for event/rare wild mons to give people a chance to forfeit/quit or whatever to catch it if they want
-                return true;
-            }
-            var name = sys.name(x);
-            var isBypassed = bypass && bypass === name.toLowerCase();
-            if (currentEvent && currentEvent.isInEvent(name) && !isBypassed) {
-                return false;
-            }
-            if (currentGame && currentGame.playerInGame(name) && !isBypassed) {
-                return false;
-            }
-            for (var p in currentPyramids) {
-                if (currentPyramids[p].isInPyramid(name) && !isBypassed) {
-                    return false;
-                }
-            }
-            for (var p in currentBakings) {
-                if (currentBakings[p].isInKitchen(name) && !isBypassed) {
-                    return false;
-                }
-            }
-            for (var p in currentBattles) {
-                if (currentBattles[p].battle2 && currentBattles[p].isInBattle(name) && !isBypassed) {
-                    return false;
-                }
-            }
-            var player = getAvatar(x);
-            if (player && player.tutorial.inTutorial && !isBypassed) {
-                return false;
-            }
-            return true;
-        });
-        if (system) {
-            for (var e in players) {
-                sys.sendHtmlMessage(players[e], mess, safchan);
-            }
-        } else if (html) {
-            for (var e in players) {
-                safaribot.sendHtmlMessage(players[e], mess, safchan);
-            }
-        } else {
-            for (var e in players) {
-                safaribot.sendMessage(players[e], mess, safchan);
-            }
-        }
-    }
-
-    /* Time Functions */
-    function now() {
-        return new Date().getTime();
-    }
-    function timeLeft(time) {
-        return Math.floor((time - now())/1000) + 1;
-    }
-    function timeLeftString(time) {
-        return utilities.getTimeString(timeLeft(time));
-    }
-    function timeString(time, full) {
-        return utilities.getTimeString(time, full) || "0 seconds";
-    }
-    function getDay(time) {
-        return Math.floor(time / (1000 * 60 * 60 * 24));
-    }
-    function hours(number) {
-        return number * 60 * 60 * 1000;
-    }
-    function cdSeconds(item, value) {
-        value = value || "cooldown";
-        return "Cooldown: " + plural(itemData[item][value] / 1000, "second") + ".";
-    }
-
-    /* Data Type Functions */
-    function add(arr) {
-        var result = 0;
-        for (var e in arr) {
-            result += arr[e];
-        }
-        return result;
-    }
-    function countRepeated(arr, val) {
-        var count = 0;
-        arr.forEach(function(x) {
-            count += x === val ? 1 : 0;
-        });
-        return count;
-    }
-    function countArray(arr, item) {
-        var first = arr.indexOf(item);
-        var last = arr.lastIndexOf(item);
-        var count =  last - first + (first === -1 ? 0 : 1);
-        return count;
-    }
-    function randomSample(hash) {
-        var cum = 0;
-        var val = Math.random();
-        var psum = 0.0;
-        var x;
-        var count = 0;
-        for (x in hash) {
-            if (hash.hasOwnProperty(x)) {
-                psum += hash[x];
-                count += 1;
-            }
-        }
-        if (psum === 0.0) {
-            var j = 0;
-            for (x in hash) {
-                if (hash.hasOwnProperty(x)) {
-                    cum = (++j) / count;
-                    if (cum >= val) {
-                        return x;
-                    }
-                }
-            }
-        } else {
-            for (x in hash) {
-                if (hash.hasOwnProperty(x)) {
-                    cum += hash[x] / psum;
-                    if (cum >= val) {
-                        return x;
-                    }
-                }
-            }
-        }
-    }
-    function randomSampleObj(hash, returnId) {
-        var sampled = {};
-        for (var e in hash) {
-            sampled[e] = hash[e].chance;
-        }
-        if (returnId) {
-            return randomSample(sampled);
-        } else {
-            return hash[randomSample(sampled)];
-        }
-    }
-    function isInRange(value, range) {
-        // Range is a string with the syntax ">500", "<500" or "400~500"
-        var v;
-        if (range[0] === ">") {
-            v = parseInt(range.substr(1), 10);
-            if (!isNaN(v)) {
-                return value >= v;
-            }
-        } else if (range[0] === "<") {
-            v = parseInt(range.substr(1), 10);
-            if (!isNaN(v)) {
-                return value <= v;
-            }
-        } else if (range.indexOf("~") !== -1) {
-            v = range.split("~");
-            var v1 = parseFloat(v[0]), v2 = parseFloat(v[1]);
-            if (!isNaN(v1) && !isNaN(v2)) {
-                return value >= v1 && value <= v2;
-            }
-        }
-        return false;
-    }
-    function getRange(input) {
-        var range = input.split("-"), lower, upper;
-
-        if (range.length > 1) {
-            lower = parseInt(range[0], 10);
-            upper = parseInt(range[1], 10);
-        } else {
-            lower = 0;
-            upper = parseInt(range[0], 10);
-        }
-
-        if (isNaN(lower) || isNaN(upper)) {
-            return null;
-        }
-        if (lower === 0) {
-            lower = 1;
-        }
-        return { lower: lower, upper: upper};
-    }
-    function getArrayRange(arr, lower, upper) {
-        var result = arr.concat();
-
-        if (lower >= 0) {
-            return result.slice(Math.max(lower-1, 0), upper);
-        } else {
-            return result.slice(-upper, -lower);
-        }
-    }
-    function countDuplicates(arr, val) {
-        var out = 0;
-        for (var i in arr) {
-            if (arr[i] === val) {
-                out++;
-            }
-        }
-        return out;
-    }
-    function getCherished(mon, player) {
-        if (!getAvatarOff(player)) {
-            return 0;
-        }
-        return (Math.min(countDuplicates(getAvatarOff(player).cherished, pokeInfo.species(getInputPokemon(poke(mon)).num)), 10));
-    }
-    function removeDuplicates(arr, onlyNumbers) {
-        if (onlyNumbers) {
-            var result = [];
-            for (var x = 0; x < arr.length; x++) {
-                if (!result.contains(arr[x])) {
-                    result.push(arr[x]);
-                }
-            }
-            return result;
-        } else {
-            var result = {};
-            for (var x in arr) {
-                result[arr[x]] = 1;
-            }
-            return Object.keys(result);
-        }
-    }
-    function removeNonDuplicates(arr) {
-        var hit = [];
-        for (var j = arr.length; j--;) {
-            if (hit.contains(arr[j])) {
-                continue;
-            }
-            hit.push(arr.splice(j, 1)[0]);
-        }
-        return arr;
-    }
-    function lookupMoveLearners(h) {
-        var outList = [];
-        if (safari.moveLearners.hasOwnProperty(h+"")) {
-            outList = safari.moveLearners[h+""];
-        } else if (moveOff(h)) {
-            for (var e = 1; e < highestDexNum - 1; e++) {
-                outList.push(e);
-            }
-            outList = outList.filter(function(x){
-                return (canLearnMove(x, h));
-            });
-            safari.moveLearners[h+""] = outList;
-            permObj.add("moveLearners", JSON.stringify(safari.moveLearners));
-        }
-        return outList;
-    }
-    function getAlternateEvolutions(num) {
-        /*
-            this doesn't accurately return ingame alt evos, only safari-based ones
-            e.g. spewpa only evolving into base vivillon etc.
-            stuff like floette that each share a base species, but evolve from different variants of that same base species are also not included here
-            for best results, concatenate with getAllForms()
-        */
-        if (devolutions.hasOwnProperty(num+"")) {
-            var entry = devolutions[num+""];
-            if (evolutions.hasOwnProperty(entry+"") && Array.isArray(evolutions[entry+""].evo)) {
-                return evolutions[entry].evo.filter(function(e) { return e !== num });
-            }
-        }
-
-        return [];
-    }
-    function getAllForms(num, excludeSelf) {
-        num = parseInt(num);
-        var species = pokeInfo.species(num),
-            ret = [],
-            currentForm = 1;
-
-        var currentId = species;
-
-        if (currentId === 351) { // special case for castform which has a mislabeled form number (castform-sunny is 351-4 instead of 351-3)
-            ret = [351, 65887, 131423, 262495];
-        }
-        else {
-            while (pokeInfo.valid(currentId)) {
-                ret.push(currentId);
-                currentId = species + 65536 * currentForm++;
-            }
-        }
-
-        return ret.filter(function(e) { return excludeSelf ? e !== num : true });
-    }
-    function ignoresWildAbilities(player) {
-        var abilities = [104, 163, 164, 256, 296]; // Mold Breaker, Turboblaze, Teravolt, Neutralizing Gas, Mycelium Might
-        var leader = safari.getEffectiveLead(player, true);
-        for (var a in abilities) {
-            if (canHaveAbility(leader, abilities[a])) {
-                return abilities[a];
-            }
-        }
-
-        return false;
-    }
-    function compare(a,b) {
-        if (a.sort < b.sort) {
-            return -1;
-        } else if (a.sort > b.sort) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-    function countProps(obj) { //Stolen from http://stackoverflow.com/a/3849480
-        var count = 0;
-        for (var k in obj) {
-            if (obj.hasOwnProperty(k)) {
-                count++;
-            }
-        }
-        return count;
-    }
-    function objectEquals(v1, v2) {
-        if (typeof(v1) !== typeof(v2)) {
-            return false;
-        }
-
-        if (typeof(v1) === "function") {
-            return v1.toString() === v2.toString();
-        }
-
-        if (v1 instanceof Object && v2 instanceof Object) {
-            if (countProps(v1) !== countProps(v2)) {
-                return false;
-            }
-            var r = true;
-            for (var k in v1) {
-                r = objectEquals(v1[k], v2[k]);
-                if (!r) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            return v1 === v2;
-        }
-    }
-    function inclusive(value, lower, upper) {
-        return lower <= value && value <= upper;
-    }
-    function toCommandData(str, props) {
-        var out = {};
-        var data = str.split(str.indexOf(":::") !== -1 && str.indexOf(":::") <= str.search(/:(?!:)/) ? ":::" : ":");
-        for (var p = 0; p < props.length; p++) {
-            out[props[p]] = data.length > p && data[p].trim() !== "" ? data[p].trim() : null;
-        }
-        return out;
-    }
-    function toUserNames(str) {
-        var data = str.split(",");
-        for (var p = 0; p < data.length; p++) {
-            data[p] = data[p].trim();
-        }
-        return data;
-    }
-    function weatherMessage() {
-        if (currentThemeEffect == "rain") {
-            safaribot.sendHtmlAll(pokeInfo.icon(186) + " Looks like it's raining!", safchan);
-        } else if (currentThemeEffect == "sunny") {
-            safaribot.sendHtmlAll(pokeInfo.icon(38) + " Looks like it's sunny!", safchan);
-        } else if (currentThemeEffect == "hail") {
-            safaribot.sendHtmlAll(pokeInfo.icon(460) + " Looks like it's snowing!", safchan);
-        } else if (currentThemeEffect == "sandstorm") {
-            safaribot.sendHtmlAll(pokeInfo.icon(450) + " Looks like it's a sandstorm!", safchan);
-        }
-    }
-
-    /* Formatting Functions */
-    function cap(string, sentence) {
-        if (sentence) {
-            return string.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
-        } else {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-    }
-    function plural(qty, string, forceNumber, forceRawString) {
-        var input = forceRawString ? string : getInput(string);
-        var q = parseFloat(qty);
-        var plur = isNaN(q) || Math.abs(q) !== 1;
-        qty = addComma(qty);
-        if (input) {
-            if (input.type === "poke") {
-                if (forceNumber) {
-                    return qty + " " + input.name;
-                } else if (plur) {
-                    return toWord(qty) + " " + input.name;
-                } else {
-                    return an(input.name);
-                }
-            }
-            if (input.type === "item" && !isNaN(q)) {
-                return qty + " " + (plur ? (itemData[input.id].plural ? itemData[input.id].plural : es(input.name)) : input.name);
-            }
-        }
-        return qty + " " + (plur ? es(string) : string);
-    }
-    function toWord(num) {
-        //Realistically shouldn't need more than this. Also add comma will mess up anything 1000+
-        return ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"][num] || num;
-    }
-    function capitalizeFirst(str) {
-        return str.charAt(0).toUpperCase() + str.substring(1);
-    }
-    function an(string) {
-        var vowels = "aeiou";
-        string = string + ""; //For the numbers
-        if (vowels.indexOf(string.charAt(0).toLowerCase()) > -1 || string.charAt(0) === "8" || string === "11" || string === "18" || string.toLowerCase().indexOf("x ") === 0) {
-            string = "an " + string;
-        } else {
-            string = "a " + string;
-        }
-        return string;
-    }
-    function es(string) {
-        var end = string.charAt(string.length-1); //Last character would be the quotes
-        var preEnd = string.charAt(string.length-2);
-        var lasttwo = preEnd + end;
-        if (["ch", "sh", "ss"].contains(lasttwo) || ["x", "z"].contains(end)) {
-            return string + "es";
-        }
-        if (end === "s") {
-            return string;
-        }
-        if (end === "y" && !["a", "e", "i", "o", "u"].contains(preEnd)) {
-            return string.slice(0, -1) + "ies";
-        }
-        return string + "s";
-    }
-    function readable(arr, last_delim) {
-        if (!Array.isArray(arr)) {
-            return arr;
-        }
-        if (arr.length > 1) {
-            return arr.slice(0, arr.length - 1).join(", ") + " " + (last_delim ? last_delim : "and") + " " + arr.slice(-1)[0];
-        } else if (arr.length == 1) {
-            return arr[0];
-        } else {
-            return "";
-        }
-    }
-    function getOrdinal(n) {
-        //Shamelessly stolen from http://stackoverflow.com/questions/23291256/ext-form-field-number-formatting-the-value
-        var s=["th","st","nd","rd"],
-        v=n%100;
-        return n+(s[(v-20)%10]||s[v]||s[0]);
-    }
-    function addSign(num) {
-        return num >= 0 ? "+" + num : num + "";
-    }
-    function addComma(num) {
-        if (typeof num !== "number") {
-            return num;
-        }
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-    function stripComma(string) {
-        return string.replace(/(?!=\d),(?=\d)/g, "");
-    }
-    function link(string, string2, setmsg, color) {
-        string2 = string2 || string;
-        return "<a href=\"po:" + (setmsg ? "setmsg" : "send") + "/" + html_escape(string) + "\"" + (color ? "style='color: " + color + ";'" : "") + ">" + html_escape(string2) + "</a>";
-    }
-    function toColor(str, color) {
-        if (colorTranslations.hasOwnProperty(color.toLowerCase())) {
-            color = colorTranslations[color.toLowerCase()];
-        }
-        return "<font color='" + color + "'>" + str + "</font>";
-    }
-    function addFlashTag(name) {
-        return "<!--f-->" + name + "<!--f-->";
-    }
-    function addColorTag(name) {
-        return "<!--c-->" + name + "<!--c-->";
-    }
-    /*function toFlashing(message, name) { //Totally not stolen from tours
-        var newmessage = message;
-        var htmlname = html_escape(name);
-        var regex = new RegExp(htmlname, "gi");
-        var newregex1 = "";
-        if (sys.os(sys.id(name)) === "android") {
-            newregex1 = "<background color='#FCD116'>" + htmlname.toCorrectCase() + "</background><ping/>";
-            
-        } else if (sys.os(sys.id(name)) === "webclient") {
-            newregex1 = "<mark>" + htmlname.toCorrectCase() + "</mark><ping/>";
-        }
-        else {
-            newregex1 = "<font style='BACKGROUND-COLOR: #FCD116'>" + htmlname.toCorrectCase() + "</font><ping/>";
-        }
-
-        newmessage = message.replace(regex,newregex1);
-        return newmessage;
-    }*/
-    function toFlashing(message, name) { //Totally not stolen from tours
-        var newmessage = message;
-        var flashtag = "<!--f-->";
-        var htmlname = html_escape(name);
-        var regex = new RegExp(flashtag+htmlname+flashtag, "gi");
-        var newregex1 = "";
-        if (sys.os(sys.id(name)) !== "android") {
-            newregex1 = "<font style='BACKGROUND-COLOR: #FCD116'>" + htmlname.toCorrectCase() + "</font><ping/>";
-        } else {
-            newregex1 = "<background color='#FCD116'>" + htmlname.toCorrectCase() + "</background><ping/>";
-        }
-        var flashregex = new RegExp(flashtag,"g");
-        newmessage = message.replace(regex,newregex1).replace(flashregex,"");
-        return newmessage;
-    }
-    function toColored(message, name) {
-        var newmessage = message;
-        var flashtag = "<!--c-->";
-        var htmlname = html_escape(name);
-        var regex = flashtag+htmlname+flashtag;
-        var newregex1 = "";
-        var color = sys.id(name) ? script.getColor(sys.id(name)) : "#000000";
-        if (sys.os(sys.id(name)) !== "android") {
-            newregex1 = "<span style='COLOR: " + color + "'>" + htmlname + "</span>";
-        } else {
-            newregex1 = "<font color='"+color+"'>" + htmlname + "</font>";
-        }
-        var flashregex = new RegExp(flashtag,"g");
-        newmessage = message.replace(regex,newregex1).replace(flashregex,"");
-        return newmessage;
-    }
-    function percentage(num, denom, places) {
-        places = places || 2;
-        if (typeof num !== "number" || typeof denom !== "number") {
-            return "??.??%";
-        }
-        if (denom === 0) {
-            return "0.00%";
-        }
-        return (num/denom*100).toFixed(places) + "%";
-    }
-    function toFixed(num, digits) {
-        return (+num).toFixed(digits).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/,'$1');
-    }
-    function escapeRegExp(str) { //From http://stackoverflow.com/a/6969486
-        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-    }
-    function itemsLeft(player, item, itemName) {
-        var amt = player.balls[item];
-        if (amt === 0) {
-            return "You have no more " + es(finishName(item)) + " left! ";
-        } else {
-            return "You still have " + plural(amt, finishName(item)) + " left! ";
-        }
-    }
-    function typeNull(str, output) {
-        return str.replace(/(type: null)|(type:null)/gi, (output || "772"));
-    }
-    
-    /* Pokemon Functions */
-    function getInputPokemon(info) {
-        /*
-        Use this function for every time you need information about a Pokémon typed by a player (don't use for pokémon picked from player.pokemon).
-        Returns an object with the following properties:
-        -num: Int; Pokémon's number; Same that you would get with sys.pokeNum()
-        -id: Int or String; Pokémon's id that can be added to player.pokemon
-        -shiny: Boolean; If the pokémon is shiny or not
-        -name: String; Pokémon's name (including Shiny prefix). Same as poke()
-        -input: String; What you need to type to get to that result. Used for trade
-        */
-        var shiny = false, id, num, name;
-        info = info.replace(/flabebe|flabébe|flabebé/gi, "flabébé").toLowerCase();
-        info = info.replace(/pokédex|pokedex/gi, "pokédex").toLowerCase();
-        info = info.replace(/alcremie-finale/gi, "alcremie-finalé").toLowerCase();
-        
-        if ((info.length > 1 && (info[0] == "*" || info[info.length-1] == "*")) || info.indexOf("shiny ") === 0) {
-            shiny = true;
-            info = info.replace("*", "");
-            info = info.replace("shiny ", "");
-        }
-        var arr = info.split("-");
-        if (arr.length === 2 && !isNaN(arr[0]) && !isNaN(arr[1])) {
-            num = parseInt(arr[0], 10) + (parseInt(arr[1], 10) * 65536);
-        } else {
-            num = parseInt(info, 10);
-            if (isNaN(num)) {
-                num = getPokeNum(info);
-            }
-        }
-        id = shiny ? num + "" : num;
-
-        name = pokePlain(num);
-        if (name.toLowerCase() == "missingno") {
-            num = null;
-        }
-
-        return { num: num, id: id, shiny: shiny, name: poke(id), input: (shiny ? "*" : "") + name, type: "poke" };
-    }
-    function getInputMove(src, data) {
-        var num = parseInt(data, 10), name;
-        if (isNaN(num)) {
-            num = movenum(data);
-        }
-        name = moveOff(num);
-
-        safaribot.sendMessage( src,"Move #" + num + ": " + name + ".",safchan );
-        return;
-    }
-    function getInputAbility(src, data) {
-        var num = parseInt(data, 10), name;
-        if (isNaN(num)) {
-            num = abilitynum(data);
-        }
-        name = abilityOff(num);
-
-        safaribot.sendMessage( src,"Ability #" + num + ": " + name + ".",safchan );
-        return;
-    }
-    function getPokemonInfo(info) {
-        var shiny = false, id = info;
-
-        if (typeof info == "string") {
-            shiny = true;
-            id = parseInt(info, 10);
-            if (isNaN(id)) {
-                id = null;
-            }
-        }
-
-        return [id, shiny];
-    }
-    function poke(num, multi) {
-        var shiny = false, name;
-        if (typeof num === "string") {
-            num = parseInt(num, 10);
-            shiny = true;
-        }
-
-        if (isNaN(num)) {
-            return null;
-        }
-        if (ultraPokes.hasOwnProperty(num+"")) {
-            name = ultraPokes[num+""].name;
-        } else {
-            name = sys.pokemon(num);
-        }
-        if (permObj.get("usingLangPack") == "true" && multi) {
-            if (!langPack) {
-                langPack = sys.getFileContent("scriptdata/safari/" + permObj.get("langPackFile")).split("\n");
-            }
-            name = poke(num).replace(poke(pokeInfo.species(num)), langPack[pokeInfo.species(num) - 1].trim());
-        }
-
-        return name ? (shiny ? "Shiny " : "") + name : null;
-    }
-    function pokePlain(num, multi) {
-        var name;
-        if (typeof num === "string") {
-            num = parseInt(num, 10);
-        }
-        if (isNaN(num)) {
-            return "Missingno";
-        }
-        if (ultraPokes.hasOwnProperty(num+"")) {
-            name = ultraPokes[num+""].name;
-        } else {
-            name = sys.pokemon(num);
-        }
-        if (permObj.get("usingLangPack") == "true" && multi) {
-            if (!langPack) {
-                langPack = sys.getFileContent("scriptdata/safari/" + permObj.get("langPackFile")).split("\n");
-            }
-            name = pokePlain(num).replace(pokePlain(pokeInfo.species(num)), langPack[pokeInfo.species(num) - 1].trim());
-        }
-
-        return name ? name : "Missingno";
-    }
-    function getForm(num, amt) {
-        if (!(amt)) {
-            amt = 1;
-        }
-        return Math.round(num + (65536 * amt));
-    }
-    var ultraMoves = {
-        "1": { "learned": [ 60, 61, 62, 186, 115, 122, 175, 176, 468, 439, 486 ] },
-        "5": { "learned": [ 65612, 149, 215, 461, 236, 237, 271, 280, 281, 282, 475, 330, 385, 427, 428, 446, 447, 448, 453, 454, 459, 460, 494, 531, 532, 533, 534, 537, 538, 539, 552, 553, 554, 555, 559, 560, 571, 579, 613, 614, 619, 620, 621, 660, 674, 675, 695, 701, 706, 727, 66281, 759, 760, 765, 766, 776, 783, 784, 787, 799, 802 ] },
-        "6": { "learned": [ 78, 133, 470, 471, 135, 134, 136, 196, 197, 700, 150, 446, 677, 678, 66214, 725, 726, 727, 187, 188, 189 ] },
-        "7": { "learned": [ 65610, 65611, 65612, 65624, 65625, 727, 66281, 784, 735 ] },
-        "8": { "learned": [ 65563, 65564, 65624, 65625, 784, 788, 735, 739 ] },
-        "9": { "learned": [ 65624, 65625, 727, 66281, 784, 785, 735, 739, 740 ] },
-        "10": { "learned": [ 65586, 65587 ] },
-        "13": { "learned": [ 1, 2, 3, 158, 159, 160 ] },
-        "14": { "learned": [ 659, 78, 118, 119, 338, 365, 744 ] },
-        "16": { "learned": [ 146, 717 ] },
-        "17": { "learned": [ 227, 4, 5 ] },
-        "18": { "learned": [ 293, 294, 295 ] },
-        "19": { "learned": [ 738 ] },
-        "20": { "learned": [ 130, 760, 727, 759, 764, 793, 796 ] },
-        "21": { "learned": [ 532, 533, 534 ] },
-        "23": { "learned": [ 759, 760 ] },
-        "24": { "learned": [ 25, 26, 65562, 133, 470, 471, 134, 136, 196, 197, 700, 427, 428, 725, 726, 727 ] },
-        "25": { "learned": [ 149, 215, 461, 271, 280, 281, 282, 475, 330, 385, 427, 428, 446, 447, 448, 453, 454, 460, 486, 494, 531, 532, 533, 534, 537, 538, 539, 552, 553, 554, 555, 559, 560, 571, 613, 614, 619, 620, 622, 623, 660, 674, 675, 695, 799, 701, 706, 727, 66281, 763, 765, 766, 776, 783, 784, 802 ] },
-        "28": { "learned": [ 74, 75, 76, 111, 112, 464, 138, 139 ] },
-        "29": { "learned": [ 751, 752, 12, 15, 16, 17, 18, 65555, 65556, 21, 22, 65563, 65564, 65573, 65574, 41, 42, 169, 43, 44, 45, 182, 46, 47, 48, 49, 65588, 65589, 69, 70, 71, 72, 73, 65610, 65611, 65612, 81, 82, 84, 85, 88, 89, 65624, 65625, 90, 91, 92, 93, 98, 99, 102, 65639, 109, 110, 118, 119, 120, 121, 137, 233, 474, 140, 144, 145, 146, 585, 586 ] },
-        "33": { "learned": [ 37, 38, 65573, 65574, 111, 112, 464, 161, 162, 246, 247, 248, 273, 274, 275, 374, 375, 376, 626, 716 ] },
-        "34": { "learned": [ 799, 65563, 65564, 65573, 65574, 65586, 65587, 65588, 65589, 483, 484, 485, 486, 487, 488, 531, 553, 555, 621, 623, 626, 641, 642, 645, 660, 696, 697, 698, 699, 716, 717, 718, 760, 793, 794, 797 ] },
-        "35": { "learned": [ 224, 345, 346, 686, 687, 793 ] },
-        "36": { "learned": [ 65610, 65611, 65612 ] },
-        "37": { "learned": [ 108, 463, 214, 32, 33, 111, 112, 464 ] },
-        "40": { "learned": [ 592, 593 ] },
-        "42": { "learned": [ 28, 65564, 91, 139, 151, 416 ] },
-        "43": { "learned": [ 107, 144, 145, 641, 642, 645, 721, 209, 210 ] },
-        "44": { "learned": [ 143, 443, 444, 445, 446, 554, 555, 610, 611, 612, 543, 544, 545 ] },
-        "45": { "learned": [ 115, 187, 188, 189 ] },
-        "48": { "learned": [ 258, 259, 260, 298 ] },
-        "50": { "learned": [ 174, 302, 442, 686, 687, 708, 709 ] },
-        "51": { "learned": [ 108, 463, 535, 536 ] },
-        "52": { "learned": [ 554, 555, 661 ] },
-        "54": { "learned": [ 65563, 65564, 249 ] },
-        "55": { "learned": [ 222, 226, 245, 341, 342, 422, 423, 458, 592, 593, 704, 705, 706, 721, 751, 752, 231, 232 ] },
-        "56": { "learned": [ 79, 80, 199, 99, 108, 463, 112, 464, 115, 143, 147, 148, 149, 151, 194, 195, 222, 248, 295, 306, 341, 342, 365, 384, 422, 423, 446, 550, 635, 706, 713, 747, 748, 752, 780, 781 ] },
-        "57": { "learned": [ 706 ] },
-        "58": { "learned": [ 65563, 65564 ] },
-        "60": { "learned": [ 102, 103, 65639, 120, 121, 150, 280, 281, 282, 475, 480, 481, 482, 488, 577, 578, 579 ] },
-        "62": { "learned": [ 131 ] },
-        "63": { "learned": [ 724, 730, 743, 750, 756, 763, 765, 768, 772, 777, 802 ] },
-        "64": { "learned": [ 15, 86, 87 ] },
-        "66": { "learned": [ 701, 155, 156, 157 ] },
-        "67": { "learned": [ 60, 61, 62, 186, 240, 65639, 647, 727, 749, 750, 760, 763, 782, 783, 784, 802, 522, 523 ] },
-        "68": { "learned": [ 165, 166, 766 ] },
-        "69": { "learned": [ 65563, 65564, 65610, 65611, 65612, 440, 674, 675 ] },
-        "70": { "learned": [ 749, 750, 759, 760 ] },
-        "71": { "learned": [ 102, 103, 65639, 187, 188, 189, 273, 274, 275 ] },
-        "72": { "learned": [ 102, 65639, 273, 274, 275, 787, 65624, 65625 ] },
-        "73": { "learned": [ 346, 470 ] },
-        "75": { "learned": [ 83 ] },
-        "76": { "learned": [ 65574, 587, 695 ] },
-        "79": { "learned": [ 46, 47 ] },
-        "81": { "learned": [ 684, 685 ] },
-        "83": { "learned": [ 65641, 721, 147, 148, 149, 151, 250, 330, 334, 435, 494, 554, 555, 635, 662, 663, 725, 726, 727, 791 ] },
-        "84": { "learned": [ 65610, 65611, 65612, 100, 101, 137, 233, 474, 403, 404, 405 ] },
-        "86": { "learned": [ 65610, 65611, 65612, 757, 758 ] },
-        "87": { "learned": [ 685 ] },
-        "88": { "learned": [ 111, 112, 464, 138, 139, 140, 141, 142, 246, 247, 248, 696, 697 ] },
-        "90": { "learned": [ 446, 749, 750 ] },
-        "91": { "learned": [ 65555, 65556, 65563, 65564, 65573, 65574, 65588, 65589, 65610, 65611, 65612, 65624, 65625, 346, 622, 623 ] },
-        "93": { "learned": [ 151, 380, 381, 561, 577, 578, 579, 7, 8, 9, 63 ] },
-        "95": { "learned": [ 338, 574, 575, 576 ] },
-        "97": { "learned": [ 27, 28, 50, 51, 65586, 65587, 150, 37, 38, 41, 42, 169, 121, 151, 225, 243, 244, 245, 309, 310, 380, 381, 405, 519, 520, 521, 589, 605, 606, 619, 620, 627, 628, 745, 777, 791, 792, 801, 802 ] },
-        "98": { "learned": [ 118, 119, 198, 430, 509, 510 ] },
-        "100": { "learned": [ 65562 ] },
-        "101": { "learned": [ 64, 65, 442 ] },
-        "103": { "learned": [ 65587, 124, 167, 168, 258, 259, 260, 636, 637, 39, 40, 65586, 151, 163, 164, 174, 186, 275, 416, 453, 454, 509, 510, 535, 536, 537, 556, 569, 605, 606, 624, 625, 679, 680, 681, 688, 689, 736, 737, 738, 767, 768, 771, 778, 798 ] },
-        "107": { "learned": [ 40, 440 ] },
-        "108": { "learned": [ 244 ] },
-        "109": { "learned": [ 150, 456, 457 ] },
-        "111": { "learned": [ 440, 767, 768, 759, 760 ] },
-        "112": { "learned": [ 137, 233, 474 ] },
-        "113": { "learned": [ 91 ] },
-        "114": { "learned": [ 65625 ] },
-        "115": { "learned": [ 65573, 65574, 172, 478 ] },
-        "116": { "learned": [ 83, 107, 128, 236, 359, 151, 448, 519, 520, 521, 619, 620, 675, 721, 216, 217 ] },
-        "117": { "learned": [ 65610, 65611, 65612 ] },
-        "118": { "learned": [ 480, 481, 482, 683, 685, 719 ] },
-        "120": { "learned": [ 425, 426, 39, 40, 65624, 65625, 462, 463, 482, 485, 526, 582, 583, 584, 615, 622, 623, 645, 721, 773, 797, 801 ] },
-        "129": { "learned": [ 65573, 65574, 65588, 63, 64, 65, 104, 105, 65641, 494, 509, 510, 519, 520, 521, 527, 528, 546, 547, 561, 566, 567, 570, 571, 587, 595, 596, 610, 611, 612, 627, 628, 629, 630, 638, 639, 640, 643, 644, 646, 66182, 131718, 647, 649, 661, 662, 663, 677, 678, 66214, 694, 695, 701, 714, 715, 716, 717, 718, 722, 723, 724, 742, 743, 745, 757, 758, 767, 768, 772, 773, 777, 780, 785, 791, 792, 802 ] },
-        "133": { "learned": [ 202, 258, 259, 260, 360, 27, 28, 163, 164, 206, 272, 385, 449, 450, 468, 517, 518, 684, 685, 719, 780, 799 ] },
-        "138": { "learned": [ 49 ] },
-        "139": { "learned": [ 92, 93, 94 ] },
-        "141": { "learned": [ 140, 141, 27, 28, 452, 649 ] },
-        "143": { "learned": [ 722, 723, 724, 731, 732, 733, 741, 785, 792 ] },
-        "146": { "learned": [ 107 ] },
-        "151": { "learned": [ 72, 73 ] },
-        "154": { "learned": [ 4, 5, 6, 46, 47, 65586, 65587, 619, 620 ] },
-        "156": { "learned": [ 801, 486, 785, 786, 787, 788 ] },
-        "157": { "learned": [ 7, 8, 793 ] },
-        "161": { "learned": [ 380, 381, 480, 481, 482, 606, 801 ] },
-        "162": { "learned": [ 65563, 65564, 777 ] },
-        "163": { "learned": [ 65586, 65587, 98, 99, 252, 253, 254, 341, 342 ] },
-        "168": { "learned": [ 25, 197, 559 ] },
-        "172": { "learned": [ 126, 467, 240, 244 ] },
-        "174": { "learned": [ 65563, 65564, 104, 105, 65641, 710, 711, 769, 770, 776 ] },
-        "175": { "learned": [ 143, 446, 290, 291, 292, 632 ] },
-        "179": { "learned": [ 62, 66, 67, 68, 127, 128, 151, 211, 213, 244, 416, 428, 475, 550, 555, 617, 638, 639, 640, 647, 675, 679, 680, 681, 701, 718, 727, 760, 773, 802 ] },
-        "180": { "learned": [ 724, 771, 65641, 747, 748, 765, 769, 770, 778, 781, 792, 793 ] },
-        "182": { "learned": [ 486 ] },
-        "184": { "learned": [ 126, 467, 240, 244, 66182, 131718, 721, 59, 95, 208, 151, 211, 220, 221, 306, 310, 362, 448, 538, 539, 614, 638, 639, 641, 642, 645, 675, 687, 696, 697, 750, 791, 792, 800, 66336, 197408, 131872 ] },
-        "187": { "learned": [ 298, 335 ] },
-        "188": { "learned": [ 570, 769 ] },
-        "189": { "learned": [ 535, 536, 537, 757, 758 ] },
-        "191": { "learned": [ 28, 65564, 151, 214 ] },
-        "192": { "learned": [ 801, 25, 26, 65562, 35, 36, 39, 40, 52, 53, 63, 64, 65, 79, 80, 199, 88, 89, 92, 93, 94, 96, 97, 100, 101, 109, 110, 111, 112, 464, 113, 242, 115, 120, 121, 122, 125, 466, 128, 130, 131, 135, 136, 143, 147, 148, 149, 150, 170, 171, 172, 173, 174, 175, 176, 468, 179, 180, 190, 424, 196, 197, 200, 429, 203, 206, 209, 210, 216, 217, 239, 241, 249, 250 ] },
-        "193": { "learned": [ 183, 184 ] },
-        "194": { "learned": [ 592, 593, 605, 606 ] },
-        "195": { "learned": [ 298, 358 ] },
-        "196": { "learned": [ 728, 729, 730, 65563, 65564, 65588, 65589, 747, 748, 751, 752, 768, 772, 773, 780, 788, 792, 795, 65555, 65556, 740, 741 ] },
-        "197": { "learned": [ 255, 256, 257, 16, 17, 18, 21, 22, 25, 26, 65562, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 39, 40, 41, 42, 169, 52, 53, 56, 57, 61, 62, 186, 66, 67, 68, 83, 106, 123, 212, 125, 466, 126, 467, 142, 144, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 172, 173, 174, 175, 176, 468, 177, 178, 190, 424, 198, 430, 207, 472, 209, 210, 214, 215, 461, 220, 221, 473, 225, 227, 228, 229, 234, 236, 239, 240, 243, 244, 245, 246, 247, 248, 249, 250, 251 ] },
-        "200": { "learned": [ 15, 1, 2, 7, 8, 65639, 65641, 127, 773, 776, 791, 794, 795, 799, 800, 66336, 197408, 131872, 802, 66281 ] },
-        "201": { "learned": [ 6, 745, 66281 ] },
-        "202": { "learned": [ 722, 723, 724, 751, 752, 761, 762, 763, 764, 778, 798, 65624, 65625 ] },
-        "203": { "learned": [ 66281 ] },
-        "204": { "learned": [ 241, 124, 131, 151, 238, 385, 478, 66214, 684, 685, 703, 719, 742, 743, 759, 760, 764, 786 ] },
-        "205": { "learned": [ 65563, 65564, 759, 760, 767, 768 ] },
-        "210": { "learned": [ 543, 544, 545, 473 ] },
-        "211": { "learned": [ 225 ] },
-        "212": { "learned": [ 163, 164, 701 ] },
-        "213": { "learned": [ 597, 598, 636, 637, 765 ] },
-        "215": { "learned": [ 65573, 65574, 764, 801 ] },
-        "217": { "learned": [ 298 ] },
-        "219": { "learned": [ 26 ] },
-        "220": { "learned": [ 65573, 65574, 65624, 65625, 65641, 747, 748, 764, 765, 768, 769, 770, 779, 781, 793 ] },
-        "223": { "learned": [ 122 ] },
-        "224": { "learned": [ 86, 87, 128, 131, 151, 638, 639, 640, 647, 797 ] },
-        "225": { "learned": [ 4, 5, 6, 333, 58, 59, 130, 131, 151, 248, 249, 250 ] },
-        "226": { "learned": [ 12, 35, 36, 39, 40, 182, 206, 225, 380, 381, 385, 453, 454, 480, 481, 482, 494, 509, 510, 527, 528, 686, 687, 719, 801 ] },
-        "227": { "learned": [ 37, 38, 93, 94, 124, 143, 151, 271, 272, 302, 385, 446, 453, 454, 480, 481, 482, 494, 548, 549, 571, 577, 578, 579, 588, 589, 682, 683, 719, 764, 765, 801 ] },
-        "228": { "learned": [ 111, 112, 464 ] },
-        "229": { "learned": [ 776 ] },
-        "230": { "learned": [ 12, 15, 48, 49, 114, 465, 124, 151, 165, 166, 187, 188, 189, 204, 205, 238, 241, 251, 25, 26, 65562 ] },
-        "231": { "learned": [ 65555, 65556, 65563, 65564, 65573, 65574, 65588, 65589, 65639, 155, 156, 157, 728, 729, 730, 744, 745, 66281, 746, 757, 758, 766, 776, 777, 782, 783, 784, 791, 734, 735, 779 ] },
-        "232": { "learned": [ 447, 485, 569 ] },
-        "235": { "learned": [ 755, 756, 781, 787 ] },
-        "238": { "learned": [ 701 ] },
-        "239": { "learned": [ 690 ] },
-        "240": { "learned": [ 338, 556, 643, 756 ] },
-        "241": { "learned": [ 647, 695 ] },
-        "242": { "learned": [ 42, 169, 139, 244, 245, 610, 611, 612, 712, 9, 41, 151, 197, 306, 23 ] },
-        "243": { "learned": [ 65563, 65564, 144, 771 ] },
-        "246": { "learned": [ 150, 324 ] },
-        "247": { "learned": [ 38 ] },
-        "248": { "learned": [ 65562, 103, 124, 151, 164, 344, 380, 381, 494, 555, 606, 686, 687, 786, 791, 792, 800, 66336, 197408, 131872 ] },
-        "249": { "learned": [ 749, 750, 787 ] },
-        "250": { "learned": [ 592, 593, 689, 728, 729, 730, 746 ] },
-        "251": { "learned": [ 559, 560, 632, 65589, 115, 151, 416, 584, 624, 625, 634, 635, 675, 688, 689, 757, 758, 778 ] },
-        "252": { "learned": [ 574, 575, 576 ] },
-        "253": { "learned": [ 746, 65586, 65587, 65588, 65589, 186, 340, 416, 688, 689, 728, 729, 730, 766, 776, 780, 782, 783, 784, 734, 735, 66281, 779 ] },
-        "257": { "learned": [ 110, 65641, 275, 757, 758, 773, 776, 780, 792, 799, 800, 66336, 197408, 131872, 731, 732, 733 ] },
-        "258": { "learned": [ 145, 337 ] },
-        "260": { "learned": [ 427, 428, 481 ] },
-        "261": { "learned": [ 661 ] },
-        "262": { "learned": [ 37, 38, 225 ] },
-        "263": { "learned": [ 755, 756 ] },
-        "264": { "learned": [ 782, 783, 784, 65563, 65564, 65610, 65611, 65612, 65625, 727, 739, 740, 66281, 759, 760, 766, 787, 802 ] },
-        "268": { "learned": [ 125, 466, 239, 243, 618 ] },
-        "269": { "learned": [ 674, 125, 126, 589, 763 ] },
-        "270": { "learned": [ 223, 224, 1, 2, 3, 4, 5, 6, 7, 8, 9, 65624, 65625, 131, 182, 206, 225, 243, 244, 245, 249, 250, 303, 350, 479, 262623, 131551, 197087, 328159, 66015, 622, 623, 632, 634, 635, 643, 644, 646, 66182, 131718, 66214, 728, 729, 730, 742, 743, 757, 758, 761, 762, 763, 777, 780, 781, 791, 792, 418, 419 ] },
-        "271": { "learned": [ 555, 623, 742, 743, 764, 765, 769, 770, 778, 788, 792, 801 ] },
-        "272": { "learned": [ 65573, 65574, 741, 759, 760, 764, 769, 770, 777, 781, 793 ] },
-        "276": { "learned": [ 62, 59, 65610, 65611, 65612, 65639, 727, 754, 766, 780, 784, 791, 797, 802, 775 ] },
-        "277": { "learned": [ 65562, 730, 747, 748, 751, 752, 755, 756, 764, 765, 772, 773, 779, 786, 788, 793, 796 ] },
-        "278": { "learned": [ 65562, 65625, 755, 756, 769, 770, 771, 800, 66336, 197408, 131872 ] },
-        "279": { "learned": [ 128, 151, 248, 256, 257, 275, 342, 355, 356, 477, 416, 447, 448, 475, 532, 533, 534, 539, 552, 553, 559, 560, 563, 570, 571, 589, 597, 598, 619, 620, 638, 639, 640, 647, 675, 701, 745, 750, 760, 766, 784, 787, 794, 802 ] },
-        "280": { "learned": [ 638, 639, 640, 647 ] },
-        "281": { "learned": [ 765 ] },
-        "282": { "learned": [ 799, 280, 281, 282, 722, 723, 724, 766, 65556, 65563, 65564, 65588, 65589, 65639, 727, 731, 732, 733, 747, 748, 754, 762, 763, 765, 768, 775, 781, 788, 791, 793, 798, 800, 66336, 197408, 131872, 802 ] },
-        "283": { "learned": [ 757, 758, 744, 745, 66281, 761, 762, 763, 725, 726, 727, 734, 735, 749, 750, 766, 768, 774, 775, 776, 777, 780, 784, 791, 794 ] },
-        "285": { "learned": [ 677, 678, 66214, 769, 770 ] },
-        "286": { "learned": [ 151, 35, 36, 65, 79, 80, 199, 94, 65641, 163, 164, 176, 468, 177, 178, 249, 250, 251, 350, 385, 426, 478, 561, 592, 593, 622, 623, 710, 711, 724, 742, 743, 765, 800, 66336, 197408, 131872, 801 ] },
-        "287": { "learned": [ 25, 26, 65562 ] },
-        "289": { "learned": [ 727, 747, 748, 765, 766, 778, 779, 795, 802 ] },
-        "291": { "learned": [ 537, 689, 728, 729, 730, 752, 768 ] },
-        "299": { "learned": [ 256, 6, 151, 494, 620, 727, 802 ] },
-        "300": { "learned": [ 399, 400 ] },
-        "304": { "learned": [ 65588, 65589, 59, 310, 479, 262623, 131551, 197087, 328159, 66015, 582, 583, 584, 773, 776, 784, 785, 791, 800, 66336, 197408, 131872, 744, 745, 66281 ] },
-        "305": { "learned": [ 757, 758 ] },
-        "307": { "learned": [ 493 ] },
-        "308": { "learned": [ 493 ] },
-        "309": { "learned": [ 448, 447 ] },
-        "310": { "learned": [ 273, 274, 275, 328, 329, 330, 361, 362 ] },
-        "311": { "learned": [ 437, 4, 5, 6, 7, 8, 9, 37, 38, 65573, 65574, 79, 80, 199, 91, 131, 133, 470, 471, 135, 134, 136, 196, 197, 700, 144, 145, 146, 151, 186, 225, 244, 245, 251, 272, 279, 315, 320, 321, 324, 337, 338, 340, 350, 406, 423, 449, 450, 459, 460, 466, 467, 526, 535, 536, 537, 556, 641, 642, 643, 644, 645, 646, 66182, 131718, 695, 698, 699, 706, 730, 756 ] },
-        "312": { "learned": [ 416, 761, 314 ] },
-        "313": { "learned": [ 38, 65574, 65589, 151, 215, 461, 559, 560, 677, 678, 66214, 682, 683, 686, 687, 719, 742, 743, 758 ] },
-        "314": { "learned": [ 274 ] },
-        "321": { "learned": [ 677, 678, 66214, 780 ] },
-        "322": { "learned": [ 151, 177, 178, 375, 376, 384, 576, 800, 66336, 197408, 131872 ] },
-        "324": { "learned": [ 738, 742, 743, 751, 752, 753, 754, 755, 756, 772, 773, 779, 780, 792, 795, 800, 66336, 197408, 131872, 801 ] },
-        "326": { "learned": [ 554, 555 ] },
-        "328": { "learned": [ 645, 31, 34, 151, 212, 220, 221, 473, 227, 246, 247, 248, 259, 260, 305, 306, 337, 338, 340, 343, 344, 377, 379, 423, 452, 524, 525, 526, 529, 530, 660, 703, 719, 749, 750 ] },
-        "329": { "learned": [ 646, 66182, 131718 ] },
-        "330": { "learned": [ 55, 60, 61, 62, 186, 80, 118, 119, 130, 151, 199, 246, 247, 248, 271, 272, 341, 342, 349, 350, 449, 450, 564, 565, 593, 647, 689, 747, 748, 768, 781 ] },
-        "331": { "learned": [ 753, 754, 764, 787, 504, 505 ] },
-        "332": { "learned": [ 175 ] },
-        "333": { "learned": [ 124, 144, 151, 225, 362, 364, 365, 378, 460, 461, 471, 478, 614, 615, 646, 66182, 131718, 699, 712, 713 ] },
-        "334": { "learned": [ 65586, 65587, 112, 464, 185, 208, 213, 344, 369, 452, 555, 744, 745, 66281, 747, 748, 751, 752, 772, 773, 781, 785, 786, 787, 788, 791, 798, 799, 65610, 65611, 65612 ] },
-        "335": { "learned": [ 679, 680, 65625, 735, 740, 748, 765, 766, 769, 770, 771, 776, 780, 781, 795, 797 ] },
-        "336": { "learned": [ 243, 447, 448 ] },
-        "339": { "learned": [ 260 ] },
-        "340": { "learned": [ 761, 762, 763, 777, 794, 802 ] },
-        "341": { "learned": [ 768, 31, 34, 79, 80, 199, 111, 112, 464, 151, 183, 184, 213, 263, 264, 271, 272, 298, 341, 342, 345, 346, 347, 348, 349, 350, 422, 423, 449, 450, 529, 530, 564, 565, 616, 617, 688, 689, 698, 699, 704, 705, 706, 721, 746, 747, 748, 750, 767, 769, 770 ] },
-        "343": { "learned": [ 743, 213, 65555, 65556, 65563, 65564, 65573, 65574, 311, 312, 722, 723, 724, 725, 726, 727, 728, 729, 730, 741, 742, 744, 745, 66281, 746, 747, 748, 757, 758, 761, 762, 763, 764, 765, 777, 778 ] },
-        "345": { "learned": [ 103, 65639, 151, 700, 708, 709, 743, 753, 754 ] },
-        "347": { "learned": [ 25, 26, 103, 163, 164, 730 ] },
-        "348": { "learned": [ 151, 251, 549 ] },
-        "349": { "learned": [ 95, 208, 142, 151, 254, 350, 380, 635, 643, 644, 646, 66182, 131718, 715, 758, 780, 800, 66336, 197408, 131872 ] },
-        "350": { "learned": [ 31, 34, 68, 140, 141, 142, 151, 185, 226, 248, 305, 306, 337, 338, 345, 346, 369, 377, 473, 530, 534, 564, 565, 566, 567, 639, 688, 689, 696, 697, 698, 699, 745, 66281 ] },
-        "351": { "learned": [ 65555, 65556, 65588, 65589, 65611, 65612, 65624, 65625, 734, 735, 736, 737, 738, 766, 776, 777, 780, 784, 791, 792, 795, 797, 799, 800, 66336, 197408, 131872, 801 ] },
-        "352": { "learned": [ 65588, 65589, 728, 729, 730, 747, 748, 751, 752, 768, 780, 784 ] },
-        "356": { "learned": [ 765, 769, 770, 774, 777, 786, 788, 796, 797 ] },
-        "358": { "learned": [ 96, 97, 114, 465 ] },
-        "359": { "learned": [ 99, 143, 486, 579, 98 ] },
-        "360": { "learned": [ 302 ] },
-        "362": { "learned": [ 728, 729, 730, 747, 748, 769, 770, 781 ] },
-        "364": { "learned": [ 662, 663, 522, 523, 701 ] },
-        "366": { "learned": [ 724, 742, 743, 764, 773, 780, 792, 798 ] },
-        "367": { "learned": [ 211, 118, 119, 686, 687 ] },
-        "368": { "learned": [ 589, 632 ] },
-        "369": { "learned": [ 257, 428 ] },
-        "370": { "learned": [ 783, 784, 62, 83, 128, 151, 257, 319, 342, 359, 428, 533, 534, 553, 560, 589, 612, 619, 620, 623, 626, 627, 628, 675, 679, 680, 681, 696, 697, 701, 727, 745, 66281, 760, 768, 787, 791, 794, 795 ] },
-        "371": { "learned": [ 273, 442, 427, 428, 506, 717, 718, 66281 ] },
-        "372": { "learned": [ 128, 252, 253, 254, 41, 42, 169, 50, 51, 65586, 65587, 68, 115, 123, 212, 151, 211, 214, 223, 224, 225, 226, 255, 256, 257, 274, 275, 303, 416, 427, 428, 434, 435, 451, 452, 453, 454, 482, 545, 550, 556, 559, 560, 566, 567, 570, 571, 597, 598, 599, 600, 601, 620, 627, 628, 629, 630, 641, 642, 649, 688, 689, 696, 697, 701, 706, 727, 745, 766, 767, 768, 777, 781, 785, 795 ] },
-        "374": { "learned": [ 782 ] },
-        "380": { "learned": [ 143, 65624, 65625, 747, 748 ] },
-        "381": { "learned": [ 385 ] },
-        "383": { "learned": [ 133, 470, 471, 135, 134, 136, 196, 197, 700 ] },
-        "384": { "learned": [ 63, 64, 65, 137, 233, 474, 151, 282, 337, 338, 343, 344, 436, 437, 488, 494, 517, 518, 555, 561, 563, 577, 578, 579, 786, 787 ] },
-        "385": { "learned": [ 137, 233, 474, 151, 282, 343, 344, 436, 437, 488, 494, 517, 518, 555, 563, 574, 575, 576, 577, 578, 579, 686, 687, 703, 719, 786, 787, 788, 801 ] },
-        "386": { "learned": [ 763 ] },
-        "387": { "learned": [ 115, 744, 745, 66281, 765, 65555, 65556, 65588, 65589, 742, 743, 772, 773, 774, 775, 777, 778, 791, 798, 799, 801, 802, 25, 26, 65562 ] },
-        "388": { "learned": [ 753, 754, 764, 722, 723, 724, 755, 756, 761, 762, 763, 787, 793 ] },
-        "389": { "learned": [ 122, 273, 274, 439, 618, 708, 709, 355 ] },
-        "390": { "learned": [ 151, 416, 616, 617 ] },
-        "392": { "learned": [ 484 ] },
-        "393": { "learned": [ 796, 736, 737, 738, 774, 797, 799, 800, 66336, 197408, 131872, 801 ] },
-        "394": { "learned": [ 255, 146, 151, 250, 643, 758, 513, 514 ] },
-        "396": { "learned": [ 692, 106, 107, 251, 257, 380, 381, 385, 428, 475, 647, 784, 802 ] },
-        "398": { "learned": [ 92 ] },
-        "400": { "learned": [ 675, 754, 98, 99, 252, 253, 273, 274, 275, 588, 589 ] },
-        "401": { "learned": [ 65563, 65564, 65573, 65574, 728, 729, 730, 782, 783, 784 ] },
-        "402": { "learned": [ 65588, 65589, 722, 723, 724, 753, 754, 755, 756, 761, 762, 763, 764, 766, 787, 733 ] },
-        "403": { "learned": [ 144, 149, 151, 177, 249, 250, 275, 291, 329, 330, 359, 373, 380, 381, 475, 567, 625, 638, 639, 640, 647, 681, 724 ] },
-        "405": { "learned": [ 151, 451, 452, 751, 752, 767, 768 ] },
-        "406": { "learned": [ 65639, 782, 783, 784, 799, 800, 66336, 197408, 131872 ] },
-        "407": { "learned": [ 329, 694, 695, 714, 715 ] },
-        "408": { "learned": [ 151, 599, 600, 601 ] },
-        "409": { "learned": [ 62, 302, 480, 481, 482, 617, 631, 727, 756, 760, 766, 778, 783, 784, 794, 799, 739, 740 ] },
-        "411": { "learned": [ 237 ] },
-        "412": { "learned": [ 475, 587 ] },
-        "413": { "learned": [ 144, 145, 146, 151, 225, 279, 521, 701 ] },
-        "414": { "learned": [ 29, 30, 32, 33, 60, 61, 62, 186, 3, 460, 744, 745, 66281, 749, 750, 800, 66336, 197408, 131872, 65610, 65611, 65612 ] },
-        "415": { "learned": [ 742, 743 ] },
-        "416": { "learned": [ 147, 148, 531, 561, 743, 745, 66281, 778 ] },
-        "417": { "learned": [ 633, 634, 635, 65, 80, 94, 150, 163, 164, 337, 342, 344, 434, 435, 479, 262623, 131551, 197087, 328159, 66015, 480, 481, 527, 528, 574, 575, 576, 641, 677, 678, 66214, 682, 683, 686, 687, 711 ] },
-        "419": { "learned": [ 65563, 65564, 65574, 615 ] },
-        "420": { "learned": [ 65563, 65564 ] },
-        "421": { "learned": [ 563, 348 ] },
-        "422": { "learned": [ 151, 721, 734, 735 ] },
-        "423": { "learned": [ 151, 550, 613, 614, 734, 735 ] },
-        "424": { "learned": [ 151, 734, 735 ] },
-        "425": { "learned": [ 722, 723, 724 ] },
-        "427": { "learned": [ 103, 121, 123, 212, 124, 141, 151, 215, 461, 251, 375, 376, 380, 381, 480, 481, 482, 510, 527, 528, 561, 612, 679, 680, 681, 724, 754, 786, 792 ] },
-        "428": { "learned": [ 65573, 65574, 65639, 627, 744, 745, 66281, 759, 760, 761, 762, 763, 773, 777, 793, 797, 801, 802, 65555, 65556, 735, 739, 740, 774, 775 ] },
-        "430": { "learned": [ 377, 606 ] },
-        "432": { "learned": [ 333, 334, 519, 520, 521, 532, 533, 534, 587, 661, 662, 663, 701, 714, 715, 166, 255, 256, 257, 313, 314, 351, 358, 384, 455, 479, 262623, 131551, 197087, 328159, 66015, 495, 496, 497, 527, 528, 546, 547, 561, 615, 635, 637, 641, 642, 643, 644, 645, 666, 671, 707, 716, 717, 721, 731, 732, 733, 741, 742, 743, 764, 773, 780, 785, 792 ] },
-        "435": { "learned": [ 695, 736 ] },
-        "437": { "learned": [ 724, 151, 272, 460, 470, 556, 640, 709 ] },
-        "438": { "learned": [ 103, 65639, 763, 130, 151, 315, 407, 346, 536, 537, 711 ] },
-        "440": { "learned": [ 68, 72, 73, 123, 212, 141, 151, 254, 416, 454, 545, 569, 748, 754, 758, 793 ] },
-        "441": { "learned": [ 65588, 65589, 747, 748, 757, 758, 766, 793, 731, 732, 733 ] },
-        "442": { "learned": [ 65639, 555, 628, 727, 744, 745, 66281, 749, 750, 759, 760, 768, 776, 777, 781, 782, 783, 784, 785, 793, 794, 799, 800, 66336, 197408, 131872, 802, 65612, 735, 739, 740, 774, 775 ] },
-        "444": { "learned": [ 140 ] },
-        "446": { "learned": [ 65563, 65564, 65586, 65587, 749, 750, 769, 770, 784 ] },
-        "450": { "learned": [ 795, 742, 743, 753, 754, 794 ] },
-        "453": { "learned": [ 298, 580, 581 ] },
-        "457": { "learned": [ 95, 208 ] },
-        "468": { "learned": [ 619, 620, 692, 693, 65563, 65564, 65586, 65587 ] },
-        "469": { "learned": [ 713, 95, 208 ] },
-        "471": { "learned": [ 96, 97 ] },
-        "472": { "learned": [ 65574, 124, 742, 743, 751, 752, 755, 756, 786, 788, 792, 238, 779 ] },
-        "475": { "learned": [ 568, 569 ] },
-        "477": { "learned": [ 65562, 39, 40, 101, 113, 242, 137, 233, 474, 205, 251, 413, 65949, 131485, 476, 599, 600, 601, 649, 654, 655, 677, 678, 66214, 682, 683, 686, 687, 700, 703, 708, 709, 710, 711, 719, 720, 742, 743, 764, 765, 774, 778, 779, 781, 785, 786, 787, 788, 792, 793, 800, 66336, 197408, 131872 ] },
-        "478": { "learned": [ 65562, 742, 743, 751, 752, 755, 756, 765, 778, 786, 788, 792, 779 ] },
-        "479": { "learned": [ 749, 750 ] },
-        "482": { "learned": [ 45 ] },
-        "484": { "learned": [ 379, 622, 112, 464, 151, 241, 248, 365, 377, 378, 382, 383, 450, 462, 473, 483, 484, 485, 558, 598, 614, 713, 721, 776, 791, 322, 323, 387, 388, 389 ] },
-        "486": { "learned": [ 135, 151, 403, 404, 405, 642, 644, 694, 695, 702, 737, 738, 777, 796, 801 ] },
-        "487": { "learned": [ 751 ] },
-        "490": { "learned": [ 427, 66281 ] },
-        "491": { "learned": [ 588, 589, 705, 706, 455, 559, 560 ] },
-        "492": { "learned": [ 65573, 65574, 65625, 757, 758, 793, 795, 802, 66281 ] },
-        "493": { "learned": [ 381, 527, 528 ] },
-        "495": { "learned": [ 742, 743, 747, 748, 755, 756, 769, 770, 777, 778, 779, 801 ] },
-        "496": { "learned": [ 679, 680 ] },
-        "500": { "learned": [ 65562, 38, 65574, 65, 79, 80, 199, 113, 242, 122, 150, 151, 163, 164, 206, 337, 338, 344, 385, 439, 440, 479, 262623, 131551, 197087, 328159, 66015, 480, 481, 482, 488, 574, 575, 576, 577, 578, 579, 605, 606, 686, 687, 707, 719, 730, 764, 785, 786, 787, 788, 801 ] },
-        "501": { "learned": [ 447 ] },
-        "502": { "learned": [ 381, 577, 578, 579, 65562, 35, 36, 39, 40, 50, 51, 65586, 65587, 92, 93, 94, 65641, 113, 242, 121, 122, 124, 137, 233, 474, 150, 196, 251, 292, 302, 337, 338, 355, 356, 477, 375, 376, 380, 385, 425, 426, 436, 437, 439, 442, 462, 468, 478, 479, 262623, 131551, 197087, 328159, 66015, 480, 481, 482, 488, 517, 518, 527, 528, 531, 574, 575, 576, 582, 583, 584, 600, 601, 607, 608, 609, 622, 623, 649, 677, 678, 66214, 682, 683, 686, 687, 694, 695, 702, 703, 708, 709, 710, 711, 719, 742, 743, 764, 765, 781, 786, 793, 800, 66336, 197408, 131872, 107, 106, 237, 65611, 65612, 96, 97, 199, 200, 429, 203, 205, 325, 326, 353, 354, 358, 413, 65949, 131485, 433, 476, 523, 648, 654, 655, 669, 670, 671, 328350, 779 ] },
-        "503": { "learned": [ 243 ] },
-        "504": { "learned": [ 7, 8, 9 ] },
-        "506": { "learned": [ 442, 708, 709, 31, 34, 151, 169, 211, 292, 302, 343, 344, 416, 434, 435, 436, 437, 543, 544, 545, 570, 571, 591, 710, 711, 724, 748, 778, 781, 792, 793, 802 ] },
-        "510": { "learned": [ 757, 758 ] },
-        "512": { "learned": [ 123, 291, 428 ] },
-        "514": { "learned": [ 65588, 65589, 718, 766 ] },
-        "515": { "learned": [ 83 ] },
-        "518": { "learned": [ 728, 729 ] },
-        "519": { "learned": [ 725, 726 ] },
-        "520": { "learned": [ 722, 723, 773 ] },
-        "522": { "learned": [ 415 ] },
-        "523": { "learned": [ 60, 103 ] },
-        "525": { "learned": [ 329, 4, 5, 690 ] },
-        "526": { "learned": [ 27, 28, 50, 51 ] },
-        "527": { "learned": [ 766, 777, 785, 795, 796, 801, 65610, 65611, 65612 ] },
-        "529": { "learned": [ 28, 65564, 95, 208, 225, 745, 768, 795 ] },
-        "530": { "learned": [ 754, 62, 726, 727, 735, 739, 740, 66281, 753, 759, 760, 768, 782, 783, 784, 787, 794, 799 ] },
-        "533": { "learned": [ 501, 502, 503 ] },
-        "534": { "learned": [ 98, 99, 80, 141, 151, 199, 589, 565 ] },
-        "535": { "learned": [ 6, 112, 464, 143, 151, 257, 324, 383, 485, 486, 623, 643, 721, 727, 776, 791, 799 ] },
-        "536": { "learned": [ 764 ] },
-        "538": { "learned": [ 626 ] },
-        "541": { "learned": [ 151, 263, 264, 434, 435, 678, 66214, 745, 190, 424 ] },
-        "542": { "learned": [ 384, 6, 12, 142, 145, 151, 163, 164, 169, 226, 230, 249, 334, 373, 521, 627, 628, 663, 724 ] },
-        "549": { "learned": [ 66182, 131718 ] },
-        "555": { "learned": [ 612, 635 ] },
-        "556": { "learned": [ 584, 361, 362, 478, 582, 583 ] },
-        "560": { "learned": [ 161, 162, 417 ] },
-        "561": { "learned": [ 784 ] },
-        "562": { "learned": [ 562, 563, 358 ] },
-        "563": { "learned": [ 65573, 439, 702 ] },
-        "564": { "learned": [ 12, 25, 26, 65562, 35, 36, 65573, 65574, 39, 40, 151, 173, 174, 175, 176, 468, 183, 184, 238, 298, 303, 420, 421, 480, 481, 482, 716, 719, 728, 729, 730, 755, 756, 761, 762, 763, 778, 788, 801 ] },
-        "565": { "learned": [ 785 ] },
-        "568": { "learned": [ 471, 646, 66182, 131718, 698 ] },
-        "571": { "learned": [ 632 ] },
-        "572": { "learned": [ 89, 65625, 517, 518, 711 ] },
-        "573": { "learned": [ 6, 35, 36, 37, 38, 77, 78, 122, 136, 146, 151, 175, 176, 468, 250, 282, 380, 381, 467, 494, 555, 607, 608, 609, 637, 643, 700, 710, 711, 719, 791 ] },
-        "574": { "learned": [ 643, 644, 646, 66182, 131718 ] },
-        "575": { "learned": [ 172 ] },
-        "578": { "learned": [ 622, 724, 94, 151, 442, 487, 563, 778, 802 ] },
-        "579": { "learned": [ 39, 52, 65588, 58, 59, 241, 25, 26, 65562, 35, 36, 77, 78, 151, 172, 173, 174, 175, 176, 468, 182, 333, 334, 403, 404, 405, 421, 427, 428, 480, 481, 482, 547, 572, 573, 677, 678, 66214, 696, 697, 700, 716, 719, 728, 729, 730, 742, 743, 744, 745, 66281, 786, 788 ] },
-        "580": { "learned": [ 172 ] },
-        "583": { "learned": [ 416, 742, 743 ] },
-        "584": { "learned": [ 513, 514, 633, 634, 635 ] },
-        "586": { "learned": [ 113, 242, 173, 174, 440, 788, 479, 262623, 131551, 197087, 328159, 66015 ] },
-        "587": { "learned": [ 26, 137, 233, 474, 145, 151, 243, 343, 344, 479, 262623, 131551, 197087, 328159, 66015, 587, 642, 737, 738, 777, 785, 801 ] },
-        "588": { "learned": [ 601, 618, 26, 151, 243, 479, 262623, 131551, 197087, 328159, 66015, 702 ] },
-        "593": { "learned": [ 151, 251, 346, 420, 421, 546, 547, 549, 591, 754, 46, 47, 540, 541, 542, 672, 673 ] },
-        "599": { "learned": [ 65574, 151, 183, 184, 439, 546, 547, 707, 721 ] },
-        "600": { "learned": [ 725, 726, 727 ] },
-        "601": { "learned": [ 742, 743 ] },
-        "602": { "learned": [ 65624, 65625, 194, 708 ] },
-        "604": { "learned": [ 511, 512 ] },
-        "605": { "learned": [ 685, 736, 737, 738, 684, 742, 743, 751, 752 ] },
-        "607": { "learned": [ 543, 73, 109, 110, 151, 211, 452, 453, 454, 535, 536, 537, 568, 569, 617 ] },
-        "608": { "learned": [ 744, 745, 66281 ] },
-        "609": { "learned": [ 65639, 113, 242, 142, 143, 492, 494, 648 ] },
-        "624": { "learned": [ 241, 31, 34, 51, 65587, 62, 68, 77, 78, 95, 208, 99, 111, 112, 464, 127, 128, 151, 195, 214, 221, 473, 248, 260, 306, 383, 449, 450, 486, 529, 530, 533, 534, 553, 626, 660, 697, 713, 718, 760, 787, 794, 799, 231, 232 ] },
-        "625": { "learned": [ 252, 253, 254, 420, 421, 459, 460 ] },
-        "626": { "learned": [ 131872, 197408 ] },
-        "630": { "learned": [ 77, 78, 83, 151, 251, 253, 254, 274, 275, 421, 465, 470, 475, 549, 558, 640, 679, 680, 681, 724, 763, 781, 798 ] },
-        "631": { "learned": [ 66336, 197408 ] },
-        "633": { "learned": [ 63, 64, 65, 79, 80, 199, 122, 124, 150, 151, 251, 282, 337, 338, 343, 344, 437, 439, 577, 578, 579, 678, 66214, 96, 97, 203, 653, 654, 655 ] },
-        "634": { "learned": [ 214, 626, 27, 28, 65563, 65564, 31, 34, 52, 53, 65588, 65589, 62, 68, 78, 83, 105, 65641, 106, 107, 118, 119, 127, 128, 151, 197, 211, 222, 243, 254, 264, 275, 329, 330, 405, 434, 435, 452, 454, 475, 510, 526, 531, 539, 545, 553, 556, 560, 571, 596, 614, 625, 631, 635, 675, 687, 701, 66281, 768, 795, 802, 15, 20, 65556, 22, 24, 47, 57, 157, 168, 207, 472, 217, 229, 234, 262, 297, 335, 336, 354, 359, 386, 395, 402, 432, 455, 491, 512, 514, 516, 542, 603, 604, 720 ] },
-        "635": { "learned": [ 460, 582, 583, 584, 698, 699, 712, 713 ] },
-        "636": { "learned": [ 116, 117, 230, 123, 212, 328, 329, 330, 610, 611, 612, 615, 624, 625, 659, 660, 15, 18, 22, 25, 26, 65562, 36, 38, 65574, 40, 55, 59, 65, 83, 94, 105, 65641, 106, 107, 113, 242, 133, 470, 471, 135, 134, 136, 196, 197, 700, 142, 144, 145, 146, 151, 153, 154, 157, 164, 178, 181, 182, 199, 205, 215, 461, 217, 229, 236, 237, 243, 244, 245, 249, 250, 251, 254, 257, 262, 267, 269, 277, 282, 286, 291, 301, 303, 308, 310, 326, 337, 338, 350, 358, 359, 362, 373, 376, 380, 381, 386, 392, 395, 398, 402, 405, 407, 409, 416, 417, 421, 424, 428, 429, 444, 445, 447, 468, 469, 475, 477, 478, 480, 481, 482, 492, 493, 494, 504, 505, 510, 523, 526, 528, 531, 538, 539, 542, 548, 549, 555, 571, 573, 576, 579, 589, 609, 617, 620, 628, 638, 639, 640, 643, 644, 646, 66182, 131718, 648, 654, 655, 666, 675, 679, 680, 681, 689, 693, 701, 706, 715, 716, 717, 720, 724, 738, 66281, 752, 754, 758, 763, 766, 768, 773, 784, 795 ] },
-        "640": { "learned": [ 357 ] },
-        "643": { "learned": [ 62, 68, 143, 151, 260, 466, 477, 486, 553, 623, 675, 760, 787, 794 ] },
-        "644": { "learned": [ 131 ] },
-        "646": { "learned": [ 83, 328, 329, 330, 610, 611, 612, 632 ] },
-        "650": { "learned": [ 426, 43, 44, 45, 182, 69, 70, 71, 187, 188, 189, 592, 593 ] },
-        "651": { "learned": [ 171 ] },
-        "654": { "learned": [ 12, 45, 151, 251, 420, 421, 548, 549, 590, 591, 755, 756, 764 ] },
-        "656": { "learned": [ 167, 168, 313, 595, 596 ] },
-        "657": { "learned": [ 758 ] },
-        "658": { "learned": [ 393, 394, 395, 725, 726, 727 ] },
-        "659": { "learned": [ 250, 498, 499, 500 ] },
-        "660": { "learned": [ 26, 63, 64, 65, 137, 233, 474, 150, 151, 436, 437, 494, 527, 528, 561, 595, 596, 786, 801 ] },
-        "661": { "learned": [ 214, 638, 639, 640, 647, 716 ] },
-        "664": { "learned": [ 26, 72, 73, 99, 183, 184, 237, 298, 303, 425, 426, 465, 598, 620, 631, 711 ] },
-        "665": { "learned": [ 58, 59, 142, 151, 196, 208, 303, 309, 310, 403, 404, 405, 528, 550, 696, 697, 745, 66281, 773, 791, 800, 203 ] },
-        "666": { "learned": [ 246, 247, 248, 3, 30, 31, 33, 34, 50, 51, 65586, 65587, 67, 68, 95, 208, 99, 103, 65639, 106, 108, 463, 111, 112, 464, 113, 242, 128, 143, 151, 185, 194, 195, 206, 221, 473, 222, 241, 244, 260, 264, 294, 295, 305, 306, 324, 337, 338, 340, 348, 365, 369, 376, 377, 378, 379, 383, 423, 438, 445, 446, 449, 450, 452, 460, 465, 466, 467, 483, 484, 485, 486, 508, 525, 526, 530, 531, 534, 537, 538, 545, 552, 553, 558, 569, 591, 611, 612, 618, 621, 626, 631, 632, 639, 660, 675, 696, 697, 703, 706, 713, 718, 721, 727, 744, 745, 66281, 749, 750, 776, 780, 784, 794, 797, 20, 65556, 24, 27, 28, 75, 76, 65611, 65612, 85, 154, 157, 168, 203, 210, 217, 219, 232, 289, 297, 299, 476, 301, 323, 327, 332, 357, 386, 389, 400, 409, 411, 432, 498, 499, 500, 505, 586, 650, 651, 652, 673, 734, 735, 775 ] },
-        "668": { "learned": [ 140, 141, 318, 319, 9, 55, 62, 79, 80, 199, 90, 91, 98, 99, 116, 117, 230, 131, 134, 139, 151, 184, 186, 195, 211, 224, 226, 245, 260, 278, 279, 321, 340, 342, 348, 365, 369, 382, 484, 537, 550, 614, 647, 686, 687, 688, 689, 693, 721, 730, 746, 781, 87, 160, 283, 284, 370, 395, 400, 419, 489, 490, 493, 503, 580, 581, 594, 779 ] },
-        "671": { "learned": [ 706, 311, 312, 504, 505, 669, 670, 671, 702 ] },
-        "467": { "learned": [ 393695 ] }, // Give Shadow Force to Rotom-Pokedex
-        "702": {
-            "name": "Mind Blown",
-            "learned": [806],
-            "type": "Fire",
-            "power": 150
-        },
-        "703": {
-            "name": "Plasma Fists",
-            "learned": [807],
-            "type": "Electric",
-            "power": 100
-        },
-        "704": {
-            "name": "Photon Geyser",
-            "learned": [800, 66336, 131872, 197408],
-            "type": "Psychic",
-            "power": 100
-        },
-        "705": {
-            "name": "Double Iron Bash",
-            "learned": [809],
-            "type": "Steel",
-            "power": 60
-        },
-        "706": {
-            "name": "Clangorous Soul",
-            "learned": [784],
-            "type": "Dragon",
-            "power": "---"
-        },
-        "707": {
-            "name": "Body Press",
-            "learned": [ 486, 9, 31, 34, 80, 95, 108, 112, 131, 143, 149, 151, 185, 208, 226, 227, 241, 248, 260, 65800, 304, 305, 306, 320, 321, 324, 344, 365, 369, 376, 377, 379, 437, 450, 462, 463, 464, 473, 483, 484, 485, 524, 525, 526, 555, 131627, 558, 563, 569, 598, 614, 623, 643, 644, 646, 66182, 131718, 701, 703, 706, 713, 719, 721, 750, 760, 776, 781, 784, 799, 805, 809, 812, 820, 823, 825, 826, 832, 834, 838, 839, 842, 844, 861, 862, 867, 874, 878, 879, 884, 892, 66428, 896, 66434 ],
-            "type": "Fighting",
-            "power": 80
-        },
-        "708": {
-            "name": "Decorate",
-            "learned": [869],
-            "type": "Fairy",
-            "power": "---",
-        },
-        "709": {
-            "name": "Drum Beating",
-            "learned": [812],
-            "type": "Grass",
-            "power": 80
-        },
-        "710": {
-            "name": "Snap Trap",
-            "learned": [getForm(618, 1)],
-            "type": "Grass",
-            "power": 35
-        },
-        "711": {
-            "name": "Pyro Ball",
-            "learned": [815],
-            "type": "Fire",
-            "power": 120
-        },
-        "712": {
-            "name": "Behemoth Blade",
-            "learned": [getForm(888, 1)],
-            "type": "Steel",
-            "power": 100
-        },
-        "713": {
-            "name": "Behemoth Bash",
-            "learned": [getForm(889, 1)],
-            "type": "Steel",
-            "power": 100
-        },
-        "714": {
-            "name": "Aura Wheel",
-            "learned": [877, getForm(877, 1)],
-            "type": "Electric",
-            "power": 110
-        },
-        "715": {
-            "name": "Breaking Swipe",
-            "learned": [ 884, 6, 95, 65639, 112, 147, 148, 149, 151, 208, 230, 248, 254, 330, 334, 350, 373, 380, 381, 384, 445, 464, 483, 484, 487, 610, 611, 612, 635, 643, 644, 646, 66182, 131718, 695, 697, 706, 718, 758, 780, 784, 800, 66336, 197408, 131872, 804, 818, 880, 886, 887, 895 ],
-            "type": "Dragon",
-            "power": 60
-        },
-        "716": {
-            "name": "Branch Poke",
-            "learned": [708, 709, 810, 811, 812],
-            "type": "Grass",
-            "power": 40
-        },
-        "717": {
-            "name": "Overdrive",
-            "learned": [849, getForm(849, 1)],
-            "type": "Electric",
-            "power": 80
-        },
-        "718": {
-            "name": "Apple Acid",
-            "learned": [842],
-            "type": "Grass",
-            "power": 80
-        },
-        "719": {
-            "name": "Grav Apple",
-            "learned": [841],
-            "type": "Grass",
-            "power": 80
-        },
-        "720": {
-            "name": "Spirit Break",
-            "learned": [861],
-            "type": "Fairy",
-            "power": 75
-        },
-        "721": {
-            "name": "Strange Steam",
-            "learned": [getForm(110, 1)],
-            "type": "Fairy",
-            "power": 90
-        },
-        "722": {
-            "name": "Life Dew",
-            "learned": [ 35, 36, 113, 131, 150, 151, 175, 176, 222, 242, 250, 251, 280, 281, 282, 350, 385, 448, 468, 475, 531, 856, 857, 858, 898, 66434, 131970, 7, 8, 9, 90, 91, 315, 407, 406, 704, 705, 706, 728, 729, 730 ],
-            "type": "Water",
-            "power": "---"
-        },
-        "723": {
-            "name": "Obstruct",
-            "learned": [862],
-            "type": "Dark",
-            "power": "---"
-        },
-        "724": {
-            "name": "False Surrender",
-            "learned": [860, 861],
-            "type": "Dark",
-            "power": 80
-        },
-        "725": {
-            "name": "Meteor Assault",
-            "learned": [865],
-            "type": "Fighting",
-            "power": 150
-        },
-        "726": {
-            "name": "Eternabeam",
-            "learned": [890, getForm(890, 1)],
-            "type": "Dragon",
-            "power": 160
-        },
-        "727": {
-            "name": "Steel Beam",
-            "learned": [ 65563, 65564, 65586, 65587, 131124, 81, 82, 208, 212, 227, 303, 304, 305, 306, 374, 375, 376, 379, 385, 436, 437, 448, 462, 483, 485, 530, 589, 597, 598, 599, 600, 601, 66154, 624, 625, 632, 638, 649, 679, 680, 681, 707, 773, 777, 791, 797, 798, 801, 805, 808, 809, 823, 863, 878, 879, 884, 888, 66424, 889, 66425 ],
-            "type": "Steel",
-            "power": 140
-        },
-        "728": {
-            "name": "Dynamax Cannon",
-            "learned": [890, getForm(890, 1)],
-            "type": "Dragon",
-            "power": 100
-        },
-        "729": {
-            "name": "Snipe Shot",
-            "learned": [818],
-            "type": "Water",
-            "power": 80
-        },
-        "730": {
-            "name": "Jaw Lock",
-            "learned": [833, 834],
-            "type": "Dark",
-            "power": 80
-        },
-        "731": {
-            "name": "No Retreat",
-            "learned": [870],
-            "type": "Fighting",
-            "power": "---"
-        },
-            "732": {
-            "name": "Tar Shot",
-            "learned": [839],
-            "type": "Rock",
-            "power": "---"
-        },
-            "733": {
-            "name": "Magic Powder",
-            "learned": [858],
-            "type": "Psychic",
-            "power": "---"
-        },
-            "734": {
-            "name": "Dragon Darts",
-            "learned": [887],
-            "type": "Dragon",
-            "power": 50
-        },
-            "735": {
-            "name": "Teatime",
-            "learned": [855],
-            "type": "Normal",
-            "power": "---"
-        },
-            "736": {
-            "name": "Octolock",
-            "learned": [853],
-            "type": "Fighting",
-            "power": "---"
-        },
-            "737": {
-            "name": "Bolt Beak",
-            "learned": [880, 881],
-            "type": "Electric",
-            "power": 85
-        },
-            "738": {
-            "name": "Fishious Rend",
-            "learned": [882, 883],
-            "type": "Water",
-            "power": 85
-        },
-        "739": {
-            "name": "Court Change",
-            "learned": [815],
-            "type": "Normal",
-            "power": "---"
-        },
-        "740": {
-            "name": "Stuff Cheeks",
-            "learned": [ 819, 820 ],
-            "type": "Normal",
-            "power": "---"
-        },
-        "741": {
-            "name": "Wicked Blow",
-            "learned": [892],
-            "type": "Dark",
-            "power": 75
-        },
-        "742": {
-            "name": "Surging Strikes",
-            "learned": [66428],
-            "type": "Water",
-            "power": 25 
-        },
-        "743": {
-            "name": "Freezing Glare",
-            "learned": [65680],
-            "type": "Psychic",
-            "power": 90
-        },
-        "744": {
-            "name": "Thunderous Kick",
-            "learned": [65681],
-            "type": "Fighting",
-            "power": 90
-        },
-        "745": {
-            "name": "Fiery Wrath",
-            "learned": [65682],
-            "type": "Dark",
-            "power": 90
-        },
-        "746": {
-            "name": "Thunder Cage",
-            "learned": [894],
-            "type": "Electric",
-            "power": 80
-        },
-        "747": {
-            "name": "Dragon Energy",
-            "learned": [895],
-            "type": "Dragon",
-            "power": 150
-        },
-        "748": {
-            "name": "Glacial Lance",
-            "learned": [66434],
-            "type": "Ice",
-            "power": 120
-        },
-        "749": {
-            "name": "Astral Barrage",
-            "learned": [131970],
-            "type": "Ghost",
-            "power": 120
-        },
-        "750": {
-            "name": "Shell Side Arm",
-            "learned": [131152],
-            "type": "Poison",
-            "power": 90
-        },
-        "751": {
-            "name": "Eerie Spell",
-            "learned": [65735],
-            "type": "Psychic",
-            "power": 80
-        },
-        "752": {
-            "name": "Terrain Pulse",
-            "learned": [ 3, 9, 103, 65639, 108, 115, 143, 151, 206, 295, 448, 463, 486, 66154, 692, 693, 703, 716, 719, 765, 770, 772, 773, 876, 66412 ],
-            "type": "Normal",
-            "power": 50
-        },
-        "753": {
-            "name": "Burning Jealousy",
-            "learned": [ 37, 38, 65589, 65641, 126, 136, 146, 151, 324, 435, 442, 467, 485, 510, 555, 131627, 570, 571, 607, 608, 609, 631, 727, 776, 778, 828, 859, 860, 861, 864 ],
-            "type": "Fire",
-            "power": 70
-        },
-        "754": {
-            "name": "Flip Turn",
-            "learned": [ 7, 8, 9, 55, 116, 117, 118, 119, 120, 121, 134, 141, 151, 230, 260, 318, 319, 350, 550, 647, 690, 691, 692, 693, 728, 729, 730, 746, 847 ],
-            "type": "Water",
-            "power": 60
-        },
-        "755": {
-            "name": "Grassy Glide",
-            "learned": [ 1, 2, 3, 43, 44, 45, 102, 103, 65639, 114, 151, 182, 251, 252, 253, 254, 270, 271, 272, 273, 274, 275, 315, 406, 407, 420, 421, 459, 460, 465, 470, 546, 547, 548, 549, 556, 640, 708, 709, 710, 711, 722, 723, 724, 753, 754, 761, 762, 763, 764, 781, 810, 811, 812, 829, 830, 831, 832, 840, 841, 842, 865, 893 ],
-            "type": "Grass",
-            "power": 60
-        },
-        "756": {
-            "name": "Rising Voltage",
-            "learned": [ 25, 26, 65562, 81, 82, 125, 135, 145, 151, 170, 171, 243, 309, 310, 403, 404, 405, 462, 466, 479, 262623, 131551, 197087, 328159, 66015, 587, 595, 596, 599, 600, 601, 642, 644, 694, 695, 702, 736, 737, 738, 777, 796, 807, 835, 836, 849, 66385, 871, 877, 880, 881, 894 ],
-            "type": "Electric",
-            "power": 70
-        },
-        "757": {
-            "name": "Coaching",
-            "learned": [ 62, 66, 67, 68, 106, 107, 65681, 151, 214, 237, 256, 257, 447, 448, 453, 454, 475, 532, 533, 534, 538, 539, 559, 560, 619, 620, 638, 639, 640, 647, 674, 675, 701, 759, 760, 766, 783, 784, 794, 795, 802, 807, 815, 852, 853, 865, 870, 889, 66425, 891, 892, 66428 ],
-            "type": "Fighting",
-            "power": "---"
-        },
-        "758": {
-            "name": "Scorching Sands",
-            "learned": [ 6, 27, 28, 31, 34, 38, 50, 65586, 51, 65587, 59, 78, 95, 104, 105, 65641, 111, 112, 126, 136, 146, 151, 208, 244, 250, 324, 328, 329, 330, 343, 344, 383, 443, 444, 445, 449, 450, 464, 467, 485, 494, 529, 530, 551, 552, 553, 622, 623, 631, 643, 660, 718, 721, 727, 769, 770, 776, 815, 838, 839, 843, 844, 850, 851 ],
-            "type": "Ground",
-            "power": 70
-        },
-        "759": {
-            "name": "Dual Wingbeat",
-            "learned": [ 6, 12, 35, 36, 83, 65619, 123, 142, 144, 65680, 145, 65681, 146, 65682, 149, 151, 163, 164, 169, 176, 177, 178, 206, 212, 225, 226, 227, 249, 250, 251, 278, 279, 291, 329, 330, 333, 334, 373, 380, 381, 415, 416, 468, 484, 487, 519, 520, 521, 527, 528, 561, 566, 567, 587, 621, 627, 628, 629, 630, 635, 637, 643, 644, 646, 66182, 131718, 661, 662, 663, 701, 714, 715, 717, 722, 723, 724, 738, 742, 743, 792, 794, 804, 821, 822, 823, 841, 845, 865, 873 ],
-            "type": "Flying",
-            "power": 40
-        },
-        "760": {
-            "name": "Meteor Beam",
-            "learned": [ 35, 36, 95, 112, 121, 138, 139, 140, 141, 142, 151, 185, 208, 213, 222, 65758, 306, 337, 338, 345, 346, 347, 348, 369, 375, 376, 377, 379, 384, 385, 437, 464, 524, 525, 526, 558, 564, 565, 566, 567, 605, 606, 689, 696, 697, 698, 699, 703, 719, 791, 792, 793, 797, 800, 66336, 197408, 131872, 805, 834, 837, 838, 839, 864, 874, 880, 881, 882, 883, 890 ],
-            "type": "Rock",
-            "power": 120
-        },
-        "761": {
-            "name": "Skitter Smack",
-            "learned": [ 53, 65589, 92, 93, 94, 151, 206, 213, 224, 290, 291, 292, 350, 355, 356, 422, 423, 451, 452, 477, 510, 543, 544, 545, 551, 552, 553, 557, 558, 570, 571, 595, 596, 607, 608, 609, 616, 617, 632, 636, 637, 704, 705, 706, 708, 709, 710, 711, 718, 724, 736, 737, 738, 751, 752, 757, 758, 767, 768, 795, 802, 833, 834, 843, 844, 850, 851, 853, 872, 873 ],
-            "type": "Bug",
-            "power": 70
-        },
-        "762": {
-            "name": "Triple Axel",
-            "learned": [ 65563, 65564, 65574, 65658, 144, 151, 215, 225, 237, 281, 282, 350, 427, 428, 461, 471, 475, 478, 572, 573, 615, 728, 729, 730, 762, 763, 795, 866, 873 ],
-            "type": "Ice",
-            "power": 20
-        },
-        "763": {
-            "name": "Corrosive Gas",
-            "learned": [ 45, 73, 92, 93, 94, 109, 110, 65646, 151, 434, 435, 454, 568, 569, 758, 793, 799 ],
-            "type": "Poison",
-            "power": "---"
-        },
-        "764": {
-            "name": "Expanding Force",
-            "learned": [ 65562, 40, 64, 65, 65613, 65614, 79, 65615, 80, 131152, 103, 121, 122, 65658, 124, 65680, 150, 151, 177, 178, 196, 199, 65735, 251, 280, 281, 282, 343, 344, 375, 376, 385, 436, 437, 475, 480, 481, 482, 488, 494, 517, 518, 527, 528, 555, 561, 574, 575, 576, 577, 578, 579, 605, 606, 677, 678, 66214, 686, 687, 765, 791, 792, 800, 806, 825, 826, 856, 857, 858, 866, 876, 66412, 898, 66434, 131970 ],
-            "type": "Psychic",
-            "power": 80
-        },
-        "765": {
-            "name": "Poltergeist",
-            "learned": [ 92, 93, 94, 65641, 151, 292, 302, 355, 356, 442, 477, 478, 479, 262623, 131551, 197087, 328159, 66015, 487, 562, 66098, 563, 592, 593, 607, 608, 609, 622, 623, 708, 709, 710, 711, 724, 769, 770, 781, 792, 802, 854, 855, 864, 867 ],
-            "type": "Ghost",
-            "power": 110
-        },
-        "766": {
-            "name": "Scale Shot",
-            "learned": [ 6, 116, 117, 118, 119, 130, 147, 148, 149, 151, 206, 211, 230, 249, 254, 318, 319, 330, 349, 350, 369, 380, 381, 384, 443, 444, 445, 483, 484, 550, 553, 610, 611, 612, 621, 635, 643, 644, 646, 66182, 131718, 690, 691, 694, 695, 696, 697, 718, 746, 757, 758, 776, 780, 782, 783, 784, 804, 818, 833, 834, 843, 844, 846, 847, 895 ],
-            "type": "Dragon",
-            "power": 25
-        },
-        "767": {
-            "name": "Lash Out",
-            "learned": [ 52, 65588, 131124, 53, 65589, 128, 130, 65682, 151, 197, 215, 248, 65799, 65800, 274, 275, 302, 342, 434, 435, 452, 453, 454, 461, 509, 510, 551, 552, 553, 555, 131627, 559, 560, 566, 567, 570, 571, 618, 66154, 621, 624, 625, 626, 629, 630, 641, 642, 674, 675, 686, 687, 696, 697, 717, 727, 66281, 750, 776, 780, 827, 828, 859, 860, 861, 862, 863, 877, 892, 893, 896, 897, 66434, 131970 ],
-            "type": "Dark",
-            "power": 75
-        },
-        "768": {
-            "name": "Steel Roller",
-            "learned": [ 27, 65563, 28, 65564, 39, 40, 91, 108, 143, 151, 183, 184, 208, 211, 213, 241, 304, 305, 306, 320, 321, 362, 363, 364, 365, 375, 376, 379, 436, 437, 462, 463, 485, 543, 544, 545, 577, 578, 579, 597, 598, 599, 600, 601, 777, 781, 791, 797, 799, 801, 805, 809, 878, 879, 884 ],
-            "type": "Steel",
-            "power": 130
-        },
-        "769": {
-            "name": "Misty Explosion",
-            "learned": [ 35, 36, 39, 40, 65646, 151, 183, 184, 282, 518, 682, 683, 684, 685, 700, 703, 716, 719, 730, 801, 858, 869 ],
-            "type": "Fairy",
-            "power": 100
-        },
-        "770": {
-            "name": "Jungle Healing",
-            "learned": [893],
-            "type": "Grass",
-            "power": "---"
-        },
-        "771": {
-            "name": "Dire Claw",
-            "learned": [903],
-            "type": "Poison",
-            "power": 80
-        },
-        "772": {
-            "name": "Psyshield Bash",
-            "learned": [234, 899],
-            "type": "Psychic",
-            "power": 70
-        },
-        "773": {
-            "name": "Power Shift",
-            "learned": [],
-            "type": "Normal",
-            "power": "---"
-        },
-        "774": {
-            "name": "Stone Axe",
-            "learned": [900],
-            "type": "Rock",
-            "power": 65
-        },
-        "775": {
-            "name": "Mystical Power",
-            "learned": [480, 481, 482],
-            "type": "Psychic",
-            "power": 70
-        },
-        "776": {
-            "name": "Raging Fury",
-            "learned": [65595],
-            "type": "Fire",
-            "power": 120
-        },
-        "777": {
-            "name": "Wave Crash",
-            "learned": [902, 66438],
-            "type": "Water",
-            "power": 120
-        },
-        "778": {
-            "name": "Chloroblast",
-            "learned": [65637],
-            "type": "Grass",
-            "power": 150
-        },
-        "779": {
-            "name": "Mountain Gale",
-            "learned": [66249],
-            "type": "Ice",
-            "power": 100
-        },
-        "780": {
-            "name": "Victory Dance",
-            "learned": [66085],
-            "type": "Fighting",
-            "power": "---"
-        },
-        "781": {
-            "name": "Headlong Rush",
-            "learned": [389, 901],
-            "type": "Ground",
-            "power": 120
-        },
-        "782": {
-            "name": "Barb Barrage",
-            "learned": [65747, 904],
-            "type": "Poison",
-            "power": 60
-        },
-        "783": {
-            "name": "Esper Wing",
-            "learned": [66164],
-            "type": "Psychic",
-            "power": 80
-        },
-        "784": {
-            "name": "Bitter Malice",
-            "learned": [66106, 66107],
-            "type": "Ghost",
-            "power": 75
-        },
-        "785": {
-            "name": "Shelter",
-            "learned": [704, 705, 706, 66241, 66242],
-            "type": "Steel",
-            "power": "---"
-        },
-        "786": {
-            "name": "Triple Arrows",
-            "learned": [66260],
-            "type": "Fighting",
-            "power": 90
-        },
-        "787": {
-            "name": "Infernal Parade",
-            "learned": [65693],
-            "type": "Ghost",
-            "power": 60
-        },
-        "788": {
-            "name": "Ceaseless Edge",
-            "learned": [66039],
-            "type": "Dark",
-            "power": 65
-        },
-        "789": {
-            "name": "Springtide Storm",
-            "learned": [905, 66441],
-            "type": "Fairy",
-            "power": 100
-        },
-        "790": {
-            "name": "Bleakwind Storm",
-            "learned": [641, 66177],
-            "type": "Flying",
-            "power": 100
-        },
-        "791": {
-            "name": "Wildbolt Storm",
-            "learned": [642, 66178],
-            "type": "Electric",
-            "power": 100
-        },
-        "792": {
-            "name": "Sandsear Storm",
-            "learned": [645, 66181],
-            "type": "Ground",
-            "power": 100
-        },
-        "793": {
-            "name": "Lunar Blessing",
-            "learned": [488],
-            "type": "Psychic",
-            "power": "---"
-        },
-        "794": {
-            "name": "Take Heart",
-            "learned": [489, 490],
-            "type": "Psychic",
-            "power": "---"
-        },
-        "795": {
-            "name": "Tera Blast",
-            "learned": [], // literally every mon or something
-            "type": "Normal",
-            "power": 80
-        },
-        "796": {
-            "name": "Silk Trap",
-            "learned": [919],
-            "type": "Bug",
-            "power": "---"
-        },
-        "797": {
-            "name": "Axe Kick",
-            "learned": [308, 66085, 921],
-            "type": "Fighting",
-            "power": 120
-        },
-        "798": {
-            "name": "Last Respects",
-            "learned": [925],
-            "type": "Ghost",
-            "power": 50
-        },
-        "799": {
-            "name": "Lumina Crash",
-            "learned": [927],
-            "type": "Psychic",
-            "power": 80
-        },
-        "800": {
-            "name": "Order Up",
-            "learned": [931],
-            "type": "Dragon",
-            "power": 80
-        },
-        "801": {
-            "name": "Jet Punch",
-            "learned": [934, 66470],
-            "type": "Water",
-            "power": 60
-        },
-        "802": {
-            "name": "Spicy Extract",
-            "learned": [939],
-            "type": "Grass",
-            "power": "---"
-        },
-        "803": {
-            "name": "Spin Out",
-            "learned": [942, 943],
-            "type": "Steel",
-            "power": 100
-        },
-        "804": {
-            "name": "Population Bomb",
-            "learned": [945, 946, 66482],
-            "type": "Normal",
-            "power": 20
-        },
-        "805": {
-            "name": "Ice Spinner",
-            "learned": [947, 948], // TM lines unadded
-            "type": "Ice",
-            "power": 80
-        },
-        "806": {
-            "name": "Glaive Rush",
-            "learned": [951],
-            "type": "Dragon",
-            "power": 120
-        },
-        "807": {
-            "name": "Revival Blessing",
-            "learned": [923, 956],
-            "type": "Normal",
-            "power": "---"
-        },
-        "808": {
-            "name": "Salt Cure",
-            "learned": [963, 964, 965],
-            "type": "Rock",
-            "power": 40
-        },
-        "809": {
-            "name": "Triple Dive",
-            "learned": [930],
-            "type": "Water",
-            "power": 30
-        },
-        "810": {
-            "name": "Mortal Spin",
-            "learned": [967],
-            "type": "Poison",
-            "power": 30
-        },
-        "811": {
-            "name": "Doodle",
-            "learned": [969],
-            "type": "Normal",
-            "power": "---"
-        },
-        "812": {
-            "name": "Fillet Away",
-            "learned": [932],
-            "type": "Normal",
-            "power": "---"
-        },
-        "813": {
-            "name": "Kowtow Cleave",
-            "learned": [1008],
-            "type": "Dark",
-            "power": 85
-        },
-        "814": {
-            "name": "Flower Trick",
-            "learned": [908],
-            "type": "Grass",
-            "power": 70
-        },
-        "815": {
-            "name": "Torch Song",
-            "learned": [911],
-            "type": "Fire",
-            "power": 80
-        },
-        "816": {
-            "name": "Aqua Step",
-            "learned": [914],
-            "type": "Water",
-            "power": 80
-        },
-        "817": {
-            "name": "Raging Bull",
-            "learned": [128, 65664, 131200, 196736],
-            "type": "Normal",
-            "power": 90
-        },
-        "818": {
-            "name": "Make It Rain",
-            "learned": [977],
-            "type": "Steel",
-            "power": 120
-        },
-        "819": {
-            "name": "Ruination",
-            "learned": [994, 995, 996, 997],
-            "type": "Dark",
-            "power": "---"
-        },
-        "820": {
-            "name": "Collision Course",
-            "learned": [998, 66534, 132070, 197606, 263142],
-            "type": "Fighting",
-            "power": 100
-        },
-        "821": {
-            "name": "Electro Drift",
-            "learned": [999, 66535, 132071, 197607, 263143],
-            "type": "Electric",
-            "power": 100
-        },
-        "822": {
-            "name": "Shed Tail",
-            "learned": [944, 953],
-            "type": "Normal",
-            "power": "---"
-        },
-        "823": {
-            "name": "Chilly Reception",
-            "learned": [199, 65735],
-            "type": "Ice",
-            "power": "---"
-        },
-        "824": {
-            "name": "Tidy Up",
-            "learned": [946, 66482],
-            "type": "Normal",
-            "power": "---"
-        },
-        "825": {
-            "name": "Snowscape",
-            "learned": [902, 66438, 947, 948, 932, 950, 951, 952, 982, 992, 995], // all pokemon with hail before unadded
-            "type": "",
-            "power": 0
-        },
-        "826": {
-            "name": "Pounce",
-            "learned": [], // way too many
-            "type": "Bug",
-            "power": 50
-        },
-        "827": {
-            "name": "Trailblaze",
-            "learned": [], // way too many
-            "type": "Grass",
-            "power": 50
-        },
-        "828": {
-            "name": "Chilling Water",
-            "learned": [], // way too many
-            "type": "Water",
-            "power": 50
-        },
-        "829": {
-            "name": "Hyper Drill",
-            "learned": [206, 917, 66453],
-            "type": "Normal",
-            "power": 100
-        },
-        "830": {
-            "name": "Twin Beam",
-            "learned": [203, 928],
-            "type": "Psychic",
-            "power": 40
-        },
-        "831": {
-            "name": "Rage Fist",
-            "learned": [57, 1010],
-            "type": "Ghost",
-            "power": 50
-        },
-        "832": {
-            "name": "Armor Cannon",
-            "learned": [1004],
-            "type": "Fire",
-            "power": 120
-        },
-        "833": {
-            "name": "Bitter Blade",
-            "learned": [1005],
-            "type": "Fire",
-            "power": 90
-        },
-        "834": {
-            "name": "Double Shock",
-            "learned": [956],
-            "type": "Electric",
-            "power": 120
-        },
-        "835": {
-            "name": "Gigaton Hammer",
-            "learned": [1002],
-            "type": "Steel",
-            "power": 160
-        },
-        "836": {
-            "name": "Comeuppance",
-            "learned": [228, 229, 430, 66106, 66107, 973],
-            "type": "Dark",
-            "power": "---"
-        },
-        "837": {
-            "name": "Aqua Cutter",
-            "learned": [475, 912, 913, 914, 932],
-            "type": "Water",
-            "power": 70
-        },
-        "838": {
-            "name": "Blazing Torque", // could give these torque moves to revavroom but in-game they're only usable by the boss-only starmobile revavroom
-            "learned": [],
-            "type": "Fire",
-            "power": 80
-        },
-        "839": {
-            "name": "Wicked Torque",
-            "learned": [],
-            "type": "Dark",
-            "power": 80
-        },
-        "840": {
-            "name": "Noxious Torque",
-            "learned": [],
-            "type": "Poison",
-            "power": 100
-        },
-        "841": {
-            "name": "Combat Torque",
-            "learned": [],
-            "type": "Fighting",
-            "power": 100
-        },
-        "842": {
-            "name": "Magical Torque",
-            "learned": [],
-            "type": "Fairy",
-            "power": 100
-        }
-        /* template
-        
-        "": {
-            "name": "",
-            "learned": [],
-            "type": "",
-            "power": 0
-        },
-        */
-    };
-    var moveBlacklist = { // move: [pokemon list]
-        307: [255, 256, 390, 391, 498, 499, 653, 654, 725, 726],
-        308: [258, 289, 393, 394, 501, 502, 656, 657, 728, 729],
-        338: [252, 253, 387, 388, 495, 496, 650, 651, 722, 723],
-        431: [3, 9, 31, 34, 55, 56, 57, 59, 62, 66, 67, 68, 104, 105, 106, 107, 113, 115, 125, 126, 127, 139, 141, 143, 150, 151, 154, 157, 160, 181, 210, 217, 242, 243, 244, 245, 248, 254, 257, 260, 272, 288, 289, 295, 296, 297, 306, 335, 377, 378, 379, 383, 387, 388, 389, 390, 391, 392, 395, 408, 409, 446, 448, 452, 453, 454, 460, 466, 467, 473, 485, 486, 487, 491, 493],
-        457: [299, 476],
-        512: [59],
-        571: [401],
-        608: [133, 134, 135, 136, 196, 197, 470, 471, 700],
-        610: [133, 134, 135, 136, 196, 197, 470, 471, 700]
-    };
-    function movenum(name) {
-        if (name.toLowerCase() === "vise grip") {
-            name = "Vice Grip";
-        }
-        var out = sys.moveNum(name);
-        if (out == "undefined" || (!out)) {
-            var hit = false;
-            for (var i in ultraMoves) {
-                if (!(ultraMoves[i].hasOwnProperty("name"))) {
-                    continue
-                }
-                if (ultraMoves[i].name.toLowerCase() == name.toLowerCase()) {
-                    out = parseInt(i, 10);
-                    break;
-                }
-            }
-        }
-        return out;
-    };
-    function moveOff(id) {
-        if (id < 702) {
-            var move = sys.move(id);
-            // Vice Grip is renamed to Vise Grip in Gen 8
-            return move === "Vice Grip" ? "Vise Grip" : move;
-        }
-        if (ultraMoves.hasOwnProperty(id+"")) {
-            return ultraMoves[id+""].name;
-        }
-        return false;
-    };
-    function getMoveBP(move) {
-        if (ultraMoves.hasOwnProperty(move+"")) {
-            if (ultraMoves[move+""].hasOwnProperty("power")) {
-                return ultraMoves[move+""].power;
-            }
-        }
-        return pokedex.getMoveBP(move);
-    };
-    function moveType(move) {
-        if (ultraMoves.hasOwnProperty(move+"")) {
-            if (ultraMoves[move+""].hasOwnProperty("type")) {
-                return ultraMoves[move+""].type;
-            }
-        }
-        return sys.moveType(move);
     };
     var ultraPokes = {
         "851993": {
@@ -8907,6 +5663,1260 @@ function Safari() {
             "name": "Mycelium Might"
         }
     }
+    var ultraMoves = {
+        "1": { "learned": [ 60, 61, 62, 186, 115, 122, 175, 176, 468, 439, 486 ] },
+        "5": { "learned": [ 65612, 149, 215, 461, 236, 237, 271, 280, 281, 282, 475, 330, 385, 427, 428, 446, 447, 448, 453, 454, 459, 460, 494, 531, 532, 533, 534, 537, 538, 539, 552, 553, 554, 555, 559, 560, 571, 579, 613, 614, 619, 620, 621, 660, 674, 675, 695, 701, 706, 727, 66281, 759, 760, 765, 766, 776, 783, 784, 787, 799, 802 ] },
+        "6": { "learned": [ 78, 133, 470, 471, 135, 134, 136, 196, 197, 700, 150, 446, 677, 678, 66214, 725, 726, 727, 187, 188, 189 ] },
+        "7": { "learned": [ 65610, 65611, 65612, 65624, 65625, 727, 66281, 784, 735 ] },
+        "8": { "learned": [ 65563, 65564, 65624, 65625, 784, 788, 735, 739 ] },
+        "9": { "learned": [ 65624, 65625, 727, 66281, 784, 785, 735, 739, 740 ] },
+        "10": { "learned": [ 65586, 65587 ] },
+        "13": { "learned": [ 1, 2, 3, 158, 159, 160 ] },
+        "14": { "learned": [ 659, 78, 118, 119, 338, 365, 744 ] },
+        "16": { "learned": [ 146, 717 ] },
+        "17": { "learned": [ 227, 4, 5 ] },
+        "18": { "learned": [ 293, 294, 295 ] },
+        "19": { "learned": [ 738 ] },
+        "20": { "learned": [ 130, 760, 727, 759, 764, 793, 796 ] },
+        "21": { "learned": [ 532, 533, 534 ] },
+        "23": { "learned": [ 759, 760 ] },
+        "24": { "learned": [ 25, 26, 65562, 133, 470, 471, 134, 136, 196, 197, 700, 427, 428, 725, 726, 727 ] },
+        "25": { "learned": [ 149, 215, 461, 271, 280, 281, 282, 475, 330, 385, 427, 428, 446, 447, 448, 453, 454, 460, 486, 494, 531, 532, 533, 534, 537, 538, 539, 552, 553, 554, 555, 559, 560, 571, 613, 614, 619, 620, 622, 623, 660, 674, 675, 695, 799, 701, 706, 727, 66281, 763, 765, 766, 776, 783, 784, 802 ] },
+        "28": { "learned": [ 74, 75, 76, 111, 112, 464, 138, 139 ] },
+        "29": { "learned": [ 751, 752, 12, 15, 16, 17, 18, 65555, 65556, 21, 22, 65563, 65564, 65573, 65574, 41, 42, 169, 43, 44, 45, 182, 46, 47, 48, 49, 65588, 65589, 69, 70, 71, 72, 73, 65610, 65611, 65612, 81, 82, 84, 85, 88, 89, 65624, 65625, 90, 91, 92, 93, 98, 99, 102, 65639, 109, 110, 118, 119, 120, 121, 137, 233, 474, 140, 144, 145, 146, 585, 586 ] },
+        "33": { "learned": [ 37, 38, 65573, 65574, 111, 112, 464, 161, 162, 246, 247, 248, 273, 274, 275, 374, 375, 376, 626, 716 ] },
+        "34": { "learned": [ 799, 65563, 65564, 65573, 65574, 65586, 65587, 65588, 65589, 483, 484, 485, 486, 487, 488, 531, 553, 555, 621, 623, 626, 641, 642, 645, 660, 696, 697, 698, 699, 716, 717, 718, 760, 793, 794, 797 ] },
+        "35": { "learned": [ 224, 345, 346, 686, 687, 793 ] },
+        "36": { "learned": [ 65610, 65611, 65612 ] },
+        "37": { "learned": [ 108, 463, 214, 32, 33, 111, 112, 464 ] },
+        "40": { "learned": [ 592, 593 ] },
+        "42": { "learned": [ 28, 65564, 91, 139, 151, 416 ] },
+        "43": { "learned": [ 107, 144, 145, 641, 642, 645, 721, 209, 210 ] },
+        "44": { "learned": [ 143, 443, 444, 445, 446, 554, 555, 610, 611, 612, 543, 544, 545 ] },
+        "45": { "learned": [ 115, 187, 188, 189 ] },
+        "48": { "learned": [ 258, 259, 260, 298 ] },
+        "50": { "learned": [ 174, 302, 442, 686, 687, 708, 709 ] },
+        "51": { "learned": [ 108, 463, 535, 536 ] },
+        "52": { "learned": [ 554, 555, 661 ] },
+        "54": { "learned": [ 65563, 65564, 249 ] },
+        "55": { "learned": [ 222, 226, 245, 341, 342, 422, 423, 458, 592, 593, 704, 705, 706, 721, 751, 752, 231, 232 ] },
+        "56": { "learned": [ 79, 80, 199, 99, 108, 463, 112, 464, 115, 143, 147, 148, 149, 151, 194, 195, 222, 248, 295, 306, 341, 342, 365, 384, 422, 423, 446, 550, 635, 706, 713, 747, 748, 752, 780, 781 ] },
+        "57": { "learned": [ 706 ] },
+        "58": { "learned": [ 65563, 65564 ] },
+        "60": { "learned": [ 102, 103, 65639, 120, 121, 150, 280, 281, 282, 475, 480, 481, 482, 488, 577, 578, 579 ] },
+        "62": { "learned": [ 131 ] },
+        "63": { "learned": [ 724, 730, 743, 750, 756, 763, 765, 768, 772, 777, 802 ] },
+        "64": { "learned": [ 15, 86, 87 ] },
+        "66": { "learned": [ 701, 155, 156, 157 ] },
+        "67": { "learned": [ 60, 61, 62, 186, 240, 65639, 647, 727, 749, 750, 760, 763, 782, 783, 784, 802, 522, 523 ] },
+        "68": { "learned": [ 165, 166, 766 ] },
+        "69": { "learned": [ 65563, 65564, 65610, 65611, 65612, 440, 674, 675 ] },
+        "70": { "learned": [ 749, 750, 759, 760 ] },
+        "71": { "learned": [ 102, 103, 65639, 187, 188, 189, 273, 274, 275 ] },
+        "72": { "learned": [ 102, 65639, 273, 274, 275, 787, 65624, 65625 ] },
+        "73": { "learned": [ 346, 470 ] },
+        "75": { "learned": [ 83 ] },
+        "76": { "learned": [ 65574, 587, 695 ] },
+        "79": { "learned": [ 46, 47 ] },
+        "81": { "learned": [ 684, 685 ] },
+        "83": { "learned": [ 65641, 721, 147, 148, 149, 151, 250, 330, 334, 435, 494, 554, 555, 635, 662, 663, 725, 726, 727, 791 ] },
+        "84": { "learned": [ 65610, 65611, 65612, 100, 101, 137, 233, 474, 403, 404, 405 ] },
+        "86": { "learned": [ 65610, 65611, 65612, 757, 758 ] },
+        "87": { "learned": [ 685 ] },
+        "88": { "learned": [ 111, 112, 464, 138, 139, 140, 141, 142, 246, 247, 248, 696, 697 ] },
+        "90": { "learned": [ 446, 749, 750 ] },
+        "91": { "learned": [ 65555, 65556, 65563, 65564, 65573, 65574, 65588, 65589, 65610, 65611, 65612, 65624, 65625, 346, 622, 623 ] },
+        "93": { "learned": [ 151, 380, 381, 561, 577, 578, 579, 7, 8, 9, 63 ] },
+        "95": { "learned": [ 338, 574, 575, 576 ] },
+        "97": { "learned": [ 27, 28, 50, 51, 65586, 65587, 150, 37, 38, 41, 42, 169, 121, 151, 225, 243, 244, 245, 309, 310, 380, 381, 405, 519, 520, 521, 589, 605, 606, 619, 620, 627, 628, 745, 777, 791, 792, 801, 802 ] },
+        "98": { "learned": [ 118, 119, 198, 430, 509, 510 ] },
+        "100": { "learned": [ 65562 ] },
+        "101": { "learned": [ 64, 65, 442 ] },
+        "103": { "learned": [ 65587, 124, 167, 168, 258, 259, 260, 636, 637, 39, 40, 65586, 151, 163, 164, 174, 186, 275, 416, 453, 454, 509, 510, 535, 536, 537, 556, 569, 605, 606, 624, 625, 679, 680, 681, 688, 689, 736, 737, 738, 767, 768, 771, 778, 798 ] },
+        "107": { "learned": [ 40, 440 ] },
+        "108": { "learned": [ 244 ] },
+        "109": { "learned": [ 150, 456, 457 ] },
+        "111": { "learned": [ 440, 767, 768, 759, 760 ] },
+        "112": { "learned": [ 137, 233, 474 ] },
+        "113": { "learned": [ 91 ] },
+        "114": { "learned": [ 65625 ] },
+        "115": { "learned": [ 65573, 65574, 172, 478 ] },
+        "116": { "learned": [ 83, 107, 128, 236, 359, 151, 448, 519, 520, 521, 619, 620, 675, 721, 216, 217 ] },
+        "117": { "learned": [ 65610, 65611, 65612 ] },
+        "118": { "learned": [ 480, 481, 482, 683, 685, 719 ] },
+        "120": { "learned": [ 425, 426, 39, 40, 65624, 65625, 462, 463, 482, 485, 526, 582, 583, 584, 615, 622, 623, 645, 721, 773, 797, 801 ] },
+        "129": { "learned": [ 65573, 65574, 65588, 63, 64, 65, 104, 105, 65641, 494, 509, 510, 519, 520, 521, 527, 528, 546, 547, 561, 566, 567, 570, 571, 587, 595, 596, 610, 611, 612, 627, 628, 629, 630, 638, 639, 640, 643, 644, 646, 66182, 131718, 647, 649, 661, 662, 663, 677, 678, 66214, 694, 695, 701, 714, 715, 716, 717, 718, 722, 723, 724, 742, 743, 745, 757, 758, 767, 768, 772, 773, 777, 780, 785, 791, 792, 802 ] },
+        "133": { "learned": [ 202, 258, 259, 260, 360, 27, 28, 163, 164, 206, 272, 385, 449, 450, 468, 517, 518, 684, 685, 719, 780, 799 ] },
+        "138": { "learned": [ 49 ] },
+        "139": { "learned": [ 92, 93, 94 ] },
+        "141": { "learned": [ 140, 141, 27, 28, 452, 649 ] },
+        "143": { "learned": [ 722, 723, 724, 731, 732, 733, 741, 785, 792 ] },
+        "146": { "learned": [ 107 ] },
+        "151": { "learned": [ 72, 73 ] },
+        "154": { "learned": [ 4, 5, 6, 46, 47, 65586, 65587, 619, 620 ] },
+        "156": { "learned": [ 801, 486, 785, 786, 787, 788 ] },
+        "157": { "learned": [ 7, 8, 793 ] },
+        "161": { "learned": [ 380, 381, 480, 481, 482, 606, 801 ] },
+        "162": { "learned": [ 65563, 65564, 777 ] },
+        "163": { "learned": [ 65586, 65587, 98, 99, 252, 253, 254, 341, 342 ] },
+        "168": { "learned": [ 25, 197, 559 ] },
+        "172": { "learned": [ 126, 467, 240, 244 ] },
+        "174": { "learned": [ 65563, 65564, 104, 105, 65641, 710, 711, 769, 770, 776 ] },
+        "175": { "learned": [ 143, 446, 290, 291, 292, 632 ] },
+        "179": { "learned": [ 62, 66, 67, 68, 127, 128, 151, 211, 213, 244, 416, 428, 475, 550, 555, 617, 638, 639, 640, 647, 675, 679, 680, 681, 701, 718, 727, 760, 773, 802 ] },
+        "180": { "learned": [ 724, 771, 65641, 747, 748, 765, 769, 770, 778, 781, 792, 793 ] },
+        "182": { "learned": [ 486 ] },
+        "184": { "learned": [ 126, 467, 240, 244, 66182, 131718, 721, 59, 95, 208, 151, 211, 220, 221, 306, 310, 362, 448, 538, 539, 614, 638, 639, 641, 642, 645, 675, 687, 696, 697, 750, 791, 792, 800, 66336, 197408, 131872 ] },
+        "187": { "learned": [ 298, 335 ] },
+        "188": { "learned": [ 570, 769 ] },
+        "189": { "learned": [ 535, 536, 537, 757, 758 ] },
+        "191": { "learned": [ 28, 65564, 151, 214 ] },
+        "192": { "learned": [ 801, 25, 26, 65562, 35, 36, 39, 40, 52, 53, 63, 64, 65, 79, 80, 199, 88, 89, 92, 93, 94, 96, 97, 100, 101, 109, 110, 111, 112, 464, 113, 242, 115, 120, 121, 122, 125, 466, 128, 130, 131, 135, 136, 143, 147, 148, 149, 150, 170, 171, 172, 173, 174, 175, 176, 468, 179, 180, 190, 424, 196, 197, 200, 429, 203, 206, 209, 210, 216, 217, 239, 241, 249, 250 ] },
+        "193": { "learned": [ 183, 184 ] },
+        "194": { "learned": [ 592, 593, 605, 606 ] },
+        "195": { "learned": [ 298, 358 ] },
+        "196": { "learned": [ 728, 729, 730, 65563, 65564, 65588, 65589, 747, 748, 751, 752, 768, 772, 773, 780, 788, 792, 795, 65555, 65556, 740, 741 ] },
+        "197": { "learned": [ 255, 256, 257, 16, 17, 18, 21, 22, 25, 26, 65562, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 39, 40, 41, 42, 169, 52, 53, 56, 57, 61, 62, 186, 66, 67, 68, 83, 106, 123, 212, 125, 466, 126, 467, 142, 144, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 172, 173, 174, 175, 176, 468, 177, 178, 190, 424, 198, 430, 207, 472, 209, 210, 214, 215, 461, 220, 221, 473, 225, 227, 228, 229, 234, 236, 239, 240, 243, 244, 245, 246, 247, 248, 249, 250, 251 ] },
+        "200": { "learned": [ 15, 1, 2, 7, 8, 65639, 65641, 127, 773, 776, 791, 794, 795, 799, 800, 66336, 197408, 131872, 802, 66281 ] },
+        "201": { "learned": [ 6, 745, 66281 ] },
+        "202": { "learned": [ 722, 723, 724, 751, 752, 761, 762, 763, 764, 778, 798, 65624, 65625 ] },
+        "203": { "learned": [ 66281 ] },
+        "204": { "learned": [ 241, 124, 131, 151, 238, 385, 478, 66214, 684, 685, 703, 719, 742, 743, 759, 760, 764, 786 ] },
+        "205": { "learned": [ 65563, 65564, 759, 760, 767, 768 ] },
+        "210": { "learned": [ 543, 544, 545, 473 ] },
+        "211": { "learned": [ 225 ] },
+        "212": { "learned": [ 163, 164, 701 ] },
+        "213": { "learned": [ 597, 598, 636, 637, 765 ] },
+        "215": { "learned": [ 65573, 65574, 764, 801 ] },
+        "217": { "learned": [ 298 ] },
+        "219": { "learned": [ 26 ] },
+        "220": { "learned": [ 65573, 65574, 65624, 65625, 65641, 747, 748, 764, 765, 768, 769, 770, 779, 781, 793 ] },
+        "223": { "learned": [ 122 ] },
+        "224": { "learned": [ 86, 87, 128, 131, 151, 638, 639, 640, 647, 797 ] },
+        "225": { "learned": [ 4, 5, 6, 333, 58, 59, 130, 131, 151, 248, 249, 250 ] },
+        "226": { "learned": [ 12, 35, 36, 39, 40, 182, 206, 225, 380, 381, 385, 453, 454, 480, 481, 482, 494, 509, 510, 527, 528, 686, 687, 719, 801 ] },
+        "227": { "learned": [ 37, 38, 93, 94, 124, 143, 151, 271, 272, 302, 385, 446, 453, 454, 480, 481, 482, 494, 548, 549, 571, 577, 578, 579, 588, 589, 682, 683, 719, 764, 765, 801 ] },
+        "228": { "learned": [ 111, 112, 464 ] },
+        "229": { "learned": [ 776 ] },
+        "230": { "learned": [ 12, 15, 48, 49, 114, 465, 124, 151, 165, 166, 187, 188, 189, 204, 205, 238, 241, 251, 25, 26, 65562 ] },
+        "231": { "learned": [ 65555, 65556, 65563, 65564, 65573, 65574, 65588, 65589, 65639, 155, 156, 157, 728, 729, 730, 744, 745, 66281, 746, 757, 758, 766, 776, 777, 782, 783, 784, 791, 734, 735, 779 ] },
+        "232": { "learned": [ 447, 485, 569 ] },
+        "235": { "learned": [ 755, 756, 781, 787 ] },
+        "238": { "learned": [ 701 ] },
+        "239": { "learned": [ 690 ] },
+        "240": { "learned": [ 338, 556, 643, 756 ] },
+        "241": { "learned": [ 647, 695 ] },
+        "242": { "learned": [ 42, 169, 139, 244, 245, 610, 611, 612, 712, 9, 41, 151, 197, 306, 23 ] },
+        "243": { "learned": [ 65563, 65564, 144, 771 ] },
+        "246": { "learned": [ 150, 324 ] },
+        "247": { "learned": [ 38 ] },
+        "248": { "learned": [ 65562, 103, 124, 151, 164, 344, 380, 381, 494, 555, 606, 686, 687, 786, 791, 792, 800, 66336, 197408, 131872 ] },
+        "249": { "learned": [ 749, 750, 787 ] },
+        "250": { "learned": [ 592, 593, 689, 728, 729, 730, 746 ] },
+        "251": { "learned": [ 559, 560, 632, 65589, 115, 151, 416, 584, 624, 625, 634, 635, 675, 688, 689, 757, 758, 778 ] },
+        "252": { "learned": [ 574, 575, 576 ] },
+        "253": { "learned": [ 746, 65586, 65587, 65588, 65589, 186, 340, 416, 688, 689, 728, 729, 730, 766, 776, 780, 782, 783, 784, 734, 735, 66281, 779 ] },
+        "257": { "learned": [ 110, 65641, 275, 757, 758, 773, 776, 780, 792, 799, 800, 66336, 197408, 131872, 731, 732, 733 ] },
+        "258": { "learned": [ 145, 337 ] },
+        "260": { "learned": [ 427, 428, 481 ] },
+        "261": { "learned": [ 661 ] },
+        "262": { "learned": [ 37, 38, 225 ] },
+        "263": { "learned": [ 755, 756 ] },
+        "264": { "learned": [ 782, 783, 784, 65563, 65564, 65610, 65611, 65612, 65625, 727, 739, 740, 66281, 759, 760, 766, 787, 802 ] },
+        "268": { "learned": [ 125, 466, 239, 243, 618 ] },
+        "269": { "learned": [ 674, 125, 126, 589, 763 ] },
+        "270": { "learned": [ 223, 224, 1, 2, 3, 4, 5, 6, 7, 8, 9, 65624, 65625, 131, 182, 206, 225, 243, 244, 245, 249, 250, 303, 350, 479, 262623, 131551, 197087, 328159, 66015, 622, 623, 632, 634, 635, 643, 644, 646, 66182, 131718, 66214, 728, 729, 730, 742, 743, 757, 758, 761, 762, 763, 777, 780, 781, 791, 792, 418, 419 ] },
+        "271": { "learned": [ 555, 623, 742, 743, 764, 765, 769, 770, 778, 788, 792, 801 ] },
+        "272": { "learned": [ 65573, 65574, 741, 759, 760, 764, 769, 770, 777, 781, 793 ] },
+        "276": { "learned": [ 62, 59, 65610, 65611, 65612, 65639, 727, 754, 766, 780, 784, 791, 797, 802, 775 ] },
+        "277": { "learned": [ 65562, 730, 747, 748, 751, 752, 755, 756, 764, 765, 772, 773, 779, 786, 788, 793, 796 ] },
+        "278": { "learned": [ 65562, 65625, 755, 756, 769, 770, 771, 800, 66336, 197408, 131872 ] },
+        "279": { "learned": [ 128, 151, 248, 256, 257, 275, 342, 355, 356, 477, 416, 447, 448, 475, 532, 533, 534, 539, 552, 553, 559, 560, 563, 570, 571, 589, 597, 598, 619, 620, 638, 639, 640, 647, 675, 701, 745, 750, 760, 766, 784, 787, 794, 802 ] },
+        "280": { "learned": [ 638, 639, 640, 647 ] },
+        "281": { "learned": [ 765 ] },
+        "282": { "learned": [ 799, 280, 281, 282, 722, 723, 724, 766, 65556, 65563, 65564, 65588, 65589, 65639, 727, 731, 732, 733, 747, 748, 754, 762, 763, 765, 768, 775, 781, 788, 791, 793, 798, 800, 66336, 197408, 131872, 802 ] },
+        "283": { "learned": [ 757, 758, 744, 745, 66281, 761, 762, 763, 725, 726, 727, 734, 735, 749, 750, 766, 768, 774, 775, 776, 777, 780, 784, 791, 794 ] },
+        "285": { "learned": [ 677, 678, 66214, 769, 770 ] },
+        "286": { "learned": [ 151, 35, 36, 65, 79, 80, 199, 94, 65641, 163, 164, 176, 468, 177, 178, 249, 250, 251, 350, 385, 426, 478, 561, 592, 593, 622, 623, 710, 711, 724, 742, 743, 765, 800, 66336, 197408, 131872, 801 ] },
+        "287": { "learned": [ 25, 26, 65562 ] },
+        "289": { "learned": [ 727, 747, 748, 765, 766, 778, 779, 795, 802 ] },
+        "291": { "learned": [ 537, 689, 728, 729, 730, 752, 768 ] },
+        "299": { "learned": [ 256, 6, 151, 494, 620, 727, 802 ] },
+        "300": { "learned": [ 399, 400 ] },
+        "304": { "learned": [ 65588, 65589, 59, 310, 479, 262623, 131551, 197087, 328159, 66015, 582, 583, 584, 773, 776, 784, 785, 791, 800, 66336, 197408, 131872, 744, 745, 66281 ] },
+        "305": { "learned": [ 757, 758 ] },
+        "307": { "learned": [ 493 ] },
+        "308": { "learned": [ 493 ] },
+        "309": { "learned": [ 448, 447 ] },
+        "310": { "learned": [ 273, 274, 275, 328, 329, 330, 361, 362 ] },
+        "311": { "learned": [ 437, 4, 5, 6, 7, 8, 9, 37, 38, 65573, 65574, 79, 80, 199, 91, 131, 133, 470, 471, 135, 134, 136, 196, 197, 700, 144, 145, 146, 151, 186, 225, 244, 245, 251, 272, 279, 315, 320, 321, 324, 337, 338, 340, 350, 406, 423, 449, 450, 459, 460, 466, 467, 526, 535, 536, 537, 556, 641, 642, 643, 644, 645, 646, 66182, 131718, 695, 698, 699, 706, 730, 756 ] },
+        "312": { "learned": [ 416, 761, 314 ] },
+        "313": { "learned": [ 38, 65574, 65589, 151, 215, 461, 559, 560, 677, 678, 66214, 682, 683, 686, 687, 719, 742, 743, 758 ] },
+        "314": { "learned": [ 274 ] },
+        "321": { "learned": [ 677, 678, 66214, 780 ] },
+        "322": { "learned": [ 151, 177, 178, 375, 376, 384, 576, 800, 66336, 197408, 131872 ] },
+        "324": { "learned": [ 738, 742, 743, 751, 752, 753, 754, 755, 756, 772, 773, 779, 780, 792, 795, 800, 66336, 197408, 131872, 801 ] },
+        "326": { "learned": [ 554, 555 ] },
+        "328": { "learned": [ 645, 31, 34, 151, 212, 220, 221, 473, 227, 246, 247, 248, 259, 260, 305, 306, 337, 338, 340, 343, 344, 377, 379, 423, 452, 524, 525, 526, 529, 530, 660, 703, 719, 749, 750 ] },
+        "329": { "learned": [ 646, 66182, 131718 ] },
+        "330": { "learned": [ 55, 60, 61, 62, 186, 80, 118, 119, 130, 151, 199, 246, 247, 248, 271, 272, 341, 342, 349, 350, 449, 450, 564, 565, 593, 647, 689, 747, 748, 768, 781 ] },
+        "331": { "learned": [ 753, 754, 764, 787, 504, 505 ] },
+        "332": { "learned": [ 175 ] },
+        "333": { "learned": [ 124, 144, 151, 225, 362, 364, 365, 378, 460, 461, 471, 478, 614, 615, 646, 66182, 131718, 699, 712, 713 ] },
+        "334": { "learned": [ 65586, 65587, 112, 464, 185, 208, 213, 344, 369, 452, 555, 744, 745, 66281, 747, 748, 751, 752, 772, 773, 781, 785, 786, 787, 788, 791, 798, 799, 65610, 65611, 65612 ] },
+        "335": { "learned": [ 679, 680, 65625, 735, 740, 748, 765, 766, 769, 770, 771, 776, 780, 781, 795, 797 ] },
+        "336": { "learned": [ 243, 447, 448 ] },
+        "339": { "learned": [ 260 ] },
+        "340": { "learned": [ 761, 762, 763, 777, 794, 802 ] },
+        "341": { "learned": [ 768, 31, 34, 79, 80, 199, 111, 112, 464, 151, 183, 184, 213, 263, 264, 271, 272, 298, 341, 342, 345, 346, 347, 348, 349, 350, 422, 423, 449, 450, 529, 530, 564, 565, 616, 617, 688, 689, 698, 699, 704, 705, 706, 721, 746, 747, 748, 750, 767, 769, 770 ] },
+        "343": { "learned": [ 743, 213, 65555, 65556, 65563, 65564, 65573, 65574, 311, 312, 722, 723, 724, 725, 726, 727, 728, 729, 730, 741, 742, 744, 745, 66281, 746, 747, 748, 757, 758, 761, 762, 763, 764, 765, 777, 778 ] },
+        "345": { "learned": [ 103, 65639, 151, 700, 708, 709, 743, 753, 754 ] },
+        "347": { "learned": [ 25, 26, 103, 163, 164, 730 ] },
+        "348": { "learned": [ 151, 251, 549 ] },
+        "349": { "learned": [ 95, 208, 142, 151, 254, 350, 380, 635, 643, 644, 646, 66182, 131718, 715, 758, 780, 800, 66336, 197408, 131872 ] },
+        "350": { "learned": [ 31, 34, 68, 140, 141, 142, 151, 185, 226, 248, 305, 306, 337, 338, 345, 346, 369, 377, 473, 530, 534, 564, 565, 566, 567, 639, 688, 689, 696, 697, 698, 699, 745, 66281 ] },
+        "351": { "learned": [ 65555, 65556, 65588, 65589, 65611, 65612, 65624, 65625, 734, 735, 736, 737, 738, 766, 776, 777, 780, 784, 791, 792, 795, 797, 799, 800, 66336, 197408, 131872, 801 ] },
+        "352": { "learned": [ 65588, 65589, 728, 729, 730, 747, 748, 751, 752, 768, 780, 784 ] },
+        "356": { "learned": [ 765, 769, 770, 774, 777, 786, 788, 796, 797 ] },
+        "358": { "learned": [ 96, 97, 114, 465 ] },
+        "359": { "learned": [ 99, 143, 486, 579, 98 ] },
+        "360": { "learned": [ 302 ] },
+        "362": { "learned": [ 728, 729, 730, 747, 748, 769, 770, 781 ] },
+        "364": { "learned": [ 662, 663, 522, 523, 701 ] },
+        "366": { "learned": [ 724, 742, 743, 764, 773, 780, 792, 798 ] },
+        "367": { "learned": [ 211, 118, 119, 686, 687 ] },
+        "368": { "learned": [ 589, 632 ] },
+        "369": { "learned": [ 257, 428 ] },
+        "370": { "learned": [ 783, 784, 62, 83, 128, 151, 257, 319, 342, 359, 428, 533, 534, 553, 560, 589, 612, 619, 620, 623, 626, 627, 628, 675, 679, 680, 681, 696, 697, 701, 727, 745, 66281, 760, 768, 787, 791, 794, 795 ] },
+        "371": { "learned": [ 273, 442, 427, 428, 506, 717, 718, 66281 ] },
+        "372": { "learned": [ 128, 252, 253, 254, 41, 42, 169, 50, 51, 65586, 65587, 68, 115, 123, 212, 151, 211, 214, 223, 224, 225, 226, 255, 256, 257, 274, 275, 303, 416, 427, 428, 434, 435, 451, 452, 453, 454, 482, 545, 550, 556, 559, 560, 566, 567, 570, 571, 597, 598, 599, 600, 601, 620, 627, 628, 629, 630, 641, 642, 649, 688, 689, 696, 697, 701, 706, 727, 745, 766, 767, 768, 777, 781, 785, 795 ] },
+        "374": { "learned": [ 782 ] },
+        "380": { "learned": [ 143, 65624, 65625, 747, 748 ] },
+        "381": { "learned": [ 385 ] },
+        "383": { "learned": [ 133, 470, 471, 135, 134, 136, 196, 197, 700 ] },
+        "384": { "learned": [ 63, 64, 65, 137, 233, 474, 151, 282, 337, 338, 343, 344, 436, 437, 488, 494, 517, 518, 555, 561, 563, 577, 578, 579, 786, 787 ] },
+        "385": { "learned": [ 137, 233, 474, 151, 282, 343, 344, 436, 437, 488, 494, 517, 518, 555, 563, 574, 575, 576, 577, 578, 579, 686, 687, 703, 719, 786, 787, 788, 801 ] },
+        "386": { "learned": [ 763 ] },
+        "387": { "learned": [ 115, 744, 745, 66281, 765, 65555, 65556, 65588, 65589, 742, 743, 772, 773, 774, 775, 777, 778, 791, 798, 799, 801, 802, 25, 26, 65562 ] },
+        "388": { "learned": [ 753, 754, 764, 722, 723, 724, 755, 756, 761, 762, 763, 787, 793 ] },
+        "389": { "learned": [ 122, 273, 274, 439, 618, 708, 709, 355 ] },
+        "390": { "learned": [ 151, 416, 616, 617 ] },
+        "392": { "learned": [ 484 ] },
+        "393": { "learned": [ 796, 736, 737, 738, 774, 797, 799, 800, 66336, 197408, 131872, 801 ] },
+        "394": { "learned": [ 255, 146, 151, 250, 643, 758, 513, 514 ] },
+        "396": { "learned": [ 692, 106, 107, 251, 257, 380, 381, 385, 428, 475, 647, 784, 802 ] },
+        "398": { "learned": [ 92 ] },
+        "400": { "learned": [ 675, 754, 98, 99, 252, 253, 273, 274, 275, 588, 589 ] },
+        "401": { "learned": [ 65563, 65564, 65573, 65574, 728, 729, 730, 782, 783, 784 ] },
+        "402": { "learned": [ 65588, 65589, 722, 723, 724, 753, 754, 755, 756, 761, 762, 763, 764, 766, 787, 733 ] },
+        "403": { "learned": [ 144, 149, 151, 177, 249, 250, 275, 291, 329, 330, 359, 373, 380, 381, 475, 567, 625, 638, 639, 640, 647, 681, 724 ] },
+        "405": { "learned": [ 151, 451, 452, 751, 752, 767, 768 ] },
+        "406": { "learned": [ 65639, 782, 783, 784, 799, 800, 66336, 197408, 131872 ] },
+        "407": { "learned": [ 329, 694, 695, 714, 715 ] },
+        "408": { "learned": [ 151, 599, 600, 601 ] },
+        "409": { "learned": [ 62, 302, 480, 481, 482, 617, 631, 727, 756, 760, 766, 778, 783, 784, 794, 799, 739, 740 ] },
+        "411": { "learned": [ 237 ] },
+        "412": { "learned": [ 475, 587 ] },
+        "413": { "learned": [ 144, 145, 146, 151, 225, 279, 521, 701 ] },
+        "414": { "learned": [ 29, 30, 32, 33, 60, 61, 62, 186, 3, 460, 744, 745, 66281, 749, 750, 800, 66336, 197408, 131872, 65610, 65611, 65612 ] },
+        "415": { "learned": [ 742, 743 ] },
+        "416": { "learned": [ 147, 148, 531, 561, 743, 745, 66281, 778 ] },
+        "417": { "learned": [ 633, 634, 635, 65, 80, 94, 150, 163, 164, 337, 342, 344, 434, 435, 479, 262623, 131551, 197087, 328159, 66015, 480, 481, 527, 528, 574, 575, 576, 641, 677, 678, 66214, 682, 683, 686, 687, 711 ] },
+        "419": { "learned": [ 65563, 65564, 65574, 615 ] },
+        "420": { "learned": [ 65563, 65564 ] },
+        "421": { "learned": [ 563, 348 ] },
+        "422": { "learned": [ 151, 721, 734, 735 ] },
+        "423": { "learned": [ 151, 550, 613, 614, 734, 735 ] },
+        "424": { "learned": [ 151, 734, 735 ] },
+        "425": { "learned": [ 722, 723, 724 ] },
+        "427": { "learned": [ 103, 121, 123, 212, 124, 141, 151, 215, 461, 251, 375, 376, 380, 381, 480, 481, 482, 510, 527, 528, 561, 612, 679, 680, 681, 724, 754, 786, 792 ] },
+        "428": { "learned": [ 65573, 65574, 65639, 627, 744, 745, 66281, 759, 760, 761, 762, 763, 773, 777, 793, 797, 801, 802, 65555, 65556, 735, 739, 740, 774, 775 ] },
+        "430": { "learned": [ 377, 606 ] },
+        "432": { "learned": [ 333, 334, 519, 520, 521, 532, 533, 534, 587, 661, 662, 663, 701, 714, 715, 166, 255, 256, 257, 313, 314, 351, 358, 384, 455, 479, 262623, 131551, 197087, 328159, 66015, 495, 496, 497, 527, 528, 546, 547, 561, 615, 635, 637, 641, 642, 643, 644, 645, 666, 671, 707, 716, 717, 721, 731, 732, 733, 741, 742, 743, 764, 773, 780, 785, 792 ] },
+        "435": { "learned": [ 695, 736 ] },
+        "437": { "learned": [ 724, 151, 272, 460, 470, 556, 640, 709 ] },
+        "438": { "learned": [ 103, 65639, 763, 130, 151, 315, 407, 346, 536, 537, 711 ] },
+        "440": { "learned": [ 68, 72, 73, 123, 212, 141, 151, 254, 416, 454, 545, 569, 748, 754, 758, 793 ] },
+        "441": { "learned": [ 65588, 65589, 747, 748, 757, 758, 766, 793, 731, 732, 733 ] },
+        "442": { "learned": [ 65639, 555, 628, 727, 744, 745, 66281, 749, 750, 759, 760, 768, 776, 777, 781, 782, 783, 784, 785, 793, 794, 799, 800, 66336, 197408, 131872, 802, 65612, 735, 739, 740, 774, 775 ] },
+        "444": { "learned": [ 140 ] },
+        "446": { "learned": [ 65563, 65564, 65586, 65587, 749, 750, 769, 770, 784 ] },
+        "450": { "learned": [ 795, 742, 743, 753, 754, 794 ] },
+        "453": { "learned": [ 298, 580, 581 ] },
+        "457": { "learned": [ 95, 208 ] },
+        "468": { "learned": [ 619, 620, 692, 693, 65563, 65564, 65586, 65587 ] },
+        "469": { "learned": [ 713, 95, 208 ] },
+        "471": { "learned": [ 96, 97 ] },
+        "472": { "learned": [ 65574, 124, 742, 743, 751, 752, 755, 756, 786, 788, 792, 238, 779 ] },
+        "475": { "learned": [ 568, 569 ] },
+        "477": { "learned": [ 65562, 39, 40, 101, 113, 242, 137, 233, 474, 205, 251, 413, 65949, 131485, 476, 599, 600, 601, 649, 654, 655, 677, 678, 66214, 682, 683, 686, 687, 700, 703, 708, 709, 710, 711, 719, 720, 742, 743, 764, 765, 774, 778, 779, 781, 785, 786, 787, 788, 792, 793, 800, 66336, 197408, 131872 ] },
+        "478": { "learned": [ 65562, 742, 743, 751, 752, 755, 756, 765, 778, 786, 788, 792, 779 ] },
+        "479": { "learned": [ 749, 750 ] },
+        "482": { "learned": [ 45 ] },
+        "484": { "learned": [ 379, 622, 112, 464, 151, 241, 248, 365, 377, 378, 382, 383, 450, 462, 473, 483, 484, 485, 558, 598, 614, 713, 721, 776, 791, 322, 323, 387, 388, 389 ] },
+        "486": { "learned": [ 135, 151, 403, 404, 405, 642, 644, 694, 695, 702, 737, 738, 777, 796, 801 ] },
+        "487": { "learned": [ 751 ] },
+        "490": { "learned": [ 427, 66281 ] },
+        "491": { "learned": [ 588, 589, 705, 706, 455, 559, 560 ] },
+        "492": { "learned": [ 65573, 65574, 65625, 757, 758, 793, 795, 802, 66281 ] },
+        "493": { "learned": [ 381, 527, 528 ] },
+        "495": { "learned": [ 742, 743, 747, 748, 755, 756, 769, 770, 777, 778, 779, 801 ] },
+        "496": { "learned": [ 679, 680 ] },
+        "500": { "learned": [ 65562, 38, 65574, 65, 79, 80, 199, 113, 242, 122, 150, 151, 163, 164, 206, 337, 338, 344, 385, 439, 440, 479, 262623, 131551, 197087, 328159, 66015, 480, 481, 482, 488, 574, 575, 576, 577, 578, 579, 605, 606, 686, 687, 707, 719, 730, 764, 785, 786, 787, 788, 801 ] },
+        "501": { "learned": [ 447 ] },
+        "502": { "learned": [ 381, 577, 578, 579, 65562, 35, 36, 39, 40, 50, 51, 65586, 65587, 92, 93, 94, 65641, 113, 242, 121, 122, 124, 137, 233, 474, 150, 196, 251, 292, 302, 337, 338, 355, 356, 477, 375, 376, 380, 385, 425, 426, 436, 437, 439, 442, 462, 468, 478, 479, 262623, 131551, 197087, 328159, 66015, 480, 481, 482, 488, 517, 518, 527, 528, 531, 574, 575, 576, 582, 583, 584, 600, 601, 607, 608, 609, 622, 623, 649, 677, 678, 66214, 682, 683, 686, 687, 694, 695, 702, 703, 708, 709, 710, 711, 719, 742, 743, 764, 765, 781, 786, 793, 800, 66336, 197408, 131872, 107, 106, 237, 65611, 65612, 96, 97, 199, 200, 429, 203, 205, 325, 326, 353, 354, 358, 413, 65949, 131485, 433, 476, 523, 648, 654, 655, 669, 670, 671, 328350, 779 ] },
+        "503": { "learned": [ 243 ] },
+        "504": { "learned": [ 7, 8, 9 ] },
+        "506": { "learned": [ 442, 708, 709, 31, 34, 151, 169, 211, 292, 302, 343, 344, 416, 434, 435, 436, 437, 543, 544, 545, 570, 571, 591, 710, 711, 724, 748, 778, 781, 792, 793, 802 ] },
+        "510": { "learned": [ 757, 758 ] },
+        "512": { "learned": [ 123, 291, 428 ] },
+        "514": { "learned": [ 65588, 65589, 718, 766 ] },
+        "515": { "learned": [ 83 ] },
+        "518": { "learned": [ 728, 729 ] },
+        "519": { "learned": [ 725, 726 ] },
+        "520": { "learned": [ 722, 723, 773 ] },
+        "522": { "learned": [ 415 ] },
+        "523": { "learned": [ 60, 103 ] },
+        "525": { "learned": [ 329, 4, 5, 690 ] },
+        "526": { "learned": [ 27, 28, 50, 51 ] },
+        "527": { "learned": [ 766, 777, 785, 795, 796, 801, 65610, 65611, 65612 ] },
+        "529": { "learned": [ 28, 65564, 95, 208, 225, 745, 768, 795 ] },
+        "530": { "learned": [ 754, 62, 726, 727, 735, 739, 740, 66281, 753, 759, 760, 768, 782, 783, 784, 787, 794, 799 ] },
+        "533": { "learned": [ 501, 502, 503 ] },
+        "534": { "learned": [ 98, 99, 80, 141, 151, 199, 589, 565 ] },
+        "535": { "learned": [ 6, 112, 464, 143, 151, 257, 324, 383, 485, 486, 623, 643, 721, 727, 776, 791, 799 ] },
+        "536": { "learned": [ 764 ] },
+        "538": { "learned": [ 626 ] },
+        "541": { "learned": [ 151, 263, 264, 434, 435, 678, 66214, 745, 190, 424 ] },
+        "542": { "learned": [ 384, 6, 12, 142, 145, 151, 163, 164, 169, 226, 230, 249, 334, 373, 521, 627, 628, 663, 724 ] },
+        "549": { "learned": [ 66182, 131718 ] },
+        "555": { "learned": [ 612, 635 ] },
+        "556": { "learned": [ 584, 361, 362, 478, 582, 583 ] },
+        "560": { "learned": [ 161, 162, 417 ] },
+        "561": { "learned": [ 784 ] },
+        "562": { "learned": [ 562, 563, 358 ] },
+        "563": { "learned": [ 65573, 439, 702 ] },
+        "564": { "learned": [ 12, 25, 26, 65562, 35, 36, 65573, 65574, 39, 40, 151, 173, 174, 175, 176, 468, 183, 184, 238, 298, 303, 420, 421, 480, 481, 482, 716, 719, 728, 729, 730, 755, 756, 761, 762, 763, 778, 788, 801 ] },
+        "565": { "learned": [ 785 ] },
+        "568": { "learned": [ 471, 646, 66182, 131718, 698 ] },
+        "571": { "learned": [ 632 ] },
+        "572": { "learned": [ 89, 65625, 517, 518, 711 ] },
+        "573": { "learned": [ 6, 35, 36, 37, 38, 77, 78, 122, 136, 146, 151, 175, 176, 468, 250, 282, 380, 381, 467, 494, 555, 607, 608, 609, 637, 643, 700, 710, 711, 719, 791 ] },
+        "574": { "learned": [ 643, 644, 646, 66182, 131718 ] },
+        "575": { "learned": [ 172 ] },
+        "578": { "learned": [ 622, 724, 94, 151, 442, 487, 563, 778, 802 ] },
+        "579": { "learned": [ 39, 52, 65588, 58, 59, 241, 25, 26, 65562, 35, 36, 77, 78, 151, 172, 173, 174, 175, 176, 468, 182, 333, 334, 403, 404, 405, 421, 427, 428, 480, 481, 482, 547, 572, 573, 677, 678, 66214, 696, 697, 700, 716, 719, 728, 729, 730, 742, 743, 744, 745, 66281, 786, 788 ] },
+        "580": { "learned": [ 172 ] },
+        "583": { "learned": [ 416, 742, 743 ] },
+        "584": { "learned": [ 513, 514, 633, 634, 635 ] },
+        "586": { "learned": [ 113, 242, 173, 174, 440, 788, 479, 262623, 131551, 197087, 328159, 66015 ] },
+        "587": { "learned": [ 26, 137, 233, 474, 145, 151, 243, 343, 344, 479, 262623, 131551, 197087, 328159, 66015, 587, 642, 737, 738, 777, 785, 801 ] },
+        "588": { "learned": [ 601, 618, 26, 151, 243, 479, 262623, 131551, 197087, 328159, 66015, 702 ] },
+        "593": { "learned": [ 151, 251, 346, 420, 421, 546, 547, 549, 591, 754, 46, 47, 540, 541, 542, 672, 673 ] },
+        "599": { "learned": [ 65574, 151, 183, 184, 439, 546, 547, 707, 721 ] },
+        "600": { "learned": [ 725, 726, 727 ] },
+        "601": { "learned": [ 742, 743 ] },
+        "602": { "learned": [ 65624, 65625, 194, 708 ] },
+        "604": { "learned": [ 511, 512 ] },
+        "605": { "learned": [ 685, 736, 737, 738, 684, 742, 743, 751, 752 ] },
+        "607": { "learned": [ 543, 73, 109, 110, 151, 211, 452, 453, 454, 535, 536, 537, 568, 569, 617 ] },
+        "608": { "learned": [ 744, 745, 66281 ] },
+        "609": { "learned": [ 65639, 113, 242, 142, 143, 492, 494, 648 ] },
+        "624": { "learned": [ 241, 31, 34, 51, 65587, 62, 68, 77, 78, 95, 208, 99, 111, 112, 464, 127, 128, 151, 195, 214, 221, 473, 248, 260, 306, 383, 449, 450, 486, 529, 530, 533, 534, 553, 626, 660, 697, 713, 718, 760, 787, 794, 799, 231, 232 ] },
+        "625": { "learned": [ 252, 253, 254, 420, 421, 459, 460 ] },
+        "626": { "learned": [ 131872, 197408 ] },
+        "630": { "learned": [ 77, 78, 83, 151, 251, 253, 254, 274, 275, 421, 465, 470, 475, 549, 558, 640, 679, 680, 681, 724, 763, 781, 798 ] },
+        "631": { "learned": [ 66336, 197408 ] },
+        "633": { "learned": [ 63, 64, 65, 79, 80, 199, 122, 124, 150, 151, 251, 282, 337, 338, 343, 344, 437, 439, 577, 578, 579, 678, 66214, 96, 97, 203, 653, 654, 655 ] },
+        "634": { "learned": [ 214, 626, 27, 28, 65563, 65564, 31, 34, 52, 53, 65588, 65589, 62, 68, 78, 83, 105, 65641, 106, 107, 118, 119, 127, 128, 151, 197, 211, 222, 243, 254, 264, 275, 329, 330, 405, 434, 435, 452, 454, 475, 510, 526, 531, 539, 545, 553, 556, 560, 571, 596, 614, 625, 631, 635, 675, 687, 701, 66281, 768, 795, 802, 15, 20, 65556, 22, 24, 47, 57, 157, 168, 207, 472, 217, 229, 234, 262, 297, 335, 336, 354, 359, 386, 395, 402, 432, 455, 491, 512, 514, 516, 542, 603, 604, 720 ] },
+        "635": { "learned": [ 460, 582, 583, 584, 698, 699, 712, 713 ] },
+        "636": { "learned": [ 116, 117, 230, 123, 212, 328, 329, 330, 610, 611, 612, 615, 624, 625, 659, 660, 15, 18, 22, 25, 26, 65562, 36, 38, 65574, 40, 55, 59, 65, 83, 94, 105, 65641, 106, 107, 113, 242, 133, 470, 471, 135, 134, 136, 196, 197, 700, 142, 144, 145, 146, 151, 153, 154, 157, 164, 178, 181, 182, 199, 205, 215, 461, 217, 229, 236, 237, 243, 244, 245, 249, 250, 251, 254, 257, 262, 267, 269, 277, 282, 286, 291, 301, 303, 308, 310, 326, 337, 338, 350, 358, 359, 362, 373, 376, 380, 381, 386, 392, 395, 398, 402, 405, 407, 409, 416, 417, 421, 424, 428, 429, 444, 445, 447, 468, 469, 475, 477, 478, 480, 481, 482, 492, 493, 494, 504, 505, 510, 523, 526, 528, 531, 538, 539, 542, 548, 549, 555, 571, 573, 576, 579, 589, 609, 617, 620, 628, 638, 639, 640, 643, 644, 646, 66182, 131718, 648, 654, 655, 666, 675, 679, 680, 681, 689, 693, 701, 706, 715, 716, 717, 720, 724, 738, 66281, 752, 754, 758, 763, 766, 768, 773, 784, 795 ] },
+        "640": { "learned": [ 357 ] },
+        "643": { "learned": [ 62, 68, 143, 151, 260, 466, 477, 486, 553, 623, 675, 760, 787, 794 ] },
+        "644": { "learned": [ 131 ] },
+        "646": { "learned": [ 83, 328, 329, 330, 610, 611, 612, 632 ] },
+        "650": { "learned": [ 426, 43, 44, 45, 182, 69, 70, 71, 187, 188, 189, 592, 593 ] },
+        "651": { "learned": [ 171 ] },
+        "654": { "learned": [ 12, 45, 151, 251, 420, 421, 548, 549, 590, 591, 755, 756, 764 ] },
+        "656": { "learned": [ 167, 168, 313, 595, 596 ] },
+        "657": { "learned": [ 758 ] },
+        "658": { "learned": [ 393, 394, 395, 725, 726, 727 ] },
+        "659": { "learned": [ 250, 498, 499, 500 ] },
+        "660": { "learned": [ 26, 63, 64, 65, 137, 233, 474, 150, 151, 436, 437, 494, 527, 528, 561, 595, 596, 786, 801 ] },
+        "661": { "learned": [ 214, 638, 639, 640, 647, 716 ] },
+        "664": { "learned": [ 26, 72, 73, 99, 183, 184, 237, 298, 303, 425, 426, 465, 598, 620, 631, 711 ] },
+        "665": { "learned": [ 58, 59, 142, 151, 196, 208, 303, 309, 310, 403, 404, 405, 528, 550, 696, 697, 745, 66281, 773, 791, 800, 203 ] },
+        "666": { "learned": [ 246, 247, 248, 3, 30, 31, 33, 34, 50, 51, 65586, 65587, 67, 68, 95, 208, 99, 103, 65639, 106, 108, 463, 111, 112, 464, 113, 242, 128, 143, 151, 185, 194, 195, 206, 221, 473, 222, 241, 244, 260, 264, 294, 295, 305, 306, 324, 337, 338, 340, 348, 365, 369, 376, 377, 378, 379, 383, 423, 438, 445, 446, 449, 450, 452, 460, 465, 466, 467, 483, 484, 485, 486, 508, 525, 526, 530, 531, 534, 537, 538, 545, 552, 553, 558, 569, 591, 611, 612, 618, 621, 626, 631, 632, 639, 660, 675, 696, 697, 703, 706, 713, 718, 721, 727, 744, 745, 66281, 749, 750, 776, 780, 784, 794, 797, 20, 65556, 24, 27, 28, 75, 76, 65611, 65612, 85, 154, 157, 168, 203, 210, 217, 219, 232, 289, 297, 299, 476, 301, 323, 327, 332, 357, 386, 389, 400, 409, 411, 432, 498, 499, 500, 505, 586, 650, 651, 652, 673, 734, 735, 775 ] },
+        "668": { "learned": [ 140, 141, 318, 319, 9, 55, 62, 79, 80, 199, 90, 91, 98, 99, 116, 117, 230, 131, 134, 139, 151, 184, 186, 195, 211, 224, 226, 245, 260, 278, 279, 321, 340, 342, 348, 365, 369, 382, 484, 537, 550, 614, 647, 686, 687, 688, 689, 693, 721, 730, 746, 781, 87, 160, 283, 284, 370, 395, 400, 419, 489, 490, 493, 503, 580, 581, 594, 779 ] },
+        "671": { "learned": [ 706, 311, 312, 504, 505, 669, 670, 671, 702 ] },
+        "467": { "learned": [ 393695 ] }, // Give Shadow Force to Rotom-Pokedex
+        "702": {
+            "name": "Mind Blown",
+            "learned": [806],
+            "type": "Fire",
+            "power": 150
+        },
+        "703": {
+            "name": "Plasma Fists",
+            "learned": [807],
+            "type": "Electric",
+            "power": 100
+        },
+        "704": {
+            "name": "Photon Geyser",
+            "learned": [800, 66336, 131872, 197408],
+            "type": "Psychic",
+            "power": 100
+        },
+        "705": {
+            "name": "Double Iron Bash",
+            "learned": [809],
+            "type": "Steel",
+            "power": 60
+        },
+        "706": {
+            "name": "Clangorous Soul",
+            "learned": [784],
+            "type": "Dragon",
+            "power": "---"
+        },
+        "707": {
+            "name": "Body Press",
+            "learned": [ 486, 9, 31, 34, 80, 95, 108, 112, 131, 143, 149, 151, 185, 208, 226, 227, 241, 248, 260, 65800, 304, 305, 306, 320, 321, 324, 344, 365, 369, 376, 377, 379, 437, 450, 462, 463, 464, 473, 483, 484, 485, 524, 525, 526, 555, 131627, 558, 563, 569, 598, 614, 623, 643, 644, 646, 66182, 131718, 701, 703, 706, 713, 719, 721, 750, 760, 776, 781, 784, 799, 805, 809, 812, 820, 823, 825, 826, 832, 834, 838, 839, 842, 844, 861, 862, 867, 874, 878, 879, 884, 892, 66428, 896, 66434 ],
+            "type": "Fighting",
+            "power": 80
+        },
+        "708": {
+            "name": "Decorate",
+            "learned": [869],
+            "type": "Fairy",
+            "power": "---",
+        },
+        "709": {
+            "name": "Drum Beating",
+            "learned": [812],
+            "type": "Grass",
+            "power": 80
+        },
+        "710": {
+            "name": "Snap Trap",
+            "learned": [getForm(618, 1)],
+            "type": "Grass",
+            "power": 35
+        },
+        "711": {
+            "name": "Pyro Ball",
+            "learned": [815],
+            "type": "Fire",
+            "power": 120
+        },
+        "712": {
+            "name": "Behemoth Blade",
+            "learned": [getForm(888, 1)],
+            "type": "Steel",
+            "power": 100
+        },
+        "713": {
+            "name": "Behemoth Bash",
+            "learned": [getForm(889, 1)],
+            "type": "Steel",
+            "power": 100
+        },
+        "714": {
+            "name": "Aura Wheel",
+            "learned": [877, getForm(877, 1)],
+            "type": "Electric",
+            "power": 110
+        },
+        "715": {
+            "name": "Breaking Swipe",
+            "learned": [ 884, 6, 95, 65639, 112, 147, 148, 149, 151, 208, 230, 248, 254, 330, 334, 350, 373, 380, 381, 384, 445, 464, 483, 484, 487, 610, 611, 612, 635, 643, 644, 646, 66182, 131718, 695, 697, 706, 718, 758, 780, 784, 800, 66336, 197408, 131872, 804, 818, 880, 886, 887, 895 ],
+            "type": "Dragon",
+            "power": 60
+        },
+        "716": {
+            "name": "Branch Poke",
+            "learned": [708, 709, 810, 811, 812],
+            "type": "Grass",
+            "power": 40
+        },
+        "717": {
+            "name": "Overdrive",
+            "learned": [849, getForm(849, 1)],
+            "type": "Electric",
+            "power": 80
+        },
+        "718": {
+            "name": "Apple Acid",
+            "learned": [842],
+            "type": "Grass",
+            "power": 80
+        },
+        "719": {
+            "name": "Grav Apple",
+            "learned": [841],
+            "type": "Grass",
+            "power": 80
+        },
+        "720": {
+            "name": "Spirit Break",
+            "learned": [861],
+            "type": "Fairy",
+            "power": 75
+        },
+        "721": {
+            "name": "Strange Steam",
+            "learned": [getForm(110, 1)],
+            "type": "Fairy",
+            "power": 90
+        },
+        "722": {
+            "name": "Life Dew",
+            "learned": [ 35, 36, 113, 131, 150, 151, 175, 176, 222, 242, 250, 251, 280, 281, 282, 350, 385, 448, 468, 475, 531, 856, 857, 858, 898, 66434, 131970, 7, 8, 9, 90, 91, 315, 407, 406, 704, 705, 706, 728, 729, 730 ],
+            "type": "Water",
+            "power": "---"
+        },
+        "723": {
+            "name": "Obstruct",
+            "learned": [862],
+            "type": "Dark",
+            "power": "---"
+        },
+        "724": {
+            "name": "False Surrender",
+            "learned": [860, 861],
+            "type": "Dark",
+            "power": 80
+        },
+        "725": {
+            "name": "Meteor Assault",
+            "learned": [865],
+            "type": "Fighting",
+            "power": 150
+        },
+        "726": {
+            "name": "Eternabeam",
+            "learned": [890, getForm(890, 1)],
+            "type": "Dragon",
+            "power": 160
+        },
+        "727": {
+            "name": "Steel Beam",
+            "learned": [ 65563, 65564, 65586, 65587, 131124, 81, 82, 208, 212, 227, 303, 304, 305, 306, 374, 375, 376, 379, 385, 436, 437, 448, 462, 483, 485, 530, 589, 597, 598, 599, 600, 601, 66154, 624, 625, 632, 638, 649, 679, 680, 681, 707, 773, 777, 791, 797, 798, 801, 805, 808, 809, 823, 863, 878, 879, 884, 888, 66424, 889, 66425 ],
+            "type": "Steel",
+            "power": 140
+        },
+        "728": {
+            "name": "Dynamax Cannon",
+            "learned": [890, getForm(890, 1)],
+            "type": "Dragon",
+            "power": 100
+        },
+        "729": {
+            "name": "Snipe Shot",
+            "learned": [818],
+            "type": "Water",
+            "power": 80
+        },
+        "730": {
+            "name": "Jaw Lock",
+            "learned": [833, 834],
+            "type": "Dark",
+            "power": 80
+        },
+        "731": {
+            "name": "No Retreat",
+            "learned": [870],
+            "type": "Fighting",
+            "power": "---"
+        },
+            "732": {
+            "name": "Tar Shot",
+            "learned": [839],
+            "type": "Rock",
+            "power": "---"
+        },
+            "733": {
+            "name": "Magic Powder",
+            "learned": [858],
+            "type": "Psychic",
+            "power": "---"
+        },
+            "734": {
+            "name": "Dragon Darts",
+            "learned": [887],
+            "type": "Dragon",
+            "power": 50
+        },
+            "735": {
+            "name": "Teatime",
+            "learned": [855],
+            "type": "Normal",
+            "power": "---"
+        },
+            "736": {
+            "name": "Octolock",
+            "learned": [853],
+            "type": "Fighting",
+            "power": "---"
+        },
+            "737": {
+            "name": "Bolt Beak",
+            "learned": [880, 881],
+            "type": "Electric",
+            "power": 85
+        },
+            "738": {
+            "name": "Fishious Rend",
+            "learned": [882, 883],
+            "type": "Water",
+            "power": 85
+        },
+        "739": {
+            "name": "Court Change",
+            "learned": [815],
+            "type": "Normal",
+            "power": "---"
+        },
+        "740": {
+            "name": "Stuff Cheeks",
+            "learned": [ 819, 820 ],
+            "type": "Normal",
+            "power": "---"
+        },
+        "741": {
+            "name": "Wicked Blow",
+            "learned": [892],
+            "type": "Dark",
+            "power": 75
+        },
+        "742": {
+            "name": "Surging Strikes",
+            "learned": [66428],
+            "type": "Water",
+            "power": 25 
+        },
+        "743": {
+            "name": "Freezing Glare",
+            "learned": [65680],
+            "type": "Psychic",
+            "power": 90
+        },
+        "744": {
+            "name": "Thunderous Kick",
+            "learned": [65681],
+            "type": "Fighting",
+            "power": 90
+        },
+        "745": {
+            "name": "Fiery Wrath",
+            "learned": [65682],
+            "type": "Dark",
+            "power": 90
+        },
+        "746": {
+            "name": "Thunder Cage",
+            "learned": [894],
+            "type": "Electric",
+            "power": 80
+        },
+        "747": {
+            "name": "Dragon Energy",
+            "learned": [895],
+            "type": "Dragon",
+            "power": 150
+        },
+        "748": {
+            "name": "Glacial Lance",
+            "learned": [66434],
+            "type": "Ice",
+            "power": 120
+        },
+        "749": {
+            "name": "Astral Barrage",
+            "learned": [131970],
+            "type": "Ghost",
+            "power": 120
+        },
+        "750": {
+            "name": "Shell Side Arm",
+            "learned": [131152],
+            "type": "Poison",
+            "power": 90
+        },
+        "751": {
+            "name": "Eerie Spell",
+            "learned": [65735],
+            "type": "Psychic",
+            "power": 80
+        },
+        "752": {
+            "name": "Terrain Pulse",
+            "learned": [ 3, 9, 103, 65639, 108, 115, 143, 151, 206, 295, 448, 463, 486, 66154, 692, 693, 703, 716, 719, 765, 770, 772, 773, 876, 66412 ],
+            "type": "Normal",
+            "power": 50
+        },
+        "753": {
+            "name": "Burning Jealousy",
+            "learned": [ 37, 38, 65589, 65641, 126, 136, 146, 151, 324, 435, 442, 467, 485, 510, 555, 131627, 570, 571, 607, 608, 609, 631, 727, 776, 778, 828, 859, 860, 861, 864 ],
+            "type": "Fire",
+            "power": 70
+        },
+        "754": {
+            "name": "Flip Turn",
+            "learned": [ 7, 8, 9, 55, 116, 117, 118, 119, 120, 121, 134, 141, 151, 230, 260, 318, 319, 350, 550, 647, 690, 691, 692, 693, 728, 729, 730, 746, 847 ],
+            "type": "Water",
+            "power": 60
+        },
+        "755": {
+            "name": "Grassy Glide",
+            "learned": [ 1, 2, 3, 43, 44, 45, 102, 103, 65639, 114, 151, 182, 251, 252, 253, 254, 270, 271, 272, 273, 274, 275, 315, 406, 407, 420, 421, 459, 460, 465, 470, 546, 547, 548, 549, 556, 640, 708, 709, 710, 711, 722, 723, 724, 753, 754, 761, 762, 763, 764, 781, 810, 811, 812, 829, 830, 831, 832, 840, 841, 842, 865, 893 ],
+            "type": "Grass",
+            "power": 60
+        },
+        "756": {
+            "name": "Rising Voltage",
+            "learned": [ 25, 26, 65562, 81, 82, 125, 135, 145, 151, 170, 171, 243, 309, 310, 403, 404, 405, 462, 466, 479, 262623, 131551, 197087, 328159, 66015, 587, 595, 596, 599, 600, 601, 642, 644, 694, 695, 702, 736, 737, 738, 777, 796, 807, 835, 836, 849, 66385, 871, 877, 880, 881, 894 ],
+            "type": "Electric",
+            "power": 70
+        },
+        "757": {
+            "name": "Coaching",
+            "learned": [ 62, 66, 67, 68, 106, 107, 65681, 151, 214, 237, 256, 257, 447, 448, 453, 454, 475, 532, 533, 534, 538, 539, 559, 560, 619, 620, 638, 639, 640, 647, 674, 675, 701, 759, 760, 766, 783, 784, 794, 795, 802, 807, 815, 852, 853, 865, 870, 889, 66425, 891, 892, 66428 ],
+            "type": "Fighting",
+            "power": "---"
+        },
+        "758": {
+            "name": "Scorching Sands",
+            "learned": [ 6, 27, 28, 31, 34, 38, 50, 65586, 51, 65587, 59, 78, 95, 104, 105, 65641, 111, 112, 126, 136, 146, 151, 208, 244, 250, 324, 328, 329, 330, 343, 344, 383, 443, 444, 445, 449, 450, 464, 467, 485, 494, 529, 530, 551, 552, 553, 622, 623, 631, 643, 660, 718, 721, 727, 769, 770, 776, 815, 838, 839, 843, 844, 850, 851 ],
+            "type": "Ground",
+            "power": 70
+        },
+        "759": {
+            "name": "Dual Wingbeat",
+            "learned": [ 6, 12, 35, 36, 83, 65619, 123, 142, 144, 65680, 145, 65681, 146, 65682, 149, 151, 163, 164, 169, 176, 177, 178, 206, 212, 225, 226, 227, 249, 250, 251, 278, 279, 291, 329, 330, 333, 334, 373, 380, 381, 415, 416, 468, 484, 487, 519, 520, 521, 527, 528, 561, 566, 567, 587, 621, 627, 628, 629, 630, 635, 637, 643, 644, 646, 66182, 131718, 661, 662, 663, 701, 714, 715, 717, 722, 723, 724, 738, 742, 743, 792, 794, 804, 821, 822, 823, 841, 845, 865, 873 ],
+            "type": "Flying",
+            "power": 40
+        },
+        "760": {
+            "name": "Meteor Beam",
+            "learned": [ 35, 36, 95, 112, 121, 138, 139, 140, 141, 142, 151, 185, 208, 213, 222, 65758, 306, 337, 338, 345, 346, 347, 348, 369, 375, 376, 377, 379, 384, 385, 437, 464, 524, 525, 526, 558, 564, 565, 566, 567, 605, 606, 689, 696, 697, 698, 699, 703, 719, 791, 792, 793, 797, 800, 66336, 197408, 131872, 805, 834, 837, 838, 839, 864, 874, 880, 881, 882, 883, 890 ],
+            "type": "Rock",
+            "power": 120
+        },
+        "761": {
+            "name": "Skitter Smack",
+            "learned": [ 53, 65589, 92, 93, 94, 151, 206, 213, 224, 290, 291, 292, 350, 355, 356, 422, 423, 451, 452, 477, 510, 543, 544, 545, 551, 552, 553, 557, 558, 570, 571, 595, 596, 607, 608, 609, 616, 617, 632, 636, 637, 704, 705, 706, 708, 709, 710, 711, 718, 724, 736, 737, 738, 751, 752, 757, 758, 767, 768, 795, 802, 833, 834, 843, 844, 850, 851, 853, 872, 873 ],
+            "type": "Bug",
+            "power": 70
+        },
+        "762": {
+            "name": "Triple Axel",
+            "learned": [ 65563, 65564, 65574, 65658, 144, 151, 215, 225, 237, 281, 282, 350, 427, 428, 461, 471, 475, 478, 572, 573, 615, 728, 729, 730, 762, 763, 795, 866, 873 ],
+            "type": "Ice",
+            "power": 20
+        },
+        "763": {
+            "name": "Corrosive Gas",
+            "learned": [ 45, 73, 92, 93, 94, 109, 110, 65646, 151, 434, 435, 454, 568, 569, 758, 793, 799 ],
+            "type": "Poison",
+            "power": "---"
+        },
+        "764": {
+            "name": "Expanding Force",
+            "learned": [ 65562, 40, 64, 65, 65613, 65614, 79, 65615, 80, 131152, 103, 121, 122, 65658, 124, 65680, 150, 151, 177, 178, 196, 199, 65735, 251, 280, 281, 282, 343, 344, 375, 376, 385, 436, 437, 475, 480, 481, 482, 488, 494, 517, 518, 527, 528, 555, 561, 574, 575, 576, 577, 578, 579, 605, 606, 677, 678, 66214, 686, 687, 765, 791, 792, 800, 806, 825, 826, 856, 857, 858, 866, 876, 66412, 898, 66434, 131970 ],
+            "type": "Psychic",
+            "power": 80
+        },
+        "765": {
+            "name": "Poltergeist",
+            "learned": [ 92, 93, 94, 65641, 151, 292, 302, 355, 356, 442, 477, 478, 479, 262623, 131551, 197087, 328159, 66015, 487, 562, 66098, 563, 592, 593, 607, 608, 609, 622, 623, 708, 709, 710, 711, 724, 769, 770, 781, 792, 802, 854, 855, 864, 867 ],
+            "type": "Ghost",
+            "power": 110
+        },
+        "766": {
+            "name": "Scale Shot",
+            "learned": [ 6, 116, 117, 118, 119, 130, 147, 148, 149, 151, 206, 211, 230, 249, 254, 318, 319, 330, 349, 350, 369, 380, 381, 384, 443, 444, 445, 483, 484, 550, 553, 610, 611, 612, 621, 635, 643, 644, 646, 66182, 131718, 690, 691, 694, 695, 696, 697, 718, 746, 757, 758, 776, 780, 782, 783, 784, 804, 818, 833, 834, 843, 844, 846, 847, 895 ],
+            "type": "Dragon",
+            "power": 25
+        },
+        "767": {
+            "name": "Lash Out",
+            "learned": [ 52, 65588, 131124, 53, 65589, 128, 130, 65682, 151, 197, 215, 248, 65799, 65800, 274, 275, 302, 342, 434, 435, 452, 453, 454, 461, 509, 510, 551, 552, 553, 555, 131627, 559, 560, 566, 567, 570, 571, 618, 66154, 621, 624, 625, 626, 629, 630, 641, 642, 674, 675, 686, 687, 696, 697, 717, 727, 66281, 750, 776, 780, 827, 828, 859, 860, 861, 862, 863, 877, 892, 893, 896, 897, 66434, 131970 ],
+            "type": "Dark",
+            "power": 75
+        },
+        "768": {
+            "name": "Steel Roller",
+            "learned": [ 27, 65563, 28, 65564, 39, 40, 91, 108, 143, 151, 183, 184, 208, 211, 213, 241, 304, 305, 306, 320, 321, 362, 363, 364, 365, 375, 376, 379, 436, 437, 462, 463, 485, 543, 544, 545, 577, 578, 579, 597, 598, 599, 600, 601, 777, 781, 791, 797, 799, 801, 805, 809, 878, 879, 884 ],
+            "type": "Steel",
+            "power": 130
+        },
+        "769": {
+            "name": "Misty Explosion",
+            "learned": [ 35, 36, 39, 40, 65646, 151, 183, 184, 282, 518, 682, 683, 684, 685, 700, 703, 716, 719, 730, 801, 858, 869 ],
+            "type": "Fairy",
+            "power": 100
+        },
+        "770": {
+            "name": "Jungle Healing",
+            "learned": [893],
+            "type": "Grass",
+            "power": "---"
+        },
+        "771": {
+            "name": "Dire Claw",
+            "learned": [903],
+            "type": "Poison",
+            "power": 80
+        },
+        "772": {
+            "name": "Psyshield Bash",
+            "learned": [234, 899],
+            "type": "Psychic",
+            "power": 70
+        },
+        "773": {
+            "name": "Power Shift",
+            "learned": [],
+            "type": "Normal",
+            "power": "---"
+        },
+        "774": {
+            "name": "Stone Axe",
+            "learned": [900],
+            "type": "Rock",
+            "power": 65
+        },
+        "775": {
+            "name": "Mystical Power",
+            "learned": [480, 481, 482],
+            "type": "Psychic",
+            "power": 70
+        },
+        "776": {
+            "name": "Raging Fury",
+            "learned": [65595],
+            "type": "Fire",
+            "power": 120
+        },
+        "777": {
+            "name": "Wave Crash",
+            "learned": [902, 66438],
+            "type": "Water",
+            "power": 120
+        },
+        "778": {
+            "name": "Chloroblast",
+            "learned": [65637],
+            "type": "Grass",
+            "power": 150
+        },
+        "779": {
+            "name": "Mountain Gale",
+            "learned": [66249],
+            "type": "Ice",
+            "power": 100
+        },
+        "780": {
+            "name": "Victory Dance",
+            "learned": [66085],
+            "type": "Fighting",
+            "power": "---"
+        },
+        "781": {
+            "name": "Headlong Rush",
+            "learned": [389, 901],
+            "type": "Ground",
+            "power": 120
+        },
+        "782": {
+            "name": "Barb Barrage",
+            "learned": [65747, 904],
+            "type": "Poison",
+            "power": 60
+        },
+        "783": {
+            "name": "Esper Wing",
+            "learned": [66164],
+            "type": "Psychic",
+            "power": 80
+        },
+        "784": {
+            "name": "Bitter Malice",
+            "learned": [66106, 66107],
+            "type": "Ghost",
+            "power": 75
+        },
+        "785": {
+            "name": "Shelter",
+            "learned": [704, 705, 706, 66241, 66242],
+            "type": "Steel",
+            "power": "---"
+        },
+        "786": {
+            "name": "Triple Arrows",
+            "learned": [66260],
+            "type": "Fighting",
+            "power": 90
+        },
+        "787": {
+            "name": "Infernal Parade",
+            "learned": [65693],
+            "type": "Ghost",
+            "power": 60
+        },
+        "788": {
+            "name": "Ceaseless Edge",
+            "learned": [66039],
+            "type": "Dark",
+            "power": 65
+        },
+        "789": {
+            "name": "Springtide Storm",
+            "learned": [905, 66441],
+            "type": "Fairy",
+            "power": 100
+        },
+        "790": {
+            "name": "Bleakwind Storm",
+            "learned": [641, 66177],
+            "type": "Flying",
+            "power": 100
+        },
+        "791": {
+            "name": "Wildbolt Storm",
+            "learned": [642, 66178],
+            "type": "Electric",
+            "power": 100
+        },
+        "792": {
+            "name": "Sandsear Storm",
+            "learned": [645, 66181],
+            "type": "Ground",
+            "power": 100
+        },
+        "793": {
+            "name": "Lunar Blessing",
+            "learned": [488],
+            "type": "Psychic",
+            "power": "---"
+        },
+        "794": {
+            "name": "Take Heart",
+            "learned": [489, 490],
+            "type": "Psychic",
+            "power": "---"
+        },
+        "795": {
+            "name": "Tera Blast",
+            "learned": [], // literally every mon or something
+            "type": "Normal",
+            "power": 80
+        },
+        "796": {
+            "name": "Silk Trap",
+            "learned": [919],
+            "type": "Bug",
+            "power": "---"
+        },
+        "797": {
+            "name": "Axe Kick",
+            "learned": [308, 66085, 921],
+            "type": "Fighting",
+            "power": 120
+        },
+        "798": {
+            "name": "Last Respects",
+            "learned": [925],
+            "type": "Ghost",
+            "power": 50
+        },
+        "799": {
+            "name": "Lumina Crash",
+            "learned": [927],
+            "type": "Psychic",
+            "power": 80
+        },
+        "800": {
+            "name": "Order Up",
+            "learned": [931],
+            "type": "Dragon",
+            "power": 80
+        },
+        "801": {
+            "name": "Jet Punch",
+            "learned": [934, 66470],
+            "type": "Water",
+            "power": 60
+        },
+        "802": {
+            "name": "Spicy Extract",
+            "learned": [939],
+            "type": "Grass",
+            "power": "---"
+        },
+        "803": {
+            "name": "Spin Out",
+            "learned": [942, 943],
+            "type": "Steel",
+            "power": 100
+        },
+        "804": {
+            "name": "Population Bomb",
+            "learned": [945, 946, 66482],
+            "type": "Normal",
+            "power": 20
+        },
+        "805": {
+            "name": "Ice Spinner",
+            "learned": [947, 948], // TM lines unadded
+            "type": "Ice",
+            "power": 80
+        },
+        "806": {
+            "name": "Glaive Rush",
+            "learned": [951],
+            "type": "Dragon",
+            "power": 120
+        },
+        "807": {
+            "name": "Revival Blessing",
+            "learned": [923, 956],
+            "type": "Normal",
+            "power": "---"
+        },
+        "808": {
+            "name": "Salt Cure",
+            "learned": [963, 964, 965],
+            "type": "Rock",
+            "power": 40
+        },
+        "809": {
+            "name": "Triple Dive",
+            "learned": [930],
+            "type": "Water",
+            "power": 30
+        },
+        "810": {
+            "name": "Mortal Spin",
+            "learned": [967],
+            "type": "Poison",
+            "power": 30
+        },
+        "811": {
+            "name": "Doodle",
+            "learned": [969],
+            "type": "Normal",
+            "power": "---"
+        },
+        "812": {
+            "name": "Fillet Away",
+            "learned": [932],
+            "type": "Normal",
+            "power": "---"
+        },
+        "813": {
+            "name": "Kowtow Cleave",
+            "learned": [1008],
+            "type": "Dark",
+            "power": 85
+        },
+        "814": {
+            "name": "Flower Trick",
+            "learned": [908],
+            "type": "Grass",
+            "power": 70
+        },
+        "815": {
+            "name": "Torch Song",
+            "learned": [911],
+            "type": "Fire",
+            "power": 80
+        },
+        "816": {
+            "name": "Aqua Step",
+            "learned": [914],
+            "type": "Water",
+            "power": 80
+        },
+        "817": {
+            "name": "Raging Bull",
+            "learned": [128, 65664, 131200, 196736],
+            "type": "Normal",
+            "power": 90
+        },
+        "818": {
+            "name": "Make It Rain",
+            "learned": [977],
+            "type": "Steel",
+            "power": 120
+        },
+        "819": {
+            "name": "Ruination",
+            "learned": [994, 995, 996, 997],
+            "type": "Dark",
+            "power": "---"
+        },
+        "820": {
+            "name": "Collision Course",
+            "learned": [998, 66534, 132070, 197606, 263142],
+            "type": "Fighting",
+            "power": 100
+        },
+        "821": {
+            "name": "Electro Drift",
+            "learned": [999, 66535, 132071, 197607, 263143],
+            "type": "Electric",
+            "power": 100
+        },
+        "822": {
+            "name": "Shed Tail",
+            "learned": [944, 953],
+            "type": "Normal",
+            "power": "---"
+        },
+        "823": {
+            "name": "Chilly Reception",
+            "learned": [199, 65735],
+            "type": "Ice",
+            "power": "---"
+        },
+        "824": {
+            "name": "Tidy Up",
+            "learned": [946, 66482],
+            "type": "Normal",
+            "power": "---"
+        },
+        "825": {
+            "name": "Snowscape",
+            "learned": [902, 66438, 947, 948, 932, 950, 951, 952, 982, 992, 995], // all pokemon with hail before unadded
+            "type": "",
+            "power": 0
+        },
+        "826": {
+            "name": "Pounce",
+            "learned": [], // way too many
+            "type": "Bug",
+            "power": 50
+        },
+        "827": {
+            "name": "Trailblaze",
+            "learned": [], // way too many
+            "type": "Grass",
+            "power": 50
+        },
+        "828": {
+            "name": "Chilling Water",
+            "learned": [], // way too many
+            "type": "Water",
+            "power": 50
+        },
+        "829": {
+            "name": "Hyper Drill",
+            "learned": [206, 917, 66453],
+            "type": "Normal",
+            "power": 100
+        },
+        "830": {
+            "name": "Twin Beam",
+            "learned": [203, 928],
+            "type": "Psychic",
+            "power": 40
+        },
+        "831": {
+            "name": "Rage Fist",
+            "learned": [57, 1010],
+            "type": "Ghost",
+            "power": 50
+        },
+        "832": {
+            "name": "Armor Cannon",
+            "learned": [1004],
+            "type": "Fire",
+            "power": 120
+        },
+        "833": {
+            "name": "Bitter Blade",
+            "learned": [1005],
+            "type": "Fire",
+            "power": 90
+        },
+        "834": {
+            "name": "Double Shock",
+            "learned": [956],
+            "type": "Electric",
+            "power": 120
+        },
+        "835": {
+            "name": "Gigaton Hammer",
+            "learned": [1002],
+            "type": "Steel",
+            "power": 160
+        },
+        "836": {
+            "name": "Comeuppance",
+            "learned": [228, 229, 430, 66106, 66107, 973],
+            "type": "Dark",
+            "power": "---"
+        },
+        "837": {
+            "name": "Aqua Cutter",
+            "learned": [475, 912, 913, 914, 932],
+            "type": "Water",
+            "power": 70
+        },
+        "838": {
+            "name": "Blazing Torque", // could give these torque moves to revavroom but in-game they're only usable by the boss-only starmobile revavroom
+            "learned": [],
+            "type": "Fire",
+            "power": 80
+        },
+        "839": {
+            "name": "Wicked Torque",
+            "learned": [],
+            "type": "Dark",
+            "power": 80
+        },
+        "840": {
+            "name": "Noxious Torque",
+            "learned": [],
+            "type": "Poison",
+            "power": 100
+        },
+        "841": {
+            "name": "Combat Torque",
+            "learned": [],
+            "type": "Fighting",
+            "power": 100
+        },
+        "842": {
+            "name": "Magical Torque",
+            "learned": [],
+            "type": "Fairy",
+            "power": 100
+        }
+        /* template
+        
+        "": {
+            "name": "",
+            "learned": [],
+            "type": "",
+            "power": 0
+        },
+        */
+    };
+    var moveBlacklist = { // move: [pokemon list]
+        307: [255, 256, 390, 391, 498, 499, 653, 654, 725, 726],
+        308: [258, 289, 393, 394, 501, 502, 656, 657, 728, 729],
+        338: [252, 253, 387, 388, 495, 496, 650, 651, 722, 723],
+        431: [3, 9, 31, 34, 55, 56, 57, 59, 62, 66, 67, 68, 104, 105, 106, 107, 113, 115, 125, 126, 127, 139, 141, 143, 150, 151, 154, 157, 160, 181, 210, 217, 242, 243, 244, 245, 248, 254, 257, 260, 272, 288, 289, 295, 296, 297, 306, 335, 377, 378, 379, 383, 387, 388, 389, 390, 391, 392, 395, 408, 409, 446, 448, 452, 453, 454, 460, 466, 467, 473, 485, 486, 487, 491, 493],
+        457: [299, 476],
+        512: [59],
+        571: [401],
+        608: [133, 134, 135, 136, 196, 197, 470, 471, 700],
+        610: [133, 134, 135, 136, 196, 197, 470, 471, 700]
+    };
     var updatedAbilities = {
         "109": [26, 256, 1], // Koffing and Weezing get new abilities in Gen 8
         "110": [26, 256, 1]
@@ -8916,6 +6926,2001 @@ function Safari() {
         "681": [60, 50, 140, 50, 140, 60], // Aegislash was nerfed in Gen 8 (Sword & Shield)
         "66217": [60, 140, 50, 140, 50, 60],
         "488": [120, 70, 110, 75, 120, 85] // Cresselia's defences nerfed in Gen 9
+    };
+    function getCrystalEffect(num) {
+        for (var x in zCrystalData) {
+            if (!(zCrystalData[x].special)) {
+                continue;
+            }
+            if (zCrystalData[x].special.contains(num)) {
+                return x;
+            }
+        }
+        return type1(num);
+    };
+
+    var itemHelp, perkHelp, ballHelp, berryHelp;
+    var allBalls;
+    updateItemData();
+    var updateItemHelp = function() {
+        itemHelp = {
+            silver: "Rare coins that can be used to purchase valuable items. Obtained from quests and contests.",
+            bait: "A tasty treat used to attract wild Pokémon. Has " + an(itemData.bait.successRate*100) + "% success rate with an approximate " + itemData.bait.successCD + " second cooldown on success, and an approximate " + itemData.bait.failCD + " second cooldown on failure. Use with \"/bait\".",
+            golden: "A premium bait used to attract wild Pokémon. Has " + an(itemData.golden.successRate*100) + "% success rate and can be used more often than normal Baits. Use with \"/gbait\".",
+            deluxe: "A customizable bait. Made from /quest baking.",
+            gacha: "A ticket that allows you to try the Gachapon Machine to get a random reward! " + cdSeconds("gacha") + " Use with \"/gacha\".",
+            rock: "A small rock that can be thrown at another player for amusement. " + cdSeconds("rock", "throwCD") + " Use with \"/rock [Player]\". Can also be used to scare unwanted Pokémon away with \"/rockscare\". You can only scare Pokémon that haven't been interacted with for " + plural(rockScareThreshold/1000, "second") + ".",
+            rare: "Can be smashed and transformed into around " + (itemData.rare.charges + Math.floor(itemData.rare.maxVar/2)) + " Candy Dusts. Use with \"/use rare\". Found with Itemfinder and obtained in Pyramid.",
+            dust: "What you obtain after smashing a Rare Candy into powder. Has the power to evolve Pokémon. Use with \"/evolve [Pokémon]\".",
+            spray: "A spray that affects the genetic code of a Pokémon, making them devolve and generating some Candy Dust. Use with \"/spray [Pokémon]\". Obtained from Prize Packs and Pyramid.",
+            mega: "A mysterious stone that allows certain Pokémon to undergo a powerful transformation. It is said to wear off in approximately " + itemData.mega.duration + " days. Use with \"/mega [Pokémon]\". Obtained from Official Events, Pyramid, Alchemy, and Prize Packs.",
+            valuables: "The items Pearl, Stardust, Big Pearl, Star Piece, Nugget, Big Nugget and Comet Shard can be sold for a varying amount of money. Sell with \"/pawn [Item]\". Obtained from Gachapon, found with Itemfinder, and rewarded from Contests.",
+            itemfinder: "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day. Use with \"/finder\".",
+            gem: "An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day! Use with \"/use gem\". Obtained from Gachapon and quests.",
+            box: "Increases number of Pokémon that can be owned by " + itemData.box.bonusRate + " each. Can only acquire by purchasing.",
+            stick: "Legendary Stick of the almighty Farfetch'd that provides a never ending wave of prods and pokes unto your enemies and other nefarious evil-doers. " + cdSeconds("stick") + " Use with \"/stick [Player]\".",
+            salt: "A pile of salt that makes the holder increasingly unlucky the more they have.",
+            burn: "A potion used to purify Burning Aura into Brilliant Aura, in exchange, you also get Brilliant Aura. Use /burn [player] to give it to someone who may need it. Obtainable via Gachapon.",
+            entry: "A Raffle Entry that can win a spectacular prize if you own the correct one at the time of drawing. Simply hold onto your ticket safely until the time of the drawing. Nothing more is needed on your part!",
+            coupon: "A coupon holding a special offer to those interested in decorating their Secret Base. Can be traded for a Decoration at the Decor.",
+            fossil: "A rare fossil often desired by archaeologists. Use it to enter the Pyramid without paying the entry fee by typing \"/quest pyramid:fossil:Name1:Name2\". You also receive " + (itemData.fossil.bonusRate * 100) + "% more points during that run.",
+            form: "A form that you can fill to start an event. Use it with  \"/use form\" for more details.",
+            pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack:[Amount to Use]\". Obtained from Official Events, Pyramid, and Detective",
+            fragment: "A fragment of a broken Poké Ball. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball! Obtained from Itemfinder and when obtaining a Master Ball while having one already.",
+            materia: "A basic substance required for various alchemic creations. Obtained from Alchemy quest.",
+            philosopher: "A legendary pink gem that is said to be capable of performing outstanding transformations. Obtained from League quest.",
+            philosopherpebble: "An incompletely crystallized Philosopher's Stone. It still holds a fraction of the complete Stone's transformative power, so maybe you can make use of it somehow... Obtained from the weekly Celebrity leaderboards.",
+            ash: "An extremely rare material useful in transmutation. Obtained from clearing Celebrity quest on Normal or harder.",
+            egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg:[Amount to Use]\". Obtained from Pyramid quest.",
+            bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright:[Amount to Use]\". Obtained from Pyramid quest.",
+            water: "Water with high mineral content that increases your stamina at Pyramid by " + (itemData.water.bonusRate * 100) + "%. Use with \"/use water\".",
+            soda: "Carbonated drink that reduces remaining cooldown for a quest, auction, burn heal or costume change to " + (itemData.soda.bonusRate * 100) + "%. Use with \"/use soda:[Quest]\". Obtained from Trivia event games.",
+            cookie: "A delicious cookie that brings good luck in the form of a random buff for a limited time when eaten. Use with \"/use cookie\" (using another one will replace the previous effect).",
+            cherry: "A tasty treat that keeps you energized during a Tower Challenge allowing you to deal more damage. Use with \"/use cherry\". Obtained from Alchemy.",
+            blkapricorn: "An acorn-shaped fruit that can be crafted into a Poké Ball. Has a very strong flavor. Found with Itemfinder.",
+            whtapricorn: "An acorn-shaped fruit that can be crafted into a Poké Ball. Has a very weak flavor. Obtained from Gachapon.",
+            shady: "A suspicious coin that's only accepted by some mongers. Obtained from Mafia Event games.",
+            mail: "An envelope that can be used to send a message to another player's inbox. Use it with \"/mail Name:Message\".",
+            crystal: "A mysterious crystal that gives a bonus based on the active Pokémon's primary type for " + itemData.crystal.duration + " minutes. Type \"/use crystal\" for more details.",
+            scale: "A mysterious scale that shines in rainbow colors. Use with \"/use scale\" to make your active Pokémon's color count as a different one for " + itemData.scale.duration + " minutes.",
+            mushroom: "A large and rare mushroom. Eating one with \"/use mushroom\" makes you think you are in a different theme for the next " + itemData.mushroom.duration + " Pokémon that you bait.",
+            brush: "A soft brush ideal for editing photos. Type \"/use brush\" for more details.",
+            pokeblock: "A yummy nom. Feed it to your Pokémon in daycare!",
+            dew: "Can be used to make special Poké Balls. Use /quest arborist for more details.",
+            hdew: "Can be used to make special Poké Balls. Use /quest arborist for more details.",
+            ldew: "A mysterious substance radiating an aura of light. Can be used to create extremely rare Poké Balls. Use /quest arborist for more details.",
+            easteregg: "A colorful ovaloid with surprising goodies inside. Can be used with /use easteregg, /use easteregg:10, /use easteregg:100, and /use easteregg:1000. Don't open until Easter!",
+            //candybag: "A basket full of goodies. Can be used with /use candybag, /use candybag:10, /use candybag:100, and /use candybag:1000. Don't open until Halloween!",
+            lucky: "Coins used to bet on which Celebrity you think will win the tournament.",
+            celebrityTicket: "A ticket to battle the Celebrities. It can be used with /use celebrityticket to make your next challenge a reward run, and /use celebrityticket:[region] to pick a region to challenge next!",
+            moonshard: "A shard that holds the power of the moon. Can unlock special Pokémon skills. Use /quest idol for more details.",
+            sunshard: "A shard that holds the power of the sun. Can unlock special Pokémon skills. Use /quest idol for more details.",
+            battlepoint: "A unit of currency used in the Battle Tower shop. Obtainable from the Tower quest.",
+            terashard: "A shard broken off from a Tera Jewel, which holds some of the mysterious Terastal energy normally found only in Paldea. Obtained from wild Terastallized Pokémon.",
+            terajewel: "A brilliant jewel that holds some of the mysterious Terastal energy normally found only in Paldea. The energy is said to contain the power to crystallize, but it is too unstable to be of use in its current state.",
+            teraorb: "An orb that allows you to wield the Terastal energy of the Tera Jewel contained within it. What effect might it have? You can choose to activate or deactivate the orb with \"/use orb\". When activated, you will automatically deploy the orb on the next Pokémon you bait."
+        };
+        perkHelp = {
+            amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "% | With Rich Girl Costume: " + itemData.amulet.maxRate * 100 * costumeData["rich"].rate + "%). Obtained from Gachapon.",
+            soothe: "A bell with a comforting chime that calms the owner and their Pokémon. Reduces delay after a successful catch by " + toFixed(itemData.soothe.bonusRate * 100, 2) + "% (Max Rate: " + itemData.soothe.maxRate * 100 + "% | With Rich Girl Costume: " + itemData.soothe.maxRate * 100 * costumeData["rich"].rate + "%). Obtained from Gachapon.",
+            scarf: "A fashionable scarf made of the finest silk. Wearing it allows you to lead a more luxurious life and grants you " + itemData.scarf.bonusRate * 100 + "% more money from Luxury Balls (Max Rate: " + itemData.scarf.maxRate * 100 + "% | With Backpacker Costume: " + itemData.scarf.maxRate * 100 * costumeData["backpacker"].rate + "%). Obtained from Gachapon.",
+            battery: " A high-capacity battery that can increase the uses of Item Finder by " + itemData.battery.bonusRate + " per day. (Max Rate: " + itemData.battery.maxRate + " | With Backpacker Costume: " + itemData.battery.maxRate * costumeData["backpacker"].rate + "). Obtained from Gachapon.",
+            honey: "Sweet-smelling Combee Honey that, when applied to bait, increases the chance of a Pokémon being attracted by " + itemData.honey.bonusRate * 100 + "% (Max Rate: " + itemData.honey.maxRate * 100 + "% | With Backpacker Costume: " + itemData.honey.maxRate * 100 * costumeData["backpacker"].rate + "%). Found with Itemfinder.",
+            crown: "A rare crown with mysterious properties that brings good fortune to its owner. Increases rate of pawned items by " + itemData.crown.bonusRate * 100 + "% (Max Rate: " + itemData.crown.maxRate * 100 + "% | With Rich Girl Costume: " + itemData.crown.maxRate * 100 * costumeData["rich"].rate + "%). Found with Itemfinder.",
+            eviolite: "A mysterious gem that automatically powers up Pokémon with 420 BST or less by " + itemData.eviolite.bonusRate + ". (Max Rate: " + itemData.eviolite.maxRate + " | With Preschooler Costume: " + itemData.eviolite.maxRate * costumeData["preschooler"].rate2 + "). Found with Itemfinder.",
+            lens: "A device that allows user to take photos of wild Pokémon. Chance for better quality photos increase for each additional " + itemData.lens.fullName + ". Obtained from Journal quest."
+        };
+        ballHelp = {
+            safari: "A standard issue Poké Ball used to catch Pokémon. " + cdSeconds("safari"),
+            great: "A Poké Ball that has a slightly increased catch rate. " + cdSeconds("great"),
+            ultra: "A high functioning Poké Ball that has a better catch rate than a Great Ball. " + cdSeconds("ultra"),
+            master: "An extremely rare Poké Ball that never fails to catch. " + cdSeconds("master") + " Obtained from Gachapon and Alchemist.",
+            premier: "A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type or a single-type Pokémon is active. " + cdSeconds("premier") + " Obtained by purchasing a lot of Poké Balls from the shop and Pyramid.",
+            luxury: "A comfortable Poké Ball with an increased catch rate that is said to make one wealthy. " + cdSeconds("luxury") + " Obtained from Arborist and Itemfinder.",
+            myth: "An ancient Poké Ball that ignores modern era catch modifiers. Said to be particularly effective against rare Pokémon. " + cdSeconds("myth") + " Obtained from Arborist.",
+            quick: "A somewhat different Poké Ball that tends to get better priority during throws. " + cdSeconds("quick") + " Obtained from Arborist and Pyramid.",
+            level: "A slickly designed Poké Ball that raises the stat levels of the lead Pokémon. " + cdSeconds("level") + " Obtained from Arborist and Pyramid.",
+            clone: "A mysterious Poké Ball with a very low catch rate that can duplicate a pokémon's D.N.A. " + cdSeconds("clone") + " Obtained from Arborist and Pyramid.",
+            spy: "A stealthy Poké Ball that cannot be tracked. A successful snag with this ball allows for quick follow-up action, but it has low priority. " + cdSeconds("spy") + ". Obtained from Arborist and Pyramid.",
+            mono: "A monochromatic Poké Ball that enables your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Arborist.",
+            lightning: "A Poké Ball with a lightning bolt design that comes out in a flash. " + cdSeconds("lightning") + " Obtained from Arborist.",
+            heavy: "An industrial Poké Ball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("heavy") + " Cooldown is decreased when throwing this Ball on heavier Pokémon. Obtained from Arborist.",
+            photo: "A Poké Ball riddled with memory chips capable of identifying Pokémon stored in the camera and catching them with higher likelihood. " + cdSeconds("photo") + " Obtained from Arborist.",
+            mirror: "A Poké Ball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. Doubly effective in Similarity Mode. " + cdSeconds("mirror") + " Obtained from Arborist.",
+            love: "A Poké Ball with a pink heart design that works better if the lead is in the same egg group as the target. It also increases the well-being of Pokémon in the daycare. " + cdSeconds("love") + " Obtained from Arborist.",
+            uturn: "A Poké Ball with a dynamic design that enables the lead Pokémon to switch out after a successful catch. Catch rate is increased if the lead Pokémon is capable of learning " + readable([369, 521, 754, 226, 100, 600, 822, 823].map(moveOff), "or") + ". " + cdSeconds("uturn") + " Obtained from Arborist.",
+            inver: "A mysterious Poké Ball that reverses the type advantage " + cdSeconds("inver") + " Obtained from Arborist.",
+            spirit: "A magical Poké Ball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events. This Ball will return to you if it fails to catch a Pokémon. (Max capacity: 10)",
+            cherish: "A homey Poké Ball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Arborist. This Ball will return to you if it fails to catch a Pokémon."
+        };
+        berryHelp = {
+            oran:"A berry that can be used as an ingredient in bait. Can also restore 50 HP to the holder during rotation batttles. Give berries with /giveitem [berry].",
+            pecha:"A berry that can be used as an ingredient in bait. Can also help a Pokémon overcome a nerf in contests. Give berries with /giveitem [berry].",
+            razz:"A berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
+            bluk:"A berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
+            leppa:"A berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
+            tamato:"An uncommon berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
+            pinap:"An uncommon berry that can be used as an ingredient in bait. Allows its holder to fight better in the Battle Tower if its BST is unique on its team. Give berries with /giveitem [berry].",
+            nanab:"An uncommon berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
+            watmel:"An uncommon berry that can be used as an ingredient in bait. When hatching a Pokémon that shares an Egg Group with its holder, it increases the chance of the hatched Pokémon to be Shiny. If multiple Pokémon in your party are holding this berry and have the same Egg Group as the hatched Pokémon, only the first holder's berry will take effect. Give berries with /giveitem [berry].",
+            petaya:"An uncommon berry that can be used as an ingredient in bait. Can help a Pokémon evolve when it assists in captures. Give berries with /giveitem [berry].",
+            miracle:"A rare berry that can be used as an ingredient in bait. Allows its holder to survive a KO-ing move in rotation battles. Give berries with /giveitem [berry].",
+            platinum:"A rare berry that can be used as an ingredient in bait. As an ingredient, it is unmatched, and it can cause the bait to attract rare Pokémon forms."
+        };
+        allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "spirit", "lightning", "level", "photo", "mirror", "uturn", "love", "inver", "cherish", "master"];
+    };
+    updateItemHelp();
+    var currentItems = Object.keys(itemData);
+    var retiredItems = [];
+    var allItems = currentItems.concat(retiredItems, "permfinder");
+    var allCostumes = Object.keys(costumeData);
+
+    var decorations = {};
+    var missionsData = {};
+    var trialsData = {};
+    var SECRET_BASE_WIDTH = 7;
+    var SECRET_BASE_HEIGHT = 5;
+
+
+    /* Wild Pokemon Variables */
+    var shinyChance = 1024; //Chance for Shiny Pokémon
+    var currentPokemon = null;
+    var currentTypeOverride = null;
+    var spiritSpawn = false, wildSpirit = false;
+    var canSpawnTera = false, wildTera = false;
+    var currentExtraBST = 0;
+    var currentPokemonCount = 1;
+    var lastPokemonCount = 1;
+    var currentDisplay = null;
+    var currentDisplayBST = 0;
+    var currentPokemonAction = null;
+    var currentPokemonMood = null;
+    var currentPokemonMoodRate = null;
+    var wildAbilityBoost = 5;
+    var wildAbilityBoostLimit = wildAbilityBoost * 5;
+    var wildBallThrows = {};
+    var currentThrowers = [];
+    var maxThrows = 10;
+    var pokeblockThrows = 0;
+    var currentThrows;
+    var throwAttempts;
+    var preparationPhase = 0;
+    var preparationThrows = {};
+    var bufferThrows = {};
+    var preparationFirst = null;
+    var rockScareThreshold = 15000;
+    var lastWild = 0;
+    var lastWildAction = 0;
+    var wildEvent = false;
+    var currentBaiter = null;
+    var resolvingThrows = false;
+    var catchTierChance = [0.20, 0.18, 0.14, 0.10, 0.065, 0.0275];
+    var tiers = ["SM LC", "SM PU", "SM NU", "SM LU", "SM UU", "SM OU", "SM Ubers"];
+    
+    /* Leaderboard Variables */
+    var celebrityPKs = {};
+    var recentPlayers = {};
+    var leaderboards = {};
+    var monthlyLeaderboards = {};
+    var lastLeaderboards;
+    var lastLeaderboardUpdate;
+    //Adding a variable that already exists on player.records here will automatically make it available as a leaderboard
+    //To add stuff not on player.records, you must add an exception on this.updateLeaderboards()
+    var leaderboardTypes = {
+        // totalPokes: { desc: "by Pokémon owned", alts: ["totalpokes"], alias: "owned" },
+        pokesCaught: { desc: "by successful catches", alts: ["caught", "pokescaught"], alias: "caught" },
+        // pokesEvolved: { desc: "by successful evolutions", alts: ["evolve", "evolved", "pokesevolved"], alias: "evolved" },
+        // bst: { desc: "by total BST of Pokémon owned", alts: [], alias: "bst" },
+        contestsWon: { desc: "by contests won", alts: ["contest", "contests", "contestswon"], alias: "contest" },
+        earnings: { desc: "by money earned from NPC, quests, events and Luxury Balls", alts: ["earned", "earnings", "money", "$"], alias: "earnings", isMoney: true },
+        // money: { desc: "by money", alts: ["$"], alias: "money", isMoney: true },
+        // pokeSoldEarnings: { desc: "by money gained with selling Pokémon", alts: ["sold", "sell", "pokesoldearnings"], alias: "sold", isMoney: true },
+        // luxuryEarnings: { desc: "by money gained with Luxury Balls", alts: ["luxury", "luxuryball", "luxury ball", "luxuryearnings"], alias: "luxury", isMoney: true },
+        // consecutiveLogins: { desc: "by longest streak of consecutive days login", alts: ["login", "logins", "consecutivelogins"], alias: "login" },
+        pokesCloned: { desc: "by successful clones", alts: ["clone", "clones", "cloned", "clone ball", "pokescloned"], alias: "cloned" },
+        // gachasUsed: { desc: "by tickets used for Gachapon", alts: ["gacha", "gachasused"], alias: "gacha" },
+        // itemsFound: { desc: "by items found with Itemfinder", alts: ["found", "itemsfound", "items found"], alias: "found" },
+        collectorEarnings: { desc: "by money received from the Collector", alts: ["collector", "collector money", "collectormoney", "collector $", "collectorearnings"], alias: "collector", isMoney: true },
+        // collectorGiven: { desc: "by Pokémon given to the Collector", alts: ["collector", "collector pokémon", "collectorpokémon", "collector pokemon", "collector poke", "collectorpoke", "collectorgiven"], alias: "collector" },
+        towerHighest: { desc: "by best old Battle Tower run", alts: ["old tower", "oldbattletower", "old battle tower", "oldtowerhighest"], alias: "old tower" },
+        towerHighestNew: { desc: "by best Battle Tower run", alts: ["tower", "battletower", "battle tower", "towerhighest"], alias: "tower" },
+        arenaPoints: { desc: "by Arena points", alts: ["points", "arena", "arenapoints", "arena points"], alias: "arena points" },
+        salt: { desc: "by saltiest players", alts: ["salt", "salty"], alias: "salt" },
+        pokesStolen: { desc: "by Pokémon stolen from NPCs", alts: ["stolen", "pokesstolen"], alias: "stolen" },
+        // topQuizScore: { desc: "by best score in Quiz", alts: ["quiz", "score", "quizscore", "quiz score", "topquizscore"], alias: "quiz" },
+        celebrityScore: { desc: "by best Normal Celebrity score", alts: ["celebrity", "celebrityscore", "celebrity score", "celeb", "celebrity normal", "celebrityscore normal", "celebrity score normal", "celeb normal"], alias: "celebrity" },
+        celebrityScoreEasy: { desc: "by best Easy Celebrity score", alts: ["celebrity easy", "celebrityscore easy", "celebrity score easy", "celeb easy"], alias: "celebrity easy" },
+        celebrityScoreHard: { desc: "by best Hard Celebrity score", alts: ["celebrity hard", "celebrityscore hard", "celebrity score hard", "celeb hard"], alias: "celebrity hard" },
+        celebrityScoreExpert: { desc: "by best Expert Celebrity score", alts: ["celebrity expert", "celebrityscore expert", "celebrity score expert", "celeb expert"], alias: "celebrity expert" },
+        celebrityScoreSuperExpert: { desc: "by best Super Expert Celebrity score", alts: ["celebrity super expert", "celebrityscore super expert", "celebrity score super expert", "celeb super expert"], alias: "celebrity super expert" },
+        celebrityScoreAbyssal: { desc: "by best Abyssal Celebrity score", alts: ["celebrity abyssal", "celebrityscore abyssal", "celebrity score abyssal", "celeb abyssal"], alias: "celebrity abyssal" },
+        pyramidScore: { desc: "by best Pyramid score", alts: ["pyramid", "pyramidscore", "pyramid score", "pyr"], alias: "pyramid" },
+        // pyramidTotalScore: { desc: "by total Pyramid points", alts: ["pyramidtotal", "pyramid total", "pyramidtotalscore"], alias: "pyramid total" },
+        pyramidFinished: { desc: "by cleared Pyramid runs", alts: ["pyramidfinished", "pyramid finished"], alias: "pyramid finished" },
+        eliteCleared: { desc: "by cleared Elite Four challenges", alts: ["elite", "elite four", "elitefour", "elite4", "e4", "elite 4", "e 4", "elite cleared", "elite four cleared", "elite 4 cleared"], alias: "elite four cleared" },
+        baseValue: { desc: "by most valuable Secret Base", alts: ["base", "secretbase", "secret base",], alias: "base" },
+        journalPoints: { desc: "by most photo points", alts: ["photos", "photo", "photo points", "photo points"], alias: "photo" },
+        missionPoints: { desc: "by most mission points earned", alts: ["missions", "mission", "mission points", "mission point"], alias: "mission" },
+        casesSolved: { desc: "by most Detective cases solved", alts: ["detective", "cases", "detective cases", "detective solved", "detectivesolved", "cases solved", "casessolved"], alias: "detective" },
+        fastestCaseSolved: { desc: "by fastest Detective case solved", alts: ["detective fastest", "detectivefastest", "detective speed", "detectivespeed", "detective speedrun", "detectivespeedrun"], alias: "detective fastest" }
+    };
+    var monthlyLeaderboardTypes = {
+        pokesCaught: { desc: "by successful catches during this week", alts: ["caught weekly"], alias: "caught weekly", lastAlias: "caught last", file: "scriptdata/safari/weeklyPokesCaught.txt", lastDesc: "by successful catches during the last week", reward: true  },
+        contestsWon: { desc: "by contests won during this week", alts: ["contest weekly", "contests weekly"], alias: "contest weekly", lastAlias: "contest last", file: "scriptdata/safari/weeklyContestsWon.txt", lastDesc: "by contests won during the last week", reward: true },
+        collectorEarnings: { desc: "by money received from the Collector during this week", alts: ["collector weekly", "collector money weekly", "collectormoney weekly", "collector $ weekly"], alias: "collector weekly",  lastAlias: "collector last",isMoney: true, file: "scriptdata/safari/weeklyCollectorEarnings.txt", lastDesc: "by money received from the Collector during the last week", reward: true },
+        arenaPoints: { desc: "by Arena points won this week", alts: ["arena weekly"], alias: "arena weekly",  lastAlias: "arena last", file: "scriptdata/safari/weeklyArenaPoints.txt", lastDesc: "by Arena points won during the last week", reward: true },
+        towerHighestNew: { desc: "by best Battle Tower run this week", alts: ["tower weekly", "battletower weekly", "battle tower weekly", "towerhighest weekly"], alias: "tower weekly",  lastAlias: "tower last", file: "scriptdata/safari/weeklyTowerHighest.txt", lastDesc: "by best Battle Tower run during the last week", reward: true },
+        journalPoints: { desc: "by Photo points won this week", alts: ["photo weekly", "journal weekly"], alias: "photo weekly",  lastAlias: "photo last", file: "scriptdata/safari/weeklyPhotoPoints.txt", lastDesc: "by Photo points won during the last week", reward: true },
+        pyramidScore: { desc: "by Pyramid score this week", alts: ["pyramid weekly", "pyr weekly"], alias: "pyramid weekly",  lastAlias: "pyramid last", file: "scriptdata/safari/weeklyPyramidScore.txt", lastDesc: "by Pyramid points won during the last week", reward: true },
+        celebrityScore: { desc: "by best Normal Celebrity score this week", alts: ["celebrity weekly", "celebrityscore weekly", "celebrity score weekly", "celeb weekly", "celebrity normal weekly", "celebrityscore normal weekly", "celebrity score normal weekly", "celeb normal weekly"], alias: "celebrity weekly", lastAlias: "celebrity normal last", file: "scriptdata/safari/weeklyCelebrityScore.txt", lastDesc: "by best Normal Celebrity score during the last week", reward: true },
+        celebrityScoreEasy: { desc: "by best Easy Celebrity score this week", alts: ["celebrity easy weekly", "celebrityscore easy weekly", "celebrity score easy weekly", "celeb easy weekly"], alias: "celebrity easy weekly", lastAlias: "celebrity easy last", file: "scriptdata/safari/weeklyCelebrityScoreEasy.txt", lastDesc: "by best Easy Celebrity score during the last week", reward: false },
+        celebrityScoreHard: { desc: "by best Hard Celebrity score this week", alts: ["celebrity hard weekly", "celebrityscore hard weekly", "celebrity score hard weekly", "celeb hard weekly"], alias: "celebrity hard weekly", lastAlias: "celebrity hard last", file: "scriptdata/safari/weeklyCelebrityScoreHard.txt", lastDesc: "by best Hard Celebrity score during the last week", reward: true },
+        celebrityScoreExpert: { desc: "by best Expert Celebrity score this week", alts: ["celebrity expert weekly", "celebrityscore expert weekly", "celebrity score expert weekly", "celeb expert weekly"], alias: "celebrity expert weekly", lastAlias: "celebrity expert last", file: "scriptdata/safari/weeklyCelebrityScoreExpert.txt", lastDesc: "by best Expert Celebrity score during the last week", reward: true },
+        celebrityScoreSuperExpert: { desc: "by best Super Expert Celebrity score this week", alts: ["celebrity super expert weekly", "celebrityscore super expert weekly", "celebrity score super expert weekly", "celeb super expert weekly"], alias: "celebrity super expert weekly", lastAlias: "celebrity super expert last", file: "scriptdata/safari/weeklyCelebrityScoreSuperExpert.txt", lastDesc: "by best Super Expert Celebrity score during the last week", reward: true },
+        celebrityScoreAbyssal: { desc: "by best Abyssal Celebrity score this week", alts: ["celebrity abyssal weekly", "celebrityscore abyssal weekly", "celebrity score abyssal weekly", "celeb abyssal weekly"], alias: "celebrity abyssal weekly", lastAlias: "celebrity abyssal last", file: "scriptdata/safari/weeklyCelebrityScoreAbyssal.txt", lastDesc: "by best Abyssal Celebrity score during the last week", reward: true }
+    };
+
+    /* Contest Variables */
+    var contestDuration = 300; //Contest lasts for 5 minutes
+    var contestCount = 0;
+    var contestExtension = 0;
+    var contestExtensionLimit = 600; // event extension limit, 10 minutes
+    var contestMidPoint = false; //whether the contest is half over (checked after wild caught);
+    var contestCatchers = {};
+    var contestActivity = {};
+    var contestBroadcast = true; //Determines whether Tohjo gets notified
+    var contestCooldownLength = 1800; //1 contest every 30 minutes
+    var contestCooldown = (SESSION.global() && SESSION.global().safariContestCooldown ? SESSION.global().safariContestCooldown : contestCooldownLength);
+    var contestForfeited = [];
+    var contestantsCount = {};
+    var contestantsWild = [];
+    var contestCombo = 0;
+    var currentTheme;
+    var currentThemeAlter;
+    var currentThemeEffect;
+    var currentThemeFlavor;
+    var currentThemeSecondary;
+    var chosenThemes;
+    var contestVotes;
+    var contestVotingCooldown = 4;
+    var contestVotingCount = (SESSION.global() && SESSION.global().contestVotingCount ? SESSION.global().contestVotingCount : contestVotingCooldown);
+    var generations = ["None", "Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar", "Paldea"];
+    var nextTheme;
+    var currentRules;
+    var nextRules;
+    var RULES_NERF = 0.95;
+    var RULES_BUFF = 0.25;
+    var RULES_NERF_CAP = 0.5;
+    var defaultRules = {
+        "onlyTypes": { //Picks one of the random sets and excludes all types not in that array
+            "chance": 0,
+            "sets": [
+                ["Water", "Fire", "Grass"],
+                ["Dark", "Fighting", "Psychic"]
+            ]
+        },
+        "excludeTypes": { //onlyTypes has priority over excludeTypes; if a set from onlyTypes is used, excludeTypes will be skipped
+            "Normal" : 0.015,
+            "Fighting" : 0.06,
+            "Flying" : 0.06,
+            "Poison" : 0.06,
+            "Ground" : 0.06,
+            "Rock" : 0.06,
+            "Bug" : 0.06,
+            "Ghost" : 0.06,
+            "Steel" : 0.06,
+            "Fire" : 0.06,
+            "Water" : 0.06,
+            "Grass" : 0.06,
+            "Electric" : 0.06,
+            "Psychic" : 0.06,
+            "Ice" : 0.06,
+            "Dragon" : 0.06,
+            "Dark" : 0.06,
+            "Fairy" : 0.06
+        },
+        "bonusTypes": { //Excluded types have priority over bonus types. If a type is picked by both, it will only count for exclude.
+            "Normal" : 0.06,
+            "Fighting" : 0.06,
+            "Flying" : 0.06,
+            "Poison" : 0.06,
+            "Ground" : 0.06,
+            "Rock" : 0.06,
+            "Bug" : 0.06,
+            "Ghost" : 0.06,
+            "Steel" : 0.06,
+            "Fire" : 0.06,
+            "Water" : 0.06,
+            "Grass" : 0.06,
+            "Electric" : 0.06,
+            "Psychic" : 0.06,
+            "Ice" : 0.06,
+            "Dragon" : 0.06,
+            "Dark" : 0.06,
+            "Fairy" : 0.06
+        },
+        "excludeBalls": {
+            "safari": 0,
+            "great": 0.02,
+            "ultra": 0.08,
+            "master": 0.10,
+            "myth": 0.125,
+            "luxury": 0.125,
+            "quick": 0.15,
+            "level": 0.125,
+            "spy": 0.125,
+            "clone": 0.125,
+            "premier": 0.125,
+            "mono": 0.10
+        },
+        "buffBalls": {},
+        "bst": { //Both min and max are optional. It's possible to have only one of them in this object
+            "minChance": 0,
+            "min": [230, 400],
+            "maxChance": 0.12,
+            "max": [490, 535]
+        },
+        "noLegendaries": {
+            "chance": 0.07
+        },
+        "shiny": {
+            "nerf": 0,
+            "buff": 0.05
+        },
+        "singleType": {
+            "nerf": 0,
+            "buff": 0.13
+        },
+        "dualType": {
+            "nerf": 0,
+            "buff": 0
+        },
+        "inver": {
+            "chance": 0.12
+        },
+        "invertedBST": {
+            "chance": 0.08
+        },
+        "defensive": {
+            "chance": 0.10
+        },
+        "generation": {
+            "kanto": {"nerf": 0.03, "buff": 0.03},
+            "johto": {"nerf": 0.03, "buff": 0.03},
+            "hoenn": {"nerf": 0.03, "buff": 0.03},
+            "sinnoh": {"nerf": 0.03, "buff": 0.03},
+            "unova": {"nerf": 0.03, "buff": 0.03},
+            "kalos": {"nerf": 0.03, "buff": 0.03}
+        },
+        "color": {
+            "red": {"nerf": 0.025, "buff": 0.025},
+            "blue": {"nerf": 0.025, "buff": 0.025},
+            "green": {"nerf": 0.025, "buff": 0.025},
+            "yellow": {"nerf": 0.025, "buff": 0.025},
+            "purple": {"nerf": 0.025, "buff": 0.025},
+            "pink": {"nerf": 0.025, "buff": 0.025},
+            "brown": {"nerf": 0.025, "buff": 0.025},
+            "black": {"nerf": 0.025, "buff": 0.025},
+            "gray": {"nerf": 0.025, "buff": 0.025},
+            "white": {"nerf": 0.025, "buff": 0.025}
+        },
+        "rewards": {
+            "sets": {
+                "defaultSet": {
+                    "gacha": 10
+                },
+                "whtapricorn": {
+                    "gacha": 10,
+                    "whtapricorn": 10
+                },
+                "blkapricorn": {
+                    "gacha": 10,
+                    "blkapricorn": 6
+                },
+                "grnapricorn": {
+                    "gacha": 10,
+                    "grnapricorn": 10
+                },
+                "bluapricorn": {
+                    "gacha": 10,
+                    "bluapricorn": 8
+                },
+                "ylwapricorn": {
+                    "gacha": 10,
+                    "ylwapricorn": 12
+                },
+                "redapricorn": {
+                    "gacha": 10,
+                    "redapricorn": 6
+                },
+                "pnkapricorn": {
+                    "gacha": 10,
+                    "pnkapricorn": 8
+                },
+                "silver": {
+                    "gacha": 15,
+                    "silver": 3
+                },
+                "gem": {
+                    "gacha": 10,
+                    "gem": 2
+                },
+                "nugget": {
+                    "gacha": 10,
+                    "nugget": 1
+                },
+                "dust": {
+                    "gacha": 10,
+                    "rare": 1
+                },
+                "rock": {
+                    "gacha": 15,
+                    "rock": 20
+                },
+                "fragment": {
+                    "fragment": 1
+                }
+            },
+            "chance": {
+                "whtapricorn": 0.11,
+                "blkapricorn": 0.11,
+                "bluapricorn": 0.11,
+                "pnkapricorn": 0.11,
+                "ylwapricorn": 0.10,
+                "grnapricorn": 0.10,
+                "redapricorn": 0.10,
+                "silver": 0.05,
+                "gem": 0.05,
+                "nugget": 0.05,
+                "dust": 0.05,
+                "rock": 0.05,
+                "fragment": 0.01
+            }
+        }
+    };
+    /* Theme Syntax:
+        forest: {
+            types: ["Grass", "Bug"], //Types that will be included. Pokémon only needs to match one of these types
+            excludeTypes: [], //Types that will be excluded even if it matches the type above
+            include: [16, 17, 18, 25, 163, 164], //Pokémon that do not match any of the criteria above, but will be included anyway
+            exclude: [492, 649], //Pokémon that matches all of the previous criteria, but will be excluded anyway,
+            editBST: { "289": 600 }, //Makes a pokémon count as a different BST for this theme. In the example, Pokémon #289 (Slaking) will be considered a 600 BST Pokémon for this theme.
+            ceilBST: 600, //Choose a different maximum BST for pokémon to spawn. Optional, defaults to 600.
+            floorBST: 300 //Choose a different minimum BST for pokémon to spawn. Optional, defaults to 300.
+        }
+    */
+    var contestThemes = {};
+
+    /* Events Variables */
+    var currentEvent;
+    var currentGame;
+    var stopEventJoins = false;
+    var watchCountMax = 3;
+
+    /* Bait Variables */
+    var lastBaiters = [];
+    var lastBaitersAmount = 3; //Amount of people that need to bait before you can
+    var lastBaitersDecay = lastBaitersDecayTime = 15; //Seconds before the first entry in lastBaiters is purged
+    var successfulBaitCount = 15;
+    var nextGachaSpawn = 0;
+    var baitCooldownLength = 0;
+    var baitCooldown = (SESSION.global() && SESSION.global().safariBaitCooldown ? SESSION.global().safariBaitCooldown : baitCooldownLength);
+    var releaseCooldownLength = 180; //1 release every 3 minutes
+    var releaseCooldown = (SESSION.global() && SESSION.global().safariReleaseCooldown ? SESSION.global().safariReleaseCooldown : releaseCooldownLength);
+    var goldenBaitCooldown = (SESSION.global() && SESSION.global().safariGoldenBaitCooldown ? SESSION.global().safariGoldenBaitCooldown: 0);
+    var deluxeBaitCooldown = (SESSION.global() && SESSION.global().safariDeluxeBaitCooldown? SESSION.global().safariDeluxeBaitCooldown: 0);
+
+    /* Pokemon Variables */
+    var effectiveness = {
+        "Normal": { "Rock": 0.5, "Ghost": 0, "Steel": 0.5 },
+        "Fighting": { "Normal": 2, "Flying": 0.5, "Poison": 0.5, "Rock": 2, "Bug": 0.5, "Ghost": 0, "Steel": 2, "Psychic": 0.5, "Ice": 2, "Dark": 2, "Fairy": 0.5 },
+        "Flying": { "Fighting": 2, "Rock": 0.5, "Bug": 2, "Steel": 0.5, "Grass": 2, "Electric": 0.5 },
+        "Poison": { "Poison": 0.5, "Ground": 0.5, "Rock": 0.5, "Ghost": 0.5, "Steel": 0, "Grass": 2, "Fairy": 2 },
+        "Ground": { "Flying": 0, "Poison": 2, "Rock": 2, "Bug": 0.5, "Steel": 2, "Fire": 2, "Grass": 0.5, "Electric": 2 },
+        "Rock": { "Fighting": 0.5, "Flying": 2, "Ground": 0.5, "Bug": 2, "Steel": 0.5, "Fire": 2, "Ice": 2 },
+        "Bug": { "Fighting": 0.5, "Flying": 0.5, "Poison": 0.5, "Ghost": 0.5, "Steel": 0.5, "Fire": 0.5, "Grass": 2, "Psychic": 2, "Dark": 2, "Fairy": 0.5 },
+        "Ghost": { "Normal": 0, "Ghost": 2, "Psychic": 2, "Dark": 0.5 },
+        "Steel": { "Rock": 2, "Steel": 0.5, "Fire": 0.5, "Water": 0.5, "Electric": 0.5, "Ice": 2, "Fairy": 2 },
+        "Fire": { "Rock": 0.5, "Bug": 2, "Steel": 2, "Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 2, "Dragon": 0.5 },
+        "Water": { "Ground": 2, "Rock": 2, "Fire": 2, "Water": 0.5, "Grass": 0.5, "Dragon": 0.5 },
+        "Grass": { "Flying": 0.5, "Poison": 0.5, "Ground": 2, "Rock": 2, "Bug": 0.5, "Steel": 0.5, "Fire": 0.5, "Water": 2, "Grass": 0.5, "Dragon": 0.5 },
+        "Electric": { "Flying": 2, "Ground": 0, "Water": 2, "Grass": 0.5, "Electric": 0.5, "Dragon": 0.5 },
+        "Psychic": { "Fighting": 2, "Poison": 2, "Steel": 0.5, "Psychic": 0.5, "Dark": 0 },
+        "Ice": { "Flying": 2, "Ground": 2, "Steel": 0.5, "Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 0.5, "Dragon": 2 },
+        "Dragon": { "Steel": 0.5, "Dragon": 2, "Fairy": 0 },
+        "Dark": { "Fighting": 0.5, "Ghost": 2, "Psychic": 2, "Dark": 0.5, "Fairy": 0.5 },
+        "Fairy": { "Fighting": 2, "Poison": 0.5, "Steel": 0.5, "Fire": 0.5, "Dragon": 2, "Dark": 2 }
+    };
+    var immuneMultiplier = 0.15;
+    var pokeInfo = {
+        species: function(poke) {
+            return poke & ((1 << 16) - 1);
+        },
+        forme: function(poke) {
+            return poke >> 16;
+        },
+        shiny: function(poke) {
+            return typeof poke === "string";
+        },
+        readableNum: function(poke) {
+            var ret = [];
+            ret += pokeInfo.species(poke);
+            if (pokeInfo.forme(poke) > 0) {
+                ret += "-";
+                ret += pokeInfo.forme(poke);
+            }
+            return ret;
+        },
+        icon: function(p, shinyBG) {
+            var p2 = p;
+            var pcheck = p2%65536;
+            var uic;
+            //Pumpkaboo/Gourgeist icon hack
+            if (pcheck === 710 || pcheck === 711) {
+                p2 = pcheck;
+            }
+            if (ultraPokes.hasOwnProperty(p2+"")) {
+                var species = pokeInfo.species(p2), form = pokeInfo.forme(p2);
+                var key = species + (form > 0 ? "-" + form : "");
+                uic = resources.icons.get(key);
+                if (!(uic)) {
+                    uic = 'icon:' + p2%65536;
+                }
+                return '<img src="' + uic + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
+            }
+           return '<img src="icon:' + p2 + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
+        },
+        sprite: function(pk) {
+            var shiny = pokeInfo.shiny(pk);
+            if (ultraPokes.hasOwnProperty(pk+"")) {
+                var species = pokeInfo.species(pk), form = pokeInfo.forme(pk);
+                var key = species + (form > 0 ? "-" + form : "");
+                if (shiny) {
+                    return "<img src='" + resources.shiny.get(key) + "'>";
+                } else {
+                    return "<img src='" + resources.sprites.get(key) + "'>";
+                }
+            }
+            
+            var ret = [];
+            ret += "<img src='pokemon:num=";
+            ret += pk;
+            if (shiny) {
+                // PO has Magearna's shiny sprites mixed up. The shiny sprite for Magearna is actually the shiny sprite for Magearna-Pokeball
+                // Magearna's real shiny is identical to normal Magearna (blame GameFreak)
+                if (pk === "801") {
+                    return "<img src='pokemon:num=801'>";
+                } else if (pk === "66337") {
+                    return "<img src='pokemon:num=801&shiny=true'>";
+                } else {
+                    ret += "&shiny=true";
+                }
+            }
+            // ret += "&gen=7'>";
+            /* Start of temporary hack due to windows client bug with shiny sprites. Enable the line above and remove this block once the client can properly show shiny sprites for non-gen 7 Pokémon*/
+            var g = 6, id = parseInt(pk, 10), sp = pokeInfo.species(id);
+            var withback = false;
+            if ((sp >= 722 && sp < 803) || [131730, 66254, 131790, 458777, 524313, 589849, 655385, 720921, 786457, 65555, 65556, 65562, 65563, 65564, 65573, 65574, 65586, 65587, 65588, 65589, 65610, 65611, 65612, 65624, 65625, 65639, 65641].contains(id)) {
+                g = 7;
+                if (shiny) {
+                    withback = false;
+                }
+            }
+            // ret += "&gen="+g+"'>";
+            ret += "&gen="+g+(withback ? "&back=true" : "") +"'>";
+            /* End of temporary hack */
+            
+            return ret;
+        },
+        valid: function(pk) {
+            if (ultraPokes.hasOwnProperty(pk+"")) {
+                return true;
+            }
+            return pokePlain(pk) !== "Missingno";
+        },
+        calcForme: function(base, forme) {
+            return parseInt(base,10) + parseInt(forme << 16, 10);
+        }
+    };
+    var wildForms = {
+        "201": 27,
+        "412": 2,
+        "413": 2,
+        "422": 1,
+        "423": 1,
+        "550": 1,
+        "585": 3,
+        "586": 3,
+        "666": 17,
+        "669": 4,
+        "670": 4,
+        "671": 4,
+        "678": 1,
+        "710": 3,
+        "711": 3,
+        "741": 3,
+        "745": 1,
+        "849": 1,
+        "869": 62,
+        "876": 1,
+        "916": 1,
+        "931": 3,
+        "978": 2
+    };
+    var noShinySprite = [ // These Pokemon have no shiny sprites at all, so they should not be allowed to be shiny. This list includes Pikachu forms (except Pikachu-Cosplay), Castform forms, Rotom-Pokedex, Alcremie forms, and Eternamax Eternatus
+        65561,131097,196633,262169,327705,458777,524313,589849,655385,720921,786457,851993,65887,131423,262495,393695,66405,131941,197477,263013,328549,394085,459621,525157,590693,656229,721765,787301,852837,918373,983909,1049445,1114981,1180517,1246053,1311589,1377125,1442661,1508197,1573733,1639269,1704805,1770341,1835877,1901413,1966949,2032485,2098021,2163557,2229093,2294629,2360165,2425701,2491237,2556773,2622309,2687845,2753381,2818917,2884453,2949989,3015525,3081061,3146597,3212133,3277669,3343205,3408741,3474277,3539813,3605349,3670885,3736421,3801957,3867493,3933029,3998565,4064101,66426
+    ];
+    var contestMoves = {"1":"Tough","2":"Tough","3":"Cute","4":"Tough","5":"Tough","6":"Clever","7":"Tough","8":"Beautiful","9":"Cool","10":"Tough","11":"Tough","12":"Cool","13":"Cool","14":"Beautiful","15":"Cool","16":"Clever","17":"Cool","18":"Clever","19":"Clever","20":"Tough","21":"Tough","22":"Cool","23":"Tough","24":"Cool","25":"Cool","26":"Cool","27":"Cool","28":"Cute","29":"Tough","30":"Cool","31":"Cool","32":"Cool","33":"Tough","34":"Tough","35":"Tough","36":"Tough","37":"Tough","38":"Tough","39":"Cute","40":"Clever","41":"Cool","42":"Cool","43":"Cool","44":"Tough","45":"Cute","46":"Cool","47":"Cute","48":"Clever","49":"Cool","50":"Clever","51":"Clever","52":"Cute","53":"Beautiful","54":"Beautiful","55":"Cute","56":"Beautiful","57":"Beautiful","58":"Beautiful","59":"Beautiful","60":"Beautiful","61":"Beautiful","62":"Beautiful","63":"Cool","64":"Cool","65":"Cool","66":"Cool","67":"Tough","68":"Tough","69":"Tough","70":"Tough","71":"Clever","72":"Clever","73":"Clever","74":"Beautiful","75":"Cool","76":"Cool","77":"Clever","78":"Clever","79":"Clever","80":"Beautiful","81":"Clever","82":"Cool","83":"Beautiful","84":"Cool","85":"Cool","86":"Cool","87":"Cool","88":"Tough","89":"Tough","90":"Tough","91":"Tough","92":"Clever","93":"Clever","94":"Clever","95":"Clever","96":"Beautiful","97":"Cool","98":"Cool","99":"Tough","100":"Cool","101":"Clever","102":"Cute","103":"Clever","104":"Cool","105":"Clever","106":"Tough","107":"Cute","108":"Clever","109":"Clever","110":"Cute","111":"Cute","112":"Cool","113":"Beautiful","114":"Beautiful","115":"Clever","116":"Cool","117":"Tough","118":"Cute","119":"Clever","120":"Beautiful","121":"Cute","122":"Cute","123":"Tough","124":"Tough","125":"Tough","126":"Beautiful","127":"Tough","128":"Tough","129":"Cool","130":"Tough","131":"Cool","132":"Tough","133":"Cute","134":"Clever","135":"Cute","136":"Cool","137":"Tough","138":"Clever","139":"Clever","140":"Cute","141":"Clever","142":"Beautiful","143":"Cool","144":"Clever","145":"Cute","146":"Cool","147":"Beautiful","148":"Beautiful","149":"Clever","150":"Cute","151":"Tough","152":"Tough","153":"Beautiful","154":"Tough","155":"Tough","156":"Cute","157":"Tough","158":"Cool","159":"Cute","160":"Beautiful","161":"Beautiful","162":"Tough","163":"Cool","164":"Cute","165":"Tough","166":"Clever","167":"Cool","168":"Tough","169":"Clever","170":"Clever","171":"Clever","172":"Beautiful","173":"Cute","174":"Tough","175":"Cute","176":"Beautiful","177":"Cool","178":"Beautiful","179":"Cool","180":"Tough","181":"Beautiful","182":"Cute","183":"Cool","184":"Tough","185":"Clever","186":"Cute","187":"Cute","188":"Tough","189":"Cute","190":"Tough","191":"Clever","192":"Cool","193":"Clever","194":"Clever","195":"Beautiful","196":"Beautiful","197":"Cool","198":"Tough","199":"Clever","200":"Cool","201":"Tough","202":"Clever","203":"Tough","204":"Cute","205":"Cute","206":"Cool","207":"Cute","208":"Cute","209":"Cool","210":"Cool","211":"Cool","212":"Beautiful","213":"Cute","214":"Cute","215":"Beautiful","216":"Cute","217":"Cute","218":"Cute","219":"Beautiful","220":"Clever","221":"Beautiful","222":"Tough","223":"Cool","224":"Cool","225":"Cool","226":"Cute","227":"Cute","228":"Clever","229":"Cool","230":"Cute","231":"Cool","232":"Cool","233":"Cool","234":"Beautiful","235":"Clever","236":"Beautiful","237":"Clever","238":"Cool","239":"Cool","240":"Beautiful","241":"Beautiful","242":"Tough","243":"Beautiful","244":"Clever","245":"Cool","246":"Tough","247":"Clever","248":"Clever","249":"Tough","250":"Beautiful","251":"Clever","252":"Cute","253":"Cute","254":"Tough","255":"Tough","256":"Tough","257":"Beautiful","258":"Beautiful","259":"Tough","260":"Clever","261":"Beautiful","262":"Tough","263":"Cute","264":"Tough","265":"Tough","266":"Cute","267":"Beautiful","268":"Clever","269":"Clever","270":"Clever","271":"Clever","272":"Cute","273":"Cute","274":"Cute","275":"Clever","276":"Tough","277":"Beautiful","278":"Clever","279":"Tough","280":"Cool","281":"Cute","282":"Clever","283":"Tough","284":"Beautiful","285":"Clever","286":"Clever","287":"Cute","288":"Tough","289":"Clever","290":"Clever","291":"Beautiful","292":"Tough","293":"Clever","294":"Beautiful","295":"Clever","296":"Clever","297":"Beautiful","298":"Cute","299":"Beautiful","300":"Cute","301":"Beautiful","302":"Clever","303":"Cute","304":"Cool","305":"Clever","306":"Cool","307":"Beautiful","308":"Beautiful","309":"Cool","310":"Clever","311":"Beautiful","312":"Clever","313":"Cute","314":"Cool","315":"Beautiful","316":"Clever","317":"Clever","318":"Beautiful","319":"Clever","320":"Clever","321":"Cute","322":"Cool","323":"Beautiful","324":"Beautiful","325":"Clever","326":"Cool","327":"Cool","328":"Clever","329":"Beautiful","330":"Tough","331":"Cool","332":"Cool","333":"Beautiful","334":"Tough","335":"Cute","336":"Cool","337":"Cool","338":"Cool","339":"Beautiful","340":"Cute","341":"Tough","342":"Clever","343":"Cute","344":"Cool","345":"Beautiful","346":"Cute","347":"Clever","348":"Cool","349":"Cool","350":"Tough","351":"Cool","352":"Beautiful","353":"Cool","354":"Clever","355":"Cool","356":"Clever","357":"Cute","358":"Tough","359":"Tough","360":"Beautiful","361":"Cute","362":"Tough","363":"Cool","364":"Clever","365":"Cute","366":"Cool","367":"Tough","368":"Beautiful","369":"Cute","370":"Tough","371":"Tough","372":"Beautiful","373":"Cute","374":"Tough","375":"Cool","376":"Cool","377":"Cute","378":"Tough","379":"Cool","380":"Tough","381":"Cute","382":"Cute","383":"Cool","384":"Beautiful","385":"Cute","386":"Cool","387":"Cute","388":"Beautiful","389":"Clever","390":"Clever","391":"Cool","392":"Beautiful","393":"Cute","394":"Cool","395":"Cool","396":"Beautiful","397":"Tough","398":"Tough","399":"Cool","400":"Beautiful","401":"Cute","402":"Tough","403":"Cool","404":"Beautiful","405":"Cute","406":"Clever","407":"Tough","408":"Beautiful","409":"Tough","410":"Cool","411":"Cool","412":"Beautiful","413":"Cute","414":"Clever","415":"Cool","416":"Tough","417":"Cute","418":"Tough","419":"Cool","420":"Beautiful","421":"Cute","422":"Cool","423":"Cool","424":"Beautiful","425":"Clever","426":"Clever","427":"Cool","428":"Clever","429":"Cute","430":"Clever","431":"Tough","432":"Beautiful","433":"Cute","434":"Clever","435":"Cool","436":"Tough","437":"Cute","438":"Tough","439":"Tough","440":"Cool","441":"Tough","442":"Tough","443":"Cool","444":"Tough","445":"Beautiful","446":"Cool","447":"Clever","448":"Clever","449":"Beautiful","450":"Tough","451":"Beautiful","452":"Tough","453":"Beautiful","454":"Clever","455":"Clever","456":"Clever","457":"Tough","458":"Clever","459":"Cool","460":"Beautiful","461":"Beautiful","462":"Tough","463":"Tough","464":"Clever","465":"Cool","466":"Beautiful","467":"Cool","468":"Cute","469":"Tough","470":"Clever","471":"Clever","472":"Clever","473":"Beautiful","474":"Beautiful","475":"Beautiful","476":"Clever","477":"Clever","478":"Clever","479":"Tough","480":"Cool","481":"Beautiful","482":"Tough","483":"Beautiful","484":"Tough","485":"Clever","486":"Cool","487":"Cute","488":"Cool","489":"Tough","490":"Clever","491":"beautiful","492":"Clever","493":"Cute","494":"Cute","495":"Cute","496":"Beautiful","497":"beautiful","498":"Tough","499":"Beautiful","500":"Clever","501":"Cool","502":"Clever","503":"Tough","504":"Tough","505":"Beautiful","506":"Clever","507":"Tough","508":"Clever","509":"Cool","510":"Tough","511":"Clever","512":"Cool","513":"Clever","514":"Cool","515":"Tough","516":"Cool","517":"Beautiful","518":"Beautiful","519":"Beautiful","520":"Beautiful","521":"Cool","522":"Cute","523":"Tough","524":"Beautiful","525":"Tough","526":"Tough","527":"beautiful","528":"Tough","529":"Tough","530":"Tough","531":"Cute","532":"Tough","533":"Cool","534":"Cool","535":"Tough","536":"Cool","537":"Tough","538":"Cute","539":"Cool","540":"Cool","541":"Cute","542":"Tough","543":"Tough","544":"Clever","545":"Cool","546":"Cool","547":"beautiful","548":"beautiful","549":"beautiful","550":"Beautiful","551":"beautiful","552":"beautiful","553":"beautiful","554":"Beautiful","555":"Tough","556":"beautiful","557":"Cool","558":"beautiful","559":"Cool","560":"Cute","561":"Tough","562":"Clever","563":"Beautiful","564":"Cute","565":"Beautiful","566":"Tough","567":"Clever","568":"Beautiful","569":"Beautiful","570":"Beautiful","571":"Cute","572":"Beautiful","573":"Beautiful","574":"Tough","575":"Cute","576":"Cool","577":"Clever","578":"Cool","579":"Cute","580":"Cute","581":"Cute","582":"Cool","583":"Beautiful","584":"Tough","585":"Cute","586":"Cute","587":"Clever","588":"Clever","589":"Clever","590":"Clever","591":"Cool","592":"Beautiful","593":"Beautiful","594":"Beautiful","595":"Cool","596":"Beautiful","597":"Clever","598":"Cool","599":"Beautiful","600":"Cool","601":"Clever","602":"Tough","603":"Tough","604":"Tough","605":"Tough","606":"Clever","607":"Clever","608":"Cute","609":"Cute","610":"Cool","611":"Beautiful","612":"Beautiful","613":"Beautiful","614":"Clever","615":"Cute","616":"Beautiful","617":"Tough","618":"Beautiful","619":"Cool","620":"Beautiful","621":"Tough"};
+    var evolutions = {
+        "1": { "evo": 2, "candies": 207 }, "2": { "evo": 3, "candies": 656 }, "65561": { "evo": -1, "candies": 0 }, "131097": { "evo": -1, "candies": 0 }, "196633": { "evo": -1, "candies": 0 }, "262169": { "evo": -1, "candies": 0 }, "327705": { "evo": -1, "candies": 0 }, "393241": { "evo": -1, "candies": 0 }, "458777": { "evo": -1, "candies": 0 }, "524313": { "evo": -1, "candies": 0 }, "589849": { "evo": -1, "candies": 0 }, "655385": { "evo": -1, "candies": 0 }, "720921": { "evo": -1, "candies": 0 }, "786457": { "evo": -1, "candies": 0 }, "851993": { "evo": -1, "candies": 0 }, "4": { "evo": 5, "candies": 207 }, "5": { "evo": 6, "candies": 668 }, "7": { "evo": 8, "candies": 207 }, "8": { "evo": 9, "candies": 663 }, "10": { "evo": 11, "candies": 105 }, "11": { "evo": 12, "candies": 332 }, "13": { "evo": 14, "candies": 105 }, "14": { "evo": 15, "candies": 332 }, "16": { "evo": 17, "candies": 178 }, "17": { "evo": 18, "candies": 402 }, "19": { "evo": 20, "candies": 347 }, "65555": { "evo": 65556, "candies": 347 }, "21": { "evo": 22, "candies": 371 }, "23": { "evo": 24, "candies": 368 }, "25": { "evo": 26, "candies": 407 }, "27": { "evo": 28, "candies": 378 }, "65563": { "evo": 65564, "candies": 378 }, "29": { "evo": 30, "candies": 186 }, "30": { "evo": 31, "candies": 424 }, "32": { "evo": 33, "candies": 186 }, "33": { "evo": 34, "candies": 424 }, "35": { "evo": 36, "candies": 406 }, "37": { "evo": 38, "candies": 424 }, "65573": { "evo": 65574, "candies": 424 }, "39": { "evo": 40, "candies": 365 }, "41": { "evo": 42, "candies": 232 }, "42": { "evo": 169, "candies": 449 }, "43": { "evo": 44, "candies": 201 }, "44": { "evo": [45, 182], "candies": 412 }, "46": { "evo": 47, "candies": 340 }, "48": { "evo": 49, "candies": 378 }, "50": { "evo": 51, "candies": 340 }, "65586": { "evo": 65587, "candies": 340 }, "52": { "evo": 53, "candies": 370 }, "65588": { "evo": 65589, "candies": 370 }, "54": { "evo": 55, "candies": 420 }, "56": { "evo": 57, "candies": 382 }, "58": { "evo": 59, "candies": 466 }, "60": { "evo": 61, "candies": 196 }, "61": { "evo": [62, 186], "candies": 424 }, "63": { "evo": 64, "candies": 204 }, "64": { "evo": 65, "candies": 575 }, "66": { "evo": 67, "candies": 207 }, "67": { "evo": 68, "candies": 424 }, "69": { "evo": 70, "candies": 199 }, "70": { "evo": 71, "candies": 412 }, "72": { "evo": 73, "candies": 433 }, "74": { "evo": 75, "candies": 199 }, "65610": { "evo": 65611, "candies": 199 }, "75": { "evo": 76, "candies": 416 }, "65611": { "evo": 65612, "candies": 416 }, "77": { "evo": 78, "candies": 420 }, "79": { "evo": [80, 199], "candies": 412 }, "81": { "evo": 82, "candies": 237 }, "82": { "evo": 462, "candies": 449 }, "84": { "evo": 85, "candies": 386 }, "86": { "evo": 87, "candies": 399 }, "88": { "evo": 89, "candies": 420 }, "65624": { "evo": 65625, "candies": 420 }, "90": { "evo": 91, "candies": 441 }, "92": { "evo": 93, "candies": 207 }, "93": { "evo": 94, "candies": 575 }, "95": { "evo": 208, "candies": 428 }, "96": { "evo": 97, "candies": 406 }, "98": { "evo": 99, "candies": 399 }, "100": { "evo": 101, "candies": 403 }, "102": { "evo": 103, "candies": 437 }, "104": { "evo": 105, "candies": 357 }, "108": { "evo": 463, "candies": 433 }, "109": { "evo": 110, "candies": 412 }, "111": { "evo": 112, "candies": 247 }, "112": { "evo": 464, "candies": 449 }, "113": { "evo": 242, "candies": 621 }, "114": { "evo": 465, "candies": 449 }, "116": { "evo": 117, "candies": 224 }, "117": { "evo": 230, "candies": 454 }, "118": { "evo": 119, "candies": 378 }, "120": { "evo": 121, "candies": 437 }, "123": { "evo": 212, "candies": 420 }, "125": { "evo": 466, "candies": 454 }, "126": { "evo": 467, "candies": 454 }, "129": { "evo": 130, "candies": 454 }, "133": { "evo": [470, 471, 135, 134, 136, 196, 197, 700], "candies": 656 }, "137": { "evo": 233, "candies": 263 }, "138": { "evo": 139, "candies": 416 }, "140": { "evo": 141, "candies": 416 }, "147": { "evo": 148, "candies": 214 }, "148": { "evo": 149, "candies": 699 }, "152": { "evo": 153, "candies": 207 }, "153": { "evo": 154, "candies": 656 }, "155": { "evo": 156, "candies": 207 }, "156": { "evo": 157, "candies": 668 }, "158": { "evo": 159, "candies": 207 }, "159": { "evo": 160, "candies": 663 }, "161": { "evo": 162, "candies": 349 }, "163": { "evo": 164, "candies": 371 }, "165": { "evo": 166, "candies": 328 }, "167": { "evo": 168, "candies": 328 }, "170": { "evo": 171, "candies": 386 }, "172": { "evo": 25, "candies": 163 }, "65708": { "evo": -1, "candies": 0 }, "173": { "evo": 35, "candies": 165 }, "174": { "evo": 39, "candies": 138 }, "175": { "evo": 176, "candies": 207 }, "176": { "evo": 468, "candies": 627 }, "177": { "evo": 178, "candies": 395 }, "179": { "evo": 180, "candies": 186 }, "180": { "evo": 181, "candies": 428 }, "183": { "evo": 184, "candies": 353 }, "187": { "evo": 188, "candies": 173 }, "188": { "evo": 189, "candies": 386 }, "190": { "evo": 424, "candies": 405 }, "191": { "evo": 192, "candies": 357 }, "193": { "evo": 469, "candies": 433 }, "194": { "evo": 195, "candies": 361 }, "198": { "evo": 430, "candies": 424 }, "200": { "evo": 429, "candies": 416 }, "204": { "evo": 205, "candies": 391 }, "207": { "evo": 472, "candies": 428 }, "209": { "evo": 210, "candies": 378 }, "215": { "evo": 461, "candies": 428 }, "216": { "evo": 217, "candies": 420 }, "218": { "evo": 219, "candies": 344 }, "220": { "evo": 221, "candies": 230 }, "221": { "evo": 473, "candies": 445 }, "223": { "evo": 224, "candies": 403 }, "228": { "evo": 229, "candies": 420 }, "231": { "evo": 232, "candies": 420 }, "233": { "evo": 474, "candies": 449 }, "236": { "evo": [107, 106, 237], "candies": 382 }, "238": { "evo": 124, "candies": 382 }, "239": { "evo": 125, "candies": 250 }, "240": { "evo": 126, "candies": 252 }, "246": { "evo": 247, "candies": 209 }, "247": { "evo": 248, "candies": 699 }, "252": { "evo": 253, "candies": 207 }, "253": { "evo": 254, "candies": 663 }, "255": { "evo": 256, "candies": 207 }, "256": { "evo": 257, "candies": 663 }, "258": { "evo": 259, "candies": 207 }, "259": { "evo": 260, "candies": 669 }, "261": { "evo": 262, "candies": 353 }, "263": { "evo": 264, "candies": 353 }, "265": { "evo": [266, 268], "candies": 105 }, "266": { "evo": 267, "candies": 332 }, "268": { "evo": 269, "candies": 323 }, "270": { "evo": 271, "candies": 173 }, "271": { "evo": 272, "candies": 552 }, "273": { "evo": 274, "candies": 173 }, "274": { "evo": 275, "candies": 403 }, "276": { "evo": 277, "candies": 361 }, "278": { "evo": 279, "candies": 361 }, "280": { "evo": 281, "candies": 142 }, "281": { "evo": [282, 475], "candies": 435 }, "283": { "evo": 284, "candies": 348 }, "285": { "evo": 286, "candies": 386 }, "287": { "evo": 288, "candies": 224 }, "288": { "evo": 289, "candies": 781 }, "290": { "evo": [291, 292], "candies": 291 }, "293": { "evo": 294, "candies": 184 }, "294": { "evo": 295, "candies": 412 }, "296": { "evo": 297, "candies": 398 }, "298": { "evo": 183, "candies": 128 }, "299": { "evo": 476, "candies": 441 }, "300": { "evo": 301, "candies": 319 }, "304": { "evo": 305, "candies": 219 }, "305": { "evo": 306, "candies": 610 }, "307": { "evo": 308, "candies": 344 }, "309": { "evo": 310, "candies": 399 }, "315": { "evo": 407, "candies": 433 }, "316": { "evo": 317, "candies": 392 }, "318": { "evo": 319, "candies": 386 }, "320": { "evo": 321, "candies": 420 }, "322": { "evo": 323, "candies": 575 }, "325": { "evo": 326, "candies": 395 }, "328": { "evo": 329, "candies": 173 }, "329": { "evo": 330, "candies": 598 }, "331": { "evo": 332, "candies": 399 }, "333": { "evo": 334, "candies": 412 }, "339": { "evo": 340, "candies": 393 }, "341": { "evo": 342, "candies": 393 }, "343": { "evo": 344, "candies": 420 }, "345": { "evo": 346, "candies": 416 }, "347": { "evo": 348, "candies": 416 }, "349": { "evo": [350], "candies": 454 }, "353": { "evo": 354, "candies": 382 }, "355": { "evo": 356, "candies": 232 }, "356": { "evo": 477, "candies": 441 }, "360": { "evo": 202, "candies": 340 }, "361": { "evo": [362, 478], "candies": 403 }, "363": { "evo": 364, "candies": 209 }, "364": { "evo": 365, "candies": 445 }, "366": { "evo": [367, 368], "candies": 407 }, "371": { "evo": 372, "candies": 214 }, "372": { "evo": 373, "candies": 699 }, "374": { "evo": 375, "candies": 214 }, "375": { "evo": 376, "candies": 699 }, "387": { "evo": 388, "candies": 207 }, "388": { "evo": 389, "candies": 656 }, "390": { "evo": 391, "candies": 207 }, "391": { "evo": 392, "candies": 668 }, "393": { "evo": 394, "candies": 207 }, "394": { "evo": 395, "candies": 663 }, "396": { "evo": 397, "candies": 173 }, "397": { "evo": 398, "candies": 407 }, "399": { "evo": 400, "candies": 344 }, "401": { "evo": 402, "candies": 323 }, "403": { "evo": 404, "candies": 185 }, "404": { "evo": 405, "candies": 439 }, "406": { "evo": 315, "candies": 204 }, "408": { "evo": 409, "candies": 416 }, "410": { "evo": 411, "candies": 416 }, "412": { "evo": [413, 414], "candies": 356 }, "415": { "evo": 416, "candies": 398 }, "418": { "evo": 419, "candies": 416 }, "420": { "evo": 421, "candies": 378 }, "422": { "evo": 423, "candies": 399 }, "425": { "evo": 426, "candies": 418 }, "427": { "evo": 428, "candies": 403 }, "431": { "evo": 432, "candies": 380 }, "433": { "evo": 358, "candies": 357 }, "434": { "evo": 435, "candies": 402 }, "436": { "evo": 437, "candies": 420 }, "438": { "evo": 185, "candies": 344 }, "439": { "evo": 122, "candies": 386 }, "440": { "evo": 113, "candies": 230 }, "443": { "evo": 444, "candies": 209 }, "444": { "evo": 445, "candies": 699 }, "446": { "evo": 143, "candies": 454 }, "447": { "evo": 448, "candies": 604 }, "449": { "evo": 450, "candies": 441 }, "451": { "evo": 452, "candies": 420 }, "453": { "evo": 454, "candies": 412 }, "456": { "evo": 457, "candies": 386 }, "458": { "evo": 226, "candies": 391 }, "459": { "evo": 460, "candies": 415 }, "495": { "evo": 496, "candies": 211 }, "496": { "evo": 497, "candies": 660 }, "498": { "evo": 499, "candies": 213 }, "499": { "evo": 500, "candies": 660 }, "501": { "evo": 502, "candies": 211 }, "502": { "evo": 503, "candies": 660 }, "504": { "evo": 505, "candies": 353 }, "506": { "evo": 507, "candies": 189 }, "507": { "evo": 508, "candies": 420 }, "509": { "evo": 510, "candies": 375 }, "511": { "evo": 512, "candies": 418 }, "513": { "evo": 514, "candies": 418 }, "515": { "evo": 516, "candies": 418 }, "517": { "evo": 518, "candies": 409 }, "519": { "evo": 520, "candies": 183 }, "520": { "evo": 521, "candies": 410 }, "522": { "evo": 523, "candies": 417 }, "524": { "evo": 525, "candies": 199 }, "525": { "evo": 526, "candies": 433 }, "527": { "evo": 528, "candies": 357 }, "529": { "evo": 530, "candies": 427 }, "532": { "evo": 533, "candies": 207 }, "533": { "evo": 534, "candies": 424 }, "535": { "evo": 536, "candies": 196 }, "536": { "evo": 537, "candies": 428 }, "540": { "evo": 541, "candies": 194 }, "541": { "evo": 542, "candies": 420 }, "543": { "evo": 544, "candies": 184 }, "544": { "evo": 545, "candies": 407 }, "546": { "evo": 547, "candies": 403 }, "548": { "evo": 549, "candies": 403 }, "551": { "evo": 552, "candies": 179 }, "552": { "evo": 553, "candies": 597 }, "554": { "evo": 555, "candies": 403 }, "557": { "evo": 558, "candies": 399 }, "559": { "evo": 560, "candies": 410 }, "562": { "evo": 563, "candies": 406 }, "564": { "evo": 565, "candies": 416 }, "566": { "evo": 567, "candies": 652 }, "568": { "evo": 569, "candies": 398 }, "570": { "evo": 571, "candies": 428 }, "572": { "evo": 573, "candies": 395 }, "574": { "evo": 575, "candies": 199 }, "575": { "evo": 576, "candies": 412 }, "577": { "evo": 578, "candies": 189 }, "578": { "evo": 579, "candies": 412 }, "580": { "evo": 581, "candies": 397 }, "582": { "evo": 583, "candies": 201 }, "583": { "evo": 584, "candies": 449 }, "585": { "evo": 586, "candies": 399 }, "588": { "evo": 589, "candies": 416 }, "590": { "evo": 591, "candies": 390 }, "592": { "evo": 593, "candies": 403 }, "595": { "evo": 596, "candies": 396 }, "597": { "evo": 598, "candies": 411 }, "599": { "evo": 600, "candies": 224 }, "600": { "evo": 601, "candies": 437 }, "602": { "evo": 603, "candies": 207 }, "603": { "evo": 604, "candies": 433 }, "605": { "evo": 606, "candies": 407 }, "607": { "evo": 608, "candies": 189 }, "608": { "evo": 609, "candies": 598 }, "610": { "evo": 611, "candies": 209 }, "611": { "evo": 612, "candies": 621 }, "613": { "evo": 614, "candies": 407 }, "616": { "evo": 617, "candies": 416 }, "619": { "evo": 620, "candies": 428 }, "622": { "evo": 623, "candies": 555 }, "624": { "evo": 625, "candies": 412 }, "627": { "evo": 628, "candies": 428 }, "629": { "evo": 630, "candies": 428 }, "633": { "evo": 634, "candies": 214 }, "634": { "evo": 635, "candies": 699 }, "636": { "evo": 637, "candies": 462 }, "650": { "evo": 651, "candies": 207 }, "651": { "evo": 652, "candies": 663 }, "653": { "evo": 654, "candies": 209 }, "654": { "evo": 655, "candies": 668 }, "656": { "evo": 657, "candies": 207 }, "657": { "evo": 658, "candies": 663 }, "659": { "evo": 660, "candies": 355 }, "661": { "evo": 662, "candies": 195 }, "662": { "evo": 663, "candies": 624 }, "664": { "evo": 665, "candies": 109 }, "665": { "evo": [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778], "candies": 345 }, "667": { "evo": 668, "candies": 426 }, "669": { "evo": 670, "candies": 189 }, "670": { "evo": 671, "candies": 464 }, "328350": { "evo": -1, "candies": 0 }, "672": { "evo": 673, "candies": 446 }, "674": { "evo": 675, "candies": 416 }, "677": { "evo": [678, 66214], "candies": 391 }, "679": { "evo": 680, "candies": 228 }, "680": { "evo": 681, "candies": 598 }, "682": { "evo": 683, "candies": 388 }, "684": { "evo": 685, "candies": 403 }, "686": { "evo": 687, "candies": 405 }, "688": { "evo": 689, "candies": 420 }, "690": { "evo": 691, "candies": 415 }, "692": { "evo": 693, "candies": 420 }, "694": { "evo": 695, "candies": 404 }, "696": { "evo": 697, "candies": 438 }, "698": { "evo": 699, "candies": 651 }, "704": { "evo": 705, "candies": 231 }, "705": { "evo": 706, "candies": 699 }, "708": { "evo": 709, "candies": 398 }, "710": { "evo": 711, "candies": 415 }, "712": { "evo": 713, "candies": 432 }, "714": { "evo": 715, "candies": 449 }, "722": { "evo": 723, "candies": 214 }, "723": { "evo": 724, "candies": 663 }, "725": { "evo": 726, "candies": 214 }, "726": { "evo": 727, "candies": 663 }, "728": { "evo": 729, "candies": 214 }, "729": { "evo": 730, "candies": 663 }, "731": { "evo": 732, "candies": 181 }, "732": { "evo": 733, "candies": 407 }, "734": { "evo": 735, "candies": 351 }, "736": { "evo": 737, "candies": 204 }, "737": { "evo": 738, "candies": 420 }, "739": { "evo": 740, "candies": 402 }, "742": { "evo": 743, "candies": 390 }, "744": { "evo": [745, 66281], "candies": 409 }, "747": { "evo": 748, "candies": 416 }, "749": { "evo": 750, "candies": 420 }, "751": { "evo": 752, "candies": 381 }, "753": { "evo": 754, "candies": 403 }, "755": { "evo": 756, "candies": 340 }, "757": { "evo": 758, "candies": 403 }, "759": { "evo": 760, "candies": 420 }, "761": { "evo": 762, "candies": 148 }, "762": { "evo": 763, "candies": 428 }, "767": { "evo": 768, "candies": 445 }, "769": { "evo": 770, "candies": 403 }, "772": { "evo": 773, "candies": 599 }, "782": { "evo": 783, "candies": 214 }, "783": { "evo": 784, "candies": 699 }, "789": { "evo": 790, "candies": 39999 }, "790": { "evo": [791, 792], "candies": 9999999 }, "803": { "evo": 804, "candies": 9999999 }, "808": { "evo": 809, "candies": 9999999 }, "810": { "evo": 811, "candies": 207 }, "811": { "evo": 812, "candies": 656 }, "813": { "evo": 814, "candies": 207 }, "814": { "evo": 815, "candies": 656 }, "816": { "evo": 817, "candies": 207 }, "817": { "evo": 818, "candies": 656 }, "819": { "evo": 820, "candies": 310 }, "821": { "evo": 822, "candies": 178 }, "822": { "evo": 823, "candies": 402 }, "824": { "evo": 825, "candies": 130 }, "825": { "evo": 826, "candies": 323 }, "827": { "evo": 828, "candies": 375 }, "829": { "evo": 830, "candies": 420 }, "831": { "evo": 832, "candies": 350 }, "833": { "evo": 834, "candies": 406 }, "835": { "evo": 836, "candies": 432 }, "837": { "evo": 838, "candies": 270 }, "838": { "evo": 839, "candies": 610 }, "840": { "evo": [841, 842], "candies": 510 }, "843": { "evo": 844, "candies": 480 }, "846": { "evo": 847, "candies": 433 }, "848": { "evo": [849, 66385], "candies": 480 }, "850": { "evo": 851, "candies": 498 }, "852": { "evo": 853, "candies": 444 }, "854": { "evo": 855, "candies": 496 }, "856": { "evo": 857, "candies": 290 }, "857": { "evo": 858, "candies": 412 }, "859": { "evo": 860, "candies": 290 }, "860": { "evo": 861, "candies": 412 }, "65799": { "evo": 65800, "candies": 353 }, "65800": { "evo": 862, "candies": 508 }, "131124": { "evo": 863, "candies": 451 }, "65758": { "evo": 864, "candies": 680 }, "65619": { "evo": 865, "candies": 617 }, "65658": { "evo": 866, "candies": 629 }, "66098": { "evo": 867, "candies": 470 }, "868": { "evo": [869, 66405, 131941, 197477, 263013, 328549, 394085, 459621, 525157, 590693, 656229, 721765, 787301, 852837, 918373, 983909, 1049445, 1114981, 1180517, 1246053, 1311589, 1377125, 1442661, 1508197, 1573733, 1639269, 1704805, 1770341, 1835877, 1901413, 1966949, 2032485, 2098021, 2163557, 2229093, 2294629, 2360165, 2425701, 2491237, 2556773, 2622309, 2687845, 2753381, 2818917, 2884453, 2949989, 3015525, 3081061, 3146597, 3212133, 3277669, 3343205, 3408741, 3474277, 3539813, 3605349, 3670885, 3736421, 3801957, 3867493, 3933029, 3998565, 4064101], "candies": 410 }, "872": { "evo": 873, "candies": 346 }, "878": { "evo": 879, "candies": 470 }, "885": { "evo": 886, "candies": 214 }, "886": { "evo": 887, "candies": 699 }, "65613": { "evo": 65614, "candies": 540 }, "66090": { "evo": 131627, "candies": 530 }, "65615": { "evo": [131152, 65735], "candies": 412 }, "891": { "evo": [892, 66428], "candies": 999999 }, "65594": { "evo": 65595, "candies": 466 }, "65636": { "evo": 65637, "candies": 403 }, "65747": { "evo": 904, "candies": 420 }, "65751": { "evo": 903, "candies": 428 }, "131622": { "evo": [902, 66438], "candies": 478 }, "66106": { "evo": 66107, "candies": 428 }, "66241": { "evo": 66242, "candies": 699 }, "65730": { "evo": 980, "candies": 340 }, "906": { "evo": 907, "candies": 207 }, "907": { "evo": 908, "candies": 656 }, "909": { "evo": 910, "candies": 207 }, "910": { "evo": 911, "candies": 656 }, "912": { "evo": 913, "candies": 207 }, "913": { "evo": 914, "candies": 656 }, "915": { "evo": [916, 66452], "candies": 351 }, "917": { "evo": 918, "candies": 328 }, "919": { "evo": 920, "candies": 378 }, "921": { "evo": 922, "candies": 199 }, "922": { "evo": 923, "candies": 412 }, "924": { "evo": [66461], "candies": 397 }, "926": { "evo": 927, "candies": 402 }, "928": { "evo": 929, "candies": 204 }, "929": { "evo": 930, "candies": 433 }, "932": { "evo": 933, "candies": 270 }, "933": { "evo": 934, "candies": 610 }, "935": { "evo": [936, 937], "candies": 498 }, "938": { "evo": 939, "candies": 410 }, "940": { "evo": 941, "candies": 410 }, "942": { "evo": 943, "candies": 407 }, "944": { "evo": 945, "candies": 406 }, "946": { "evo": 947, "candies": 444 }, "948": { "evo": 949, "candies": 433 }, "951": { "evo": 952, "candies": 406 }, "953": { "evo": 954, "candies": 397 }, "955": { "evo": 956, "candies": 404 }, "957": { "evo": 958, "candies": 207 }, "958": { "evo": 959, "candies": 424 }, "960": { "evo": 961, "candies": 340 }, "963": { "evo": 964, "candies": 375 }, "965": { "evo": 966, "candies": 470 }, "969": { "evo": 970, "candies": 498 }, "971": { "evo": 972, "candies": 409 }, "974": { "evo": 975, "candies": 651 }, "996": { "evo": 997, "candies": 214 }, "997": { "evo": 998, "candies": 699 }, "999": { "evo": 1000, "candies": 462 }, "66535": { "evo": -1, "candies": 0 }
+    };
+    for (var i = 0; i < 100; i++) { // tandemaus
+        evolutions[924].evo.push(925);
+    }
+    var devolutions = {
+        "2": 1, "3": 2, "5": 4, "6": 5, "8": 7, "9": 8, "11": 10, "12": 11, "14": 13, "15": 14, "17": 16, "18": 17, "20": 19, "22": 21, "24": 23, "65562": 25, "26": 25, "28": 27, "30": 29, "31": 30, "33": 32, "34": 33, "36": 35, "38": 37, "40": 39, "42": 41, "169": 42, "44": 43, "45": 44, "182": 44, "47": 46, "49": 48, "51": 50, "53": 52, "55": 54, "57": 56, "59": 58, "61": 60, "62": 61, "186": 61, "64": 63, "65": 64, "67": 66, "68": 67, "70": 69, "71": 70, "73": 72, "75": 74, "76": 75, "78": 77, "80": 79, "199": 79, "82": 81, "462": 82, "85": 84, "87": 86, "89": 88, "91": 90, "93": 92, "94": 93, "208": 95, "97": 96, "99": 98, "101": 100, "103": 102, "105": 104, "463": 108, "110": 109, "112": 111, "464": 112, "242": 113, "465": 114, "117": 116, "230": 117, "119": 118, "121": 120, "212": 123, "466": 125, "467": 126, "130": 129, "470": 133, "471": 133, "135": 133, "134": 133, "136": 133, "196": 133, "197": 133, "700": 133, "233": 137, "139": 138, "141": 140, "148": 147, "149": 148, "153": 152, "154": 153, "156": 155, "157": 156, "159": 158, "160": 159, "162": 161, "164": 163, "166": 165, "168": 167, "171": 170, "25": 172, "65561": -1, "131097": -1, "196633": -1, "262169": -1, "327705": -1, "393241": -1, "458777": -1, "524313": -1, "589849": -1, "655385": -1, "720921": -1, "786457": -1, "851993": -1, "35": 173, "39": 174, "176": 175, "468": 176, "178": 177, "180": 179, "181": 180, "184": 183, "188": 187, "189": 188, "424": 190, "192": 191, "469": 193, "195": 194, "430": 198, "429": 200, "205": 204, "472": 207, "210": 209, "461": 215, "217": 216, "219": 218, "221": 220, "473": 221, "224": 223, "229": 228, "232": 231, "474": 233, "107": 236, "106": 236, "237": 236, "124": 238, "125": 239, "126": 240, "247": 246, "248": 247, "253": 252, "254": 253, "256": 255, "257": 256, "259": 258, "260": 259, "262": 261, "264": 263, "266": 265, "268": 265, "267": 266, "269": 268, "271": 270, "272": 271, "274": 273, "275": 274, "277": 276, "279": 278, "281": 280, "282": 281, "475": 281, "284": 283, "286": 285, "288": 287, "289": 288, "291": 290, "292": 290, "294": 293, "295": 294, "297": 296, "183": 298, "476": 299, "301": 300, "305": 304, "306": 305, "308": 307, "310": 309, "407": 315, "317": 316, "319": 318, "321": 320, "323": 322, "326": 325, "329": 328, "330": 329, "332": 331, "334": 333, "340": 339, "342": 341, "344": 343, "346": 345, "348": 347, "350": 349, "354": 353, "356": 355, "477": 356, "202": 360, "362": 361, "478": 361, "364": 363, "365": 364, "367": 366, "368": 366, "372": 371, "373": 372, "375": 374, "376": 375, "388": 387, "389": 388, "391": 390, "392": 391, "394": 393, "395": 394, "397": 396, "398": 397, "400": 399, "402": 401, "404": 403, "405": 404, "315": 406, "409": 408, "411": 410, "413": 412, "414": 412, "416": 415, "419": 418, "421": 420, "423": 422, "426": 425, "428": 427, "432": 431, "358": 433, "435": 434, "437": 436, "185": 438, "122": 439, "113": 440, "444": 443, "445": 444, "143": 446, "448": 447, "450": 449, "452": 451, "454": 453, "457": 456, "226": 458, "460": 459, "496": 495, "497": 496, "499": 498, "500": 499, "502": 501, "503": 502, "505": 504, "507": 506, "508": 507, "510": 509, "512": 511, "514": 513, "516": 515, "518": 517, "520": 519, "521": 520, "523": 522, "525": 524, "526": 525, "528": 527, "530": 529, "533": 532, "534": 533, "536": 535, "537": 536, "541": 540, "542": 541, "544": 543, "545": 544, "547": 546, "549": 548, "552": 551, "553": 552, "555": 554, "66091": 554, "558": 557, "560": 559, "563": 562, "565": 564, "567": 566, "569": 568, "571": 570, "573": 572, "575": 574, "576": 575, "578": 577, "579": 578, "581": 580, "583": 582, "584": 583, "586": 585, "589": 588, "591": 590, "593": 592, "596": 595, "598": 597, "600": 599, "601": 600, "603": 602, "604": 603, "606": 605, "608": 607, "609": 608, "611": 610, "612": 611, "614": 613, "617": 616, "620": 619, "623": 622, "625": 624, "628": 627, "630": 629, "634": 633, "635": 634, "637": 636, "651": 650, "652": 651, "654": 653, "655": 654, "657": 656, "658": 657, "660": 659, "662": 661, "663": 662, "665": 664, "666": 665, "668": 667, "670": 669, "328350": -1, "671": 670, "673": 672, "675": 674, "678": 677, "680": 679, "681": 680, "683": 682, "685": 684, "687": 686, "689": 688, "691": 690, "693": 692, "695": 694, "697": 696, "699": 698, "705": 704, "706": 705, "709": 708, "711": 710, "713": 712, "715": 714, "723": 722, "724": 723, "726": 725, "727": 726, "729": 728, "730": 729, "732": 731, "733": 732, "735": 734, "737": 736, "738": 737, "740": 739, "743": 742, "745": 744, "131817": -1, "66281": 744, "748": 747, "750": 749, "752": 751, "754": 753, "756": 755, "758": 757, "760": 759, "762": 761, "763": 762, "768": 767, "770": 769, "773": 772, "783": 782, "784": 783, "790": 789, "791": 790, "792": 790, "804": 803, "811": 810, "812": 811, "814": 813, "815": 814, "817": 816, "818": 817, "820": 819, "822": 821, "823": 822, "825": 824, "826": 825, "828": 827, "830": 829, "832": 831, "834": 833, "836": 835, "838": 837, "839": 838, "841": 840, "842": 840, "844": 843, "847": 846, "849": 848, "66385": 848, "851": 850, "853": 852, "855": 854, "857": 856, "858": 857, "860": 859, "861": 860, "862": 65800, "65800": 65799, "863": 131124, "864": 65758, "865": 65619, "866": 65658, "867": 66098, "869": 868, "873": 872, "879": 878, "886": 885, "887": 886, "65614": 65613, "197163": 66090, "131627": 66090, "131152": 65615, "892": 891, "66428": 891, "65735": 65615, "555": 554, "66091": 554, "131627": 66090, "197163": 66090, "131152": 65615, "65611": 65610, "65595": 65594, "65637": 65636, "65693": 156, "66039": 502, "66085": 548, "66107": 66106, "66164": 627, "66241": 704, "66242": 66241, "66249": 712, "66260": 723, "899": 234, "900": 123, "901": 217, "902": 131622, "66438": 131622, "903": 65751, "904": 65747, "907": 906, "908": 907, "910": 909, "911": 910, "913": 912, "914": 913, "916": 915, "66452": 915, "918": 917, "920": 919, "922": 921, "923": 922, "925": 924, "66461": 924, "927": 926, "929": 928, "930": 929, "933": 932, "934": 933, "936": 935, "937": 935, "939": 938, "941": 940, "943": 942, "945": 944, "947": 946, "949": 948, "952": 951, "954": 953, "956": 955, "958": 957, "959": 958, "961": 960, "964": 963, "66500": 963, "966": 965, "970": 969, "972": 971, "975": 974, "979": 57, "980": 65730, "981": 203, "982": 206, "66518": 206, "983": 625, "997": 996, "998": 997, "1000": 999
+    };
+    var megaEvolutions = {
+        "3":[65539],"6":[65542, 131078],"9":[65545],"15":[65551],"18":[65554],"65":[65601],"80":[65616],"94":[65630],"115":[65651],"127":[65663],"130":[65666],"142":[65678],"150":[65686, 131222],"181":[65717],"208":[65744],"212":[65748],"214":[65750],"229":[65765],"248":[65784],"254":[65790],"257":[65793],"260":[65796],"282":[65818],"302":[65838],"303":[65839],"306":[65842],"308":[65844],"310":[65846],"319":[65855],"323":[65859],"334":[65870],"354":[65890],"359":[65895],"362":[65898],"373":[65909],"376":[65912],"380":[65916],"381":[65917],"382":[65918],"383":[65919],"384":[65920],"428":[65964],"445":[65981],"448":[65984],"460":[65996],"475":[66011],"531":[66067],"719":[66255]
+    };
+    var megaPokemon = [
+        65539,65542,131078,65545,65551,65554,65601,65616,65630,65651,65663,65666,65678,65686,131222,65717,65744,65748,65750,65765,65784,65790,65793,65796,65818,65838,65839,65842,65844,65846,65855,65859,65870,65890,65895,65898,65909,65912,65916,65917,65918,65919,65920,65964,65981,65984,65996,66011,66067,66255
+    ];
+    var eggdata = {1:["Monster","Grass"],2:["Monster","Grass"],3:["Monster","Grass"],4:["Monster","Dragon"],5:["Monster","Dragon"],6:["Monster","Dragon"],7:["Monster","Water1"],8:["Monster","Water1"],9:["Monster","Water1"],10:["Bug"],11:["Bug"],12:["Bug"],13:["Bug"],14:["Bug"],15:["Bug"],16:["Flying"],17:["Flying"],18:["Flying"],19:["Field"],20:["Field"],21:["Flying"],22:["Flying"],23:["Field"],24:["Field"],25:["Field","Fairy"],26:["Field","Fairy"],27:["Field"],28:["Field"],29:["Monster","Field"],30:["Undiscovered"],31:["Undiscovered"],32:["Monster","Field"],33:["Monster","Field"],34:["Monster","Field"],35:["Fairy"],36:["Fairy"],37:["Field"],38:["Field"],39:["Fairy"],40:["Fairy"],41:["Flying"],42:["Flying"],43:["Grass"],44:["Grass"],45:["Grass"],46:["Bug","Grass"],47:["Bug","Grass"],48:["Bug"],49:["Bug"],50:["Field"],51:["Field"],52:["Field"],53:["Field"],54:["Water1","Field"],55:["Water1","Field"],56:["Field"],57:["Field"],58:["Field"],59:["Field"],60:["Water1"],61:["Water1"],62:["Water1"],63:["Human-Like"],64:["Human-Like"],65:["Human-Like"],66:["Human-Like"],67:["Human-Like"],68:["Human-Like"],69:["Grass"],70:["Grass"],71:["Grass"],72:["Water3"],73:["Water3"],74:["Mineral"],75:["Mineral"],76:["Mineral"],77:["Field"],78:["Field"],79:["Monster","Water1"],80:["Monster","Water1"],81:["Mineral"],82:["Mineral"],83:["Flying","Field"],84:["Flying"],85:["Flying"],86:["Water1","Field"],87:["Water1","Field"],88:["Amorphous"],89:["Amorphous"],90:["Water3"],91:["Water3"],92:["Amorphous"],93:["Amorphous"],94:["Amorphous"],95:["Mineral"],96:["Human-Like"],97:["Human-Like"],98:["Water3"],99:["Water3"],100:["Mineral"],101:["Mineral"],102:["Grass"],103:["Grass"],104:["Monster"],105:["Monster"],106:["Human-Like"],107:["Human-Like"],108:["Monster"],109:["Amorphous"],110:["Amorphous"],111:["Monster","Field"],112:["Monster","Field"],113:["Fairy"],114:["Grass"],115:["Monster"],116:["Water1","Dragon"],117:["Water1","Dragon"],118:["Water2"],119:["Water2"],120:["Water3"],121:["Water3"],122:["Human-Like"],123:["Bug"],124:["Human-Like"],125:["Human-Like"],126:["Human-Like"],127:["Bug"],128:["Field"],129:["Water2","Dragon"],130:["Water2","Dragon"],131:["Monster","Water1"],132:["Ditto"],133:["Field"],134:["Field"],135:["Field"],136:["Field"],137:["Mineral"],138:["Water1","Water3"],139:["Water1","Water3"],140:["Water1","Water3"],141:["Water1","Water3"],142:["Flying"],143:["Monster"],144:["Undiscovered"],145:["Undiscovered"],146:["Undiscovered"],147:["Water1","Dragon"],148:["Water1","Dragon"],149:["Water1","Dragon"],150:["Undiscovered"],151:["Undiscovered"],152:["Grass"],153:["Grass"],154:["Grass"],155:["Field"],156:["Field"],157:["Field"],158:["Monster"],159:["Monster"],160:["Monster"],161:["Field"],162:["Field"],163:["Flying"],164:["Flying"],165:["Bug"],166:["Bug"],167:["Bug"],168:["Bug"],169:["Flying"],170:["Water2"],171:["Water2"],172:["Undiscovered"],173:["Undiscovered"],174:["Undiscovered"],175:["Undiscovered"],176:["Fairy","flying"],177:["Flying"],178:["Flying"],179:["Monster","Field"],180:["Monster","Field"],181:["Monster","Field"],182:["Grass"],183:["Water1","Fairy"],184:["Water1","Fairy"],185:["Mineral"],186:["Water1"],187:["Fairy","Grass"],188:["Fairy","Grass"],189:["Fairy","Grass"],190:["Field"],191:["Grass"],192:["Grass"],193:["Bug"],194:["Water1","Field"],195:["Water1","Field"],196:["Field"],197:["Field"],198:["Flying"],199:["Monster","Water1"],200:["Amorphous"],201:["Undiscovered"],202:["Amorphous"],203:["Field"],204:["Bug"],205:["Bug"],206:["Field"],207:["Bug"],208:["Mineral"],209:["Field","Fairy"],210:["Field","Fairy"],211:["Water2"],212:["Bug"],213:["Bug"],214:["Bug"],215:["Field"],216:["Field"],217:["Field"],218:["Amorphous"],219:["Amorphous"],220:["Field"],221:["Field"],222:["Water1","Water3"],223:["Water1","Water2"],224:["Water1","Water2"],225:["Water1","Field"],226:["Water1"],227:["Flying"],228:["Field"],229:["Field"],230:["Water1","Dragon"],231:["Field"],232:["Field"],233:["Mineral"],234:["Field"],235:["Field"],236:["Undiscovered"],237:["Human-Like"],238:["Undiscovered"],239:["Undiscovered"],240:["Undiscovered"],241:["Field"],242:["Fairy"],243:["Undiscovered"],244:["Undiscovered"],245:["Undiscovered"],246:["Monster"],247:["Monster"],248:["Monster"],249:["Undiscovered"],250:["Undiscovered"],251:["Undiscovered"],252:["Monster","Dragon"],253:["Monster","Dragon"],254:["Monster","Dragon"],255:["Field"],256:["Field"],257:["Field"],258:["Monster","Water1"],259:["Monster","Water1"],260:["Monster","Water1"],261:["Field"],262:["Field"],263:["Field"],264:["Field"],265:["Bug"],266:["Bug"],267:["Bug"],268:["Bug"],269:["Bug"],270:["Water1","Grass"],271:["Water1","Grass"],272:["Water1","Grass"],273:["Grass","Field"],274:["Grass","Field"],275:["Grass","Field"],276:["Flying"],277:["Flying"],278:["Water1","Flying"],279:["Water1","Flying"],280:["Amorphous","Human-Like"],281:["Amorphous","Human-Like"],282:["Amorphous","Human-Like"],283:["Water1","bug"],284:["Water1","bug"],285:["Fairy","Grass"],286:["Fairy","Grass"],287:["Field"],288:["Field"],289:["Field"],290:["Bug"],291:["Bug"],292:["Mineral"],293:["Monster","Field"],294:["Monster","Field"],295:["Monster","Field"],296:["Human-Like"],297:["Human-Like"],298:["Undiscovered"],299:["Mineral"],300:["Field","Fairy"],301:["Field","Fairy"],302:["Human-Like"],303:["Field","Fairy"],304:["Monster"],305:["Monster"],306:["Monster"],307:["Human-Like"],308:["Human-Like"],309:["Field"],310:["Field"],311:["Fairy"],312:["Fairy"],313:["Grass","Human-Like"],314:["Grass","Human-Like"],315:["Fairy","Grass"],316:["Amorphous"],317:["Amorphous"],318:["Water2"],319:["Water2"],320:["Water2","Field"],321:["Water2","Field"],322:["Field"],323:["Field"],324:["Field"],325:["Field"],326:["Field"],327:["Field","Human-Like"],328:["Bug","Dragon"],329:["Bug","Dragon"],330:["Bug","Dragon"],331:["Grass","Human-Like"],332:["Grass","Human-Like"],333:["Flying","Dragon"],334:["Flying","Dragon"],335:["Field"],336:["Field","Dragon"],337:["Mineral"],338:["Mineral"],339:["Water2"],340:["Water2"],341:["Water1","Water3"],342:["Water1","Water3"],343:["Mineral"],344:["Mineral"],345:["Water3"],346:["Water3"],347:["Water3"],348:["Water3"],349:["Water1","Dragon"],350:["Water1","Dragon"],351:["Fairy","Amorphous"],352:["Field"],353:["Amorphous"],354:["Amorphous"],355:["Amorphous"],356:["Amorphous"],357:["Grass","Monster"],358:["Amorphous"],359:["Field"],360:["Undiscovered"],361:["Fairy","Mineral"],362:["Fairy","Mineral"],363:["Water1","Field"],364:["Water1","Field"],365:["Water1","Field"],366:["Water1"],367:["Water1"],368:["Water1"],369:["Water1","Water2"],370:["Water2"],371:["Dragon"],372:["Dragon"],373:["Dragon"],374:["Mineral"],375:["Mineral"],376:["Mineral"],377:["Undiscovered"],378:["Undiscovered"],379:["Undiscovered"],380:["Undiscovered"],381:["Undiscovered"],382:["Undiscovered"],383:["Undiscovered"],384:["Undiscovered"],385:["Undiscovered"],386:["Undiscovered"],387:["Grass","Monster"],388:["Grass","Monster"],389:["Grass","Monster"],390:["Field","Human-Like"],391:["Field","Human-Like"],392:["Field","Human-Like"],393:["Water1","Field"],394:["Water1","Field"],395:["Water1","Field"],396:["Flying"],397:["Flying"],398:["Flying"],399:["Water1","Field"],400:["Water1","Field"],401:["Bug"],402:["Bug"],403:["Field"],404:["Field"],405:["Field"],406:["Undiscovered"],407:["Fairy","Grass"],408:["Monster"],409:["Monster"],410:["Monster"],411:["Monster"],412:["Bug"],413:["Bug"],414:["Bug"],415:["Bug"],416:["Bug"],417:["Field","Fairy"],418:["Water1","Field"],419:["Water1","Field"],420:["Fairy","Grass"],421:["Fairy","Grass"],422:["Water1","Amorphous"],423:["Water1","Amorphous"],424:["Field"],425:["Amorphous"],426:["Amorphous"],427:["Field","Human-Like"],428:["Field","Human-Like"],429:["Amorphous"],430:["Flying"],431:["Field"],432:["Field"],433:["Undiscovered"],434:["Field"],435:["Field"],436:["Mineral"],437:["Mineral"],438:["Undiscovered"],439:["Undiscovered"],440:["Undiscovered"],441:["Flying"],442:["Amorphous"],443:["Monster","Dragon"],444:["Monster","Dragon"],445:["Monster","Dragon"],446:["Undiscovered"],447:["Undiscovered"],448:["Field","Human-Like"],449:["Field"],450:["Field"],451:["Bug","Water3"],452:["Bug","Water3"],453:["Human-Like"],454:["Human-Like"],455:["Grass"],456:["Water2"],457:["Water2"],458:["Undiscovered"],459:["Monster","Grass"],460:["Monster","Grass"],461:["Field"],462:["Mineral"],463:["Monster"],464:["Monster","Field"],465:["Grass"],466:["Human-Like"],467:["Human-Like"],468:["Flying","Fairy"],469:["Bug"],470:["Field"],471:["Field"],472:["Bug"],473:["Field"],474:["Mineral"],475:["Amorphous","Human-Like"],476:["Mineral"],477:["Amorphous"],478:["Fairy","Mineral"],479:["Amorphous"],480:["Undiscovered"],481:["Undiscovered"],482:["Undiscovered"],483:["Undiscovered"],484:["Undiscovered"],485:["Undiscovered"],486:["Undiscovered"],487:["Undiscovered"],488:["Undiscovered"],489:["Water1","Fairy"],490:["Water1","Fairy"],491:["Undiscovered"],492:["Undiscovered"],493:["Undiscovered"],494:["Undiscovered"],495:["Field","Grass"],496:["Field","Grass"],497:["Field","Grass"],498:["Field"],499:["Field"],500:["Field"],501:["Field"],502:["Field"],503:["Field"],504:["Field"],505:["Field"],506:["Field"],507:["Field"],508:["Field"],509:["Field"],510:["Field"],511:["Field"],512:["Field"],513:["Field"],514:["Field"],515:["Field"],516:["Field"],517:["Field"],518:["Field"],519:["Flying"],520:["Flying"],521:["Flying"],522:["Field"],523:["Field"],524:["Mineral"],525:["Mineral"],526:["Mineral"],527:["Field","Flying"],528:["Field","Flying"],529:["Field"],530:["Field"],531:["Fairy"],532:["Human-Like"],533:["Human-Like"],534:["Human-Like"],535:["Water1"],536:["Water1"],537:["Water1"],538:["Human-Like"],539:["Human-Like"],540:["Bug"],541:["Bug"],542:["Bug"],543:["Bug"],544:["Bug"],545:["Bug"],546:["Grass","Fairy"],547:["Grass","Fairy"],548:["Grass"],549:["Grass"],550:["Water2"],551:["Field"],552:["Field"],553:["Field"],554:["Field"],555:["Field"],556:["Grass"],557:["Bug","Mineral"],558:["Bug","Mineral"],559:["Field","Dragon"],560:["Field","Dragon"],561:["Flying"],562:["Mineral","Amorphous"],563:["Mineral","Amorphous"],564:["Water1","Water3"],565:["Water1","Water3"],566:["Flying","Water3"],567:["Flying","Water3"],568:["Mineral"],569:["Mineral"],570:["Field"],571:["Field"],572:["Field"],573:["Field"],574:["Human-Like"],575:["Human-Like"],576:["Human-Like"],577:["Amorphous"],578:["Amorphous"],579:["Amorphous"],580:["Water1","Flying"],581:["Water1","Flying"],582:["Mineral"],583:["Mineral"],584:["Mineral"],585:["Field"],586:["Field"],587:["Field"],588:["Bug"],589:["Bug"],590:["Grass"],591:["Grass"],592:["Amorphous"],593:["Amorphous"],594:["Water1","Water2"],595:["Bug"],596:["Bug"],597:["Grass","Mineral"],598:["Grass","Mineral"],599:["Mineral"],600:["Mineral"],601:["Mineral"],602:["Amorphous"],603:["Amorphous"],604:["Amorphous"],605:["Human-Like"],606:["Human-Like"],607:["Amorphous"],608:["Amorphous"],609:["Amorphous"],610:["Monster","Dragon"],611:["Monster","Dragon"],612:["Monster","Dragon"],613:["Field"],614:["Field"],615:["Mineral"],616:["Bug"],617:["Bug"],618:["Water1","Amorphous"],619:["Field","Human-Like"],620:["Field","Human-Like"],621:["Dragon","Monster"],622:["Mineral"],623:["Mineral"],624:["Human-Like"],625:["Human-Like"],626:["Field"],627:["Flying"],628:["Flying"],629:["Flying"],630:["Flying"],631:["Field"],632:["Bug"],633:["Dragon"],634:["Dragon"],635:["Dragon"],636:["Bug"],637:["Bug"],638:["Undiscovered"],639:["Undiscovered"],640:["Undiscovered"],641:["Undiscovered"],642:["Undiscovered"],643:["Undiscovered"],644:["Undiscovered"],645:["Undiscovered"],646:["Undiscovered"],647:["Undiscovered"],648:["Undiscovered"],649:["Undiscovered"],650:["Field"],651:["Field"],652:["Field"],653:["Field"],654:["Field"],655:["Field"],656:["Water1"],657:["Water1"],658:["Water1"],659:["Field"],660:["Field"],661:["Flying"],662:["Flying"],663:["Flying"],664:["Bug"],665:["Bug"],666:["Bug"],667:["Field"],668:["Field"],669:["Fairy"],670:["Fairy"],671:["Fairy"],672:["Field"],673:["Field"],674:["Field","Human-Like"],675:["Field","Human-Like"],676:["Field"],677:["Field"],678:["Field"],679:["Mineral"],680:["Mineral"],681:["Mineral"],682:["Fairy"],683:["Fairy"],684:["Fairy"],685:["Fairy"],686:["Water1","Water2"],687:["Water1","Water2"],688:["Water3"],689:["Water3"],690:["Water1","Dragon"],691:["Water1","Dragon"],692:["Water1","Water3"],693:["Water1","Water3"],694:["Monster","Dragon"],695:["Monster","Dragon"],696:["Monster","Dragon"],697:["Monster","Dragon"],698:["Monster"],699:["Monster"],700:["Field"],701:["Human-Like","Flying"],702:["Field","Fairy"],703:["Fairy","Mineral"],704:["Dragon"],705:["Dragon"],706:["Dragon"],707:["Mineral"],708:["Grass","Amorphous"],709:["Grass","Amorphous"],710:["Amorphous"],711:["Amorphous"],712:["Monster","Mineral"],713:["Monster","Mineral"],714:["Flying","Dragon"],715:["Flying","Dragon"],716:["Undiscovered"],717:["Undiscovered"],718:["Undiscovered"],719:["Undiscovered"],720:["Undiscovered"],721:["Undiscovered"],722:["Flying"],723:["Flying"],724:["Flying"],725:["Field"],726:["Field"],727:["Field"],728:["Water1","Field"],729:["Water1","Field"],730:["Water1","Field"],731:["Flying"],732:["Flying"],733:["Flying"],734:["Field"],735:["Field"],736:["Bug"],737:["Bug"],738:["Bug"],739:["Water3"],740:["Water3"],741:["Flying"],742:["Bug","Fairy"],743:["Bug","Fairy"],744:["Field"],745:["Field"],746:["Water2"],747:["Water1"],748:["Water1"],749:["Field"],750:["Field"],751:["Water1","Bug"],752:["Water1","Bug"],753:["Grass"],754:["Grass"],755:["Grass"],756:["Grass"],757:["Monster","Dragon"],758:["Monster","Dragon"],759:["Field"],760:["Field"],761:["Grass"],762:["Grass"],763:["Grass"],764:["Grass"],765:["Field"],766:["Field"],767:["Bug","Water3"],768:["Bug","Water3"],769:["Amorphous"],770:["Amorphous"],771:["Water1"],772:["Undiscovered"],773:["Undiscovered"],774:["Mineral"],775:["Field"],776:["Monster","Dragon"],777:["Field","Fairy"],778:["Amorphous"],779:["Water2"],780:["Monster","Dragon"],781:["Mineral"],782:["Dragon"],783:["Dragon"],784:["Dragon"],785:["Undiscovered"],786:["Undiscovered"],787:["Undiscovered"],788:["Undiscovered"],789:["Undiscovered"],790:["Undiscovered"],791:["Undiscovered"],792:["Undiscovered"],793:["Undiscovered"],794:["Undiscovered"],795:["Undiscovered"],796:["Undiscovered"],797:["Undiscovered"],798:["Undiscovered"],799:["Undiscovered"],800:["Undiscovered"],801:["Undiscovered"],802:["Undiscovered"],803:["Undiscovered"],804:["Undiscovered"],805:["Undiscovered"],806:["Undiscovered"],807:["Undiscovered"],808:["Undiscovered"],809:["Undiscovered"],810:["Field","Grass"],811:["Field","Grass"],812:["Field","Human-Like"],813:["Field","Human-Like"],814:["Field","Human-Like"],815:["Field","Human-Like"],816:["Field","Water1"],817:["Field","Water1"],818:["Field","Water1"],819:["Field"],820:["Field"],821:["Flying"],822:["Flying"],823:["Flying"],824:["Bug"],825:["Bug"],826:["Bug"],827:["Field"],828:["Field"],829:["Grass"],830:["Grass"],831:["Field"],832:["Field"],833:["Monster","Water1"],834:["Monster","Water1"],835:["Field"],836:["Field"],837:["Mineral"],838:["Mineral"],839:["Mineral"],840:["Grass","Dragon"],841:["Grass","Dragon"],842:["Grass","Dragon"],843:["Field","Dragon"],844:["Field","Dragon"],845:["Water1","Flying"],846:["Water2"],847:["Water2"],848:["Undiscovered"],849:["Human-Like"],850:["Bug"],851:["Bug"],852:["Water1","Human-Like"],853:["Water1","Human-Like"],854:["Mineral","Amorphous"],855:["Mineral","Amorphous"],856:["Fairy"],857:["Fairy"],858:["Fairy"],859:["Fairy","Human-Like"],860:["Fairy","Human-Like"],861:["Fairy","Human-Like"],862:["Field"],863:["Field"],864:["Water1","Water3"],865:["Flying","Field"],866:["Human-Like"],867:["Mineral","Amorphous"],868:["Fairy","Amorphous"],869:["Fairy","Amorphous"],870:["Fairy","Mineral"],871:["Water1","Amorphous"],872:["Bug"],873:["Bug"],874:["Mineral"],875:["Water1","Field"],876:["Fairy"],877:["Field","Fairy"],878:["Field","Mineral"],879:["Field","Mineral"],880:["Undiscovered"],881:["Undiscovered"],882:["Undiscovered"],883:["Undiscovered"],884:["Mineral","Dragon"],885:["Amorphous","Dragon"],886:["Amorphous","Dragon"],887:["Amorphous","Dragon"],888:["Undiscovered"],889:["Undiscovered"],890:["Undiscovered"],891:["Undiscovered"],892:["Undiscovered"],893:["Undiscovered"],894:["Undiscovered"],895:["Undiscovered"],896:["Undiscovered"],897:["Undiscovered"],898:["Undiscovered"],899:["Field"],900:["Bug"],901:["Field"],902:["Water2"],903:["Field"],904:["Water2"],905:["Undiscovered"],"906":["Field","Grass"],"907":["Field","Grass"],"908":["Field","Grass"],"909":["Field"],"910":["Field"],"911":["Field"],"912":["Flying","Water 1"],"913":["Flying","Water 1"],"914":["Flying","Water 1"],"915":["Field"],"916":["Field"],"917":["Bug"],"918":["Bug"],"919":["Bug"],"920":["Bug"],"921":["Field"],"922":["Field"],"923":["Field"],"924":["Field","Fairy"],"925":["Field","Fairy"],"926":["Field","Mineral"],"927":["Field","Mineral"],"928":["Grass"],"929":["Grass"],"930":["Grass"],"931":["Flying"],"932":["Mineral"],"933":["Mineral"],"934":["Mineral"],"935":["Human-Like"],"936":["Human-Like"],"937":["Human-Like"],"938":["Water 1"],"939":["Water 1"],"940":["Water 1","Flying"],"941":["Water 1","Flying"],"942":["Field"],"943":["Field"],"944":["Field"],"945":["Field"],"946":["Grass"],"947":["Grass"],"948":["Grass"],"949":["Grass"],"950":["Water 3"],"951":["Grass"],"952":["Grass"],"953":["Bug"],"954":["Bug"],"955":["Flying"],"956":["Flying"],"957":["Fairy"],"958":["Fairy"],"959":["Fairy"],"960":["Water 3"],"961":["Water 3"],"962":["Flying"],"963":["Field","Water 2"],"964":["Field","Water 2"],"965":["Mineral"],"966":["Mineral"],"967":["Field"],"968":["Field"],"969":["Mineral"],"970":["Mineral"],"971":["Field"],"972":["Field"],"973":["Flying"],"974":["Field"],"975":["Field"],"976":["Water 2"],"977":["Water 2"],"978":["Water 2"],"979":["Field"],"980":["Water 1","Field"],"981":["Field"],"982":["Field"],"983":["Human-Like"],"984":["Undiscovered"],"985":["Undiscovered"],"986":["Undiscovered"],"987":["Undiscovered"],"988":["Undiscovered"],"989":["Undiscovered"],"990":["Undiscovered"],"991":["Undiscovered"],"992":["Undiscovered"],"993":["Undiscovered"],"994":["Undiscovered"],"995":["Undiscovered"],"996":["Dragon","Mineral"],"997":["Dragon","Mineral"],"998":["Dragon","Mineral"],"999":["Undiscovered"],"1000":["Undiscovered"],"1001":["Undiscovered"],"1002":["Undiscovered"],"1003":["Undiscovered"],"1004":["Undiscovered"],"1005":["Undiscovered"],"1006":["Undiscovered"],"1007":["Undiscovered"],"1008":["Undiscovered"]};
+    var legendaries = [
+        144,145,146,150,151,243,244,245,249,250,251,377,378,379,380,381,382,383,384,385,386,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,638,639,640,641,642,643,644,645,646,647,648,649,716,717,718,719,720,721,785,786,787,788,789,790,791,792,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809,888,889,890,891,892,893,894,895,896,897,898,905,1001,1002,1003,1004,1007,1008
+    ];
+    var ultraBeasts = [ // Have their BST set to 600
+        773,772,785,786,787,788,790,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809
+    ];
+    var paradoxPokemon = [
+        984,985,986,987,988,989,990,991,992,993,994,995,1005,1006
+    ];
+    var regionalEvos = [ // Have their BST set to 560
+        862,863,864,865,866,867,899,900,901,902,903,904,979,980,981,982,66518,983
+    ];
+    var pokeColors = {
+        "red": [4, 5, 6, 45, 46, 47, 98, 99, 100, 101, 118, 119, 124, 126, 129, 136, 165, 166, 168, 193, 212, 218, 219, 224, 225, 233, 240, 250, 255, 256, 257, 265, 308, 318, 323, 338, 341, 342, 262495, 380, 383, 386, 401, 402, 131485, 467, 474, 479, 498, 499, 500, 513, 514, 538, 543, 545, 553, 554, 555, 557, 558, 560, 616, 617, 621, 624, 625, 628, 631, 653, 654, 655, 661, 662, 663, 697, 717, 725, 726, 727, 741, 66281, 66310, 131846, 776, 787, 794, 66337, 826, 850, 851, 889, 131484, 131657, 590490, 1049242, 721562, 1245850, 65682, 909,910,911,935,936,950,961,66514,988,991,1004,1007,66543,132079,197615,263151],
+        "blue": [1377125, 1442661, 1508197, 1573733, 1639269, 1704805, 1770341, 7, 8, 9, 65564, 29, 30, 31, 65574, 43, 44, 65588, 65589, 55, 60, 61, 62, 72, 73, 114, 116, 117, 130, 131, 134, 138, 139, 144, 147, 148, 158, 159, 160, 170, 171, 183, 184, 189, 194, 195, 202, 214, 230, 231, 245, 258, 259, 260, 276, 277, 283, 284, 294, 295, 298, 307, 319, 320, 321, 333, 334, 340, 131423, 358, 360, 363, 364, 365, 366, 367, 371, 373, 374, 375, 376, 378, 381, 382, 393, 394, 395, 403, 404, 405, 408, 409, 65958, 65959, 443, 444, 445, 447, 448, 453, 454, 456, 457, 458, 465, 471, 482, 489, 490, 501, 502, 503, 515, 516, 524, 525, 526, 527, 528, 535, 536, 537, 539, 66091, 564, 565, 580, 588, 603, 604, 605, 615, 633, 634, 635, 638, 642, 656, 657, 658, 678, 686, 687, 692, 693, 698, 699, 712, 713, 716, 728, 729, 730, 738, 746, 747, 748, 328454, 393990, 775, 789, 790, 131872, 816, 817, 818, 821, 822, 824, 845, 853, 875, 881, 883, 888, 787098, 1114778, 524954, 912,913,914,66467,937,963,964,66500,969,970,977,993,66535,1008,66544,132080,197616,263152],
+        "yellow": [14, 15, 25, 26, 27, 28, 38, 52, 131124, 53, 54, 77, 78, 96, 97, 103, 125, 135, 145, 146, 155, 156, 157, 172, 181, 191, 192, 203, 206, 213, 239, 243, 267, 279, 291, 296, 310, 311, 312, 322, 337, 385, 414, 415, 416, 433, 466, 480, 488, 494, 540, 542, 559, 563, 566, 567, 595, 596, 612, 619, 647, 694, 695, 702, 66277, 742, 743, 197382, 778, 785, 66336, 197408, 807, 825, 835, 836, 4064101, 3670885, 3736421, 3801957, 3867493, 3933029, 3998565, 4784997, 4850533, 4916069, 4981605, 5047141, 5112677, 5178213, 870, 877, 878, 894, 197274, 1835877, 1901413, 1966949, 2032485, 2098021, 2163557, 2229093,921,922,923,926,132003,938,941,948,955,956,132050,982,66518,994,1000],
+        "green": [918373, 983909, 1049445, 1114981, 1180517, 1, 2, 3, 10, 11, 69, 70, 71, 65624, 65625, 123, 152, 153, 154, 167, 177, 178, 182, 186, 188, 246, 248, 251, 252, 253, 254, 269, 270, 271, 272, 286, 309, 315, 316, 329, 330, 331, 332, 346, 352, 357, 384, 387, 388, 389, 406, 407, 412, 413, 436, 437, 455, 469, 470, 492, 495, 496, 497, 511, 512, 541, 546, 547, 548, 549, 550, 556, 568, 569, 577, 578, 579, 610, 611, 66154, 622, 623, 640, 641, 650, 651, 652, 701, 718, 737, 751, 752, 764, 262918, 781, 797, 810, 811, 812, 829, 830, 833, 834, 840, 841, 842, 843, 844, 1246053, 1311589, 879, 880, 882, 885, 886, 887, 895, 898, 66121, 328346, 983706, 459418, 902, 906,907,908,918,928,929,930,931,939,951,952,954,967,995,1005],
+        "black": [65542, 65555, 65556, 143, 197, 198, 201, 215, 228, 229, 303, 325, 336, 344, 353, 354, 355, 356, 430, 441, 446, 461, 477, 487, 491, 522, 523, 561, 562, 608, 609, 644, 664, 665, 66254, 131790, 731, 732, 733, 757, 758, 771, 796, 799, 800, 837, 838, 839, 893, 66428, 897, 131970, 904,940,949,983],
+        "brown": [3212133, 3277669, 3343205, 3408741, 3408741, 3474277, 3539813, 3605349, 13, 16, 17, 18, 20, 21, 22, 65562, 37, 50, 51, 56, 57, 58, 59, 63, 64, 65, 74, 75, 76, 83, 84, 85, 104, 105, 106, 107, 115, 120, 127, 128, 133, 140, 141, 149, 161, 162, 163, 164, 185, 216, 217, 220, 221, 234, 237, 244, 263, 273, 274, 275, 285, 287, 289, 292, 297, 324, 327, 328, 343, 349, 377, 390, 391, 392, 396, 397, 398, 399, 400, 65949, 418, 419, 427, 428, 438, 449, 450, 473, 485, 504, 505, 506, 534, 551, 552, 586, 606, 618, 626, 629, 630, 645, 659, 660, 667, 668, 672, 673, 679, 680, 681, 688, 689, 690, 691, 696, 708, 709, 710, 711, 721, 722, 723, 724, 734, 735, 744, 745, 131817, 749, 750, 769, 770, 774, 819, 820, 827, 828, 846, 847, 852, 863, 4195173, 4260709, 4326245, 4391781, 4457317, 4522853, 4588389, 65948, 197193, 131738, 393882, 918170, 852634, 900, 901,66452,927,932,933,934,942,946,947,953,980,981,999,1001,1003],
+        "purple": [19, 23, 24, 32, 33, 34, 41, 42, 48, 49, 88, 89, 90, 91, 92, 93, 94, 65641, 109, 110, 121, 132, 142, 150, 169, 190, 196, 205, 207, 210, 226, 236, 268, 301, 302, 314, 317, 326, 345, 65916, 65917, 421, 422, 423, 424, 425, 426, 429, 434, 435, 442, 451, 452, 472, 484, 509, 510, 574, 575, 576, 620, 649, 704, 705, 706, 714, 715, 720, 739, 197349, 755, 756, 761, 762, 763, 459526, 788, 792, 803, 804, 823, 848, 849, 854, 855, 861, 866, 871, 876, 890, 262810, 65680, 984],
+        "gray": [66, 67, 68, 65610, 65611, 65612, 81, 82, 95, 65646, 111, 112, 200, 204, 208, 211, 223, 227, 232, 247, 261, 262, 290, 299, 304, 305, 306, 313, 339, 347, 348, 351, 361, 362, 369, 379, 410, 411, 431, 432, 462, 464, 476, 507, 508, 519, 520, 521, 529, 530, 532, 533, 544, 570, 571, 572, 573, 589, 597, 598, 599, 600, 601, 632, 639, 646, 677, 703, 707, 736, 767, 768, 772, 773, 777, 782, 783, 784, 801, 802, 805, 808, 809, 814, 862, 867, 874, 891, 892, 66428, 656026, 899, 903,915,916,919,920,943,944,945,965,966,976,979,986,987,989,990,992,996,997,998],
+        "white": [12, 65563, 65573, 65613, 65614, 86, 87, 65658, 175, 176, 179, 65758, 235, 249, 65799, 264, 266, 278, 280, 281, 282, 288, 335, 65887, 359, 372, 417, 459, 460, 468, 475, 478, 483, 486, 493, 66067, 66090, 197163, 131627, 581, 582, 583, 584, 587, 590, 591, 592, 593, 602, 607, 613, 614, 627, 636, 637, 643, 648, 666, 669, 670, 671, 674, 675, 676, 66214, 684, 685, 740, 765, 766, 780, 791, 793, 795, 798, 806, 813, 815, 831, 832, 864, 865, 868, 869, 66405, 131941, 197477, 263013, 328549, 394085, 872, 873, 884, 896, 66434, 66202,917,924,925,66461,197539,960,962,971,972,974,975,1002,1006],
+        "pink": [2753381, 2818917, 2884453, 2949989, 3015525, 3081061, 3146597, 459621, 525157, 590693, 656229, 721765, 787301, 852837, 35, 36, 39, 40, 79, 80, 102, 108, 113, 122, 137, 151, 173, 174, 180, 187, 199, 209, 222, 238, 241, 242, 293, 300, 350, 368, 370, 420, 65957, 439, 440, 463, 481, 517, 518, 531, 585, 594, 682, 683, 700, 719, 131813, 753, 754, 759, 760, 779, 786, 856, 857, 858, 859, 860, 3605349, 3670885, 3736421, 3801957, 3867493, 3933029, 3998565, 65615, 131152, 65735, 1180314, 905,957,958,959,968,973,978,985]
+    };
+
+    /* Quest Variables */
+    var arenaOpponents = {
+        nub: {
+            name: "Trainer Nub",
+            party: [19,50,316,582,116,27,194,207,200,570,489,"235",236,624,513,511,417,147],
+            power: [10, 60],
+            postArgs: {
+                rewardAmt: 0,
+                moneyReward: 5,
+                cooldown: 0.1667,
+                noRecords: true,
+                taunt: true
+            },
+            desc: "Arena NPC"
+        },
+        pink: {
+            name: "Trainer Pink",
+            party: ["36",80,222,700,594,706,65838,472,205,423,308,620,368,429,510,151],
+            power: [60, 130],
+            postArgs: {
+                rewardAmt: 1,
+                cooldown: 1
+            },
+            desc: "Arena NPC"
+        },
+        mustard: {
+            name: "Trainer Mustard",
+            party: [65,131743,38,203,"26",560,297,563,145,71,479,65964,15,28,135],
+            power: [90, 170],
+            postArgs: {
+                rewardAmt: 2,
+                cooldown: 1.25
+            },
+            desc: "Arena NPC"
+        },
+        lorekeeper: {
+            name: "Trainer Lorekeeper",
+            party: [65844,376,887,214,867,748,62,719,31,642,"776",702,812,342,836],
+            power: [110, 150],
+            postArgs: {
+                rewardAmt: 3,
+                cooldown: 1.5
+            },
+            desc: "Arena NPC"
+        },
+        cyan: {
+            name: "Trainer Cyan",
+            party: [448,202,539,476,635,593,376,"171",65959,445,66091,214,378,658,465],
+            power: [110, 200],
+            postArgs: {
+                rewardAmt: 3,
+                cooldown: 1.75
+            },
+            desc: "Arena NPC"
+        },
+        crimson: {
+            name: "Trainer Crimson",
+            party: [131078,101,625,"663",212,342,553,538,721,149,45,197087,168,571,213, 308, 702, 702],
+            power: [150, 300],
+            postArgs: {
+                rewardAmt: 6,
+                cooldown: 2.5
+            },
+            desc: "Arena NPC"
+        },
+        rainbow: {
+            name: "Trainer Rainbow",
+            party: [721,483,66023,462,272,442,411,227,429,563,323,208,630,373,65790,230,"59",66217],
+            power: [200, 380],
+            postArgs: {
+                rewardAmt: 10,
+                cooldown: 5
+            },
+            desc: "Arena NPC"
+        }
+    };
+    var recipeData = {};
+    var eliteData = [];
+    var eliteHall = [];
+    var pyrBonusMons = [];
+    var journalDoneDeadline = 3*60*1000;
+    
+    /* Photo Variables */
+    var photoQuality = ["Disastrous", "Terrible", "Awful", "Bad", "Poor", "Okay", "Good", "Great", "Superb", "Excellent", "Perfect"];
+    var photoActions = {
+        Any: ["eating", "playing", "dancing", "sleeping", "jumping", "singing", "whistling", "running", "standing still", "sitting", "walking", "stretching", "crying", "laughing", "yawning", "attacking", "smiling", "protecting itself"],
+        Positive: ["eating", "playing", "dancing", "sleeping", "singing", "whistling", "stretching", "smiling"],
+        Neutral: ["jumping", "walking", "standing still", "sitting", "laughing", "yawning"],
+        Negative: ["running", "crying", "attacking", "protecting itself"],
+        Normal: ["spinning", "screaming"],
+        Fighting: ["punching", "kicking"],
+        Flying: ["flying", "flapping their wings"],
+        Poison: ["exhaling poison", "releasing some gas"],
+        Ground: ["digging a hole", "throwing sand"],
+        Rock: ["digging a hole", "throwing rocks"],
+        Bug: ["hiding", "spreading powder"],
+        Ghost: ["vanishing", "cursing"],
+        Steel: ["hardening", "charging"],
+        Fire: ["overheating", "breathing fire"],
+        Water: ["swimming", "diving"],
+        Grass: ["releasing spores", "releasing petals"],
+        Electric: ["releasing sparks", "charging"],
+        Psychic: ["meditating", "teleporting"],
+        Ice: ["swimming", "cooling"],
+        Dragon: ["howling", "rampaging"],
+        Dark: ["taunting", "hiding"],
+        Fairy: ["winking", "casting a spell"]
+    };
+    var photoMood = {
+        Positive: ["happy", "relaxed", "confident", "lively", "docile"],
+        Neutral: ["indifferent", "calm", "distracted", "lazy"],
+        Negative: ["angry", "anxious", "scared", "tired", "sad"]
+    };
+    
+    /* Misc Variables */
+    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false, "arborist": false, "decoration": false, "league": false, "celebrity": false, "journal": false, "monger": false, "baking": false, "idol": false, "detective": false};
+    var tradeRequests = {};
+    var challengeRequests = {};
+    var challengeRequests2 = [];
+    var pyramidRequests = {};
+    var bakingRequests = {};
+    var currentBattles = [];
+    var currentPyramids = [];
+    var currentBakings = [];
+    var currentAuctions = [];
+    var lastContests = [];
+    var gachaJackpotAmount = 200; //Jackpot for gacha tickets. Number gets divided by 10 later.
+    var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
+    var allTrackers = (SESSION.global() && SESSION.global().allTrackers ? SESSION.global().allTrackers : ["blinky"]);
+    var dailyBoost;
+    var scientistQuest;
+    var photographQuest;
+    var ccatch = "ccatch";
+    var ccatch2 = "ccatchh";
+    var pendingActiveChanges = {};
+    var allowedSharedIPNames = [];
+    var forbiddenNames = ["on", "off", "cancel", "name"];
+    var TYPE_NULL_NAME = "TypeNullName";
+    var colorTranslations = {
+        "darkorchid": "#9932CC",
+        "darkgreen": "#006400",
+        "darkorange": "#FF8C00",
+        "goldenrod": "#DAA520",
+        "lightblue": "#ADD8E6",
+        "crimson": "#DC143C",
+        "peru": "#CD853F",
+        "palevioletred": "#DB7093",
+        "orangered": "#FF4500",
+        "tomato": "#FF6347"
+    };
+    
+    var resources = {
+        sprites: {},
+        shiny: {},
+        icons: {},
+        $: {
+            sprites: {
+                file: "scriptdata/safari/sprites.txt",
+                url: Config.base_url + "scriptdata/safari/sprites.txt",
+                type: "MemoryHash"
+            },
+            shiny: {
+                file: "scriptdata/safari/shiny.txt",
+                url: Config.base_url + "scriptdata/safari/shiny.txt",
+                type: "MemoryHash"
+            },
+            icons: {
+                file: "scriptdata/safari/icons.txt",
+                url: Config.base_url + "scriptdata/safari/icons.txt",
+                type: "MemoryHash"
+            },
+            u: {
+                file: "scriptdata/safari/u.txt",
+                url: Config.base_url + "scriptdata/safari/u.txt",
+                type: "MemoryHash"
+            }
+        }
+    };    
+    
+    }
+
+    /* Safari Functions */
+    function loadResource(r) {
+        var resource = resources.$[r];
+        var file = resource.file;
+        if (resource.type === "MemoryHash") {
+            resources[r] = new MemoryHash(file);
+            return null;
+        } else if (resource.type === "JavaScript") {
+            resources[r] = require(file);
+            return null;
+        } else {
+            try {
+                resources[r] = JSON.parse(sys.getFileContent(file));
+                return null;
+            } catch (err) {
+                return "An error occurred while loading Safari resource '" + resource.file.split("/").pop() + "'. (Error: " + err + ")";
+            }
+        }
+    }
+    function downloadResource(r) {
+        var resource = resources.$[r];
+        try {
+            sys.webCall(resource.url, function (resp) {
+                sys.writeToFile(resource.file, resp);
+                ret = loadResource(r);
+                if (ret !== null) {
+                    safaribot.sendAll(ret, staffchannel);
+                }
+            });
+            return null;
+        } catch (err) {
+            return "Couldn't download '" + resource.file.split("/").pop() + "'. (Error: " + err + ")";
+        }
+    }
+    function getAvatar(src) {
+        if (SESSION.users(src)) {
+            return SESSION.users(src).safari;
+        }
+    }
+    function getAvatarOff(name) {
+        var id = sys.id(name);
+        var player;
+        if (id) {
+            player = getAvatar(id);
+        }
+        if (!player) {
+            player = rawPlayers.get(name.toLowerCase());
+            if (player) {
+                player = JSON.parse(player);
+            }
+        }
+        return player;
+    }
+    function hasSave(name) {
+        if (Object.keys(rawPlayers.hash).contains(name.toLowerCase())) {
+            return true;
+        }
+        return false;
+    }
+    function isPlaying(name) {
+        var id = sys.id(name);
+        if (!id) {
+            return false;
+        }
+        if (!getAvatar(id)) {
+            return false;
+        }
+        if (!sys.isInChannel(id, safchan)) {
+            return false;
+        }
+        return true;
+    }
+    function currentThemeName(obj) {
+        if (obj.hasOwnProperty("day" + currentDay + "name") && !obj.useDefaultName) {
+            return obj["day" + currentDay + "name"];
+        }
+        return obj.name;
+    }
+    function themeName(obj) {
+        if (Array.isArray(obj)) {
+            return readable(obj.map(function(x){
+                if (x === "none") {
+                    return "Default";
+                } else {
+                    return currentThemeName(contestThemes[x]);
+                }
+            }), "or");
+        }
+        if (obj in contestThemes) {
+            return currentThemeName(contestThemes[obj]);
+        }
+        return "Default";
+    }
+    function getAllThemeNames(commandLink) {
+        return Object.keys(contestThemes).filter(function(e) {
+            return e !== "none";
+        }).map(function(e) {
+            return (commandLink ? link("/" + commandLink + " " + e, contestThemes[e].name) : contestThemes[e].name);
+        });
+    }
+    function loadLastId () {
+        try {
+            return parseInt(permObj.get("lastIdAssigned"), 10);
+        } catch (err) {
+            return 0;
+        }
+    }
+    function validPlayers (scope, src, tar, selfmsg) {
+        var self = (scope === "self" || scope === "both");
+        if (self) {
+            var player = getAvatar(src);
+            if (!player) {
+                safaribot.sendHtmlMessage(src, "You need to enter the game first! Type /start for that. If you already had a save previously but can no longer find/access it, please contact a {0}!".format(link("/cauth", "Safari Admin")), safchan);
+                return false;
+            }
+        }
+
+        var other = (scope === "target" || scope === "both");
+        if (other) {
+            var targetId = sys.id(tar);
+            if (!targetId || !sys.isInChannel(targetId, safchan)) {
+                safaribot.sendMessage(src, "No such person!", safchan);
+                return false;
+            }
+            var allowShared = allowedSharedIPNames.contains(sys.name(src)) || allowedSharedIPNames.contains(tar.toLowerCase()) || sys.ip(src) === "::1%0";
+            if ((targetId == src || (sys.ip(targetId) === sys.ip(src) && !allowShared)) && selfmsg) {
+                safaribot.sendMessage(src, selfmsg, safchan);
+                return false;
+            }
+            var target = getAvatar(targetId);
+            if (!target) {
+                safaribot.sendMessage(src, "This person doesn't have a Safari Save!", safchan);
+                return false;
+            }
+        }
+        return true;
+    }
+    function canLosePokemon(src, data, verb, cantBecause, loseCount, ignoreShop) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        if (!cantBecause) {
+            /*if (contestCount > 0) {
+                safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during a contest!", safchan);
+                return false;
+            }*/
+            if (safari.isBattling(sys.name(src))) {
+                safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during a battle!", safchan);
+                return;
+            }
+            if (currentEvent && currentEvent.isInEvent(sys.name(src))) {
+                safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during an event!", safchan);
+                return;
+            }
+        }
+        var amt = loseCount || 1;
+
+        var player = getAvatar(src);
+        if (player.pokemon.length <= amt) {
+            safaribot.sendMessage(src, "You can't " + verb + " your remaining Pokémon!", safchan);
+            return false;
+        }
+        var input = typeNull(data).split(":");
+        var info = getInputPokemon(input[0]);
+        var id = info.id;
+        if (!info.num) {
+            safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
+            return false;
+        }
+        if (player.pokemon.indexOf(id) == -1) {
+            safaribot.sendMessage(src, "You do not have that Pokémon!", safchan);
+            return false;
+        }
+        var count = countRepeated(player.pokemon, id);
+        if (amt > 1 && amt > count) {
+            safaribot.sendMessage(src, "You do not have " + amt + " of that Pokémon!", safchan);
+            return false;
+        }
+        if (player.party.length == 1 && player.party[0] === id && count <= 1) {
+            safaribot.sendMessage(src, "You can't " + verb + " the only Pokémon in your party!", safchan);
+            return false;
+        }
+        var pCount = countRepeated(player.party, id);
+        if (amt > 1 && pCount === player.party.length && amt >= pCount && count <= amt) {
+            safaribot.sendMessage(src, "You can't " + verb + " all the Pokémon in your party!", safchan);
+            return false;
+        }
+        if (player.starter === id && count <= amt) {
+            safaribot.sendMessage(src, "You can't " + verb + " your starter Pokémon!", safchan);
+            return false;
+        }
+        if (player.story.box.contains(id) && count <= amt) {
+            safaribot.sendMessage(src, "You can't " + verb + " " + poke(id) + "! It is required in Story Mode!", safchan);
+            return false;
+        }
+        if (!ignoreShop && info.input in player.shop && player.shop[info.input].limit >= count) {
+            safaribot.sendMessage(src, "You need to remove " + info.name + " from your shop before you can " + verb + " it!", safchan);
+            return false;
+        }
+        if (pokeInfo.forme(info.num) > 0 && isMega(info.num)) {
+            safaribot.sendMessage(src, "You can't " + verb + " a Pokémon while they are Mega Evolved!", safchan);
+            return false;
+        }
+        return true;
+    }
+    function chance(value) {
+        return Math.random() < value;
+    }
+    function cantBecause(src, action, arr, item, silent) {
+        var player = getAvatar(src);
+        if (arr.contains("tutorial")) {
+            if (player.tutorial.inTutorial) {
+                if (!silent)
+                    safaribot.sendHtmlMessage(src, "You cannot " + action + " at this stage in the tutorial! If you forgot what to do, use " + link("/tutorial") + ".", safchan);
+                return true;
+            }
+        }
+
+        if (item) {
+            if (!(item in itemData)) {
+                if (!silent)
+                    safaribot.sendMessage(src,  item + " is not a valid item!", safchan);
+                return true;
+            }
+            if (arr.contains("item")) {
+                if (player.balls[item] < 1) {
+                    if (!silent)
+                        safaribot.sendMessage(src, "You don't have any " + finishName(item) + "!", safchan);
+                    return true;
+                }
+            }
+        }
+        if (arr.contains("contest")) {
+            if (contestCount > 0 && !contestForfeited.contains(player.idnum)) {
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " during a contest!", safchan);
+                return true;
+            }
+        }
+        /*if (arr.contains("distortion")) {
+            if ((contestCount > 0 && !contestForfeited.contains(player.idnum)) && currentThemeEffect == "distortion") {
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " during the twisted dimensions!", safchan);
+                return true;
+            }
+        }*/
+        if (arr.contains("wild")) {
+            if ((currentPokemon && contestCount === 0) || (currentPokemon && contestCount > 0 && !contestForfeited.contains(player.idnum))) {
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " while a Wild Pokemon is out!", safchan);
+                return true;
+            }
+        }
+        if (arr.contains("precontest")) {
+            if (contestCooldown <= 181) {
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " with less than 3 minutes before the next contest starts!", safchan);
+                return true;
+            }
+        }
+        if (arr.contains("auction")) {
+            if (safari.isInAuction(sys.name(src))) {
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " while participating in an auction!", safchan);
+                return true;
+            }
+        }
+        if (arr.contains("battle")) {
+            if (safari.isBattling(sys.name(src))) {
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " during a battle!", safchan);
+                return true;
+            }
+        }
+        if (arr.contains("story")) {
+            if ((contestCount > 0 && !contestForfeited.contains(player.idnum))) {
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " during Story Mode!", safchan);
+                return true;
+            }
+        }
+        if (arr.contains("event") && currentEvent) {
+            if (currentEvent.isInEvent(sys.name(src))) {
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " during an event!", safchan);
+                return true;
+            }
+        }
+        if (arr.contains("event") && currentGame) {
+            if (currentGame.playerInGame(sys.name(src))) {
+                if (!silent)
+                    safaribot.sendMessage(src, "You can't " + action + " during an event!", safchan);
+                return true;
+            }
+        }
+        if (arr.contains("pyramid")) {
+            for (var p in currentPyramids) {
+                if (currentPyramids[p].isInPyramid(sys.name(src))) {
+                    if (!silent)
+                        safaribot.sendMessage(src, "You can't " + action + " while inside the Pyramid!", safchan);
+                    return true;
+                }
+            }
+        }
+        if (arr.contains("baking")) {
+            for (var p in currentBakings) {
+                if (currentBakings[p].isInKitchen(sys.name(src))) {
+                    if (!silent)
+                        safaribot.sendMessage(src, "You can't " + action + " while Baking!", safchan);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    function tutorMsg(src, mess) {
+        if (![".", "?", "!"].contains(mess.charAt(mess.length-1))) {
+            mess = mess + ".";
+        }
+        tutorbot.sendHtmlMessage(src, toColor(mess, "DarkOrchid"), safchan);
+    }
+    function advanceTutorial(src, step) {
+        var player = getAvatar(src);
+        player.tutorial.step = step;
+        safari.progressTutorial(src, step);
+    }
+    function welcomePack(src, complete) {
+        var player = getAvatar(src);
+        player.tutorial.inTutorial = false;
+
+        var rew = [];
+        if (complete) {
+            var cash = 300;
+            player.money = cash;
+            var giftpack = { safari: 30, great: 5, ultra: 1, dust: 100, itemfinder: 30, golden: 5};
+            for (var e in giftpack) {
+                if (giftpack.hasOwnProperty(e)) {
+                    player.balls[e] = giftpack[e];
+                    rew.push(plural(giftpack[e], e));
+                }
+            }
+            player.balls.permfinder = 0;
+            player.records.goldenBaitWeak = 5;
+
+            var johto;
+            switch (player.starter) {
+                case 1: johto = 155; player.pokemon.push(155); break;
+                case 4: johto = 158; player.pokemon.push(158); break;
+                case 7: johto = 152; player.pokemon.push(152); break;
+            }
+            safaribot.sendMessage(src, "You received $" + cash + ", " + rew.join(", ") + ", and " + an(pokePlain(johto)) + "!", safchan);
+            tutorbot.sendHtmlMessage(src, toColor("One last advice: You can use " + link("/gbait") + " to use " + an(finishName("golden")) + ", a special and more efficient bait!", "DarkOrchid"), safchan);
+            //sys.sendAll("", safchan);
+            //tutorbot.sendHtmlAll(toColor(Congratulations to <b>" + html_escape(sys.name(src)) + "</b> on completing the tutorial!", "DarkOrchid"), safchan);
+            //sys.sendAll("", safchan);
+        } else {
+            var cash = 300;
+            player.money = cash;
+            var giftpack = { safari: 30, great: 5, itemfinder: 15 };
+            for (var e in giftpack) {
+                if (giftpack.hasOwnProperty(e)) {
+                    player.balls[e] = giftpack[e];
+                    rew.push(plural(giftpack[e], e));
+                }
+            }
+            safaribot.sendMessage(src, "You received $" + cash + ", " + readable(rew, "and") + "!", safchan);
+        }
+    }
+    function resetVars(saveContest) {
+        preparationPhase = 0;
+        preparationThrows = {};
+        preparationFirst = null;
+        baitCooldown = sys.rand(4,7);
+        goldenBaitCooldown = sys.rand(8,10);
+        deluxeBaitCooldown = 1;
+        currentPokemon = null;
+        currentTypeOverride = null;
+        currentExtraBST = 0;
+        currentDisplay = null;
+        currentDisplayBST = 0;
+        wildEvent = false;
+        wildBallThrows = {};
+        bufferThrows = {};
+        currentThrowers = [];
+        currentPokemonCount = 1;
+        lastPokemonCount = 1;
+        currentBaiter = null;
+        if (!saveContest) {
+            currentTheme = null;
+            currentThemeAlter = false;
+            if (currentThemeEffect) {
+                if (currentThemeEffect == "portal") {
+                    safaribot.sendHtmlAll("The portal was sealed!", safchan);
+                } else if (currentThemeEffect == "past") {
+                    safaribot.sendHtmlAll("The timeline was reverted!", safchan);
+                } else if (currentThemeEffect == "distortion") {
+                    safaribot.sendHtmlAll("The twisted dimensions returned to normal!", safchan);
+                } else if (["rain","hail","sand","sun"].contains(currentThemeEffect)) {
+                    safaribot.sendHtmlAll("The effects of the weather wore off!", safchan);
+                }                
+            }
+            currentThemeEffect = false;
+            currentThemeSecondary = false;
+            chosenThemes = null;                
+            currentThemeFlavor = null;
+            contestVotes = null;
+        }
+    }
+    function getMaxThrows(num, count, shiny, thrown, boost) {
+        var amt = maxThrows;
+        var bst = getBST(num);
+        if (inclusive(bst, 0, 360)) {
+            amt += 7;
+        } else if (inclusive(bst, 360, 420)) {
+            amt += 5;
+        } else if (inclusive(bst, 420, 520)) {
+            amt += 3;
+        } else if (!isRare(num)) {
+            amt += 1;
+        } //else {
+          //  amt -= 1;
+        //}
+        amt += 3 * count;
+        amt -= 3 * shiny;
+        var pokeblockVal = Math.round((pokeblockThrows >= 3 ? 10 : (pokeblockThrows == 2 ? 8 : pokeblockThrows == 1 ? 5 : 0)) * (boost ? 1.5 : 1));
+        return Math.floor(Math.max(maxThrows, amt) * 0.5) + pokeblockVal - thrown;
+    }
+
+    /* Message Functions */
+    function sendAll(mess, html, system, bypass, rareWild) {
+        var players = sys.playersOfChannel(safchan).filter(function(x) {
+            if (rareWild) { // special case for event/rare wild mons to give people a chance to forfeit/quit or whatever to catch it if they want
+                return true;
+            }
+            var name = sys.name(x);
+            var isBypassed = bypass && bypass === name.toLowerCase();
+            if (currentEvent && currentEvent.isInEvent(name) && !isBypassed) {
+                return false;
+            }
+            if (currentGame && currentGame.playerInGame(name) && !isBypassed) {
+                return false;
+            }
+            for (var p in currentPyramids) {
+                if (currentPyramids[p].isInPyramid(name) && !isBypassed) {
+                    return false;
+                }
+            }
+            for (var p in currentBakings) {
+                if (currentBakings[p].isInKitchen(name) && !isBypassed) {
+                    return false;
+                }
+            }
+            for (var p in currentBattles) {
+                if (currentBattles[p].battle2 && currentBattles[p].isInBattle(name) && !isBypassed) {
+                    return false;
+                }
+            }
+            var player = getAvatar(x);
+            if (player && player.tutorial.inTutorial && !isBypassed) {
+                return false;
+            }
+            return true;
+        });
+        if (system) {
+            for (var e in players) {
+                sys.sendHtmlMessage(players[e], mess, safchan);
+            }
+        } else if (html) {
+            for (var e in players) {
+                safaribot.sendHtmlMessage(players[e], mess, safchan);
+            }
+        } else {
+            for (var e in players) {
+                safaribot.sendMessage(players[e], mess, safchan);
+            }
+        }
+    }
+
+    /* Time Functions */
+    function now() {
+        return new Date().getTime();
+    }
+    function timeLeft(time) {
+        return Math.floor((time - now())/1000) + 1;
+    }
+    function timeLeftString(time) {
+        return utilities.getTimeString(timeLeft(time));
+    }
+    function timeString(time, full) {
+        return utilities.getTimeString(time, full) || "0 seconds";
+    }
+    function getDay(time) {
+        return Math.floor(time / (1000 * 60 * 60 * 24));
+    }
+    function hours(number) {
+        return number * 60 * 60 * 1000;
+    }
+    function cdSeconds(item, value) {
+        value = value || "cooldown";
+        return "Cooldown: " + plural(itemData[item][value] / 1000, "second") + ".";
+    }
+
+    /* Data Type Functions */
+    function add(arr) {
+        var result = 0;
+        for (var e in arr) {
+            result += arr[e];
+        }
+        return result;
+    }
+    function countRepeated(arr, val) {
+        var count = 0;
+        arr.forEach(function(x) {
+            count += x === val ? 1 : 0;
+        });
+        return count;
+    }
+    function countArray(arr, item) {
+        var first = arr.indexOf(item);
+        var last = arr.lastIndexOf(item);
+        var count =  last - first + (first === -1 ? 0 : 1);
+        return count;
+    }
+    function randomSample(hash) {
+        var cum = 0;
+        var val = Math.random();
+        var psum = 0.0;
+        var x;
+        var count = 0;
+        for (x in hash) {
+            if (hash.hasOwnProperty(x)) {
+                psum += hash[x];
+                count += 1;
+            }
+        }
+        if (psum === 0.0) {
+            var j = 0;
+            for (x in hash) {
+                if (hash.hasOwnProperty(x)) {
+                    cum = (++j) / count;
+                    if (cum >= val) {
+                        return x;
+                    }
+                }
+            }
+        } else {
+            for (x in hash) {
+                if (hash.hasOwnProperty(x)) {
+                    cum += hash[x] / psum;
+                    if (cum >= val) {
+                        return x;
+                    }
+                }
+            }
+        }
+    }
+    function randomSampleObj(hash, returnId) {
+        var sampled = {};
+        for (var e in hash) {
+            sampled[e] = hash[e].chance;
+        }
+        if (returnId) {
+            return randomSample(sampled);
+        } else {
+            return hash[randomSample(sampled)];
+        }
+    }
+    function isInRange(value, range) {
+        // Range is a string with the syntax ">500", "<500" or "400~500"
+        var v;
+        if (range[0] === ">") {
+            v = parseInt(range.substr(1), 10);
+            if (!isNaN(v)) {
+                return value >= v;
+            }
+        } else if (range[0] === "<") {
+            v = parseInt(range.substr(1), 10);
+            if (!isNaN(v)) {
+                return value <= v;
+            }
+        } else if (range.indexOf("~") !== -1) {
+            v = range.split("~");
+            var v1 = parseFloat(v[0]), v2 = parseFloat(v[1]);
+            if (!isNaN(v1) && !isNaN(v2)) {
+                return value >= v1 && value <= v2;
+            }
+        }
+        return false;
+    }
+    function getRange(input) {
+        var range = input.split("-"), lower, upper;
+
+        if (range.length > 1) {
+            lower = parseInt(range[0], 10);
+            upper = parseInt(range[1], 10);
+        } else {
+            lower = 0;
+            upper = parseInt(range[0], 10);
+        }
+
+        if (isNaN(lower) || isNaN(upper)) {
+            return null;
+        }
+        if (lower === 0) {
+            lower = 1;
+        }
+        return { lower: lower, upper: upper};
+    }
+    function getArrayRange(arr, lower, upper) {
+        var result = arr.concat();
+
+        if (lower >= 0) {
+            return result.slice(Math.max(lower-1, 0), upper);
+        } else {
+            return result.slice(-upper, -lower);
+        }
+    }
+    function countDuplicates(arr, val) {
+        var out = 0;
+        for (var i in arr) {
+            if (arr[i] === val) {
+                out++;
+            }
+        }
+        return out;
+    }
+    function getCherished(mon, player) {
+        if (!getAvatarOff(player)) {
+            return 0;
+        }
+        return (Math.min(countDuplicates(getAvatarOff(player).cherished, pokeInfo.species(getInputPokemon(poke(mon)).num)), 10));
+    }
+    function removeDuplicates(arr, onlyNumbers) {
+        if (onlyNumbers) {
+            var result = [];
+            for (var x = 0; x < arr.length; x++) {
+                if (!result.contains(arr[x])) {
+                    result.push(arr[x]);
+                }
+            }
+            return result;
+        } else {
+            var result = {};
+            for (var x in arr) {
+                result[arr[x]] = 1;
+            }
+            return Object.keys(result);
+        }
+    }
+    function removeNonDuplicates(arr) {
+        var hit = [];
+        for (var j = arr.length; j--;) {
+            if (hit.contains(arr[j])) {
+                continue;
+            }
+            hit.push(arr.splice(j, 1)[0]);
+        }
+        return arr;
+    }
+    function lookupMoveLearners(h) {
+        var outList = [];
+        if (safari.moveLearners.hasOwnProperty(h+"")) {
+            outList = safari.moveLearners[h+""];
+        } else if (moveOff(h)) {
+            for (var e = 1; e < highestDexNum - 1; e++) {
+                outList.push(e);
+            }
+            outList = outList.filter(function(x){
+                return (canLearnMove(x, h));
+            });
+            safari.moveLearners[h+""] = outList;
+            permObj.add("moveLearners", JSON.stringify(safari.moveLearners));
+        }
+        return outList;
+    }
+    function getAlternateEvolutions(num) {
+        /*
+            this doesn't accurately return ingame alt evos, only safari-based ones
+            e.g. spewpa only evolving into base vivillon etc.
+            stuff like floette that each share a base species, but evolve from different variants of that same base species are also not included here
+            for best results, concatenate with getAllForms()
+        */
+        if (devolutions.hasOwnProperty(num+"")) {
+            var entry = devolutions[num+""];
+            if (evolutions.hasOwnProperty(entry+"") && Array.isArray(evolutions[entry+""].evo)) {
+                return evolutions[entry].evo.filter(function(e) { return e !== num });
+            }
+        }
+
+        return [];
+    }
+    function getAllForms(num, excludeSelf) {
+        num = parseInt(num);
+        var species = pokeInfo.species(num),
+            ret = [],
+            currentForm = 1;
+
+        var currentId = species;
+
+        if (currentId === 351) { // special case for castform which has a mislabeled form number (castform-sunny is 351-4 instead of 351-3)
+            ret = [351, 65887, 131423, 262495];
+        }
+        else {
+            while (pokeInfo.valid(currentId)) {
+                ret.push(currentId);
+                currentId = species + 65536 * currentForm++;
+            }
+        }
+
+        return ret.filter(function(e) { return excludeSelf ? e !== num : true });
+    }
+    function ignoresWildAbilities(player) {
+        var abilities = [104, 163, 164, 256, 296]; // Mold Breaker, Turboblaze, Teravolt, Neutralizing Gas, Mycelium Might
+        var leader = safari.getEffectiveLead(player, true);
+        for (var a in abilities) {
+            if (canHaveAbility(leader, abilities[a])) {
+                return abilities[a];
+            }
+        }
+
+        return false;
+    }
+    function compare(a,b) {
+        if (a.sort < b.sort) {
+            return -1;
+        } else if (a.sort > b.sort) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+    function countProps(obj) { //Stolen from http://stackoverflow.com/a/3849480
+        var count = 0;
+        for (var k in obj) {
+            if (obj.hasOwnProperty(k)) {
+                count++;
+            }
+        }
+        return count;
+    }
+    function objectEquals(v1, v2) {
+        if (typeof(v1) !== typeof(v2)) {
+            return false;
+        }
+
+        if (typeof(v1) === "function") {
+            return v1.toString() === v2.toString();
+        }
+
+        if (v1 instanceof Object && v2 instanceof Object) {
+            if (countProps(v1) !== countProps(v2)) {
+                return false;
+            }
+            var r = true;
+            for (var k in v1) {
+                r = objectEquals(v1[k], v2[k]);
+                if (!r) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return v1 === v2;
+        }
+    }
+    function inclusive(value, lower, upper) {
+        return lower <= value && value <= upper;
+    }
+    function toCommandData(str, props) {
+        var out = {};
+        var data = str.split(str.indexOf(":::") !== -1 && str.indexOf(":::") <= str.search(/:(?!:)/) ? ":::" : ":");
+        for (var p = 0; p < props.length; p++) {
+            out[props[p]] = data.length > p && data[p].trim() !== "" ? data[p].trim() : null;
+        }
+        return out;
+    }
+    function toUserNames(str) {
+        var data = str.split(",");
+        for (var p = 0; p < data.length; p++) {
+            data[p] = data[p].trim();
+        }
+        return data;
+    }
+    function weatherMessage() {
+        if (currentThemeEffect == "rain") {
+            safaribot.sendHtmlAll(pokeInfo.icon(186) + " Looks like it's raining!", safchan);
+        } else if (currentThemeEffect == "sunny") {
+            safaribot.sendHtmlAll(pokeInfo.icon(38) + " Looks like it's sunny!", safchan);
+        } else if (currentThemeEffect == "hail") {
+            safaribot.sendHtmlAll(pokeInfo.icon(460) + " Looks like it's snowing!", safchan);
+        } else if (currentThemeEffect == "sandstorm") {
+            safaribot.sendHtmlAll(pokeInfo.icon(450) + " Looks like it's a sandstorm!", safchan);
+        }
+    }
+
+    /* Formatting Functions */
+    function cap(string, sentence) {
+        if (sentence) {
+            return string.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+        } else {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+    }
+    function plural(qty, string, forceNumber, forceRawString) {
+        var input = forceRawString ? string : getInput(string);
+        var q = parseFloat(qty);
+        var plur = isNaN(q) || Math.abs(q) !== 1;
+        qty = addComma(qty);
+        if (input) {
+            if (input.type === "poke") {
+                if (forceNumber) {
+                    return qty + " " + input.name;
+                } else if (plur) {
+                    return toWord(qty) + " " + input.name;
+                } else {
+                    return an(input.name);
+                }
+            }
+            if (input.type === "item" && !isNaN(q)) {
+                return qty + " " + (plur ? (itemData[input.id].plural ? itemData[input.id].plural : es(input.name)) : input.name);
+            }
+        }
+        return qty + " " + (plur ? es(string) : string);
+    }
+    function toWord(num) {
+        //Realistically shouldn't need more than this. Also add comma will mess up anything 1000+
+        return ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"][num] || num;
+    }
+    function capitalizeFirst(str) {
+        return str.charAt(0).toUpperCase() + str.substring(1);
+    }
+    function an(string) {
+        var vowels = "aeiou";
+        string = string + ""; //For the numbers
+        if (vowels.indexOf(string.charAt(0).toLowerCase()) > -1 || string.charAt(0) === "8" || string === "11" || string === "18" || string.toLowerCase().indexOf("x ") === 0) {
+            string = "an " + string;
+        } else {
+            string = "a " + string;
+        }
+        return string;
+    }
+    function es(string) {
+        var end = string.charAt(string.length-1); //Last character would be the quotes
+        var preEnd = string.charAt(string.length-2);
+        var lasttwo = preEnd + end;
+        if (["ch", "sh", "ss"].contains(lasttwo) || ["x", "z"].contains(end)) {
+            return string + "es";
+        }
+        if (end === "s") {
+            return string;
+        }
+        if (end === "y" && !["a", "e", "i", "o", "u"].contains(preEnd)) {
+            return string.slice(0, -1) + "ies";
+        }
+        return string + "s";
+    }
+    function readable(arr, last_delim) {
+        if (!Array.isArray(arr)) {
+            return arr;
+        }
+        if (arr.length > 1) {
+            return arr.slice(0, arr.length - 1).join(", ") + " " + (last_delim ? last_delim : "and") + " " + arr.slice(-1)[0];
+        } else if (arr.length == 1) {
+            return arr[0];
+        } else {
+            return "";
+        }
+    }
+    function getOrdinal(n) {
+        //Shamelessly stolen from http://stackoverflow.com/questions/23291256/ext-form-field-number-formatting-the-value
+        var s=["th","st","nd","rd"],
+        v=n%100;
+        return n+(s[(v-20)%10]||s[v]||s[0]);
+    }
+    function addSign(num) {
+        return num >= 0 ? "+" + num : num + "";
+    }
+    function addComma(num) {
+        if (typeof num !== "number") {
+            return num;
+        }
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    function stripComma(string) {
+        return string.replace(/(?!=\d),(?=\d)/g, "");
+    }
+    function link(string, string2, setmsg, color) {
+        string2 = string2 || string;
+        return "<a href=\"po:" + (setmsg ? "setmsg" : "send") + "/" + html_escape(string) + "\"" + (color ? "style='color: " + color + ";'" : "") + ">" + html_escape(string2) + "</a>";
+    }
+    function toColor(str, color) {
+        if (colorTranslations.hasOwnProperty(color.toLowerCase())) {
+            color = colorTranslations[color.toLowerCase()];
+        }
+        return "<font color='" + color + "'>" + str + "</font>";
+    }
+    function addFlashTag(name) {
+        return "<!--f-->" + name + "<!--f-->";
+    }
+    function addColorTag(name) {
+        return "<!--c-->" + name + "<!--c-->";
+    }
+    /*function toFlashing(message, name) { //Totally not stolen from tours
+        var newmessage = message;
+        var htmlname = html_escape(name);
+        var regex = new RegExp(htmlname, "gi");
+        var newregex1 = "";
+        if (sys.os(sys.id(name)) === "android") {
+            newregex1 = "<background color='#FCD116'>" + htmlname.toCorrectCase() + "</background><ping/>";
+            
+        } else if (sys.os(sys.id(name)) === "webclient") {
+            newregex1 = "<mark>" + htmlname.toCorrectCase() + "</mark><ping/>";
+        }
+        else {
+            newregex1 = "<font style='BACKGROUND-COLOR: #FCD116'>" + htmlname.toCorrectCase() + "</font><ping/>";
+        }
+
+        newmessage = message.replace(regex,newregex1);
+        return newmessage;
+    }*/
+    function toFlashing(message, name) { //Totally not stolen from tours
+        var newmessage = message;
+        var flashtag = "<!--f-->";
+        var htmlname = html_escape(name);
+        var regex = new RegExp(flashtag+htmlname+flashtag, "gi");
+        var newregex1 = "";
+        if (sys.os(sys.id(name)) !== "android") {
+            newregex1 = "<font style='BACKGROUND-COLOR: #FCD116'>" + htmlname.toCorrectCase() + "</font><ping/>";
+        } else {
+            newregex1 = "<background color='#FCD116'>" + htmlname.toCorrectCase() + "</background><ping/>";
+        }
+        var flashregex = new RegExp(flashtag,"g");
+        newmessage = message.replace(regex,newregex1).replace(flashregex,"");
+        return newmessage;
+    }
+    function toColored(message, name) {
+        var newmessage = message;
+        var flashtag = "<!--c-->";
+        var htmlname = html_escape(name);
+        var regex = flashtag+htmlname+flashtag;
+        var newregex1 = "";
+        var color = sys.id(name) ? script.getColor(sys.id(name)) : "#000000";
+        if (sys.os(sys.id(name)) !== "android") {
+            newregex1 = "<span style='COLOR: " + color + "'>" + htmlname + "</span>";
+        } else {
+            newregex1 = "<font color='"+color+"'>" + htmlname + "</font>";
+        }
+        var flashregex = new RegExp(flashtag,"g");
+        newmessage = message.replace(regex,newregex1).replace(flashregex,"");
+        return newmessage;
+    }
+    function percentage(num, denom, places) {
+        places = places || 2;
+        if (typeof num !== "number" || typeof denom !== "number") {
+            return "??.??%";
+        }
+        if (denom === 0) {
+            return "0.00%";
+        }
+        return (num/denom*100).toFixed(places) + "%";
+    }
+    function toFixed(num, digits) {
+        return (+num).toFixed(digits).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/,'$1');
+    }
+    function escapeRegExp(str) { //From http://stackoverflow.com/a/6969486
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
+    function itemsLeft(player, item, itemName) {
+        var amt = player.balls[item];
+        if (amt === 0) {
+            return "You have no more " + es(finishName(item)) + " left! ";
+        } else {
+            return "You still have " + plural(amt, finishName(item)) + " left! ";
+        }
+    }
+    function typeNull(str, output) {
+        return str.replace(/(type: null)|(type:null)/gi, (output || "772"));
+    }
+    
+    /* Pokemon Functions */
+    function getInputPokemon(info) {
+        /*
+        Use this function for every time you need information about a Pokémon typed by a player (don't use for pokémon picked from player.pokemon).
+        Returns an object with the following properties:
+        -num: Int; Pokémon's number; Same that you would get with sys.pokeNum()
+        -id: Int or String; Pokémon's id that can be added to player.pokemon
+        -shiny: Boolean; If the pokémon is shiny or not
+        -name: String; Pokémon's name (including Shiny prefix). Same as poke()
+        -input: String; What you need to type to get to that result. Used for trade
+        */
+        var shiny = false, id, num, name;
+        info = info.replace(/flabebe|flabébe|flabebé/gi, "flabébé").toLowerCase();
+        info = info.replace(/pokédex|pokedex/gi, "pokédex").toLowerCase();
+        info = info.replace(/alcremie-finale/gi, "alcremie-finalé").toLowerCase();
+        
+        if ((info.length > 1 && (info[0] == "*" || info[info.length-1] == "*")) || info.indexOf("shiny ") === 0) {
+            shiny = true;
+            info = info.replace("*", "");
+            info = info.replace("shiny ", "");
+        }
+        var arr = info.split("-");
+        if (arr.length === 2 && !isNaN(arr[0]) && !isNaN(arr[1])) {
+            num = parseInt(arr[0], 10) + (parseInt(arr[1], 10) * 65536);
+        } else {
+            num = parseInt(info, 10);
+            if (isNaN(num)) {
+                num = getPokeNum(info);
+            }
+        }
+        id = shiny ? num + "" : num;
+
+        name = pokePlain(num);
+        if (name.toLowerCase() == "missingno") {
+            num = null;
+        }
+
+        return { num: num, id: id, shiny: shiny, name: poke(id), input: (shiny ? "*" : "") + name, type: "poke" };
+    }
+    function getInputMove(src, data) {
+        var num = parseInt(data, 10), name;
+        if (isNaN(num)) {
+            num = movenum(data);
+        }
+        name = moveOff(num);
+
+        safaribot.sendMessage( src,"Move #" + num + ": " + name + ".",safchan );
+        return;
+    }
+    function getInputAbility(src, data) {
+        var num = parseInt(data, 10), name;
+        if (isNaN(num)) {
+            num = abilitynum(data);
+        }
+        name = abilityOff(num);
+
+        safaribot.sendMessage( src,"Ability #" + num + ": " + name + ".",safchan );
+        return;
+    }
+    function getPokemonInfo(info) {
+        var shiny = false, id = info;
+
+        if (typeof info == "string") {
+            shiny = true;
+            id = parseInt(info, 10);
+            if (isNaN(id)) {
+                id = null;
+            }
+        }
+
+        return [id, shiny];
+    }
+    function poke(num, multi) {
+        var shiny = false, name;
+        if (typeof num === "string") {
+            num = parseInt(num, 10);
+            shiny = true;
+        }
+
+        if (isNaN(num)) {
+            return null;
+        }
+        if (ultraPokes.hasOwnProperty(num+"")) {
+            name = ultraPokes[num+""].name;
+        } else {
+            name = sys.pokemon(num);
+        }
+        if (permObj.get("usingLangPack") == "true" && multi) {
+            if (!langPack) {
+                langPack = sys.getFileContent("scriptdata/safari/" + permObj.get("langPackFile")).split("\n");
+            }
+            name = poke(num).replace(poke(pokeInfo.species(num)), langPack[pokeInfo.species(num) - 1].trim());
+        }
+
+        return name ? (shiny ? "Shiny " : "") + name : null;
+    }
+    function pokePlain(num, multi) {
+        var name;
+        if (typeof num === "string") {
+            num = parseInt(num, 10);
+        }
+        if (isNaN(num)) {
+            return "Missingno";
+        }
+        if (ultraPokes.hasOwnProperty(num+"")) {
+            name = ultraPokes[num+""].name;
+        } else {
+            name = sys.pokemon(num);
+        }
+        if (permObj.get("usingLangPack") == "true" && multi) {
+            if (!langPack) {
+                langPack = sys.getFileContent("scriptdata/safari/" + permObj.get("langPackFile")).split("\n");
+            }
+            name = pokePlain(num).replace(pokePlain(pokeInfo.species(num)), langPack[pokeInfo.species(num) - 1].trim());
+        }
+
+        return name ? name : "Missingno";
+    }
+    function getForm(num, amt) {
+        if (!(amt)) {
+            amt = 1;
+        }
+        return Math.round(num + (65536 * amt));
+    }
+    function movenum(name) {
+        if (name.toLowerCase() === "vise grip") {
+            name = "Vice Grip";
+        }
+        var out = sys.moveNum(name);
+        if (out == "undefined" || (!out)) {
+            var hit = false;
+            for (var i in ultraMoves) {
+                if (!(ultraMoves[i].hasOwnProperty("name"))) {
+                    continue
+                }
+                if (ultraMoves[i].name.toLowerCase() == name.toLowerCase()) {
+                    out = parseInt(i, 10);
+                    break;
+                }
+            }
+        }
+        return out;
+    };
+    function moveOff(id) {
+        if (id < 702) {
+            var move = sys.move(id);
+            // Vice Grip is renamed to Vise Grip in Gen 8
+            return move === "Vice Grip" ? "Vise Grip" : move;
+        }
+        if (ultraMoves.hasOwnProperty(id+"")) {
+            return ultraMoves[id+""].name;
+        }
+        return false;
+    };
+    function getMoveBP(move) {
+        if (ultraMoves.hasOwnProperty(move+"")) {
+            if (ultraMoves[move+""].hasOwnProperty("power")) {
+                return ultraMoves[move+""].power;
+            }
+        }
+        return pokedex.getMoveBP(move);
+    };
+    function moveType(move) {
+        if (ultraMoves.hasOwnProperty(move+"")) {
+            if (ultraMoves[move+""].hasOwnProperty("type")) {
+                return ultraMoves[move+""].type;
+            }
+        }
+        return sys.moveType(move);
     };
     function getPokeNum(name) {
         var out = sys.pokeNum(name);
@@ -10488,11 +10493,12 @@ function Safari() {
         var shiny = typeof currentDisplay === "string";
         displayId.splice(sys.rand(1, displayId.length - 1), 0, permObj.get("widthJoiner") || "");
         displayId = displayId.join("");
-        
+
         var displayBST = currentDisplayBST;
         displayBST = (displayBST + "").split("");
         displayBST.splice(sys.rand(1, displayBST.length - 1), 0, permObj.get("widthJoiner") || "");
         displayBST = displayBST.join("");
+
         var term = currentPokemonCount >= 4 ? "horde of " : ["", "pair of ", "group of "][currentPokemonCount-1];
         if (wildSpirit) {
             displayId = "Spirit Realm " + displayId;
@@ -10598,6 +10604,15 @@ function Safari() {
         }
         if (canHaveAbility(currentPokemon, abilitynum("Mirror Armor"))) {
             wildAbilityMessageList.push("The wild {0} {1} protected from {2} due to Mirror Armor!".format(poke(currentDisplay, true), is_are, es(finishName("mirror"))));
+        }
+        if (canHaveAbility(currentPokemon, abilitynum("Shadow Tag"))) {
+            wildAbilityMessageList.push("The wild {0} {1} preventing your Pokémon from switching due to Shadow Tag!".format(poke(currentDisplay, true), is_are));
+        }
+        if (canHaveAbility(currentPokemon, abilitynum("Arena Trap"))) {
+            wildAbilityMessageList.push("The wild {0} {1} preventing grounded Pokémon from switching due to Arena Trap!".format(poke(currentDisplay, true), is_are));
+        }
+        if (canHaveAbility(currentPokemon, abilitynum("Magnet Pull"))) {
+            wildAbilityMessageList.push("The wild {0} {1} preventing Steel-type Pokémon from switching due to Magnet Pull!".format(poke(currentDisplay, true), is_are));
         }
         var ruinAbilities = [283, 284, 285, 286]; // Vessel of Ruin, Sword of Ruin, Tablets of Ruin, Beads of Ruin
         for (var i = 0; i < ruinAbilities.length; i++) {
@@ -10749,7 +10764,7 @@ function Safari() {
                 if (canHaveAbility(leader, abilitynum("Skill Link"))) {
                     abilityMessageList[pid].push("Your {0}'s Skill Link prevents your Consecutive Catch Combo from resetting!".format(poke(leader, true)));
                 }
-                if (canHaveAbility(leader, abilitynum("Supreme Overlord")) && player.party.length < 6) {
+                if (canHaveAbility(leader, abilitynum("Supreme Overlord")) && player.party.length < 6 && contestCount > 0 && !contestForfeited.contains(player.idnum)) {
                     abilityMessageList[pid].push("Your {0}'s Supreme Overlord grants it strength from its {1}!".format(poke(leader, true), player.party.length === 5 ? "missing comrade" : plural(6 - player.party.length, "missing comrade")));
                 }
                 if (canHaveAbility(leader, abilitynum("Wind Power")) && hasType(currentDisplay, "Flying")) {
@@ -10786,7 +10801,7 @@ function Safari() {
                         }
                     }
                 }
-                var heldChanceAbilities = [14, 105, 119, 124, 187]; // Compound Eyes, Super Luck, Frisk, Pickpocket, Magician
+                var heldChanceAbilities = [14, 105, 119, 124, 187, 60, 53]; // Compound Eyes, Super Luck, Frisk, Pickpocket, Magician, Pickup, Sticky Hold
                 for (var i = 0; i < heldChanceAbilities.length; i++) {
                     if (canHaveAbility(leader, heldChanceAbilities[i])) {
                         abilityMessageList[pid].push("Your {0}'s {1} helps you find held items more often!".format(poke(leader, true), abilityOff(heldChanceAbilities[i])));
@@ -11957,7 +11972,14 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, "<u><b>Safari Ability Effect Reference</b></u>", safchan);
         if (abilityEffects.hasOwnProperty(ability)) {
-            safaribot.sendHtmlMessage(src, "{0}: {1}".format(link("/find ability:" + abilityOff(ability), abilityOff(ability)), colorTags(abilityEffects[ability])), safchan);
+            var effect = abilityEffects[ability];
+            if (!isNaN(effect)) {
+                effect = abilityEffects[effect];
+            }
+            safaribot.sendHtmlMessage(src, "{0}: {1}".format(link("/find ability:" + abilityOff(ability), abilityOff(ability)), colorTags(effect)), safchan);
+        }
+        else if (ability != 0) {
+            safaribot.sendHtmlMessage(src, "No effect found for this Ability!", safchan);
         }
         else {
             var keys = Object.keys(abilityEffects).sort(function(a, b) { return abilityOff(a) < abilityOff(b) ? -1 : 1 });
@@ -11966,9 +11988,13 @@ function Safari() {
             var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
             for (var i = 0; i < page.length; i++) {
                 ability = page[i];
+                var effect = abilityEffects[ability];
+                if (!isNaN(effect)) {
+                    effect = abilityEffects[effect];
+                }
                 var pageContent = "{0}: {1}".format(
                     link("/find ability:" + abilityOff(ability), abilityOff(ability)),
-                    colorTags(abilityEffects[ability])      
+                    colorTags(effect)      
                 );
                 safaribot.sendHtmlMessage(src, "-" + pageContent, safchan);
                 if (i === page.length-1) {
@@ -12214,7 +12240,7 @@ function Safari() {
         if ((currentRules && currentRules.invertedBST) || this.getFortune(player, "invertbst", 0) || currentThemeEffect == "distortion") {
             userStats -= evioBonus;
             userStats -= (cherishBonus * 6);
-            if (canHaveAbility(trueLeader, abilitynum("Supreme Overlord")) && player.party.length < 6) {
+            if (canHaveAbility(trueLeader, abilitynum("Supreme Overlord")) && player.party.length < 6 && contestCount > 0 && !contestForfeited.contains(player.idnum)) {
                 userStats = Math.round(userStats * (1 - (0.0364 * (6 - player.party.length)))); // maximum of 18.2% decrease for solo, takes Kingambit to 450 BST
             }
             statsBonus = (userStats - wildStats) / -8000;
@@ -12222,7 +12248,7 @@ function Safari() {
         else {
             userStats += 0 + (ball === "level" ? 80 : 0) + (player.costume === "flower" && type2(leader) === "???" ? 50 : 0);
             userStats += (cherishBonus * 6);
-            if (canHaveAbility(trueLeader, abilitynum("Supreme Overlord")) && player.party.length < 6) {
+            if (canHaveAbility(trueLeader, abilitynum("Supreme Overlord")) && player.party.length < 6 && contestCount > 0 && !contestForfeited.contains(player.idnum)) {
                 userStats = Math.round(userStats * (1 + (0.0364 * (6 - player.party.length)))); // maximum of 18.2% increase for solo, takes Kingambit to 650 BST
             }
             statsBonus = (userStats - wildStats) / 8000;
@@ -12349,7 +12375,8 @@ function Safari() {
             }
         }
         if (ball === "uturn") {
-            if (canLearnMove(leader, 369) || canLearnMove(leader, 521) || canLearnMove(leader, 754)) { // U-Turn, Volt Switch, and Flip Turn
+            var switchingMoves = [369, 521, 754, 226, 100, 600, 822, 823]; // U-turn, Volt Switch, Flip Turn, Baton Pass, Teleport, Parting Shot, Shed Tail, Chilly Reception
+            if (switchingMoves.filter(function(e) { return canLearnMove(leader, e) }).length > 0) {
                 ballBonus = itemData[ball].bonusRate;
             }
             else {
@@ -12691,9 +12718,31 @@ function Safari() {
                 }
             }
         }
-        if (ball === "uturn" && canHaveAbility(trueLeader, abilitynum("Commander")) && player.party[1] == 977 && contestCount > 0 && !contestForfeited.contains(player.idnum)) {
-            safaribot.sendMessage(src, "You can't use {0} while Commander is active!".format(es(finishName("uturn"))), safchan);
-            return;
+        if (ball === "uturn") {
+            if (contestCount > 0 && !contestForfeited.contains(player.idnum)) {
+                if (canHaveAbility(trueLeader, abilitynum("Commander")) && player.party[1] == 977) {
+                    safaribot.sendMessage(src, "You can't use {0} while Commander is active!".format(es(finishName("uturn"))), safchan);
+                    return;
+                }
+                if (canHaveAbility(trueLeader, abilitynum("Supreme Overlord"))) {
+                    safaribot.sendMessage(src, "You can't use {0} while Supreme Overlord is active!".format(es(finishName("uturn"))), safchan);
+                    return;
+                }
+            }
+            if (!hasType(leader, "Ghost")) {
+                if (canHaveAbility(currentPokemon, abilitynum("Shadow Tag"))) {
+                    safaribot.sendMessage(src, "You can't use {0} due to the wild {1}'s Shadow Tag!".format(es(finishName("uturn")), poke(currentDisplay, true)), safchan);
+                    return;
+                }
+                if (canHaveAbility(currentPokemon, abilitynum("Arena Trap")) && !hasType(leader, "Flying")) {
+                    safaribot.sendMessage(src, "You can't use {0} due to the wild {1}'s Arena Trap!".format(es(finishName("uturn")), poke(currentDisplay, true)), safchan);
+                    return;
+                }
+                if (canHaveAbility(currentPokemon, abilitynum("Magnet Pull")) && hasType(leader, "Steel")) {
+                    safaribot.sendMessage(src, "You can't use {0} due to the wild {1}'s Magnet Pull!".format(es(finishName("uturn")), poke(currentDisplay, true)), safchan);
+                    return;
+                }
+            }
         }
         if (ball === "spirit" && (safari.spiritDuelsCanSignup(src, player, true))) { // || !safari.inSpiritTeam(src, player))) {
             safaribot.sendHtmlMessage(src, "You can't throw " + es(finishName("spirit")) + " without signing up for " + link("/spiritduels", "Spirit Duels") + " first!", safchan);
@@ -12903,7 +12952,7 @@ function Safari() {
             }
 
             var heldChanceBoost = false;
-            var heldChanceAbilities = [14, 105, 119, 124, 187]; // Compound Eyes, Super Luck, Frisk, Pickpocket, Magician
+            var heldChanceAbilities = [14, 105, 119, 124, 187, 60, 53]; // Compound Eyes, Super Luck, Frisk, Pickpocket, Magician, Pickup, Sticky Hold
             for (var i = 0; i < heldChanceAbilities.length; i++) {
                 if (canHaveAbility(trueLeader, heldChanceAbilities[i])) {
                     heldChanceBoost = true;
@@ -14665,9 +14714,15 @@ function Safari() {
             }
         }
 
-        if (contestCount > 0 && canHaveAbility(this.getEffectiveLead(player, true), abilitynum("Commander")) && player.party[1] == 977 && !contestForfeited.contains(player.idnum)) { // Dondozo check
-            safaribot.sendMessage(src, "You can't modify your party while Commander is active!", safchan);
-            return;
+        if (contestCount > 0 && !contestForfeited.contains(player.idnum)) {
+            if (canHaveAbility(this.getEffectiveLead(player, true), abilitynum("Commander")) && player.party[1] == 977) {
+                safaribot.sendMessage(src, "You can't modify your party while Commander is active!", safchan);
+                return;
+            }
+            if (canHaveAbility(this.getEffectiveLead(player, true)), abilitynum("Supreme Overlord")) {
+                safaribot.sendMessage(src, "You can't modify your party while Supreme Overlord is active!", safchan);
+                return;
+            }
         }
         if (action === "add") {
             if (player.tutorial.inTutorial && info.name !== "Pikachu") {
