@@ -10505,18 +10505,6 @@ function Safari() {
             if (contestCount > 0) {
                 this.compileThrowers();
             }
-            for (t = allTrackers.length; t--; ) {
-                id = sys.id(allTrackers[t]);
-                if (id) {
-                    var trackMessage = appmsg;
-                    var widthJoiner = permObj.get("widthJoiner");
-                    if (widthJoiner) {
-                        var regex = new RegExp(widthJoiner, "g");
-                        trackMessage = trackMessage.replace(regex, "")
-                    }
-                    safaribot.sendHtmlMessage(id, "[Track] " + trackMessage + (wildEvent ? " [Event]" : ""), safchan);
-                }
-            }
             lastWild = now();
             lastWildAction = now();
         }
@@ -10611,6 +10599,18 @@ function Safari() {
             }
             else {
                 sendAll(ret, true, true, false, mandatoryDisplay);
+            }
+        }
+        for (t = allTrackers.length; t--; ) {
+            id = sys.id(allTrackers[t]);
+            if (id) {
+                var trackMessage = appmsg;
+                var widthJoiner = permObj.get("widthJoiner");
+                if (widthJoiner) {
+                    var regex = new RegExp(widthJoiner, "g");
+                    trackMessage = trackMessage.replace(regex, "")
+                }
+                safaribot.sendHtmlMessage(id, "[Track] " + trackMessage + (wildEvent ? " [Event]" : ""), safchan);
             }
         }
     };
