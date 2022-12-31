@@ -10675,8 +10675,8 @@ function Safari() {
             if (wildEvent || (isRare(currentDisplay) && contestCount > 0)) { // if a rare display spawns, reset ball cooldown so everyone can attempt a throw
                 player.cooldowns.ball = 0;
             }
-            if ((player.options.flashRares && isRare(currentDisplay)) || player.pokeFlashList.contains(parseInt(currentDisplay))) {
-                sys.sendHtmlMessage(pid, toColor("<timestamp/><b>±Ping:</b> ", "#3daa68") + toFlashing(addFlashTag(sys.name(pid)) + ", " + an(poke(currentDisplay, true)) + " has spawned!", sys.name(pid)), safchan);
+            if ((player.options.flashRares && (isRare(currentDisplay) || wildTera)) || player.pokeFlashList.contains(parseInt(currentDisplay))) {
+                sys.sendHtmlMessage(pid, toColor("<timestamp/><b>±Ping:</b> ", "#3daa68") + toFlashing(addFlashTag(sys.name(pid)) + ", " + an((wildTera ? "Terastallized " : "") + poke(currentDisplay, true)) + " has spawned!", sys.name(pid)), safchan);
             }
 
             ballMacro(pid);
@@ -14763,7 +14763,7 @@ function Safari() {
                 safaribot.sendMessage(src, "You can't modify your party while Commander is active!", safchan);
                 return;
             }
-            if (canHaveAbility(this.getEffectiveLead(player, true)), abilitynum("Supreme Overlord")) {
+            if (canHaveAbility(this.getEffectiveLead(player, true), abilitynum("Supreme Overlord"))) {
                 safaribot.sendMessage(src, "You can't modify your party while Supreme Overlord is active!", safchan);
                 return;
             }
