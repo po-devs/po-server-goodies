@@ -14061,7 +14061,7 @@ function Safari() {
             safaribot.sendMessage(src, "You forfeited this contest, so you can't feed any Pokémon from the contest!", safchan);
             return;
         }
-        if (wildEvent) {
+        if (wildEvent || wildTera) {
             safaribot.sendMessage(src, "Event Pokémon won't flee, there's no point throwing a Pokéblock!", safchan);
             return;
         }
