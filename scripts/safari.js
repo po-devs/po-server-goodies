@@ -60099,6 +60099,7 @@ function Safari() {
                     safaribot.sendMessage(src, info.name + " cannot currently be found in any theme.", safchan);
                 }
                 if (info.num in globalWildItems) {
+                    var itemDrops = [];
                     for (var item in globalWildItems[info.num]) {
                         var asset = translateAsset(globalWildItems[info.num][item].item);
                         if (asset.type !== "item") {
@@ -60114,7 +60115,7 @@ function Safari() {
                     }
                 }
                 if (SESSION.channels(safchan).isChannelOwner(src)) {
-                    var editBST = [], itemDrops = [];
+                    var editBST = [];
                     for (var theme in contestThemes) {
                         if (contestThemes[theme].editBST && info.num in contestThemes[theme].editBST) {
                             editBST.push(contestThemes[theme].name + " (" + contestThemes[theme].editBST[info.num] + ")");
