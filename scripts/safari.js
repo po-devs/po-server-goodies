@@ -1885,19 +1885,19 @@ function Safari() {
     };
     var abilityEffects = {
         "237": "[Lead] Any failed Ball throws are instantly refunded to you at a 100% chance.", // Ball Fetch
-        "34": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] contests.", // Chlorophyll
-        "181": "[Lead] Increases your catch rate by an amount equal to 2 buffs if your lead is nerfed during a contest.", // Competitive
+        "34": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sunny] Contests.", // Chlorophyll
+        "181": "[Lead] Increases your catch rate by an amount equal to 2 buffs if your lead is nerfed during a Contest.", // Competitive
         "14": "[Lead] Your chance of finding a held item after catching a Pokémon (if that species can hold an item) is increased.<br>- If the held item rate is more than or equal to 50%: +10% chance<br>- If the held item rate is between 20% and 49%: +20% chance<br>- If the held item rate is 19% or below: 2x chance<br>For wild held Berries in Contests:<br>- If the Berry rate is more than or equal to 50%: +10% chance<br>- If the Berry rate is 49% or below: +20% chance", // Compound Eyes
         "128": 181, // Defiant
-        "87": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] contests.", // Dry Skin
+        "87": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Rain] Contests.", // Dry Skin
         "122": 34, // Flower Gift
         "119": 14, // Frisk
         "182": "[Lead] You gain greatly increased priority when throwing Balls. Does not work for taking photos.", // Gale Wings
         "93": 87, // Hydration
-        "115": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Hail] contests.", // Ice Body
+        "115": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Hail] Contests.", // Ice Body
         "248": 115, // Ice Face
         "35": "[Lead] Your chance of successfully baiting is increased by 30%. This does not work on Deluxe Bait.", // Illuminate
-        "150": "[Lead] Your lead Pokémon will transform into any current wild Pokémon.<br>1. Viewing your party will display your lead's transformed sprite. The transformed Pokémon's original species name is still shown, however. Shininess is dependent on the wild Pokémon; even if your lead is Shiny, it will transform into a regular colour if the wild Pokémon is not Shiny.<br>2. The transformation is temporary and will wear off after the wild Pokémon is gone.<br>3. Your catch rate is calculated as if your lead is the actual transformed Pokémon. During a contest, your lead will be buffed/nerfed depending on whether the current wild Pokémon is buffed/nerfed. For all other non-catch rate-related purposes, your lead is still considered its original species. The wild Pokémon's Ability will not be copied.", // Imposter
+        "150": "[Lead] Your lead Pokémon will transform into any current wild Pokémon.<br>1. Viewing your party will display your lead's transformed sprite. The transformed Pokémon's original species name is still shown, however. Shininess is dependent on the wild Pokémon; even if your lead is Shiny, it will transform into a regular colour if the wild Pokémon is not Shiny.<br>2. The transformation is temporary and will wear off after the wild Pokémon is gone.<br>3. Your catch rate is calculated as if your lead is the actual transformed Pokémon. During a Contest, your lead will be buffed/nerfed depending on whether the current wild Pokémon is buffed/nerfed. For all other non-catch rate-related purposes, your lead is still considered its original species. The wild Pokémon's Ability will not be copied.", // Imposter
         "151": "[Lead] Reveals a wild Pokémon's true form to you if it is disguised as another Pokémon.", // Infiltrator
         "22": "[Lead] The wild Pokémon's BST is decreased (only for you) by 30% if your lead Pokémon has a higher BST, and 10% if not.", // Intimidate
         "51": "[Lead] Increases your chance of taking higher quality photos.", // Keen Eye
@@ -1910,7 +1910,7 @@ function Safari() {
         "124": 14, // Pickpocket
         "158": "[Lead] You will gain increased priority when taking photos.", // Prankster
         "44": 87, // Rain Dish
-        "159": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sandstorm] contests.", // Sand Force
+        "159": "[Lead] Increases your catch rate by 1.3x during Weather Institute [Sandstorm] Contests.", // Sand Force
         "146": 159, // Sand Rush
         "8": 159, // Sand Veil
         "113": "[Lead] If your lead Pokémon is Normal or Fighting-type, their Normal or Fighting-type will be calculated as 1x effectiveness against wild Ghost-types, except during inverted type matchups.", // Scrappy
@@ -1937,14 +1937,15 @@ function Safari() {
         "144": "[Lead] Upon successfully switching out with a Switch Ball, the Switch Ball will not be consumed.", // Regenerator
         "296": "[Lead] You will completely ignore the effects of any wild Pokémon's Ability. When using Big Mushrooms, you will automatically consume 2 at once, gaining double the amount of spawns for the same theme.", // Mycelium Might
         "276": "[Lead] Your Itemfinder gains 5 or 10 charges after catching a Flying-type Pokémon.", // Wind Power
-        "292": "[Lead] Only activates when you are in a contest. Your lead Pokémon's BST increases by 3.64% for each empty slot in your party, up to a maximum of 18.2% if it is the only Pokémon in your party. Once this Ability activates, you cannot modify your party in any way, and you will be unable to use Switch Balls. Forfeiting a contest will deactivate this Ability.", // Supreme Overlord
+        "292": "[Lead] Only activates when you are in a Contest. Your lead Pokémon's BST increases by 3.64% for each empty slot in your party, up to a maximum of 18.2% if it is the only Pokémon in your party. Once this Ability activates, you cannot modify your party in any way, and you will be unable to use Switch Balls. Forfeiting a Contest will deactivate this Ability.", // Supreme Overlord
         "280": 34, // Protosynthesis
         "281": 87, // Quark Drive
         "287": 34, // Orihalcum Pulse
         "288": 87, // Hadron Engine
-        "278": "[Lead] Only activates when you are in a contest. If your lead has this Ability and a Dondozo is in the second slot of your party, your lead's BST is calculated by taking the higher of each individual stat between your lead and Dondozo. Additionally, your lead will inherit all of Dondozo's Ability effects, if any. Once this Ability activates, you cannot modify your party in any way, and you will be unable to use Switch Balls. Forfeiting a contest will deactivate this Ability.", // Commander
+        "278": "[Lead] Only activates when you are in a Contest. If your lead has this Ability and a Dondozo is in the second slot of your party, your lead's BST is calculated by taking the higher of each individual stat between your lead and Dondozo. Additionally, your lead will inherit all of Dondozo's Ability effects, if any. Once this Ability activates, you cannot modify your party in any way, and you will be unable to use Switch Balls. Forfeiting a Contest will deactivate this Ability.", // Commander
         "60": 14, // Sticky Hold
         "53": 14, // Pickup
+        "197": 97,
 
         "16": "[Wild] The wild Pokémon's type changes into your lead Pokémon's type whenever it breaks out of a Ball. If your lead Pokémon has two types, one is chosen at random. If it breaks out of a Spy Ball, the type will be listed as unknown.", // Color Change
         "126": "[Wild] The wild Pokémon's catch rate is calculated using inverted type effectiveness. This does not stack with the Inver costume, Inver Balls, or the Inverted Type Matchup Contest rule.", // Contrary
@@ -1967,7 +1968,8 @@ function Safari() {
         "23": "[Wild] Prevents the use of Switch Balls if your lead Pokémon is not Ghost-type.", // Shadow Tag
         "71": "[Wild] Prevents the use of Switch Balls if your lead Pokémon is neither Flying-type nor Ghost-type.", // Arena Trap
         "42": "[Wild] Prevents the use of Switch Balls if your lead Pokémon is Steel-type and not Ghost-type.", // Magnet Pull
-        "127": "[Wild] Negates the effects of contest buffs on your lead Pokémon.", // Unnerve
+        "127": "[Wild] Negates the effects of Contest buffs on your lead Pokémon.", // Unnerve
+        "271": "[Wild] If you have an Aura that has remained unpurified for at least 1 hour, capturing a Pokémon with this Ability will purify your Aura if you have any Salt in your bag. This consumes up to 5 Salts and reduces the remaining duration of your Aura depending on how much Salt was consumed.<br>- 1 to 2 Salts: 75% reduction<br>- 3 to 4 Salts: 50% reduction<br>- 5 Salts: 25% reduction", // Purifying Salt
         
         "268": "[Misc] When growing Berries in the Daycare, a Pokémon with this Ability will produce 1.5x more Berries in 25% less time than usual. Does not stack with Ripen.", // Seed Sower
         "247": "[Misc] When growing Berries in the Daycare, a Pokémon with this Ability will produce 1.5x more Berries in 25% less time than usual. Does not stack with Seed Sower.", // Ripen
@@ -6973,7 +6975,7 @@ function Safari() {
     updateItemData();
     var updateItemHelp = function() {
         itemHelp = {
-            silver: "Rare coins that can be used to purchase valuable items. Obtained from quests and contests.",
+            silver: "Rare coins that can be used to purchase valuable items. Obtained from quests and Contests.",
             bait: "A tasty treat used to attract wild Pokémon. Has " + an(itemData.bait.successRate*100) + "% success rate with an approximate " + itemData.bait.successCD + " second cooldown on success, and an approximate " + itemData.bait.failCD + " second cooldown on failure. Use with \"/bait\".",
             golden: "A premium bait used to attract wild Pokémon. Has " + an(itemData.golden.successRate*100) + "% success rate and can be used more often than normal Baits. Use with \"/gbait\".",
             deluxe: "A customizable bait. Made from /quest baking.",
@@ -7069,7 +7071,7 @@ function Safari() {
         };
         berryHelp = {
             oran:"A berry that can be used as an ingredient in bait. Can also restore 50 HP to the holder during rotation batttles. Give berries with /giveitem [berry].",
-            pecha:"A berry that can be used as an ingredient in bait. Can also help a Pokémon overcome a nerf in contests. Give berries with /giveitem [berry].",
+            pecha:"A berry that can be used as an ingredient in bait. Can also help a Pokémon overcome a nerf in Contests. Give berries with /giveitem [berry].",
             razz:"A berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
             bluk:"A berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
             leppa:"A berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
@@ -7145,7 +7147,7 @@ function Safari() {
         pokesCaught: { desc: "by successful catches", alts: ["caught", "pokescaught"], alias: "caught" },
         // pokesEvolved: { desc: "by successful evolutions", alts: ["evolve", "evolved", "pokesevolved"], alias: "evolved" },
         // bst: { desc: "by total BST of Pokémon owned", alts: [], alias: "bst" },
-        contestsWon: { desc: "by contests won", alts: ["contest", "contests", "contestswon"], alias: "contest" },
+        contestsWon: { desc: "by Contests won", alts: ["contest", "contests", "contestswon"], alias: "contest" },
         earnings: { desc: "by money earned from NPC, quests, events and Luxury Balls", alts: ["earned", "earnings", "money", "$"], alias: "earnings", isMoney: true },
         // money: { desc: "by money", alts: ["$"], alias: "money", isMoney: true },
         // pokeSoldEarnings: { desc: "by money gained with selling Pokémon", alts: ["sold", "sell", "pokesoldearnings"], alias: "sold", isMoney: true },
@@ -7180,7 +7182,7 @@ function Safari() {
     };
     var monthlyLeaderboardTypes = {
         pokesCaught: { desc: "by successful catches during this week", alts: ["caught weekly"], alias: "caught weekly", lastAlias: "caught last", file: "scriptdata/safari/weeklyPokesCaught.txt", lastDesc: "by successful catches during the last week", reward: true  },
-        contestsWon: { desc: "by contests won during this week", alts: ["contest weekly", "contests weekly"], alias: "contest weekly", lastAlias: "contest last", file: "scriptdata/safari/weeklyContestsWon.txt", lastDesc: "by contests won during the last week", reward: true },
+        contestsWon: { desc: "by Contests won during this week", alts: ["contest weekly", "contests weekly"], alias: "contest weekly", lastAlias: "contest last", file: "scriptdata/safari/weeklyContestsWon.txt", lastDesc: "by Contests won during the last week", reward: true },
         collectorEarnings: { desc: "by money received from the Collector during this week", alts: ["collector weekly", "collector money weekly", "collectormoney weekly", "collector $ weekly"], alias: "collector weekly",  lastAlias: "collector last",isMoney: true, file: "scriptdata/safari/weeklyCollectorEarnings.txt", lastDesc: "by money received from the Collector during the last week", reward: true },
         arenaPoints: { desc: "by Arena points won this week", alts: ["arena weekly"], alias: "arena weekly",  lastAlias: "arena last", file: "scriptdata/safari/weeklyArenaPoints.txt", lastDesc: "by Arena points won during the last week", reward: true },
         towerHighestNew: { desc: "by best Battle Tower run this week", alts: ["tower weekly", "battletower weekly", "battle tower weekly", "towerhighest weekly"], alias: "tower weekly",  lastAlias: "tower last", file: "scriptdata/safari/weeklyTowerHighest.txt", lastDesc: "by best Battle Tower run during the last week", reward: true },
@@ -7590,7 +7592,7 @@ function Safari() {
         "1": { "evo": 2, "candies": 207 }, "2": { "evo": 3, "candies": 656 }, "65561": { "evo": -1, "candies": 0 }, "131097": { "evo": -1, "candies": 0 }, "196633": { "evo": -1, "candies": 0 }, "262169": { "evo": -1, "candies": 0 }, "327705": { "evo": -1, "candies": 0 }, "393241": { "evo": -1, "candies": 0 }, "458777": { "evo": -1, "candies": 0 }, "524313": { "evo": -1, "candies": 0 }, "589849": { "evo": -1, "candies": 0 }, "655385": { "evo": -1, "candies": 0 }, "720921": { "evo": -1, "candies": 0 }, "786457": { "evo": -1, "candies": 0 }, "851993": { "evo": -1, "candies": 0 }, "4": { "evo": 5, "candies": 207 }, "5": { "evo": 6, "candies": 668 }, "7": { "evo": 8, "candies": 207 }, "8": { "evo": 9, "candies": 663 }, "10": { "evo": 11, "candies": 105 }, "11": { "evo": 12, "candies": 332 }, "13": { "evo": 14, "candies": 105 }, "14": { "evo": 15, "candies": 332 }, "16": { "evo": 17, "candies": 178 }, "17": { "evo": 18, "candies": 402 }, "19": { "evo": 20, "candies": 347 }, "65555": { "evo": 65556, "candies": 347 }, "21": { "evo": 22, "candies": 371 }, "23": { "evo": 24, "candies": 368 }, "25": { "evo": 26, "candies": 407 }, "27": { "evo": 28, "candies": 378 }, "65563": { "evo": 65564, "candies": 378 }, "29": { "evo": 30, "candies": 186 }, "30": { "evo": 31, "candies": 424 }, "32": { "evo": 33, "candies": 186 }, "33": { "evo": 34, "candies": 424 }, "35": { "evo": 36, "candies": 406 }, "37": { "evo": 38, "candies": 424 }, "65573": { "evo": 65574, "candies": 424 }, "39": { "evo": 40, "candies": 365 }, "41": { "evo": 42, "candies": 232 }, "42": { "evo": 169, "candies": 449 }, "43": { "evo": 44, "candies": 201 }, "44": { "evo": [45, 182], "candies": 412 }, "46": { "evo": 47, "candies": 340 }, "48": { "evo": 49, "candies": 378 }, "50": { "evo": 51, "candies": 340 }, "65586": { "evo": 65587, "candies": 340 }, "52": { "evo": 53, "candies": 370 }, "65588": { "evo": 65589, "candies": 370 }, "54": { "evo": 55, "candies": 420 }, "56": { "evo": 57, "candies": 382 }, "58": { "evo": 59, "candies": 466 }, "60": { "evo": 61, "candies": 196 }, "61": { "evo": [62, 186], "candies": 424 }, "63": { "evo": 64, "candies": 204 }, "64": { "evo": 65, "candies": 575 }, "66": { "evo": 67, "candies": 207 }, "67": { "evo": 68, "candies": 424 }, "69": { "evo": 70, "candies": 199 }, "70": { "evo": 71, "candies": 412 }, "72": { "evo": 73, "candies": 433 }, "74": { "evo": 75, "candies": 199 }, "65610": { "evo": 65611, "candies": 199 }, "75": { "evo": 76, "candies": 416 }, "65611": { "evo": 65612, "candies": 416 }, "77": { "evo": 78, "candies": 420 }, "79": { "evo": [80, 199], "candies": 412 }, "81": { "evo": 82, "candies": 237 }, "82": { "evo": 462, "candies": 449 }, "84": { "evo": 85, "candies": 386 }, "86": { "evo": 87, "candies": 399 }, "88": { "evo": 89, "candies": 420 }, "65624": { "evo": 65625, "candies": 420 }, "90": { "evo": 91, "candies": 441 }, "92": { "evo": 93, "candies": 207 }, "93": { "evo": 94, "candies": 575 }, "95": { "evo": 208, "candies": 428 }, "96": { "evo": 97, "candies": 406 }, "98": { "evo": 99, "candies": 399 }, "100": { "evo": 101, "candies": 403 }, "102": { "evo": 103, "candies": 437 }, "104": { "evo": 105, "candies": 357 }, "108": { "evo": 463, "candies": 433 }, "109": { "evo": 110, "candies": 412 }, "111": { "evo": 112, "candies": 247 }, "112": { "evo": 464, "candies": 449 }, "113": { "evo": 242, "candies": 621 }, "114": { "evo": 465, "candies": 449 }, "116": { "evo": 117, "candies": 224 }, "117": { "evo": 230, "candies": 454 }, "118": { "evo": 119, "candies": 378 }, "120": { "evo": 121, "candies": 437 }, "123": { "evo": 212, "candies": 420 }, "125": { "evo": 466, "candies": 454 }, "126": { "evo": 467, "candies": 454 }, "129": { "evo": 130, "candies": 454 }, "133": { "evo": [470, 471, 135, 134, 136, 196, 197, 700], "candies": 656 }, "137": { "evo": 233, "candies": 263 }, "138": { "evo": 139, "candies": 416 }, "140": { "evo": 141, "candies": 416 }, "147": { "evo": 148, "candies": 214 }, "148": { "evo": 149, "candies": 699 }, "152": { "evo": 153, "candies": 207 }, "153": { "evo": 154, "candies": 656 }, "155": { "evo": 156, "candies": 207 }, "156": { "evo": 157, "candies": 668 }, "158": { "evo": 159, "candies": 207 }, "159": { "evo": 160, "candies": 663 }, "161": { "evo": 162, "candies": 349 }, "163": { "evo": 164, "candies": 371 }, "165": { "evo": 166, "candies": 328 }, "167": { "evo": 168, "candies": 328 }, "170": { "evo": 171, "candies": 386 }, "172": { "evo": 25, "candies": 163 }, "65708": { "evo": -1, "candies": 0 }, "173": { "evo": 35, "candies": 165 }, "174": { "evo": 39, "candies": 138 }, "175": { "evo": 176, "candies": 207 }, "176": { "evo": 468, "candies": 627 }, "177": { "evo": 178, "candies": 395 }, "179": { "evo": 180, "candies": 186 }, "180": { "evo": 181, "candies": 428 }, "183": { "evo": 184, "candies": 353 }, "187": { "evo": 188, "candies": 173 }, "188": { "evo": 189, "candies": 386 }, "190": { "evo": 424, "candies": 405 }, "191": { "evo": 192, "candies": 357 }, "193": { "evo": 469, "candies": 433 }, "194": { "evo": 195, "candies": 361 }, "198": { "evo": 430, "candies": 424 }, "200": { "evo": 429, "candies": 416 }, "204": { "evo": 205, "candies": 391 }, "207": { "evo": 472, "candies": 428 }, "209": { "evo": 210, "candies": 378 }, "215": { "evo": 461, "candies": 428 }, "216": { "evo": 217, "candies": 420 }, "218": { "evo": 219, "candies": 344 }, "220": { "evo": 221, "candies": 230 }, "221": { "evo": 473, "candies": 445 }, "223": { "evo": 224, "candies": 403 }, "228": { "evo": 229, "candies": 420 }, "231": { "evo": 232, "candies": 420 }, "233": { "evo": 474, "candies": 449 }, "236": { "evo": [107, 106, 237], "candies": 382 }, "238": { "evo": 124, "candies": 382 }, "239": { "evo": 125, "candies": 250 }, "240": { "evo": 126, "candies": 252 }, "246": { "evo": 247, "candies": 209 }, "247": { "evo": 248, "candies": 699 }, "252": { "evo": 253, "candies": 207 }, "253": { "evo": 254, "candies": 663 }, "255": { "evo": 256, "candies": 207 }, "256": { "evo": 257, "candies": 663 }, "258": { "evo": 259, "candies": 207 }, "259": { "evo": 260, "candies": 669 }, "261": { "evo": 262, "candies": 353 }, "263": { "evo": 264, "candies": 353 }, "265": { "evo": [266, 268], "candies": 105 }, "266": { "evo": 267, "candies": 332 }, "268": { "evo": 269, "candies": 323 }, "270": { "evo": 271, "candies": 173 }, "271": { "evo": 272, "candies": 552 }, "273": { "evo": 274, "candies": 173 }, "274": { "evo": 275, "candies": 403 }, "276": { "evo": 277, "candies": 361 }, "278": { "evo": 279, "candies": 361 }, "280": { "evo": 281, "candies": 142 }, "281": { "evo": [282, 475], "candies": 435 }, "283": { "evo": 284, "candies": 348 }, "285": { "evo": 286, "candies": 386 }, "287": { "evo": 288, "candies": 224 }, "288": { "evo": 289, "candies": 781 }, "290": { "evo": [291, 292], "candies": 291 }, "293": { "evo": 294, "candies": 184 }, "294": { "evo": 295, "candies": 412 }, "296": { "evo": 297, "candies": 398 }, "298": { "evo": 183, "candies": 128 }, "299": { "evo": 476, "candies": 441 }, "300": { "evo": 301, "candies": 319 }, "304": { "evo": 305, "candies": 219 }, "305": { "evo": 306, "candies": 610 }, "307": { "evo": 308, "candies": 344 }, "309": { "evo": 310, "candies": 399 }, "315": { "evo": 407, "candies": 433 }, "316": { "evo": 317, "candies": 392 }, "318": { "evo": 319, "candies": 386 }, "320": { "evo": 321, "candies": 420 }, "322": { "evo": 323, "candies": 575 }, "325": { "evo": 326, "candies": 395 }, "328": { "evo": 329, "candies": 173 }, "329": { "evo": 330, "candies": 598 }, "331": { "evo": 332, "candies": 399 }, "333": { "evo": 334, "candies": 412 }, "339": { "evo": 340, "candies": 393 }, "341": { "evo": 342, "candies": 393 }, "343": { "evo": 344, "candies": 420 }, "345": { "evo": 346, "candies": 416 }, "347": { "evo": 348, "candies": 416 }, "349": { "evo": [350], "candies": 454 }, "353": { "evo": 354, "candies": 382 }, "355": { "evo": 356, "candies": 232 }, "356": { "evo": 477, "candies": 441 }, "360": { "evo": 202, "candies": 340 }, "361": { "evo": [362, 478], "candies": 403 }, "363": { "evo": 364, "candies": 209 }, "364": { "evo": 365, "candies": 445 }, "366": { "evo": [367, 368], "candies": 407 }, "371": { "evo": 372, "candies": 214 }, "372": { "evo": 373, "candies": 699 }, "374": { "evo": 375, "candies": 214 }, "375": { "evo": 376, "candies": 699 }, "387": { "evo": 388, "candies": 207 }, "388": { "evo": 389, "candies": 656 }, "390": { "evo": 391, "candies": 207 }, "391": { "evo": 392, "candies": 668 }, "393": { "evo": 394, "candies": 207 }, "394": { "evo": 395, "candies": 663 }, "396": { "evo": 397, "candies": 173 }, "397": { "evo": 398, "candies": 407 }, "399": { "evo": 400, "candies": 344 }, "401": { "evo": 402, "candies": 323 }, "403": { "evo": 404, "candies": 185 }, "404": { "evo": 405, "candies": 439 }, "406": { "evo": 315, "candies": 204 }, "408": { "evo": 409, "candies": 416 }, "410": { "evo": 411, "candies": 416 }, "412": { "evo": [413, 414], "candies": 356 }, "415": { "evo": 416, "candies": 398 }, "418": { "evo": 419, "candies": 416 }, "420": { "evo": 421, "candies": 378 }, "422": { "evo": 423, "candies": 399 }, "425": { "evo": 426, "candies": 418 }, "427": { "evo": 428, "candies": 403 }, "431": { "evo": 432, "candies": 380 }, "433": { "evo": 358, "candies": 357 }, "434": { "evo": 435, "candies": 402 }, "436": { "evo": 437, "candies": 420 }, "438": { "evo": 185, "candies": 344 }, "439": { "evo": 122, "candies": 386 }, "440": { "evo": 113, "candies": 230 }, "443": { "evo": 444, "candies": 209 }, "444": { "evo": 445, "candies": 699 }, "446": { "evo": 143, "candies": 454 }, "447": { "evo": 448, "candies": 604 }, "449": { "evo": 450, "candies": 441 }, "451": { "evo": 452, "candies": 420 }, "453": { "evo": 454, "candies": 412 }, "456": { "evo": 457, "candies": 386 }, "458": { "evo": 226, "candies": 391 }, "459": { "evo": 460, "candies": 415 }, "495": { "evo": 496, "candies": 211 }, "496": { "evo": 497, "candies": 660 }, "498": { "evo": 499, "candies": 213 }, "499": { "evo": 500, "candies": 660 }, "501": { "evo": 502, "candies": 211 }, "502": { "evo": 503, "candies": 660 }, "504": { "evo": 505, "candies": 353 }, "506": { "evo": 507, "candies": 189 }, "507": { "evo": 508, "candies": 420 }, "509": { "evo": 510, "candies": 375 }, "511": { "evo": 512, "candies": 418 }, "513": { "evo": 514, "candies": 418 }, "515": { "evo": 516, "candies": 418 }, "517": { "evo": 518, "candies": 409 }, "519": { "evo": 520, "candies": 183 }, "520": { "evo": 521, "candies": 410 }, "522": { "evo": 523, "candies": 417 }, "524": { "evo": 525, "candies": 199 }, "525": { "evo": 526, "candies": 433 }, "527": { "evo": 528, "candies": 357 }, "529": { "evo": 530, "candies": 427 }, "532": { "evo": 533, "candies": 207 }, "533": { "evo": 534, "candies": 424 }, "535": { "evo": 536, "candies": 196 }, "536": { "evo": 537, "candies": 428 }, "540": { "evo": 541, "candies": 194 }, "541": { "evo": 542, "candies": 420 }, "543": { "evo": 544, "candies": 184 }, "544": { "evo": 545, "candies": 407 }, "546": { "evo": 547, "candies": 403 }, "548": { "evo": 549, "candies": 403 }, "551": { "evo": 552, "candies": 179 }, "552": { "evo": 553, "candies": 597 }, "554": { "evo": 555, "candies": 403 }, "557": { "evo": 558, "candies": 399 }, "559": { "evo": 560, "candies": 410 }, "562": { "evo": 563, "candies": 406 }, "564": { "evo": 565, "candies": 416 }, "566": { "evo": 567, "candies": 652 }, "568": { "evo": 569, "candies": 398 }, "570": { "evo": 571, "candies": 428 }, "572": { "evo": 573, "candies": 395 }, "574": { "evo": 575, "candies": 199 }, "575": { "evo": 576, "candies": 412 }, "577": { "evo": 578, "candies": 189 }, "578": { "evo": 579, "candies": 412 }, "580": { "evo": 581, "candies": 397 }, "582": { "evo": 583, "candies": 201 }, "583": { "evo": 584, "candies": 449 }, "585": { "evo": 586, "candies": 399 }, "588": { "evo": 589, "candies": 416 }, "590": { "evo": 591, "candies": 390 }, "592": { "evo": 593, "candies": 403 }, "595": { "evo": 596, "candies": 396 }, "597": { "evo": 598, "candies": 411 }, "599": { "evo": 600, "candies": 224 }, "600": { "evo": 601, "candies": 437 }, "602": { "evo": 603, "candies": 207 }, "603": { "evo": 604, "candies": 433 }, "605": { "evo": 606, "candies": 407 }, "607": { "evo": 608, "candies": 189 }, "608": { "evo": 609, "candies": 598 }, "610": { "evo": 611, "candies": 209 }, "611": { "evo": 612, "candies": 621 }, "613": { "evo": 614, "candies": 407 }, "616": { "evo": 617, "candies": 416 }, "619": { "evo": 620, "candies": 428 }, "622": { "evo": 623, "candies": 555 }, "624": { "evo": 625, "candies": 412 }, "627": { "evo": 628, "candies": 428 }, "629": { "evo": 630, "candies": 428 }, "633": { "evo": 634, "candies": 214 }, "634": { "evo": 635, "candies": 699 }, "636": { "evo": 637, "candies": 462 }, "650": { "evo": 651, "candies": 207 }, "651": { "evo": 652, "candies": 663 }, "653": { "evo": 654, "candies": 209 }, "654": { "evo": 655, "candies": 668 }, "656": { "evo": 657, "candies": 207 }, "657": { "evo": 658, "candies": 663 }, "659": { "evo": 660, "candies": 355 }, "661": { "evo": 662, "candies": 195 }, "662": { "evo": 663, "candies": 624 }, "664": { "evo": 665, "candies": 109 }, "665": { "evo": [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778], "candies": 345 }, "667": { "evo": 668, "candies": 426 }, "669": { "evo": 670, "candies": 189 }, "670": { "evo": 671, "candies": 464 }, "328350": { "evo": -1, "candies": 0 }, "672": { "evo": 673, "candies": 446 }, "674": { "evo": 675, "candies": 416 }, "677": { "evo": [678, 66214], "candies": 391 }, "679": { "evo": 680, "candies": 228 }, "680": { "evo": 681, "candies": 598 }, "682": { "evo": 683, "candies": 388 }, "684": { "evo": 685, "candies": 403 }, "686": { "evo": 687, "candies": 405 }, "688": { "evo": 689, "candies": 420 }, "690": { "evo": 691, "candies": 415 }, "692": { "evo": 693, "candies": 420 }, "694": { "evo": 695, "candies": 404 }, "696": { "evo": 697, "candies": 438 }, "698": { "evo": 699, "candies": 651 }, "704": { "evo": 705, "candies": 231 }, "705": { "evo": 706, "candies": 699 }, "708": { "evo": 709, "candies": 398 }, "710": { "evo": 711, "candies": 415 }, "712": { "evo": 713, "candies": 432 }, "714": { "evo": 715, "candies": 449 }, "722": { "evo": 723, "candies": 214 }, "723": { "evo": 724, "candies": 663 }, "725": { "evo": 726, "candies": 214 }, "726": { "evo": 727, "candies": 663 }, "728": { "evo": 729, "candies": 214 }, "729": { "evo": 730, "candies": 663 }, "731": { "evo": 732, "candies": 181 }, "732": { "evo": 733, "candies": 407 }, "734": { "evo": 735, "candies": 351 }, "736": { "evo": 737, "candies": 204 }, "737": { "evo": 738, "candies": 420 }, "739": { "evo": 740, "candies": 402 }, "742": { "evo": 743, "candies": 390 }, "744": { "evo": [745, 66281], "candies": 409 }, "747": { "evo": 748, "candies": 416 }, "749": { "evo": 750, "candies": 420 }, "751": { "evo": 752, "candies": 381 }, "753": { "evo": 754, "candies": 403 }, "755": { "evo": 756, "candies": 340 }, "757": { "evo": 758, "candies": 403 }, "759": { "evo": 760, "candies": 420 }, "761": { "evo": 762, "candies": 148 }, "762": { "evo": 763, "candies": 428 }, "767": { "evo": 768, "candies": 445 }, "769": { "evo": 770, "candies": 403 }, "772": { "evo": 773, "candies": 599 }, "782": { "evo": 783, "candies": 214 }, "783": { "evo": 784, "candies": 699 }, "789": { "evo": 790, "candies": 39999 }, "790": { "evo": [791, 792], "candies": 9999999 }, "803": { "evo": 804, "candies": 9999999 }, "808": { "evo": 809, "candies": 9999999 }, "810": { "evo": 811, "candies": 207 }, "811": { "evo": 812, "candies": 656 }, "813": { "evo": 814, "candies": 207 }, "814": { "evo": 815, "candies": 656 }, "816": { "evo": 817, "candies": 207 }, "817": { "evo": 818, "candies": 656 }, "819": { "evo": 820, "candies": 310 }, "821": { "evo": 822, "candies": 178 }, "822": { "evo": 823, "candies": 402 }, "824": { "evo": 825, "candies": 130 }, "825": { "evo": 826, "candies": 323 }, "827": { "evo": 828, "candies": 375 }, "829": { "evo": 830, "candies": 420 }, "831": { "evo": 832, "candies": 350 }, "833": { "evo": 834, "candies": 406 }, "835": { "evo": 836, "candies": 432 }, "837": { "evo": 838, "candies": 270 }, "838": { "evo": 839, "candies": 610 }, "840": { "evo": [841, 842], "candies": 510 }, "843": { "evo": 844, "candies": 480 }, "846": { "evo": 847, "candies": 433 }, "848": { "evo": [849, 66385], "candies": 480 }, "850": { "evo": 851, "candies": 498 }, "852": { "evo": 853, "candies": 444 }, "854": { "evo": 855, "candies": 496 }, "856": { "evo": 857, "candies": 290 }, "857": { "evo": 858, "candies": 412 }, "859": { "evo": 860, "candies": 290 }, "860": { "evo": 861, "candies": 412 }, "65799": { "evo": 65800, "candies": 353 }, "65800": { "evo": 862, "candies": 508 }, "131124": { "evo": 863, "candies": 451 }, "65758": { "evo": 864, "candies": 680 }, "65619": { "evo": 865, "candies": 617 }, "65658": { "evo": 866, "candies": 629 }, "66098": { "evo": 867, "candies": 470 }, "868": { "evo": [869, 66405, 131941, 197477, 263013, 328549, 394085, 459621, 525157, 590693, 656229, 721765, 787301, 852837, 918373, 983909, 1049445, 1114981, 1180517, 1246053, 1311589, 1377125, 1442661, 1508197, 1573733, 1639269, 1704805, 1770341, 1835877, 1901413, 1966949, 2032485, 2098021, 2163557, 2229093, 2294629, 2360165, 2425701, 2491237, 2556773, 2622309, 2687845, 2753381, 2818917, 2884453, 2949989, 3015525, 3081061, 3146597, 3212133, 3277669, 3343205, 3408741, 3474277, 3539813, 3605349, 3670885, 3736421, 3801957, 3867493, 3933029, 3998565, 4064101], "candies": 410 }, "872": { "evo": 873, "candies": 346 }, "878": { "evo": 879, "candies": 470 }, "885": { "evo": 886, "candies": 214 }, "886": { "evo": 887, "candies": 699 }, "65613": { "evo": 65614, "candies": 540 }, "66090": { "evo": 131627, "candies": 530 }, "65615": { "evo": [131152, 65735], "candies": 412 }, "891": { "evo": [892, 66428], "candies": 999999 }, "65594": { "evo": 65595, "candies": 466 }, "65636": { "evo": 65637, "candies": 403 }, "65747": { "evo": 904, "candies": 420 }, "65751": { "evo": 903, "candies": 428 }, "131622": { "evo": [902, 66438], "candies": 478 }, "66106": { "evo": 66107, "candies": 428 }, "66241": { "evo": 66242, "candies": 699 }, "65730": { "evo": 980, "candies": 340 }, "906": { "evo": 907, "candies": 207 }, "907": { "evo": 908, "candies": 656 }, "909": { "evo": 910, "candies": 207 }, "910": { "evo": 911, "candies": 656 }, "912": { "evo": 913, "candies": 207 }, "913": { "evo": 914, "candies": 656 }, "915": { "evo": [916, 66452], "candies": 351 }, "917": { "evo": 918, "candies": 328 }, "919": { "evo": 920, "candies": 378 }, "921": { "evo": 922, "candies": 199 }, "922": { "evo": 923, "candies": 412 }, "924": { "evo": [66461], "candies": 397 }, "926": { "evo": 927, "candies": 402 }, "928": { "evo": 929, "candies": 204 }, "929": { "evo": 930, "candies": 433 }, "932": { "evo": 933, "candies": 270 }, "933": { "evo": 934, "candies": 610 }, "935": { "evo": [936, 937], "candies": 498 }, "938": { "evo": 939, "candies": 410 }, "940": { "evo": 941, "candies": 410 }, "942": { "evo": 943, "candies": 407 }, "944": { "evo": 945, "candies": 406 }, "946": { "evo": 947, "candies": 444 }, "948": { "evo": 949, "candies": 433 }, "951": { "evo": 952, "candies": 406 }, "953": { "evo": 954, "candies": 397 }, "955": { "evo": 956, "candies": 404 }, "957": { "evo": 958, "candies": 207 }, "958": { "evo": 959, "candies": 424 }, "960": { "evo": 961, "candies": 340 }, "963": { "evo": 964, "candies": 375 }, "965": { "evo": 966, "candies": 470 }, "969": { "evo": 970, "candies": 498 }, "971": { "evo": 972, "candies": 409 }, "974": { "evo": 975, "candies": 651 }, "996": { "evo": 997, "candies": 214 }, "997": { "evo": 998, "candies": 699 }, "999": { "evo": 1000, "candies": 462 }, "66535": { "evo": -1, "candies": 0 }
     };
     for (var i = 0; i < 100; i++) { // tandemaus
-        evolutions[924].evo.push(925);
+        evolutions[924].evo.unshift(925);
     }
     var devolutions = {
         "2": 1, "3": 2, "5": 4, "6": 5, "8": 7, "9": 8, "11": 10, "12": 11, "14": 13, "15": 14, "17": 16, "18": 17, "20": 19, "22": 21, "24": 23, "65562": 25, "26": 25, "28": 27, "30": 29, "31": 30, "33": 32, "34": 33, "36": 35, "38": 37, "40": 39, "42": 41, "169": 42, "44": 43, "45": 44, "182": 44, "47": 46, "49": 48, "51": 50, "53": 52, "55": 54, "57": 56, "59": 58, "61": 60, "62": 61, "186": 61, "64": 63, "65": 64, "67": 66, "68": 67, "70": 69, "71": 70, "73": 72, "75": 74, "76": 75, "78": 77, "80": 79, "199": 79, "82": 81, "462": 82, "85": 84, "87": 86, "89": 88, "91": 90, "93": 92, "94": 93, "208": 95, "97": 96, "99": 98, "101": 100, "103": 102, "105": 104, "463": 108, "110": 109, "112": 111, "464": 112, "242": 113, "465": 114, "117": 116, "230": 117, "119": 118, "121": 120, "212": 123, "466": 125, "467": 126, "130": 129, "470": 133, "471": 133, "135": 133, "134": 133, "136": 133, "196": 133, "197": 133, "700": 133, "233": 137, "139": 138, "141": 140, "148": 147, "149": 148, "153": 152, "154": 153, "156": 155, "157": 156, "159": 158, "160": 159, "162": 161, "164": 163, "166": 165, "168": 167, "171": 170, "25": 172, "65561": -1, "131097": -1, "196633": -1, "262169": -1, "327705": -1, "393241": -1, "458777": -1, "524313": -1, "589849": -1, "655385": -1, "720921": -1, "786457": -1, "851993": -1, "35": 173, "39": 174, "176": 175, "468": 176, "178": 177, "180": 179, "181": 180, "184": 183, "188": 187, "189": 188, "424": 190, "192": 191, "469": 193, "195": 194, "430": 198, "429": 200, "205": 204, "472": 207, "210": 209, "461": 215, "217": 216, "219": 218, "221": 220, "473": 221, "224": 223, "229": 228, "232": 231, "474": 233, "107": 236, "106": 236, "237": 236, "124": 238, "125": 239, "126": 240, "247": 246, "248": 247, "253": 252, "254": 253, "256": 255, "257": 256, "259": 258, "260": 259, "262": 261, "264": 263, "266": 265, "268": 265, "267": 266, "269": 268, "271": 270, "272": 271, "274": 273, "275": 274, "277": 276, "279": 278, "281": 280, "282": 281, "475": 281, "284": 283, "286": 285, "288": 287, "289": 288, "291": 290, "292": 290, "294": 293, "295": 294, "297": 296, "183": 298, "476": 299, "301": 300, "305": 304, "306": 305, "308": 307, "310": 309, "407": 315, "317": 316, "319": 318, "321": 320, "323": 322, "326": 325, "329": 328, "330": 329, "332": 331, "334": 333, "340": 339, "342": 341, "344": 343, "346": 345, "348": 347, "350": 349, "354": 353, "356": 355, "477": 356, "202": 360, "362": 361, "478": 361, "364": 363, "365": 364, "367": 366, "368": 366, "372": 371, "373": 372, "375": 374, "376": 375, "388": 387, "389": 388, "391": 390, "392": 391, "394": 393, "395": 394, "397": 396, "398": 397, "400": 399, "402": 401, "404": 403, "405": 404, "315": 406, "409": 408, "411": 410, "413": 412, "414": 412, "416": 415, "419": 418, "421": 420, "423": 422, "426": 425, "428": 427, "432": 431, "358": 433, "435": 434, "437": 436, "185": 438, "122": 439, "113": 440, "444": 443, "445": 444, "143": 446, "448": 447, "450": 449, "452": 451, "454": 453, "457": 456, "226": 458, "460": 459, "496": 495, "497": 496, "499": 498, "500": 499, "502": 501, "503": 502, "505": 504, "507": 506, "508": 507, "510": 509, "512": 511, "514": 513, "516": 515, "518": 517, "520": 519, "521": 520, "523": 522, "525": 524, "526": 525, "528": 527, "530": 529, "533": 532, "534": 533, "536": 535, "537": 536, "541": 540, "542": 541, "544": 543, "545": 544, "547": 546, "549": 548, "552": 551, "553": 552, "555": 554, "66091": 554, "558": 557, "560": 559, "563": 562, "565": 564, "567": 566, "569": 568, "571": 570, "573": 572, "575": 574, "576": 575, "578": 577, "579": 578, "581": 580, "583": 582, "584": 583, "586": 585, "589": 588, "591": 590, "593": 592, "596": 595, "598": 597, "600": 599, "601": 600, "603": 602, "604": 603, "606": 605, "608": 607, "609": 608, "611": 610, "612": 611, "614": 613, "617": 616, "620": 619, "623": 622, "625": 624, "628": 627, "630": 629, "634": 633, "635": 634, "637": 636, "651": 650, "652": 651, "654": 653, "655": 654, "657": 656, "658": 657, "660": 659, "662": 661, "663": 662, "665": 664, "666": 665, "668": 667, "670": 669, "328350": -1, "671": 670, "673": 672, "675": 674, "678": 677, "680": 679, "681": 680, "683": 682, "685": 684, "687": 686, "689": 688, "691": 690, "693": 692, "695": 694, "697": 696, "699": 698, "705": 704, "706": 705, "709": 708, "711": 710, "713": 712, "715": 714, "723": 722, "724": 723, "726": 725, "727": 726, "729": 728, "730": 729, "732": 731, "733": 732, "735": 734, "737": 736, "738": 737, "740": 739, "743": 742, "745": 744, "131817": -1, "66281": 744, "748": 747, "750": 749, "752": 751, "754": 753, "756": 755, "758": 757, "760": 759, "762": 761, "763": 762, "768": 767, "770": 769, "773": 772, "783": 782, "784": 783, "790": 789, "791": 790, "792": 790, "804": 803, "811": 810, "812": 811, "814": 813, "815": 814, "817": 816, "818": 817, "820": 819, "822": 821, "823": 822, "825": 824, "826": 825, "828": 827, "830": 829, "832": 831, "834": 833, "836": 835, "838": 837, "839": 838, "841": 840, "842": 840, "844": 843, "847": 846, "849": 848, "66385": 848, "851": 850, "853": 852, "855": 854, "857": 856, "858": 857, "860": 859, "861": 860, "862": 65800, "65800": 65799, "863": 131124, "864": 65758, "865": 65619, "866": 65658, "867": 66098, "869": 868, "873": 872, "879": 878, "886": 885, "887": 886, "65614": 65613, "197163": 66090, "131627": 66090, "131152": 65615, "892": 891, "66428": 891, "65735": 65615, "555": 554, "66091": 554, "131627": 66090, "197163": 66090, "131152": 65615, "65611": 65610, "65595": 65594, "65637": 65636, "65693": 156, "66039": 502, "66085": 548, "66107": 66106, "66164": 627, "66241": 704, "66242": 66241, "66249": 712, "66260": 723, "899": 234, "900": 123, "901": 217, "902": 131622, "66438": 131622, "903": 65751, "904": 65747, "907": 906, "908": 907, "910": 909, "911": 910, "913": 912, "914": 913, "916": 915, "66452": 915, "918": 917, "920": 919, "922": 921, "923": 922, "925": 924, "66461": 924, "927": 926, "929": 928, "930": 929, "933": 932, "934": 933, "936": 935, "937": 935, "939": 938, "941": 940, "943": 942, "945": 944, "947": 946, "949": 948, "952": 951, "954": 953, "956": 955, "958": 957, "959": 958, "961": 960, "964": 963, "66500": 963, "966": 965, "970": 969, "972": 971, "975": 974, "979": 57, "980": 65730, "981": 203, "982": 206, "66518": 206, "983": 625, "997": 996, "998": 997, "1000": 999
@@ -8043,7 +8045,7 @@ function Safari() {
         if (arr.contains("contest")) {
             if (contestCount > 0 && !contestForfeited.contains(player.idnum)) {
                 if (!silent)
-                    safaribot.sendMessage(src, "You can't " + action + " during a contest!", safchan);
+                    safaribot.sendMessage(src, "You can't " + action + " during a Contest!", safchan);
                 return true;
             }
         }
@@ -8064,7 +8066,7 @@ function Safari() {
         if (arr.contains("precontest")) {
             if (contestCooldown <= 181) {
                 if (!silent)
-                    safaribot.sendMessage(src, "You can't " + action + " with less than 3 minutes before the next contest starts!", safchan);
+                    safaribot.sendMessage(src, "You can't " + action + " with less than 3 minutes before the next Contest starts!", safchan);
                 return true;
             }
         }
@@ -10435,7 +10437,9 @@ function Safari() {
             }
             if (teraMon) {
                 amount = 1;
-                currentExtraBST += Math.round(getBST(num) * 1.5);
+                if (currentExtraBST < 600) {
+                    currentExtraBST += 600 - getBST(num);
+                }
                 wildTera = true;
                 if (themeOverride || currentTheme) {
                     var theme = contestThemes[themeOverride || currentTheme];
@@ -10651,7 +10655,10 @@ function Safari() {
             wildAbilityMessageList.push("The wild {0} {1} preventing Steel-type Pokémon from switching due to Magnet Pull!".format(poke(currentDisplay, true), is_are));
         }
         if (canHaveAbility(currentPokemon, abilitynum("Unnerve")) && contestCount > 0 && currentRules) {
-            wildAbilityMessageList.push("The wild {0} {1} negating contest buffs due to Unnerve!".format(poke(currentDisplay, true), is_are));
+            wildAbilityMessageList.push("The wild {0} {1} negating Contest buffs due to Unnerve!".format(poke(currentDisplay, true), is_are));
+        }
+        if (canHaveAbility(currentPokemon, abilitynum("Purifying Salt"))) {
+            wildAbilityMessageList.push("The wild {0} {1} scattering Purifying Salt!".format(poke(currentDisplay, true), is_are));
         }
         var ruinAbilities = [283, 284, 285, 286]; // Vessel of Ruin, Sword of Ruin, Tablets of Ruin, Beads of Ruin
         for (var i = 0; i < ruinAbilities.length; i++) {
@@ -10816,7 +10823,7 @@ function Safari() {
                         abilityMessageList[pid].push("Your {0}'s {1} gives you a much better chance of throwing before others!".format(poke(leader, true), abilityOff(superPrioAbilities[i])));
                     }
                 }
-                var snipeAbilities = [97, 289]; // Sniper, Opportunist
+                var snipeAbilities = [97, 289, 197]; // Sniper, Opportunist, Stakeout
                 if (currentBaiter !== null && currentBaiter !== player.id) {
                     for (var i = 0; i < snipeAbilities.length; i++) {
                         if (canHaveAbility(leader, snipeAbilities[i])) {
@@ -10830,13 +10837,13 @@ function Safari() {
                 if (contestCount > 0 && currentRules) {
                     for (var i = 0; i < ignoreRules.length; i++) {
                         if (canHaveAbility(leader, ignoreRules[i])) {
-                            abilityMessageList[pid].push("Your {0}'s {1} ignores contest buffs and nerfs!".format(poke(leader, true), abilityOff(ignoreRules[i])));
+                            abilityMessageList[pid].push("Your {0}'s {1} ignores Contest buffs and nerfs!".format(poke(leader, true), abilityOff(ignoreRules[i])));
                             break;
                         }
                     }
                     for (i = 0; i < defyRules.length; i++) {
                         if (canHaveAbility(leader, defyRules[i])) {
-                            abilityMessageList[pid].push("Your {0}'s {1} turns contest nerfs into buffs!".format(poke(leader, true), abilityOff(defyRules[i])));
+                            abilityMessageList[pid].push("Your {0}'s {1} turns Contest nerfs into buffs!".format(poke(leader, true), abilityOff(defyRules[i])));
                             break;
                         }
                     }
@@ -10914,7 +10921,7 @@ function Safari() {
     };
     this.startContest = function(commandData) {
         if (currentPokemon && isRare(currentPokemon)) {
-            sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared when a contest started::\n");
+            sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared when a Contest started::\n");
         }
         
         currentPokemon = null;
@@ -11024,7 +11031,7 @@ function Safari() {
         if (votesResult) {
             safaribot.sendAll(votesResult, safchan);
         }
-        safaribot.sendHtmlAll("A new " + (currentTheme ? "<b>" + link("/themerares " + currentTheme, themeName(currentTheme)) + alterMsg + "</b>-themed" : "") + " Safari contest is starting now!", safchan);
+        safaribot.sendHtmlAll("A new " + (currentTheme ? "<b>" + link("/themerares " + currentTheme, themeName(currentTheme)) + alterMsg + "</b>-themed" : "") + " Safari Contest is starting now!", safchan);
         if (currentRules && Object.keys(currentRules).length > 0) {
             safaribot.sendHtmlAll("Rules: " + this.translateRules(currentRules, true), safchan);
         }
@@ -11099,7 +11106,7 @@ function Safari() {
         if (contestBroadcast) {
             sys.sendAll("", 0);
             sys.sendAll(separator, 0);
-            safaribot.sendAll("A new " + (currentTheme ? themeName(currentTheme) + "-themed" : "") + " Safari contest is starting now at #" + defaultChannel + "!", 0);
+            safaribot.sendAll("A new " + (currentTheme ? themeName(currentTheme) + "-themed" : "") + " Safari Contest is starting now at #" + defaultChannel + "!", 0);
             sys.sendAll(separator, 0);
             sys.sendAll("", 0);
         } else {
@@ -12071,9 +12078,9 @@ function Safari() {
             return "None";
         }
         if (player.brilliantAura) {
-            return "-{0}% Costume Cooldown, -{1}% Quest Cooldown, +{2}% Catch Rate, +{3}% Mega Evolution Time, +{4}% Z-Crystal Time for the next {5}".format(safari.getAuraEffect(player, "costumecd", 0) * 100, safari.getAuraEffect(player, "questcd", 0) * 100, Math.round(safari.getAuraEffect(player, "catchrate", 1) * 100 - 100), Math.round(safari.getAuraEffect(player, "extramega", 1) * 100 - 100), Math.round(safari.getAuraEffect(player, "extracrystal", 1) * 100 - 100), plural(auraHours, "hour"));
+            return "-{0}% Costume Cooldown, -{1}% Quest Cooldown, +{2}% Catch Rate, +{3}% Mega Evolution Time, +{4}% Z-Crystal Time".format(safari.getAuraEffect(player, "costumecd", 0) * 100, safari.getAuraEffect(player, "questcd", 0) * 100, Math.round(safari.getAuraEffect(player, "catchrate", 1) * 100 - 100), Math.round(safari.getAuraEffect(player, "extramega", 1) * 100 - 100), Math.round(safari.getAuraEffect(player, "extracrystal", 1) * 100 - 100), plural(auraHours, "hour"));
         }
-        return "-{0}% Costume Cooldown, -{1}% Quest Cooldown, +{2}% Catch Rate for the next {3}".format(safari.getAuraEffect(player, "costumecd", 0) * 100, safari.getAuraEffect(player, "questcd", 0) * 100, Math.floor(safari.getAuraEffect(player, "catchrate", 1) * 100 - 100), plural(auraHours, "hour"));
+        return "-{0}% Costume Cooldown, -{1}% Quest Cooldown, +{2}% Catch Rate".format(safari.getAuraEffect(player, "costumecd", 0) * 100, safari.getAuraEffect(player, "questcd", 0) * 100, Math.floor(safari.getAuraEffect(player, "catchrate", 1) * 100 - 100), plural(auraHours, "hour"));
     };
     this.getTier = function(pokeId) {
         if (ultraPokes.hasOwnProperty(pokeId+"")) {
@@ -12503,7 +12510,7 @@ function Safari() {
             }
         }
 
-        var tierChance = safari.getTierChance(wild);
+        var tierChance = wildTera ? Math.min(catchTierChance[catchTierChance.length-2], safari.getTierChance(wild)) : safari.getTierChance(wild);
         
         var species = pokeInfo.species(leader);
         var dailyBonus = safari.validDailyBoost(player) ? (dailyBoost.bonus * this.hasCostumeSkill(player, "botdboost") ? 1.1 : 1) : 1;
@@ -12612,8 +12619,12 @@ function Safari() {
             }
         }
         if (currentBaiter !== null && currentBaiter !== player.id) {
-            if (canHaveAbility(trueLeader, abilitynum("Sniper"))) {
-                abilityBoost *= 1.3;
+            var snipeAbilities = [97, 289, 197]; // Sniper, Opportunist, Stakeout
+            for (var i = 0; i < snipeAbilities.length; i++) {
+                if (canHaveAbility(trueLeader, snipeAbilities[i])) {
+                    abilityBoost *= 1.3;
+                    break;
+                }
             }
             if (safari.hasCostumeSkill(player, "ninjaSniper")) {
                 abilityBoost *= 1.3;
@@ -12743,7 +12754,7 @@ function Safari() {
         }
 
         if (contestCount > 0 && contestForfeited.contains(player.idnum)) {
-            safaribot.sendMessage(src, "You forfeited this contest, so you can't catch any Pokémon from the contest!", safchan);
+            safaribot.sendMessage(src, "You forfeited this Contest, so you can't catch any Pokémon from the Contest!", safchan);
             return;
         }
 
@@ -12799,7 +12810,7 @@ function Safari() {
             return;
         }
         if (currentRules && currentRules.excludeBalls && currentRules.excludeBalls.contains(ball) && ball !== "spirit") {
-            safaribot.sendMessage(src, "The use of " + ballName + " is forbidden during this contest!", safchan);
+            safaribot.sendMessage(src, "The use of " + ballName + " is forbidden during this Contest!", safchan);
             return;
         }
 
@@ -12931,11 +12942,14 @@ function Safari() {
             var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
             var playerDisplayName = name;
             var playerDisplayMon = ch + stype + scolor + poke(trueLeader, true);
+            var isStealth = false;
             if (safari.hasCostumeSkill(player, "permanentStealthThrow")) {
+                isStealth = true;
                 playerDisplayName = "Some stealthy ninja";
                 playerDisplayMon = "well-trained ninja Pokémon";
             }
             if (ball == "spy") {
+                isStealth = true;
                 playerDisplayName = "Some stealthy person";
                 playerDisplayMon = "well-trained spy Pokémon";
                 player.records.catchSpy += 1;
@@ -12996,7 +13010,35 @@ function Safari() {
             } else if (ball !== "spirit") {
                 player.pokemon.push(currentPokemon);
             }
-
+            if (canHaveAbility(currentPokemon, abilitynum("Purifying Salt")) && player.burningAura && !player.brilliantAura) {
+                if (player.auraExpiry - now() <= ((auraHours - 1) * 60 * 60 * 1000) && player.balls.salt >= 1) {
+                    var saltUsed = Math.min(player.balls.salt, 5);
+                    var auraReduction = 0;
+                    switch (saltUsed) {
+                        case 1:
+                        case 2:
+                            auraReduction = 0.75;
+                            break;
+                        case 3:
+                        case 4:
+                            auraReduction = 0.5;
+                            break;
+                        default:
+                            auraReduction = 0.25;
+                            break;
+                    }
+                    player.brilliantAura = true;
+                    player.balls.salt -= saltUsed;
+                    player.auraExpiry = now() + Math.round((player.auraExpiry - now()) * (1 - auraReduction));
+                    if (isStealth) {
+                        safaribot.sendHtmlMessage(src, "The " + poke(currentDisplay, true) + " purified your " + typeIcon("Fire", "Burning Aura") + " into a " + typeIcon("Fairy", "Brilliant Aura") + " using " + saltUsed + " of your " + es(finishName("salt")) + "!", safchan);
+                    }
+                    else {
+                        safaribot.sendHtmlAll("The " + poke(currentDisplay, true) + " purified " + sys.name(src) + "'s " + typeIcon("Fire", "Burning Aura") + " into a " + typeIcon("Fairy", "Brilliant Aura") + " using " + saltUsed + " of their " + es(finishName("salt")) + "!", safchan);
+                    }
+                    safaribot.sendMessage(src, "However, your remaining aura duration was reduced by {0}%! {1}".format(auraReduction * 100, itemsLeft(player, "salt")), safchan);
+                }
+            }
             var heldChanceBoost = false;
             var heldChanceAbilities = [14, 105, 119, 124, 187, 60, 53]; // Compound Eyes, Super Luck, Frisk, Pickpocket, Magician, Pickup, Sticky Hold
             for (var i = 0; i < heldChanceAbilities.length; i++) {
@@ -13005,7 +13047,6 @@ function Safari() {
                     break;
                 }
             }
-
             if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"") && !wildSpirit) {
                 var wildItemHeldList = globalWildItems[currentPokemon+""];
                 var drop = [], gained = [], discarded = [], lost = [];
@@ -13044,7 +13085,7 @@ function Safari() {
                     sendAll("The {0} took away {1}!".format(pokeName, readable(lost)));
                 }
                 if (discarded.length > 0) {
-                    //if (ball === "spy" || safari.hasCostumeSkill(player, "permanentStealthThrow"))
+                    //if (isStealth)
                     safaribot.sendMessage(src, "Unfortunately, you had to discard {0} as your bag was full!".format(readable(discarded)), safchan);
                     //else
                        // sendAll("Unfortunately, {0} had to discard {1} as their bag was full!".format(name, readable(discarded)));
@@ -13066,13 +13107,13 @@ function Safari() {
                     }
                 }
                 if (drop.length > 0 && (gained.length > 0 || discarded.length > 0)) {
-                    if (ball === "spy" || safari.hasCostumeSkill(player, "permanentStealthThrow"))
+                    if (isStealth)
                         safaribot.sendMessage(src, "The power of your {0} made {1} stealthily appear out of thin air!".format(poke(trueLeader, true), readable(drop)), safchan);
                     else
                         sendAll("The power of {0}'s {1} made {2} appear out of thin air!".format(playerDisplayName, poke(trueLeader, true), readable(drop)));
                 }
                 if (discarded.length > 0) {
-                    //if (ball === "spy")
+                    //if (isStealth)
                     safaribot.sendMessage(src, "Unfortunately, you had to discard {0} as your bag was full!".format(readable(discarded)), safchan);
                     //else
                         //sendAll("Unfortunately, {0} had to discard {1} as their bag was full!".format(ball === "spy" ? "the stealthy person" : name, readable(discarded)));
@@ -13114,7 +13155,7 @@ function Safari() {
                         lost = lost.concat(stuff.lost);
                         discarded = discarded.concat(stuff.discarded);
                         if (drop.length > 0 && (gained.length > 0 || discarded.length > 0)) { // check that there's actually an item gained/discarded so it doesn't display "x was holding -1 Item!" if the held item is negative
-                            sendAll("The {0} was holding {1} from the contest!".format(pokeName, readable(drop)));
+                            sendAll("The {0} was holding {1} from the Contest!".format(pokeName, readable(drop)));
                         }
                         if (lost.length > 0) {
                             sendAll("The {0} took away {1}!".format(pokeName, readable(lost)));
@@ -13336,7 +13377,7 @@ function Safari() {
             }
             cooldown *= penalty;
             if (isRare(currentPokemon) || ball === "master" || ball === "cherish" || wildEvent || wildTera) {
-                sys.appendToFile(mythLog, now() + "|||" + (clonedAmount - cloneDiscarded > 0 ? (clonedAmount - cloneDiscarded + 1) + "x " : "") + (wildEvent ? "Event " : "") + (wildSpirit ? "Spirit Realm " : "") + (wildTera ? "[" + currentTypeOverride + "] Terastallized " : "") + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
+                sys.appendToFile(mythLog, now() + "|||" + (clonedAmount - cloneDiscarded > 0 ? (clonedAmount - cloneDiscarded + 1) + "x " : "") + (wildEvent ? "Event " : "") + (wildSpirit ? "Spirit Realm " : "") + (wildTera ? "[" + currentTypeOverride + "] Terastallized " : "") + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " Contest" : "") + "\n");
             }
             var active = leader;
             var activeNum = parseInt(active, 10);
@@ -13451,7 +13492,7 @@ function Safari() {
             }
             if (safari.isDailyBoost(currentPokemon)) {
                 if (!player.burningAura && !player.brilliantAura) {
-                    if (player.costume === "ninja" || ball === "spy") {
+                    if (isStealth) {
                         sys.sendMessage(src, "", safchan);
                         safaribot.sendHtmlMessage(src, "After catching the Pokémon-of-the-Day, the " + typeIcon("Fire", "Burning Aura") + " was transferred to you!", safchan);
                         if (amt > 1) {
@@ -13471,7 +13512,7 @@ function Safari() {
                     sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||caught the Pokémon-of-the-Day (" + poke(currentPokemon) + ") and received a Burning Aura.\n");
                 }
                 else {
-                    if (player.costume === "ninja" || ball === "spy") {
+                    if (isStealth) {
                         sys.sendMessage(src, "", safchan);
                         safaribot.sendHtmlMessage(src, "The wild " + poke(currentPokemon, true) + "'s Burning Aura dissipated...", safchan);
                         if (amt > 1) {
@@ -13570,10 +13611,13 @@ function Safari() {
             }
             safaribot.sendHtmlMessage(src, failMsg + (player.balls[ball] > 0 ? " [" + link("/" + ccatch + " " + ball, "Try Again") + "]" : "") + " [" + link("/ballmacro", "Choose Another Action") + "]", safchan);
             var playerDisplayName = name;
+            var isStealth = false;
             if (safari.hasCostumeSkill(player, "permanentStealthThrow")) {
+                isStealth = true;
                 playerDisplayName = "an anonymous ninja";
             }
             if (ball == "spy") {
+                isStealth = true;
                 playerDisplayName = "an anonymous person";
             }
 
@@ -13590,7 +13634,7 @@ function Safari() {
                     currentTypeOverride = type1(leader); // Else pick their only type
                 }
 
-                sendAll("The wild " + pokeName + "'s Color Change changed " + (currentPokemonCount > 1 ? "their" : "its") + " type to " + (ball === "spy" ? "something unknown" : currentTypeOverride) + "!");
+                sendAll("The wild " + pokeName + "'s Color Change changed " + (currentPokemonCount > 1 ? "their" : "its") + " type to " + (isStealth ? "something unknown" : currentTypeOverride) + "!");
             }
             if (canHaveAbility(currentPokemon, abilitynum("Moxie")) && currentExtraBST < wildAbilityBoostLimit && !ignoresWildAbilities(player)) {
                 currentExtraBST += wildAbilityBoost;
@@ -13708,7 +13752,7 @@ function Safari() {
             "The wild {0} was divided by zero!"
         ];
         if ((isRare(currentPokemon) || wildTera) && !skipLog) {
-            sys.appendToFile(mythLog, now() + "|||" + (wildSpirit ? "Spirit Realm " : "") + (wildTera ? "[" + currentTypeOverride + "] Terastallized " : "") + poke(currentPokemon) + "::fled" + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + (currentThemeAlter ? " (" + contestThemes[currentTheme].alterName + ")" : "") + (currentThemeEffect ? " [" + cap(currentThemeEffect) + "]": "") + " contest" : "") + "::\n");
+            sys.appendToFile(mythLog, now() + "|||" + (wildSpirit ? "Spirit Realm " : "") + (wildTera ? "[" + currentTypeOverride + "] Terastallized " : "") + poke(currentPokemon) + "::fled" + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + (currentThemeAlter ? " (" + contestThemes[currentTheme].alterName + ")" : "") + (currentThemeEffect ? " [" + cap(currentThemeEffect) + "]": "") + " Contest" : "") + "::\n");
             runmsgs = ["The wild {0} was obliterated by a grumpy old safari coder!"];
         }
         if (canHaveAbility(currentPokemon, abilitynum("Run Away"))) {
@@ -13963,7 +14007,7 @@ function Safari() {
         for (var pid in players) {
             var player = getAvatar(players[pid]);
             if (player && player.options.flashme) {
-                sys.sendHtmlMessage(players[pid], toColor("<timestamp/><b>±Ping:</b> ", "#3daa68") + toFlashing(addFlashTag(sys.name(players[pid])) + ", a contest/event is starting!", sys.name(players[pid])), safchan);
+                sys.sendHtmlMessage(players[pid], toColor("<timestamp/><b>±Ping:</b> ", "#3daa68") + toFlashing(addFlashTag(sys.name(players[pid])) + ", a Contest/event is starting!", sys.name(players[pid])), safchan);
             }
         }
     };
@@ -14002,7 +14046,7 @@ function Safari() {
             return;
         }
         if (contestCount > 0 && contestForfeited.contains(player.idnum)) {
-            safaribot.sendMessage(src, "You forfeited this contest, so you can't scare any Pokémon from the contest!", safchan);
+            safaribot.sendMessage(src, "You forfeited this Contest, so you can't scare any Pokémon from the Contest!", safchan);
             return;
         }
         if (wildEvent) {
@@ -14064,7 +14108,7 @@ function Safari() {
             return;
         }
         if (contestCount > 0 && contestForfeited.contains(player.idnum)) {
-            safaribot.sendMessage(src, "You forfeited this contest, so you can't feed any Pokémon from the contest!", safchan);
+            safaribot.sendMessage(src, "You forfeited this Contest, so you can't feed any Pokémon from the Contest!", safchan);
             return;
         }
         if (wildEvent || wildTera) {
@@ -14166,7 +14210,7 @@ function Safari() {
             return;
         }
         if (contestCount > 0 && contestForfeited.contains(player.idnum)) {
-            safaribot.sendMessage(src, "You forfeited this contest, so you can't takes photos of any Pokémon from the contest!", safchan);
+            safaribot.sendMessage(src, "You forfeited this Contest, so you can't takes photos of any Pokémon from the Contest!", safchan);
             return;
         }
         var currentTime = now();
@@ -15326,7 +15370,7 @@ function Safari() {
     };
     this.showBag = function(player, isAndroid, textOnly, search) {
         //Manual arrays because easier to put in desired order. Max of 13 in each array or you need to change the colspan. Line1 only gets 11 due to money taking up 2 colspans
-        var line1 = [/*money*/ "silver", "box", "shady", "battlepoint", "entry", "gacha", "pokeblock", "itemfinder", "rare", "dust"];
+        var line1 = [/*money*/ "silver", "box", "shady", "battlepoint", "entry", "gacha", "pokeblock", "itemfinder", "rare", "dust", "rock"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "level", "love", "spy", "clone", "premier", "mono"];
         var line3 = ["lightning", "heavy", "photo", "mirror", "uturn", "inver", "spirit", "cherish", "bait", "golden", "deluxe"];
         var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "hdew", "ldew"];
@@ -15335,7 +15379,7 @@ function Safari() {
         var line7 = ["celebrityTicket", "scale", "mushroom", "brush", "egg", "bright", "form"];
         var line8 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens"];
         var line9 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard"];
-        var line10 = ["stick", "rock", "fossil", "coupon", "materia", "fragment", "sunshard", "moonshard", "terashard", "terajewel", "philosopher", "philosopherpebble", "ash"];
+        var line10 = ["stick", "salt", "fossil", "coupon", "materia", "fragment", "sunshard", "moonshard", "terashard", "terajewel", "philosopher", "philosopherpebble", "ash"];
 
         if (["wallet", "utility", "utilities", "balls", "ball", "apricorn", "apricorns", "usable", "usables", "consumable", "consumables", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities", "berries", "berry"].indexOf(search) === -1) {
             search = "*";
@@ -16413,7 +16457,7 @@ function Safari() {
             sys.sendMessage(src, "±{0}: Threw {1} ({2} accuracy, {3}). Embarassed {4}.".format(finishName("rock"), plural(rec.rocksThrown, "rock"), percentage(onOthers, rec.rocksThrown), plural(onOthers, "hit"), plural(rec.rocksBounced, "time")), safchan);
             var onMe = rec.rocksHitBy + rec.rocksWalletHit + rec.rocksDodgedWindow + rec.rocksChargesLost;
             sys.sendMessage(src, "±{0}: Hit by {1} ({2} evasion, {3}). Caught {4}. Scared away {5} wild Pokémon.".format(finishName("rock"), plural(onMe, "rock"), percentage(rec.rocksDodged, rec.rocksDodged + onMe), plural(rec.rocksDodged, "dodge"), plural(rec.rocksCaught, "throw"), addComma(rec.wildsScared)), safchan);
-            sys.sendMessage(src, "±Game: {0} Consecutive Logins{1}. Won {2} contests and {4}. Found {3} items with the Itemfinder.".format(addComma(rec.consecutiveLogins), (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : ""), addComma(rec.contestsWon), addComma(rec.itemsFound), plural(rec.medalsWon, "medal")), safchan);
+            sys.sendMessage(src, "±Game: {0} Consecutive Logins{1}. Won {2} Contests and {4}. Found {3} items with the Itemfinder.".format(addComma(rec.consecutiveLogins), (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : ""), addComma(rec.contestsWon), addComma(rec.itemsFound), plural(rec.medalsWon, "medal")), safchan);
             sys.sendMessage(src, "±Game: Opened {0} and used {1}. Hatched {2} and {3} with {4} being a Rare Pokémon! Gave {5} and received {6}.".format(plural(rec.packsOpened, "pack"), plural(rec.gemsUsed, "gem"), plural(rec.eggsHatched, "egg"), plural(rec.brightEggsHatched, "bright"), addComma(rec.rareHatched), plural(rec.burnGiven, "burn"), plural(rec.burnReceived, "burn")), safchan);
             sys.sendMessage(src, "±Game: Used {0} and won {1}. Ate {2} and {3}, and used {4} and {5}. Sent {6} and retouched {7}. Deployed {8} with {9} being successful.".format(plural(rec.shadyUsed, "shady"), plural(rec.mongerAuctionsWon, "Monger Auction"), plural(rec.cookiesEaten, "cookie"), plural(rec.mushroomsEaten, "mushroom"), plural(rec.scalesUsed, "scale"), plural(rec.crystalsUsed, "crystal"), plural(rec.mailsSent, "mail"), plural(rec.photosRetouched, "Photograph"), plural(rec.teraOrbsDeployed, "teraorb"), addComma(rec.teraOrbsSucceeded)), safchan);
             sys.sendMessage(src, "", safchan);
@@ -17819,7 +17863,7 @@ function Safari() {
             return;
         }
         if (contestCount > 0) { // special case for people who opt out of the contest
-            safaribot.sendMessage(src, "You can't throw " + baitName + " during a contest!", safchan);
+            safaribot.sendMessage(src, "You can't throw " + baitName + " during a Contest!", safchan);
             return;
         }
         if (isPreparing && player.options.baitScramble) {
@@ -17831,7 +17875,7 @@ function Safari() {
         }
 
         if (contestCooldown <= 13) {
-            safaribot.sendMessage(src, "A contest is about to start, the Pokémon will run away if you throw " + an(baitName) + " now!", safchan);
+            safaribot.sendMessage(src, "A Contest is about to start, the Pokémon will run away if you throw " + an(baitName) + " now!", safchan);
             return;
         }
         if (player.pokemon.length >= getPerkBonus(player, "box")) {
@@ -18067,7 +18111,7 @@ function Safari() {
                 safaribot.sendMessage(src, "You glared at the Wild Pokémon until they ran away!", safchan);
                 safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentDisplay, true) + " away!", safchan);
                 if (isRare(currentPokemon)) {
-                    sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::was " + command + "d by " + sys.name(src) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "::\n");
+                    sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::was " + command + "d by " + sys.name(src) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " Contest" : "") + "::\n");
                 }
                 resetVars(true);
             }
@@ -20398,7 +20442,7 @@ function Safari() {
                 return;
             }
             if (contestCooldown <= 181) {
-                safaribot.sendMessage(src, "You can't start an event with less than 3 minutes before the next contest starts!", safchan);
+                safaribot.sendMessage(src, "You can't start an event with less than 3 minutes before the next Contest starts!", safchan);
                 return;
             }
             if (["factionwar", "invertedwar", "volleyball"].contains(evType) && info.extra1 !== null && info.extra2 !== null && info.extra1.toLowerCase() === info.extra2.toLowerCase()) {
@@ -20526,7 +20570,7 @@ function Safari() {
             var colors = Object.keys(pokeColors);
             if (!info.target || !colors.contains(info.target.toLowerCase())) {
                 safaribot.sendMessage(src, "To change a Pokémon's color, use /use scale:Color. Colors can be " + readable(colors.map(cap), "or") + ".", safchan);
-                safaribot.sendMessage(src, "Important: This won't turn the Pokémon into shiny or change its image. It will only count as a different color for contest buffs/nerfs.", safchan);
+                safaribot.sendMessage(src, "Important: This won't turn the Pokémon into shiny or change its image. It will only count as a different color for Contest buffs/nerfs.", safchan);
                 return;
             }
             var c = info.target.toLowerCase();
@@ -20907,9 +20951,9 @@ function Safari() {
                 break;
             case "flashme":
                 changeOption(dataInput, "flashme", [
-                    "You will now be flashed when a contest or event starts!",
-                    "You will no longer be flashed when a contest or event starts!",
-                    ["not being flashed when a contest or event starts", "being flashed when a contest or event starts"],
+                    "You will now be flashed when a Contest or event starts!",
+                    "You will no longer be flashed when a Contest or event starts!",
+                    ["not being flashed when a Contest or event starts", "being flashed when a Contest or event starts"],
                     data
                 ]);
                 break;
@@ -21007,9 +21051,9 @@ function Safari() {
                 break;
             case "showcontestcaptures": case "contestcaptures": case "viewcontestcaptures":
                 changeOption(dataInput, "showContestCaptures", [
-                    "You will now see your contest capture count and BST tally during contests!",
-                    "You will no longer see your contest capture count and BST tally during contests!",
-                    ["not seeing your contest capture count and BST tally during contests", "seeing your contest capture count and BST tally during contests"],
+                    "You will now see your Contest capture count and BST tally during Contests!",
+                    "You will no longer see your Contest capture count and BST tally during Contests!",
+                    ["not seeing your Contest capture count and BST tally during Contests", "seeing your Contest capture count and BST tally during Contests"],
                     data
                 ]);
                 break;
@@ -21580,7 +21624,7 @@ function Safari() {
                 if (expTypes[type] === "catch") {
                     for (var theme in contestThemes) {
                         if (contestThemes[theme].flavor === costume) {
-                            infoString += " (double EXP during {0}-themed contests)".format(contestThemes[theme].name);
+                            infoString += " (double EXP during {0}-themed Contests)".format(contestThemes[theme].name);
                         }
                     }
                 }
@@ -35596,7 +35640,7 @@ function Safari() {
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest journal", "Journal") + " " + (quest.journal.cooldown > n ? "[Available in " + timeLeftString(quest.journal.cooldown) + "]" : "[Available]") + (stopQuests.journal ? " <b>[Disabled]</b>" : ""), safchan);
             
-            safaribot.sendHtmlMessage(src, "-" + link("/quest monger", "Monger") + " " + (mAuctionsData.length > 0 ? "[Next Auction " + (mAuctionsData[0].deadline < n ? "after contest" : "in about " + timeLeftString(mAuctionsData[0].deadline)) + "]" : "[Standby]") + (stopQuests.monger ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest monger", "Monger") + " " + (mAuctionsData.length > 0 ? "[Next Auction " + (mAuctionsData[0].deadline < n ? "after Contest" : "in about " + timeLeftString(mAuctionsData[0].deadline)) + "]" : "[Standby]") + (stopQuests.monger ? " <b>[Disabled]</b>" : ""), safchan);
 
             safaribot.sendHtmlMessage(src, "-" + link("/quest baking", "Baking") + " " + (quest.baking.cooldown > n ? "[Available in " + timeLeftString(quest.baking.cooldown) + "]" : "[Available]") + (stopQuests.baking ? " <b>[Disabled]</b>" : ""), safchan);
             
@@ -36562,7 +36606,7 @@ function Safari() {
         var trainerSprite = '<img src="' + base64trainers.tower + '">';
         if (data.length === 0) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: Welcome to the Battle Tower, a place where you can face successive battles until you lose! Type " + link("/quest tower:help") + " for more information!", safchan);
-            safaribot.sendHtmlMessage(src, "Tower Clerk: To enter the Tower, you must pay a cost based on your strongest Pokémon's BST (currently $" + cost + ") and have a party of 6 Pokémon (currently " + player.party.length + "), then type " + link("/quest tower:start") + "! Be careful though, you may miss a contest during this challenge!", safchan);
+            safaribot.sendHtmlMessage(src, "Tower Clerk: To enter the Tower, you must pay a cost based on your strongest Pokémon's BST (currently $" + cost + ") and have a party of 6 Pokémon (currently " + player.party.length + "), then type " + link("/quest tower:start") + "! Be careful though, you may miss a Contest during this challenge!", safchan);
             safaribot.sendHtmlMessage(src, "Tower Clerk: In the Tower, you may earn Battle Points (BP) as well as other items as rewards! You may spend your BP in our shop at " + link("/quest tower:shop") + ".", safchan);
             if (player.quests.tower.cooldown >= now()) {
                 safaribot.sendMessage(src, "Tower Clerk: Our trainers are still restoring their Pokémon from the last challenge, so please wait " + timeLeftString(player.quests.tower.cooldown) + " to try again!", safchan);
@@ -36575,7 +36619,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: In this challenge, you must battle successive trainers in a row with no time to change your party between each round, until you are defeated!", safchan);
             safaribot.sendMessage(src, "Tower Clerk: You receive prizes such as Apricorns, Candy Dusts, Silver Coins and others according to your progress! Try to win lots of rounds for better rewards. Additionally, for every 7 floors that you clear, you will receive some BP.", safchan);
             safaribot.sendMessage(src, "Tower Clerk: When you reach certain floors, you may be challenged by one of our Tower bosses! Beating them will give you great items and large amounts of BP!", safchan);
-            safaribot.sendMessage(src, "Tower Clerk: Be careful though, once you start the challenge, you can't stop until you lose, so you may miss contests or important spawns!", safchan);
+            safaribot.sendMessage(src, "Tower Clerk: Be careful though, once you start the challenge, you can't stop until you lose, so you may miss Contests or important spawns!", safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, "Tower Clerk: If you are ready to challenge the Battle Tower, type " + link("/quest tower:start") + ". To view our BP shop, type " + link("/quest tower:shop") + ".", safchan);
             sys.sendMessage(src, "", safchan);
@@ -37244,7 +37288,7 @@ function Safari() {
                 return;
             }
             else if (contestCount > 0 && !contestForfeited.contains(player.idnum)) {
-                safaribot.sendMessage(src, "You can't trade away your lead Pokémon during a contest!", safchan);
+                safaribot.sendMessage(src, "You can't trade away your lead Pokémon during a Contest!", safchan);
                 return;
             }
         }
@@ -42241,7 +42285,7 @@ function Safari() {
                 var e, obj, n = now();
                 for (e = 0; e < mAuctionsData.length; e++) {
                     obj = mAuctionsData[e];
-                    safaribot.sendHtmlMessage(src, link("/quest monger:" + options[e].toUpperCase() + ":", "[" + options[e].toUpperCase() + "]", true) + " " + obj.rewardName + " --- " + (obj.deadline < n ? "Deal ends after contest" : "Deal ends in about " + timeLeftString(obj.deadline)) + (id in obj.offers ? " (Your bid: " + plural(obj.offers[id].value, "shady") + ")" : "") , safchan);
+                    safaribot.sendHtmlMessage(src, link("/quest monger:" + options[e].toUpperCase() + ":", "[" + options[e].toUpperCase() + "]", true) + " " + obj.rewardName + " --- " + (obj.deadline < n ? "Deal ends after Contest" : "Deal ends in about " + timeLeftString(obj.deadline)) + (id in obj.offers ? " (Your bid: " + plural(obj.offers[id].value, "shady") + ")" : "") , safchan);
                 }
                 safaribot.sendMessage(src, "You currently have " + plural(player.balls.shady, "shady") + "!", safchan);
                 if (safari.hasCostumeSkill(player, "blackMarketAccess") && mAuctionsMarket && mAuctionsMarket.length > 0) {
@@ -57027,17 +57071,17 @@ function Safari() {
         }
 
         if (contestCount === 0) {
-            safaribot.sendMessage(src, "There is no ongoing contest!", safchan);
+            safaribot.sendMessage(src, "There is no ongoing Contest!", safchan);
             return;
         }
         if (contestForfeited.contains(player.idnum)) {
-            safaribot.sendMessage(src, "You already withdrew from this contest!", safchan);
+            safaribot.sendMessage(src, "You already withdrew from this Contest!", safchan);
             return;
         }
         if (!commandData || commandData !== "confirm") {
             sys.sendMessage(src, "", safchan);
-            safaribot.sendMessage(src, "Using this command will allow you to withdraw from the current contest. By withdrawing, you will no longer be able to throw balls or take photos of Pokémon in this contest, but any other actions that were otherwise restricted by the contest can be performed.", safchan);
-            safaribot.sendHtmlMessage(src, "<b>You cannot reverse this decision and rejoin the contest</b>. If you are sure you want to withdraw, type " + link("/contestforfeit confirm", false, true) + ".", safchan);
+            safaribot.sendMessage(src, "Using this command will allow you to withdraw from the current Contest. By withdrawing, you will no longer be able to throw balls or take photos of Pokémon in this Contest, but any other actions that were otherwise restricted by the Contest can be performed.", safchan);
+            safaribot.sendHtmlMessage(src, "<b>You cannot reverse this decision and rejoin the Contest</b>. If you are sure you want to withdraw, type " + link("/contestforfeit confirm", false, true) + ".", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -57049,7 +57093,7 @@ function Safari() {
 
         player.altTimeline.lead = 0;
         sys.sendMessage(src, "", safchan);
-        safaribot.sendAll(sys.name(src) + " withdrew from the current contest!", safchan);
+        safaribot.sendAll(sys.name(src) + " withdrew from the current Contest!", safchan);
         sys.sendMessage(src, "", safchan);
     };
     this.pyrBonusMons = function() {
@@ -57506,7 +57550,7 @@ function Safari() {
             return true;
         }
         if ((contestCount > 0 && !contestForfeited.contains(player.idnum))) {
-            safaribot.sendMessage(user, "You can't pass save data during a contest!", safchan);
+            safaribot.sendMessage(user, "You can't pass save data during a Contest!", safchan);
             return true;
         }
         if (preparationThrows.hasOwnProperty(n1)) {
@@ -58516,11 +58560,11 @@ function Safari() {
         var x, help = [
             "",
             separator,
-            "±Goal: Use your Poké Balls to catch Wild Pokémon that appear during contest times.",
+            "±Goal: Use your Poké Balls to catch Wild Pokémon that appear during Contest times.",
             //"±Goal: You can trade those Pokémon with other players or simply brag about your collection.",
             "±Goal: To start playing, type /start to choose your starter Pokémon and receive 30 Safari Balls.",
             separator,
-            //"±Contest: A contest starts every " + contestCooldownLength/60 + " minutes. During that time, wild Pokémon may suddenly appear.",
+            //"±Contest: A Contest starts every " + contestCooldownLength/60 + " minutes. During that time, wild Pokémon may suddenly appear.",
             "±Contest: When a wild Pokémon appears, players can use /catch to throw a ball until someone gets it.",
             "±Contest: Different balls can be used to get a better chance, but they also may have higher cooldown between throws or other effects.",
             separator,
@@ -58685,11 +58729,11 @@ function Safari() {
             "*** Informational Commands ***",
             "/help: For a how-to-play guide.",
             "/itemhelp [item or category]: Returns information on a particular item, costume, or category. You can display the help for all items using \"/itemhelp all\" or from the following categories: \"balls\", \"items\", \"perks\", \"costumes\".",
-            "/info: View global information like time until next contest, contest's theme, current Gachapon jackpot prize.",
+            "/info: View global information like time until next Contest, Contest's theme, current Gachapon jackpot prize.",
             "/eventhelp: For a explanation about events like Faction War and Pokémon Race.",
-            "/contestrules: For information about contest rules.",
-            "/lastcontests: For information about the recent contests played.",
-            "/themes: View available contest themes.",
+            "/contestrules: For information about Contest rules.",
+            "/lastcontests: For information about the recent Contests played.",
+            "/themes: View available Contest themes.",
             "/quest: To view available quests.",
             "/mission: To view your daily missions.",
             "/records: To view your records. Use \"/records earnings\" to show a break down of earnings by source.",
@@ -58754,7 +58798,7 @@ function Safari() {
             "/themerares: Show rare Pokémon that appear in a specified theme.",
             "/abilityref [ability]: Shows Safari-specific effects for the specified Ability. If no Ability is specified, all Abilities that have effects will be listed.",
             "/options: View and set miscellaneous settings and options for Safari",
-            "/contestforfeit: Allows you to withdraw from any ongoing contest.",
+            "/contestforfeit: Allows you to withdraw from any ongoing Contest.",
             "/rockscare: Allows you to scare a wild Pokémon away. You can only scare Pokémon that haven't been interacted with for " + plural(rockScareThreshold/1000, "second") + ".",
             "/showdeluxe: View your " + finishName("deluxe") + " pools.",
             "/finddeluxe [Pokémon]: Search your " + finishName("deluxe") + " pools for a specific Pokémon.",
@@ -58789,14 +58833,15 @@ function Safari() {
             "/offmsg [players]։[message]: Sets a message that will be sent to these players next time they join the channel.",
             "/watchbypass [player]: Bypasses a player's visibility settings to watch their battle. The player WILL be informed that you bypassed their settings and are watching their battle.",
             "/viewbypass [player]: Bypasses a player's visibility settings to view their party. The player WILL be informed that you bypassed their settings and are viewing their party.",
+            "/istats [item]: Check item stats for a specific Safari item. Use /istatsr to filter out players who haven't logged in within the past 30 days.",
 
             "Log Files: Use /command [amount]։[lookup]։[limit] to return a list of logged data. Defaults to 10. Lookup will only return logs with the specified value in the past amount of logs (can use && or || for multiples terms). Limit will restrict the number of results displayed even if more than that is found (defaults to 100).",
             "Available logs: ***tradelog (trades), raretrades (trades involving legendaries, shinies or rare forms), shoplog (shop transactions), auctionlog (auctions), lostlog (actions that led to a Pokémon being lost), mythlog (rare spawns and Masterball usage), altlog (save transfers), eventlog (events), giftlog (gifts or values edited), crosslog (cross-promotion rewards), showids (saves created with their idnum), questlog (quests finished), misclog (other stuff)"
         ];
         var ownerHelp = [
             "*** Safari Owner Commands ***",
-            "/contest[soft]: Force starts a Safari contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
-            "/precontest: Enter the pre-contest phase. Use /skipcontest to cancel the pre-contest phase and skip the contest.",
+            "/contest[soft]: Force starts a Safari Contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
+            "/precontest: Enter the pre-contest phase. Use /skipcontest to cancel the pre-contest phase and skip the Contest.",
             "/wild[event] [pokemon (optional)]։[amount]։[disguise]: Spawns a random or designated wild Pokémon with no restrictions. Use /wildevent for a spawn that cannot be caught with Master Balls. Amount must be between 1 and 4, else defaults to 1. Disguise is optional and makes the spawned Pokémon appear as something it is not.",
             // "/horde: Spawns a group of random wild Pokémon with no restrictions. Use a valid dex number to spawn a specific Pokémon.",
             "/checkrate [item]: Displays the rate of obtaining that item from Gachapon, Itemfinder, and Prize Pack.",
@@ -60284,7 +60329,7 @@ function Safari() {
                     "*These rules replace normal Type Effectiveness.",
                     "",
                     "Allowed/Forbidden Balls: Balls not allowed cannot be thrown.",
-                    "Reward: Different items given to the contest winner.",
+                    "Reward: Different items given to the Contest winner.",
                     ""
                 ];
 
@@ -61299,6 +61344,40 @@ function Safari() {
                 safaribot.sendMessage(src, readable(players) + " will receive the following message in their inbox: " + data.message, safchan);
                 return true;
             }
+            if (["itemstats", "istats", "itemstatsrecent", "itemstatsr", "istatsr", "istatsrecent"].contains(command)) {
+                var recent = false;
+                if (["itemstatsrecent", "itemstatsr", "istatsr", "istatsrecent"].contains(command)) {
+                    recent = true;
+                }
+                var item = itemAlias(commandData);
+                var itemTotal = 0, usersChecked = 0, userTallies = [], itemAverage = 0;
+                for (var e in rawPlayers.hash) {
+                    if (rawPlayers.hash.hasOwnProperty(e)) {
+                        var player = getAvatarOff(e);
+                        if (recent && getDay(now()) - player.lastLogin > 30) {
+                            continue;
+                        }
+
+                        usersChecked += 1;
+                        if (!player.balls.hasOwnProperty(item)) {
+                            continue;
+                        }
+                        itemTotal += player.balls[item];
+                        userTallies.push([player.casedName, player.balls[item]]);
+                    }
+                }
+                itemAverage = itemTotal / usersChecked;
+                userTallies.sort(function(a, b) {
+                    return b[1] - a[1];
+                });
+                sys.sendMessage(src, "", safchan);
+                sys.sendMessage(src, (recent ? "Recent " : "") + "Item Stats for " + es(finishName(item)) + ":", safchan);
+                sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of " + es(finishName(item)) + ":</b> ", "black") + addComma(itemTotal) + " (" + addComma(usersChecked) + " users checked)", safchan);
+                sys.sendHtmlMessage(src, toColor("<timestamp/><b>Average Amount of " + es(finishName(item)) + ":</b> ", "black") + addComma(itemAverage), safchan);
+                sys.sendHtmlMessage(src, toColor("<timestamp/><b>Top 10 Players with Most Amount of " + finishName(item) + ":</b> ", "black") + userTallies.slice(0, 10).map(function(e) { return e[0] + " (" + addComma(e[1]) + ")" }).join(", "), safchan);
+                sys.sendMessage(src, "", safchan);
+                return true;
+            }
             if (command === "analyze" || command === "analyzer" || command === "analyzerare") {
                 var info = commandData.split(":");
                 var target = sys.id(info[0]);
@@ -62036,7 +62115,7 @@ function Safari() {
             }
             if (command === "precontest") {
                 if (contestCount > 0) {
-                    safaribot.sendMessage(src, "You can't use this command during a contest!", safchan);
+                    safaribot.sendMessage(src, "You can't use this command during a Contest!", safchan);
                 } else {
                     contestCooldown = 181;
                     safaribot.sendMessage(src, "Entering the pre-contest preparation phase!", safchan);
@@ -62061,7 +62140,7 @@ function Safari() {
                 if (contestCount > 0 || contestCooldown <= 180) {
                     if (contestCount > 0) {
                         if (currentPokemon && isRare(currentPokemon)) {
-                            sys.appendToFile(mythLog, now() + "|||" + (wildSpirit ? "Spirit Realm " : "") + poke(currentPokemon) + "::disappeared with the " + themeName(currentTheme) + " contest" + (wildEvent ? " (Event)" : "") + (Object.keys(wildBallThrows).length === 0 ? " (No Throws)" : "") + "::\n");
+                            sys.appendToFile(mythLog, now() + "|||" + (wildSpirit ? "Spirit Realm " : "") + poke(currentPokemon) + "::disappeared with the " + themeName(currentTheme) + " Contest" + (wildEvent ? " (Event)" : "") + (Object.keys(wildBallThrows).length === 0 ? " (No Throws)" : "") + "::\n");
                         }
                         resetVars();
                         currentRules = null;
@@ -62088,7 +62167,7 @@ function Safari() {
                     contestComboPlayers = [];
                     checkUpdate();
                 } else {
-                    safaribot.sendMessage(src, "You can't skip a contest if there's none running or about to start!", safchan);
+                    safaribot.sendMessage(src, "You can't skip a Contest if there's none running or about to start!", safchan);
                 }
                 return true;
             }
@@ -62624,7 +62703,7 @@ function Safari() {
                         safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentDisplay) + " away!", safchan);
                     }
                     if (isRare(currentPokemon)) {
-                        sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::was " + command + "d by " + sys.name(src) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "::\n");
+                        sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::was " + command + "d by " + sys.name(src) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " Contest" : "") + "::\n");
                     }
                     resetVars(true);
                 }
@@ -62802,7 +62881,7 @@ function Safari() {
             if (command === "update") {
                 if (commandData !== "force") {
                     if (contestCount > 0 || contestCooldown < 181) {
-                        safaribot.sendMessage(src, "You shouldn't update during or right before a contest!", safchan);
+                        safaribot.sendMessage(src, "You shouldn't update during or right before a Contest!", safchan);
                         return true;
                     }
                     if (currentPokemon) {
@@ -63772,6 +63851,7 @@ function Safari() {
                             data = JSON.parse(resp);
                             permObj.add("wilditemsurl", url);
                             globalWildItems = data;
+                            permObj.add("globalWildItems", JSON.stringify(globalWildItems));
                             safaribot.sendMessage(src, "Wild Items successfully loaded!", safchan);
                             safari.sanitizeAll();
                         } catch (error) {
@@ -65002,7 +65082,7 @@ function Safari() {
             chosenThemes = null;
 
             sys.sendAll(separator, safchan);
-            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all the Poké Balls you need!", safchan);
+            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari Contest will start in 3 minutes! Prepare your active Pokémon and all the Poké Balls you need!", safchan);
             for (n = 0; n < rulesDesc.length; n++) {
                 safaribot.sendHtmlAll(" --- " + rulesDesc[n], safchan);
             }
@@ -65013,7 +65093,7 @@ function Safari() {
 
             sys.sendAll("", 0);
             sys.sendAll(separator, 0);
-            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes at #" + defaultChannel + "! Prepare your active Pokémon and all the Poké Balls you need!", 0);
+            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari Contest will start in 3 minutes at #" + defaultChannel + "! Prepare your active Pokémon and all the Poké Balls you need!", 0);
             sys.sendAll(separator, 0);
             sys.sendAll("", 0);
             safari.flashPlayers();
@@ -65060,11 +65140,11 @@ function Safari() {
             if (wildEvent && contestCount === 1 && contestExtension <= contestExtensionLimit) { // if 1 second left and event active, start counting contestExtension up until the extension limit
                 contestExtension++;
                 if (contestExtension === 1) {
-                    safaribot.sendHtmlAll("<b>The contest has been extended due to the event! (Max extension time: {0} minutes)</b>".format(contestExtensionLimit / 60), safchan);
+                    safaribot.sendHtmlAll("<b>The Contest has been extended due to the event! (Max extension time: {0} minutes)</b>".format(contestExtensionLimit / 60), safchan);
                 }
                 
                 if (contestExtensionLimit - contestExtension === 30) {
-                    safaribot.sendHtmlAll("<b>The contest extension ends in 30 seconds!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>The Contest extension ends in 30 seconds!</b>", safchan);
                 }
             }
             else {
@@ -65153,7 +65233,7 @@ function Safari() {
 
                     var reward = currentRules && currentRules.rewards ? currentRules.rewards : { gacha: 10 };
                     sys.sendAll(separator, safchan);
-                    safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
+                    safaribot.sendAll("The Safari Contest is now over! Please come back during the next Contest!", safchan);
                     var saveContestVal = 8; //test this at 8 for now, if it needs to be higher or lower it can be adjusted in the future
                     contestInfo.saved = contestSaved = true;
                     if (Object.keys(contestCatchers).length === 1) { // if there's only 1 contestant
@@ -65177,7 +65257,7 @@ function Safari() {
                         if (list.length < 1) {
                             list.push("a prize");
                         }
-                        safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest" + (!contestSaved ? "!" : " and " + (winners.length > 1 ? "have" : "has") + " won " + readable(list, "and")  + "!"), safchan);
+                        safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the Contest" + (!contestSaved ? "!" : " and " + (winners.length > 1 ? "have" : "has") + " won " + readable(list, "and")  + "!"), safchan);
                         contestInfo.winners = readable(fullWinners, "and");
                         contestInfo.caught = maxCaught;
                         contestInfo.bst = maxBST === 0 ? catchersBST[winners[0]] : maxBST;
@@ -65202,11 +65282,11 @@ function Safari() {
                                     if (e in contestCatchers) {
                                         safari.missionProgress(player, "contest", "caught", 1, { caught: contestCatchers[e].length });
                                         if (player.options.showContestCaptures) {
-                                            safaribot.sendMessage(playerId, "You caught the following Pokémon in this contest: {0}".format(readable(contestCatchers[e].map(poke, true))), safchan);
+                                            safaribot.sendMessage(playerId, "You caught the following Pokémon in this Contest: {0}".format(readable(contestCatchers[e].map(poke, true))), safchan);
                                         }
                                         safaribot.sendMessage(playerId, "You finished in " + getOrdinal(winners.contains(e) ? 1 : allContestants.indexOf(e) + 1) + " place " + playerScore(e), safchan);
                                     }
-                                    safaribot.sendMessage(playerId, "You received " + plural(amt, "bait") + " for participating in the contest!", safchan);
+                                    safaribot.sendMessage(playerId, "You received " + plural(amt, "bait") + " for participating in the Contest!", safchan);
                                 }
                                 rewardCapCheck(player, "bait", amt);
                                 safari.missionProgress(player, "contest", "thrown", 1, { thrown: contestantsCount[e] });
@@ -65265,15 +65345,15 @@ function Safari() {
                                 safari.detectiveClue(player.idnum, "contest", playerId);
                                 if (contestSaved) {
                                     if (playerId) {
-                                        safaribot.sendMessage(playerId, "You received " + readable(rewardName, "and") + " for winning the contest!", safchan);
+                                        safaribot.sendMessage(playerId, "You received " + readable(rewardName, "and") + " for winning the Contest!", safchan);
                                     }
-                                    safari.notification(player, "You received " + readable(rewardName, "and") + " for winning the contest!", "Contest", isPlaying(winner));
+                                    safari.notification(player, "You received " + readable(rewardName, "and") + " for winning the Contest!", "Contest", isPlaying(winner));
                                 }
                             }
                         }
                     }
                     if (currentPokemon && (isRare(currentPokemon) || wildEvent || wildTera)) {
-                        sys.appendToFile(mythLog, now() + "|||" + (wildTera ? "[" + currentTypeOverride + "] Terastallized " : "") + poke(currentPokemon) + "::disappeared with the " + themeName(currentTheme) + " contest" + (wildEvent ? " (Event)" : "") + (Object.keys(wildBallThrows).length === 0 ? " (No Throws)" : "") + "::\n");
+                        sys.appendToFile(mythLog, now() + "|||" + (wildTera ? "[" + currentTypeOverride + "] Terastallized " : "") + poke(currentPokemon) + "::disappeared with the " + themeName(currentTheme) + " Contest" + (wildEvent ? " (Event)" : "") + (Object.keys(wildBallThrows).length === 0 ? " (No Throws)" : "") + "::\n");
                     }
 
                     contestInfo.themeId = currentTheme ? currentTheme : "none";
@@ -65359,7 +65439,7 @@ function Safari() {
                             spiritSpawn = false;
                             safari.createWild(null, null, amt, null, null, null, null, false, false, false, true);
                         }
-                        if (chance(0.01 * contestCombo) && canSpawnTera) {
+                        if (chance(0.01 * Math.ceil(3 * (contestCombo - 5) * (contestCombo / 100))) && canSpawnTera) {
                             canSpawnTera = false;
                             safari.createWild(null, null, 1, null, null, null, null, false, false, false, false, true);
                         }
