@@ -10437,8 +10437,8 @@ function Safari() {
             }
             if (teraMon) {
                 amount = 1;
-                if (currentExtraBST < 600) {
-                    currentExtraBST += 600 - getBST(num);
+                if (currentExtraBST < 550) {
+                    currentExtraBST += 550 - getBST(num);
                 }
                 wildTera = true;
                 if (themeOverride || currentTheme) {
@@ -12194,7 +12194,7 @@ function Safari() {
         var isLegend = isLegendary(wild);
         var legendaryChance = isLegend ? 0.50 : 1;
         var spiritMonBonus = wildSpirit ? 0.50 : 1;
-        var teraChance = wildTera && !wildEvent ? 0.75 : 1;
+        var teraChance = wildTera && !wildEvent ? (contestComboPlayers.contains(player.idnum) ? 1.2 : 0.75) : 1;
         var flowerGirlBonus = 1;
         var cherishBonus = Math.min(countDuplicates(pokeInfo.species(getInputPokemon(poke(leader)).num)), 10);
         var scaleColor = player.scaleDeadline >= now() ? player.scaleColor : null;
@@ -15370,9 +15370,9 @@ function Safari() {
     };
     this.showBag = function(player, isAndroid, textOnly, search) {
         //Manual arrays because easier to put in desired order. Max of 13 in each array or you need to change the colspan. Line1 only gets 11 due to money taking up 2 colspans
-        var line1 = [/*money*/ "silver", "box", "shady", "battlepoint", "entry", "gacha", "pokeblock", "itemfinder", "rare", "dust", "rock"];
+        var line1 = [/*money*/ "silver", "box", "shady", "battlepoint", "entry", "gacha", "pokeblock", "itemfinder", "rare", "dust"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "level", "love", "spy", "clone", "premier", "mono"];
-        var line3 = ["lightning", "heavy", "photo", "mirror", "uturn", "inver", "spirit", "cherish", "bait", "golden", "deluxe"];
+        var line3 = ["lightning", "heavy", "photo", "mirror", "uturn", "inver", "spirit", "cherish", "bait", "golden", "deluxe", "rock"];
         var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "hdew", "ldew"];
         var line5 = ["oran", "pecha", "razz", "bluk", "leppa", "tamato", "pinap", "nanab", "watmel", "petaya", "miracle", "platinum"];
         var line6 = ["pack", "water", "soda", "cookie", "cherry", "gem", "mega", "crystal", "teraorb", "spray", "mail", "burn"]
@@ -61357,6 +61357,9 @@ function Safari() {
                         if (recent && getDay(now()) - player.lastLogin > 30) {
                             continue;
                         }
+                        if (player.excludeFromEconomy) {
+                            continue;
+                        }
 
                         usersChecked += 1;
                         if (!player.balls.hasOwnProperty(item)) {
@@ -64983,9 +64986,9 @@ function Safari() {
                                         if (contestActivity.hasOwnProperty(p.id) && contestActivity[p.id].length >= 3 && isRare(currentDisplay)) {
                                             throwChances[i] += (throwChances[i] * 2);
                                         }
-                                        if (contestComboPlayers.contains(p.idnum) && wildTera) {
+                                        /*if (contestComboPlayers.contains(p.idnum) && wildTera) {
                                             throwChances[i] += (throwChances[i] * 3);
-                                        }
+                                        }*/
                                     }
                                 }
                                 else {
