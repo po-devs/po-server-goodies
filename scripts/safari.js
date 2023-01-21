@@ -932,7 +932,8 @@ function Safari() {
             alchemistWaiting: false,
             journalWaiting: false,
             detectiveWaiting: false,
-            arboristWaiting: false
+            arboristWaiting: false,
+            costumeWaiting: false
         },
         inbox: [],
         unreadInbox: [],
@@ -5692,6 +5693,9 @@ function Safari() {
         },
         "296": {
             "name": "Mycelium Might"
+        },
+        "297": {
+            "name": "Earth Eater"
         }
     }
     var ultraMoves = {
@@ -12194,7 +12198,7 @@ function Safari() {
         var isLegend = isLegendary(wild);
         var legendaryChance = isLegend ? 0.50 : 1;
         var spiritMonBonus = wildSpirit ? 0.50 : 1;
-        var teraChance = wildTera && !wildEvent ? (contestComboPlayers.contains(player.idnum) ? 1.2 : 0.75) : 1;
+        var teraChance = wildTera && !wildEvent ? (contestComboPlayers.contains(player.idnum) ? 1.4 : 0.75) : 1;
         var flowerGirlBonus = 1;
         var cherishBonus = Math.min(countDuplicates(pokeInfo.species(getInputPokemon(poke(leader)).num)), 10);
         var scaleColor = player.scaleDeadline >= now() ? player.scaleColor : null;
@@ -13031,12 +13035,13 @@ function Safari() {
                     player.balls.salt -= saltUsed;
                     player.auraExpiry = now() + Math.round((player.auraExpiry - now()) * (1 - auraReduction));
                     if (isStealth) {
-                        safaribot.sendHtmlMessage(src, "The " + poke(currentDisplay, true) + " purified your " + typeIcon("Fire", "Burning Aura") + " into a " + typeIcon("Fairy", "Brilliant Aura") + " using " + saltUsed + " of your " + es(finishName("salt")) + "!", safchan);
+                        safaribot.sendHtmlMessage(src, "The " + poke(currentPokemon, true) + " purified your " + typeIcon("Fire", "Burning Aura") + " into a " + typeIcon("Fairy", "Brilliant Aura") + " using " + saltUsed + " of your " + es(finishName("salt")) + "!", safchan);
                     }
                     else {
-                        safaribot.sendHtmlAll("The " + poke(currentDisplay, true) + " purified " + sys.name(src) + "'s " + typeIcon("Fire", "Burning Aura") + " into a " + typeIcon("Fairy", "Brilliant Aura") + " using " + saltUsed + " of their " + es(finishName("salt")) + "!", safchan);
+                        safaribot.sendHtmlAll("The " + poke(currentPokemon, true) + " purified " + sys.name(src) + "'s " + typeIcon("Fire", "Burning Aura") + " into a " + typeIcon("Fairy", "Brilliant Aura") + " using " + saltUsed + " of their " + es(finishName("salt")) + "!", safchan);
                     }
                     safaribot.sendMessage(src, "However, your remaining aura duration was reduced by {0}%! {1}".format(auraReduction * 100, itemsLeft(player, "salt")), safchan);
+                    sys.appendToFile(miscLog, now() + "|||Wild " + poke(currentPokemon) + "|||purified " + sys.name(src) + " with Purifying Salt, granting a Brilliant Aura (Aura reduction: " + (auraReduction * 100) + "%).\n");
                 }
             }
             var heldChanceBoost = false;
@@ -15483,6 +15488,7 @@ function Safari() {
             safaribot.sendMessage(src, "You removed your costume! You can put on a new costume in " + timeLeftString(player.cooldowns.costume) + ".", safchan);
         } else {
             player.cooldowns.costume = currentTime + Math.floor(hours(3) * (1 - safari.getAuraEffect(player, "costumecd", 0)));
+            player.notificationData.costumeWaiting = true;
             safaribot.sendMessage(src, "You changed into your " + costumeName + " costume! [Effect: " + costumeData[cos].effect + "]", safchan);
             if (player.tutorial.inTutorial && player.tutorial.step === 4 && costumeName === costumeData.preschooler.fullName) {
                 advanceTutorial(src, 5);
@@ -16810,6 +16816,14 @@ function Safari() {
                     data.journalWaiting = false;
                     out = "The " + link("/quest journal", "Editor-in-chief") + " is ready for your next photo submission!";
                     safari.notification(p, out, "Journal", true);
+                    hitAny = true;
+                }
+            }
+            if (data.costumeWaiting) {
+                if (p.cooldowns.costume < currentTime) {
+                    data.costumeWaiting = false;
+                    out = "You can now " + link("/costume", "change costumes") + " again!";
+                    safari.notification(p, out, "Costume", true);
                     hitAny = true;
                 }
             }
@@ -19358,7 +19372,7 @@ function Safari() {
                 case "bait2": {
                     amount = 5;
                     reward = "bait";
-                    safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards a plenitful berry bush! You collected " + plural(amount, reward) + " from it and put them in your bag.", safchan);
+                    safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards a plentiful berry bush! You collected " + plural(amount, reward) + " from it and put them in your bag.", safchan);
                 }
                 break;
                 case "mushroom": {
@@ -20807,7 +20821,7 @@ function Safari() {
         
         safaribot.sendMessage(src, target.toCorrectCase() + " will receive the following message in their inbox: [" + sys.name(src) + "] " + msg, safchan);
         var tId = sys.id(target);
-        safari.notification(targetPlayer, "You received a mail from " +  toColor(sys.name(src), "red") + ". To read it, type " + link("/inbox") + ".", "Mail");
+        safari.notification(targetPlayer, "You received a mail from " +  toColor(sys.name(src), "red") + ". To read it, type " + link("/inbox unread") + ".", "Mail");
         /*if (tId && sys.isInChannel(tId, safchan)) {
             safaribot.sendHtmlMessage(tId, "You received a mail from " +  toColor(sys.name(src), "red") + ". To read it, type " + link("/inbox") + ".", safchan);
         }*/
@@ -39420,7 +39434,7 @@ function Safari() {
                 });
             }
             if (optimalApricorns.length === 0) { // if optimalApricorns is somehow still empty i.e. player has max of every single apricorn (except the one offered)
-                optimalApricorns = remainingApricorns.slice(0) // just pick one randomly out of the remaining list tbh, it'd be kind of pointless but it's a way to just outright delete apricorns if a player desires
+                optimalApricorns = remainingApricorns.slice(0); // just pick one randomly out of the remaining list tbh, it'd be kind of pointless but it's a way to just outright delete apricorns if a player desires
             }
 
             newApricorn = optimalApricorns.random();
@@ -65442,7 +65456,7 @@ function Safari() {
                             spiritSpawn = false;
                             safari.createWild(null, null, amt, null, null, null, null, false, false, false, true);
                         }
-                        if (chance(0.01 * Math.ceil(3 * (contestCombo - 5) * (contestCombo / 100))) && canSpawnTera) {
+                        else if (chance(0.01 * Math.ceil(3 * (contestCombo - 5) * (contestCombo / 100))) && canSpawnTera) {
                             canSpawnTera = false;
                             safari.createWild(null, null, 1, null, null, null, null, false, false, false, false, true);
                         }
