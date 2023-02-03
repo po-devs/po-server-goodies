@@ -9118,10 +9118,10 @@ function Safari() {
     }
     function getStats(pokeNum) {
         if (ultraPokes.hasOwnProperty(pokeNum+"")) {
-            return ultraPokes[pokeNum+""].stats;
+            return ultraPokes[pokeNum+""].stats.slice(0); // slice so the returned array can be modified without affecting ultraPokes
         }
         if (updatedStats.hasOwnProperty(pokeNum + "")) {
-            return updatedStats[pokeNum + ""];
+            return updatedStats[pokeNum + ""].slice(0);
         }
         return sys.pokeBaseStats(pokeNum);
     }
