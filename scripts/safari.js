@@ -22187,7 +22187,7 @@ function Safari() {
 
         this.logLostCommand(sys.name(src), "sell " + data, theft);
         if (isRare(id)) {
-            sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::was sold to the NPC by " + sys.name(src) + "::\n");
+            sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::was sold to the NPC by " + sys.name(src) + " " + theft + "::\n");
         }
         if (automated) {
             return price;
