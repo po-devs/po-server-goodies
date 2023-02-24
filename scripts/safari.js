@@ -57151,6 +57151,7 @@ function Safari() {
             permObj.add("lastLeaderboards", JSON.stringify(lastLeaderboards));
             
             permObj.save();
+            rawPlayers.save(); // clean dupe records out of memoryhash
             this.updateLeaderboards();
 
             for (var a in recentPlayers) {
