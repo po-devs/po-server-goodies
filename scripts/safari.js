@@ -5471,24 +5471,69 @@ function Safari() {
             "weight": 240,
             "moves": [movenum("Electric Terrain"), movenum("Thunder Shock"), movenum("Dragon Breath"), movenum("Shock Wave"), movenum("Charge"), movenum("Parabolic Charge"), movenum("Discharge"), movenum("Agility"), movenum("Dragon Pulse"), movenum("Electro Drift"), movenum("Metal Sound"), movenum("Mirror Coat"), movenum("Outrage"), movenum("Thunder"), movenum("Overheat"), movenum("Hyper Beam"), movenum("Take Down"), movenum("Scary Face"), movenum("Protect"), movenum("Acrobatics"), movenum("Confuse Ray"), movenum("Charge Beam"), movenum("Facade"), movenum("Snarl"), movenum("Dragon Tail"), movenum("Endure"), movenum("Volt Switch"), movenum("Zen Headbutt"), movenum("U-turn"), movenum("Body Slam"), movenum("Sleep Talk"), movenum("Electro Ball"), movenum("Reflect"), movenum("Light Screen"), movenum("Dragon Claw"), movenum("Dazzling Gleam"), movenum("Thunder Wave"), movenum("Rest"), movenum("Taunt"), movenum("Swords Dance"), movenum("Flash Cannon"), movenum("Eerie Impulse"), movenum("Power Gem"), movenum("Substitute"), movenum("Crunch"), movenum("Heavy Slam"), movenum("Thunderbolt"), movenum("Calm Mind"), movenum("Helping Hand"), movenum("Wild Charge"), movenum("Giga Impact"), movenum("Solar Beam"), movenum("Draco Meteor"), movenum("Tera Blast")]
         },
-        "1009": { // placeholder
-            "types": ["Normal", "???"],
-            "name": "Paradox Suicune",
-            "stats": [1, 1, 1, 1, 1, 1],
+        "1009": {
+            "types": ["Water", "Dragon"],
+            "name": "Walking Wake",
+            "stats": [99, 83, 91, 125, 83, 109],
             "abilities": ["Protosynthesis"],
+            "tier": "SM OU",
+            "height": 3.5,
+            "weight": 280
+        },
+        "1010": {
+            "types": ["Grass", "Psychic"],
+            "name": "Iron Leaves",
+            "stats": [90, 130, 88, 70, 108, 104],
+            "abilities": ["Quark Drive"],
+            "tier": "SM OU",
+            "height": 1.5,
+            "weight": 125
+        },
+        /*"": {
+            "types": ["", ""],
+            "name": "Ogerpon",
+            "stats": [],
+            "abilities": [],
             "tier": "SM OU",
             "height": 0,
             "weight": 0
         },
-        "1010": { // placeholder
-            "types": ["Normal", "???"],
-            "name": "Paradox Virizion",
-            "stats": [1, 1, 1, 1, 1, 1],
-            "abilities": ["Quark Drive"],
+        "": {
+            "types": ["", ""],
+            "name": "Terapagos",
+            "stats": [],
+            "abilities": [],
             "tier": "SM OU",
             "height": 0,
             "weight": 0
-        }
+        },
+        "": {
+            "types": ["", ""],
+            "name": "Okidogi",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "": {
+            "types": ["", ""],
+            "name": "Munkidori",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        },
+        "": {
+            "types": ["", ""],
+            "name": "Fezandipiti",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0
+        }*/
         /* template
         "": {
             "types": ["", ""],
@@ -5498,7 +5543,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 0,
             "weight": 0
-        }
+        },
         */
     };
     var ultraAbilities = {
