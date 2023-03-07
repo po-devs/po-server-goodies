@@ -41792,7 +41792,7 @@ function Safari() {
     };
     this.photoMatchesRequest = function(photo, request) {
         var id = parseInt(photo.id, 10);
-        if (request.species && request.species !== pokeInfo.species(id)) {
+        if (request.species && pokeInfo.species(request.species) !== pokeInfo.species(id)) {
             return false;
         }
         if (request.amt && photo.amt < request.amt) {
