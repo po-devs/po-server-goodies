@@ -4431,7 +4431,7 @@ function Safari() {
             "moves": [movenum("Scratch"), movenum("Growl"), movenum("Thunder Shock"), movenum("Quick Attack"), movenum("Charge"), movenum("Nuzzle"), movenum("Dig"), movenum("Bite"), movenum("Spark"), movenum("Thunder Wave"), movenum("Entrainment"), movenum("Slam"), movenum("Discharge"), movenum("Agility"), movenum("Wild Charge"), movenum("Take Down"), movenum("Charm"), movenum("Protect"), movenum("Thunder Fang"), movenum("Thief"), movenum("Charge Beam"), movenum("Facade"), movenum("Metal Claw"), movenum("Swift"), movenum("Fling"), movenum("Endure"), movenum("Volt Switch"), movenum("Sunny Day"), movenum("Rain Dance"), movenum("Sleep Talk"), movenum("Electro Ball"), movenum("Rest"), movenum("Eerie Impulse"), movenum("Substitute"), movenum("Crunch"), movenum("Encore"), movenum("Thunderbolt"), movenum("Play Rough"), movenum("Helping Hand"), movenum("Baton Pass"), movenum("Electric Terrain"), movenum("Thunder"), movenum("Tera Blast"), movenum("Fake Out"), movenum("Mach Punch"), movenum("Sweet Kiss"), movenum("Wish")]
         },
         "922": {
-            "types": ["Electric", "???"],
+            "types": ["Electric", "Fighting"],
             "name": "Pawmo",
             "stats": [60, 75, 40, 50, 40, 85],
             "abilities": ["Volt Absorb", "Iron Fist"],
@@ -11459,9 +11459,6 @@ function Safari() {
                     1
                 ][currentDay - 1];
                 out.rewards[festivalItem] = festivalAmt;
-            }
-            if (theme === "zero" && getDay(now()) >= 19421 && getDay(now()) <= 19435) {
-                out.rewards.entry = 2;
             }
         }
         out.berries = [].concat(["oran", "pecha", "bluk", "razz", "leppa"].random());
@@ -23206,9 +23203,6 @@ function Safari() {
             }
 
             out["@" +item] = amount;
-        }
-        if (getDay(now()) >= 19422 && getDay(now()) <= 19435) {
-            out["@entry"] = 1;
         }
         return out;
     };
