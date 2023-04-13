@@ -20693,6 +20693,9 @@ function Safari() {
             if (possibleResults.contains("none")) {
                 possibleResults.splice(possibleResults.indexOf("none"), 1);
             }
+            if (player.mushroomDeadline > 0 && possibleResults.contains(player.mushroomTheme)) {
+                possibleResults.splice(possibleResults.indexOf(player.mushroomTheme), 1);
+            }
             var toConsume = 1;
             if (canHaveAbility(player.party[0], abilitynum("Mycelium Might")) && player.balls.mushroom >= 2) {
                 toConsume = 2;
