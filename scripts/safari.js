@@ -7550,10 +7550,11 @@ function Safari() {
             }
             return ret;
         },
-        icon: function(p, shinyBG) {
+        icon: function(p, shinyBG, noLink) {
             var p2 = p;
             var pcheck = p2%65536;
             var uic;
+            var ret;
             //Pumpkaboo/Gourgeist icon hack
             if (pcheck === 710 || pcheck === 711) {
                 p2 = pcheck;
@@ -7565,11 +7566,14 @@ function Safari() {
                 if (!(uic)) {
                     uic = 'icon:' + p2%65536;
                 }
-                return '<img src="' + uic + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
+                ret = '<img src="' + uic + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
             }
-           return '<img src="icon:' + p2 + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
+            else {
+                ret = '<img src="icon:' + p2 + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
+            }
+            return noLink ? ret : "<a href='po:send//bst " + p2 + "'>" + ret + "</a>";
         },
-        sprite: function(pk) {
+        sprite: function(pk, noLink) {
             var shiny = pokeInfo.shiny(pk);
             if (ultraPokes.hasOwnProperty(pk+"")) {
                 var species = pokeInfo.species(pk), form = pokeInfo.forme(pk);
@@ -7609,7 +7613,7 @@ function Safari() {
             ret += "&gen="+g+(withback ? "&back=true" : "") +"'>";
             /* End of temporary hack */
             
-            return ret;
+            return noLink ? ret : "<a href='po:send//bst " + pk + "'>" + ret + "</a>";
         },
         valid: function(pk) {
             if (ultraPokes.hasOwnProperty(pk+"")) {
@@ -10602,7 +10606,7 @@ function Safari() {
         } else {
             appmsg = wildPokemonMessage.format(displayId, displayBST, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
         }
-        var sprite = "<a href='po:send//bst " + currentDisplay + "'>" + (cageMode ? cage : pokeInfo.sprite(currentDisplay)) + "</a>";
+        var sprite = cageMode ? cage : pokeInfo.sprite(currentDisplay);
         if (wildTera) {
             sprite = "<img src='" + teraCrowns[currentTypeOverride] + "'><br>" + sprite;
         }
@@ -60120,7 +60124,7 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
                 var type_1 = type1(info.num);
                 var type_2 = type2(info.num);
-                var ic = pokeInfo.icon(info.num);
+                var ic = pokeInfo.icon(info.num, false, true);
                 var stats = getStatsNamed(info.num), statsmsg = [], efmsg = [], efmsg2 = [];
                 for (var i in stats) {
                     statsmsg.push(i + ": " + stats[i]);
