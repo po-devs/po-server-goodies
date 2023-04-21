@@ -7575,26 +7575,28 @@ function Safari() {
         },
         sprite: function(pk, noLink) {
             var shiny = pokeInfo.shiny(pk);
+            var ret;
             if (ultraPokes.hasOwnProperty(pk+"")) {
                 var species = pokeInfo.species(pk), form = pokeInfo.forme(pk);
                 var key = species + (form > 0 ? "-" + form : "");
                 if (shiny) {
-                    return "<img src='" + resources.shiny.get(key) + "'>";
+                    ret = "<img src='" + resources.shiny.get(key) + "'>";
                 } else {
-                    return "<img src='" + resources.sprites.get(key) + "'>";
+                    ret = "<img src='" + resources.sprites.get(key) + "'>";
                 }
+                return noLink ? ret : "<a href='po:send//bst " + pk + "'>" + ret + "</a>";
             }
             
-            var ret = [];
+            ret = [];
             ret += "<img src='pokemon:num=";
             ret += pk;
             if (shiny) {
                 // PO has Magearna's shiny sprites mixed up. The shiny sprite for Magearna is actually the shiny sprite for Magearna-Pokeball
                 // Magearna's real shiny is identical to normal Magearna (blame GameFreak)
                 if (pk === "801") {
-                    return "<img src='pokemon:num=801'>";
+                    return noLink ? "<img src='pokemon:num=801'>" : "<a href='po:send//bst 801'><img src='pokemon:num=801'></a>";
                 } else if (pk === "66337") {
-                    return "<img src='pokemon:num=801&shiny=true'>";
+                    return noLink ? "<img src='pokemon:num=801&shiny=true'>" : "<a href='po:send//bst 66337'><img src='pokemon:num=801&shiny=true'></a>";
                 } else {
                     ret += "&shiny=true";
                 }
