@@ -15215,7 +15215,10 @@ function Safari() {
                 partyShown[0] = player.altTimeline.lead;
             }
         }
-        var party = partyShown.map(pokeInfo.sprite);
+        var party = [];
+        for (var e in partyShown) {
+            party.push(pokeInfo.sprite(partyShown[e]));
+        }
         if (textOnly) {
             var ret = [""];
             var partyText = [];
