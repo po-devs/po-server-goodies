@@ -7571,7 +7571,7 @@ function Safari() {
             else {
                 ret = '<img src="icon:' + p2 + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
             }
-            return noLink ? ret : "<a href='po:send//bst " + p2 + "'>" + ret + "</a>";
+            return noLink ? ret : "<a href='po:setmsg//bst " + p2 + "'>" + ret + "</a>";
         },
         sprite: function(pk, noLink) {
             var shiny = pokeInfo.shiny(pk);
