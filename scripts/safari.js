@@ -5492,6 +5492,24 @@ function Safari() {
             "moves": [movenum("Quick Attack"), movenum("Leer"), movenum("Helping Hand"), movenum("Work Up"), movenum("Electric Terrain"), movenum("Quash"), movenum("Magical Leaf"), movenum("Retaliate"), movenum("Quick Guard"), movenum("Night Slash"), movenum("Swords Dance"), movenum("Sacred Sword"), movenum("Leaf Blade"), movenum("Psyblade"), movenum("Close Combat"), movenum("Imprison"), movenum("Megahorn"), movenum("Ally Switch"), movenum("Solar Blade"), movenum("Take Down"), movenum("Agility"), movenum("Scary Face"), movenum("Protect"), movenum("Trailblaze"), movenum("Facade"), movenum("Aerial Ace"), movenum("Swift"), movenum("Endure"), movenum("Smart Strike"), movenum("False Swipe"), movenum("Brick Break"), movenum("Air Slash"), movenum("Sleep Talk"), movenum("Grass Knot"), movenum("Rest"), movenum("Taunt"), movenum("Substitute"), movenum("Iron Defense"), movenum("X-Scissor"), movenum("Giga Drain"), movenum("Energy Ball"), movenum("Calm Mind"), movenum("Reversal"), movenum("Grassy Terrain"), movenum("Psychic Terrain"), movenum("Wild Charge"), movenum("Giga Impact"), movenum("Focus Blast"), movenum("Leaf Storm"), movenum("Hyper Beam"), movenum("Solar Beam"), movenum("Tera Blast")]
         },
         /*"": {
+            "types": ["Grass", "Dragon"],
+            "name": "Dipplin",
+            "stats": [],
+            "abilities": ["Supersweet Syrup", "Gluttony"],
+            "tier": "SM OU",
+            "height": 0.4,
+            "weight": 4.4
+        },
+        "": {
+            "types": ["Steel", "Dragon"],
+            "name": "Archaludon",
+            "stats": [],
+            "abilities": ["Stamina", "Sturdy"],
+            "tier": "SM OU",
+            "height": 2.0,
+            "weight": 60
+        },
+        "": {
             "types": ["", ""],
             "name": "Ogerpon",
             "stats": [],
@@ -12262,7 +12280,7 @@ function Safari() {
         var isLegend = isLegendary(wild);
         var legendaryChance = isLegend ? 0.50 : 1;
         var spiritMonBonus = wildSpirit ? 0.50 : 1;
-        var teraChance = wildTera && !wildEvent ? (contestComboPlayers.contains(player.idnum) ? 1.4 : 0.75) : 1;
+        var teraChance = wildTera && !wildEvent ? (contestComboPlayers.contains(player.idnum) ? 1.5 : 0.8) : 1;
         var flowerGirlBonus = 1;
         var cherishBonus = Math.min(countDuplicates(pokeInfo.species(getInputPokemon(poke(leader)).num)), 10);
         var scaleColor = player.scaleDeadline >= now() ? player.scaleColor : null;
@@ -17972,7 +17990,7 @@ function Safari() {
         }
         if (!ballUsed) {
             safaribot.sendMessage(src, "If you throw " + an(baitName) + " now, you will have no way to catch a Pokémon because you are out of balls!", safchan);
-           return;
+            return;
         }
         if (!(golden || deluxe) && lastBaiters.indexOf(sys.name(src).toLowerCase()) !== -1) {
             safaribot.sendHtmlMessage(src, "You just threw some " + baitName + " not too long ago. Let others have a turn! " + (baitCooldown > 0 ? "[Global cooldown: " + plural(baitCooldown, "second") + "] " : " ") + "[" + link("/" + command, "Try Again") + "]", safchan);
@@ -18003,18 +18021,18 @@ function Safari() {
             }*/
             if (golden) {
                 if (goldenBaitCooldown > 0) {
-                    safaribot.sendHtmlMessage(src, "Please wait " + plural(goldenBaitCooldown, "second") + " before trying to attract another Pokémon with " + an(baitName) + "! [" + link("/" + command, "Try Again") + "]", safchan);
+                    safaribot.sendHtmlMessage(src, "Please wait " + plural(goldenBaitCooldown, "second") + " before trying to attract another Pokémon with " + an(baitName) + "! [" + link("/" + command + " " + ballUsed, "Try Again") + "]", safchan);
                     return;
                 }
             } else if (deluxe) {
                 if (deluxeBaitCooldown > 0) {
-                    safaribot.sendHtmlMessage(src, "Please wait " + plural(deluxeBaitCooldown, "second") + " before trying to attract another Pokémon with " + an(baitName) + "! [" + link("/" + command, "Try Again") + "]", safchan);
+                    safaribot.sendHtmlMessage(src, "Please wait " + plural(deluxeBaitCooldown, "second") + " before trying to attract another Pokémon with " + an(baitName) + "! [" + link("/" + command + " " + ballUsed, "Try Again") + "]", safchan);
                     return;
                 }
             } else {
                 if (baitCooldown > 0) {
                     if (player.freebaits <= 0) {
-                        safaribot.sendHtmlMessage(src, "Please wait " + plural(baitCooldown, "second") + " before trying to attract another Pokémon with " + an(baitName) + "! [" + link("/" + command, "Try Again") + "]", safchan);
+                        safaribot.sendHtmlMessage(src, "Please wait " + plural(baitCooldown, "second") + " before trying to attract another Pokémon with " + an(baitName) + "! [" + link("/" + command + " " + ballUsed, "Try Again") + "]", safchan);
                         return;
                     }
                     else {
@@ -18023,7 +18041,7 @@ function Safari() {
                 }
             }
             if (player.cooldowns.bait > now()) {
-                safaribot.sendHtmlMessage(src, "You can't use " + baitName + " now! Please wait " + timeLeftString(player.cooldowns.bait) + " before throwing again! [" + link("/" + command, "Try Again") + "]", safchan);
+                safaribot.sendHtmlMessage(src, "You can't use " + baitName + " now! Please wait " + timeLeftString(player.cooldowns.bait) + " before throwing again! [" + link("/" + command + " " + ballUsed, "Try Again") + "]", safchan);
                 return;
             }
         }
