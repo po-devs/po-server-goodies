@@ -5510,6 +5510,33 @@ function Safari() {
             "weight": 60
         },
         "": {
+            "types": ["Electric", "Dragon"],
+            "name": "Raging Bolt",
+            "stats": [],
+            "abilities": ["Protosynthesis"],
+            "tier": "SM OU",
+            "height": 5.2,
+            "weight": 480
+        },
+        "": {
+            "types": ["Steel", "Psychic"],
+            "name": "Iron Crown",
+            "stats": [],
+            "abilities": ["Quark Drive"],
+            "tier": "SM OU",
+            "height": 1.6,
+            "weight": 156
+        },
+        "": {
+            "types": ["Grass", "Ghost"],
+            "name": "Poltchageist",
+            "stats": [],
+            "abilities": ["Hospitality"],
+            "tier": "SM OU",
+            "height": 0.1,
+            "weight": 1.1
+        },
+        "": {
             "types": ["", ""],
             "name": "Ogerpon",
             "stats": [],
