@@ -5569,7 +5569,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 2.7,
             "weight": 333.0,
-            "moves": [movenum("Tackle"), movenum("Baby-Doll Eyes"), movenum("Bulldoze"), movenum("Slash"), movenum("Play Rough"), movenum("High Horsepower"), movenum("Double-Edge"), movenum("Headlong Rush"), movenum("Rock Smash"), movenum("Aerial Ace"), movenum("Swift"), movenum("Focus Energy"), movenum("Bulk Up"), movenum("Rest"), movenum("Fire Punch"), movenum("Thunder Punch"), movenum("Ice Punch"), movenum("Rock Slide"), movenum("Shadow Claw"), movenum("Earth Power"), movenum("Giga Impact"), movenum("Stone Edge"), movenum("Hyper Beam")]
+            "moves": [movenum("Headlong Rush"), movenum("Scratch"), movenum("Leer"), movenum("Lick"), movenum("Moonlight"), movenum("Fury Swipes"), movenum("Payback"), movenum("Harden"), movenum("Slash"), movenum("Play Nice"), movenum("Scary Face"), movenum("Rest"), movenum("Snore"), movenum("Earth Power"), movenum("Moonblast"), movenum("Hammer Arm"), movenum("Blood Moon"), movenum("Take Down"), movenum("Protect"), movenum("Low Kick"), movenum("Thief"), movenum("Trailblaze"), movenum("Facade"), movenum("Bulldoze"), movenum("Snarl"), movenum("Metal Claw"), movenum("Swift"), movenum("Mud Shot"), movenum("Rock Tomb"), movenum("Fling"), movenum("Avalanche"), movenum("Endure"), movenum("Sunny Day"), movenum("Rain Dance"), movenum("Dig"), movenum("Brick Break"), movenum("Shadow Claw"), movenum("Body Slam"), movenum("Fire Punch"), movenum("Thunder Punch"), movenum("Ice Punch"), movenum("Sleep Talk"), movenum("Seed Bomb"), movenum("Stomping Tantrum"), movenum("Rock Slide"), movenum("Taunt"), movenum("Swords Dance"), movenum("Body Press"), movenum("Gunk Shot"), movenum("Substitute"), movenum("Crunch"), movenum("Hyper Voice"), movenum("Heavy Slam"), movenum("Calm Mind"), movenum("Helping Hand"), movenum("Earthquake"), movenum("Stone Edge"), movenum("Giga Impact"), movenum("Focus Blast"), movenum("Hyper Beam"), movenum("Tera Blast"), movenum("Roar"), movenum("Smack Down"), movenum("Vacuum Wave"), movenum("High Horsepower"), movenum("Uproar"), movenum("Focus Punch")]
         },
         "1011": {
             "types": ["Grass", "Dragon"],
@@ -5579,7 +5579,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 0.4,
             "weight": 4.4,
-            "moves": []
+            "moves": [movenum("Recycle"), movenum("Withdraw"), movenum("Astonish"), movenum("Sweet Scent"), movenum("Infestation"), movenum("Double Hit"), movenum("Dragon Tail"), movenum("Growth"), movenum("Dragon Breath"), movenum("Protect"), movenum("Bullet Seed"), movenum("Syrup Bomb"), movenum("Dragon Pulse"), movenum("Recover"), movenum("Energy Ball"), movenum("Substitute"), movenum("Take Down"), movenum("Pounce"), movenum("Facade"), movenum("Endure"), movenum("Sunny Day"), movenum("Body Slam"), movenum("Sleep Talk"), movenum("Seed Bomb"), movenum("Reflect"), movenum("Grass Knot"), movenum("Rest"), movenum("Giga Drain"), movenum("Pollen Puff"), movenum("Grassy Terrain"), movenum("Giga Impact"), movenum("Outrage"), movenum("Leaf Storm"), movenum("Hyper Beam"), movenum("Solar Beam"), movenum("Draco Meteor"), movenum("Tera Blast"), movenum("Gyro Ball"), movenum("Bug Bite"), movenum("Grassy Glide"), movenum("Defense Curl"), movenum("Rollout"), movenum("Sucker Punch")]
         },
         "1012": {
             "types": ["Grass", "Ghost"],
@@ -5589,7 +5589,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 0.1,
             "weight": 1.1,
-            "moves": []
+            "moves": [movenum("Astonish"), movenum("Withdraw"), movenum("Stun Spore"), movenum("Absorb"), movenum("Life Dew"), movenum("Foul Play"), movenum("Mega Drain"), movenum("Hex"), movenum("Rage Powder"), movenum("Giga Drain"), movenum("Shadow Ball"), movenum("Memento"), movenum("Leaf Storm"), movenum("Protect"), movenum("Magical Leaf"), movenum("Night Shade"), movenum("Endure"), movenum("Sleep Talk"), movenum("Reflect"), movenum("Rest"), movenum("Imprison"), movenum("Substitute"), movenum("Iron Defense"), movenum("Energy Ball"), movenum("Calm Mind"), movenum("Grassy Terrain"), movenum("Nasty Plot"), movenum("Phantom Force"), movenum("Trick Room"), movenum("Solar Beam"), movenum("Tera Blast"), movenum("Spite"), movenum("Scald"), movenum("Uproar"), movenum("Poltergeist")]
         },
         "66548": {
             "types": ["Grass", "Ghost"],
@@ -5599,7 +5599,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 0.1,
             "weight": 1.1,
-            "moves": []
+            "moves": [movenum("Astonish"), movenum("Withdraw"), movenum("Stun Spore"), movenum("Absorb"), movenum("Life Dew"), movenum("Foul Play"), movenum("Mega Drain"), movenum("Hex"), movenum("Rage Powder"), movenum("Giga Drain"), movenum("Shadow Ball"), movenum("Memento"), movenum("Leaf Storm"), movenum("Protect"), movenum("Magical Leaf"), movenum("Night Shade"), movenum("Endure"), movenum("Sleep Talk"), movenum("Reflect"), movenum("Rest"), movenum("Imprison"), movenum("Substitute"), movenum("Iron Defense"), movenum("Energy Ball"), movenum("Calm Mind"), movenum("Grassy Terrain"), movenum("Nasty Plot"), movenum("Phantom Force"), movenum("Trick Room"), movenum("Solar Beam"), movenum("Tera Blast"), movenum("Spite"), movenum("Scald"), movenum("Uproar"), movenum("Poltergeist")]
         },
         "1013": {
             "types": ["Grass", "Ghost"],
@@ -5609,7 +5609,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 0.2,
             "weight": 2.2,
-            "moves": []
+            "moves": [movenum("Astonish"), movenum("Withdraw"), movenum("Stun Spore"), movenum("Matcha Gotcha"), movenum("Absorb"), movenum("Life Dew"), movenum("Foul Play"), movenum("Mega Drain"), movenum("Hex"), movenum("Rage Powder"), movenum("Strength Sap"), movenum("Shadow Ball"), movenum("Memento"), movenum("Leaf Storm"), movenum("Protect"), movenum("Magical Leaf"), movenum("Night Shade"), movenum("Endure"), movenum("Sleep Talk"), movenum("Reflect"), movenum("Rest"), movenum("Imprison"), movenum("Substitute"), movenum("Iron Defense"), movenum("Giga Drain"), movenum("Energy Ball"), movenum("Calm Mind"), movenum("Grassy Terrain"), movenum("Nasty Plot"), movenum("Phantom Force"), movenum("Trick Room"), movenum("Hyper Beam"), movenum("Solar Beam"), movenum("Tera Blast"), movenum("Spite"), movenum("Scald"), movenum("Uproar"), movenum("Poltergeist")]
         },
         "66549": {
             "types": ["Grass", "Ghost"],
@@ -5619,7 +5619,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 0.2,
             "weight": 2.2,
-            "moves": []
+            "moves": [movenum("Astonish"), movenum("Withdraw"), movenum("Stun Spore"), movenum("Matcha Gotcha"), movenum("Absorb"), movenum("Life Dew"), movenum("Foul Play"), movenum("Mega Drain"), movenum("Hex"), movenum("Rage Powder"), movenum("Strength Sap"), movenum("Shadow Ball"), movenum("Memento"), movenum("Leaf Storm"), movenum("Protect"), movenum("Magical Leaf"), movenum("Night Shade"), movenum("Endure"), movenum("Sleep Talk"), movenum("Reflect"), movenum("Rest"), movenum("Imprison"), movenum("Substitute"), movenum("Iron Defense"), movenum("Giga Drain"), movenum("Energy Ball"), movenum("Calm Mind"), movenum("Grassy Terrain"), movenum("Nasty Plot"), movenum("Phantom Force"), movenum("Trick Room"), movenum("Hyper Beam"), movenum("Solar Beam"), movenum("Tera Blast"), movenum("Spite"), movenum("Scald"), movenum("Uproar"), movenum("Poltergeist")]
         },
         "1014": {
             "types": ["Poison", "Fighting"],
@@ -5629,7 +5629,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.8,
             "weight": 92.2,
-            "moves": []
+            "moves": [movenum("Bite"), movenum("Low Kick"), movenum("Bulk Up"), movenum("Howl"), movenum("Poison Fang"), movenum("Force Palm"), movenum("Counter"), movenum("Poison Jab"), movenum("Brutal Swing"), movenum("Crunch"), movenum("Superpower"), movenum("Giga Impact"), movenum("Take Down"), movenum("Scary Face"), movenum("Protect"), movenum("Fire Fang"), movenum("Thunder Fang"), movenum("Ice Fang"), movenum("Thief"), movenum("Facade"), movenum("Poison Tail"), movenum("Snarl"), movenum("Metal Claw"), movenum("Rock Tomb"), movenum("Low Sweep"), movenum("Fling"), movenum("Endure"), movenum("Dig"), movenum("Brick Break"), movenum("Shadow Claw"), movenum("Psychic Fangs"), movenum("Body Slam"), movenum("Fire Punch"), movenum("Thunder Punch"), movenum("Ice Punch"), movenum("Sleep Talk"), movenum("Drain Punch"), movenum("Stomping Tantrum"), movenum("Rest"), movenum("Taunt"), movenum("Body Press"), movenum("Iron Head"), movenum("Gunk Shot"), movenum("Substitute"), movenum("Reversal"), movenum("Sludge Bomb"), movenum("Outrage"), movenum("Focus Blast"), movenum("Hyper Beam"), movenum("Close Combat"), movenum("Tera Blast"), movenum("Roar"), movenum("Toxic"), movenum("Spite"), movenum("Knock Off"), movenum("High Horsepower"), movenum("Uproar"), movenum("Focus Punch"), movenum("Lash Out")]
         },
         "1015": {
             "types": ["Poison", "Psychic"],
@@ -5639,7 +5639,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.0,
             "weight": 12.2,
-            "moves": []
+            "moves": [movenum("Scratch"), movenum("Confusion"), movenum("Fake Out"), movenum("Flatter"), movenum("Helping Hand"), movenum("Psybeam"), movenum("Clear Smog"), movenum("Psychic"), movenum("Sludge Wave"), movenum("Nasty Plot"), movenum("Future Sight"), movenum("Parting Shot"), movenum("Mud-Slap"), movenum("Protect"), movenum("Acid Spray"), movenum("Confuse Ray"), movenum("Thief"), movenum("Trailblaze"), movenum("Facade"), movenum("Hex"), movenum("Swift"), movenum("Stored Power"), movenum("Night Shade"), movenum("Fling"), movenum("Venoshock"), movenum("Endure"), movenum("Psyshock"), movenum("U-turn"), movenum("Shadow Claw"), movenum("Sleep Talk"), movenum("Light Screen"), movenum("Metronome"), movenum("Grass Knot"), movenum("Poison Jab"), movenum("Rest"), movenum("Taunt"), movenum("Imprison"), movenum("Gunk Shot"), movenum("Substitute"), movenum("Trick"), movenum("Shadow Ball"), movenum("Calm Mind"), movenum("Baton Pass"), movenum("Psychic Terrain"), movenum("Sludge Bomb"), movenum("Giga Impact"), movenum("Focus Blast"), movenum("Hyper Beam"), movenum("Tera Blast"), movenum("Toxic"), movenum("Spite"), movenum("Uproar"), movenum("Poltergeist"), movenum("Lash Out")]
         },
         "1016": {
             "types": ["Poison", "Fairy"],
@@ -5649,7 +5649,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.4,
             "weight": 30.1,
-            "moves": []
+            "moves": [movenum("Double Kick"), movenum("Peck"), movenum("Poison Gas"), movenum("Disarming Voice"), movenum("Quick Attack"), movenum("Attract"), movenum("Wing Attack"), movenum("Cross Poison"), movenum("Tail Slap"), movenum("Beat Up"), movenum("Flatter"), movenum("Roost"), movenum("Moonblast"), movenum("Take Down"), movenum("Charm"), movenum("Agility"), movenum("Protect"), movenum("Acid Spray"), movenum("Acrobatics"), movenum("Thief"), movenum("Facade"), movenum("Poison Tail"), movenum("Aerial Ace"), movenum("Hex"), movenum("Swift"), movenum("Icy Wind"), movenum("Air Cutter"), movenum("Venoshock"), movenum("Endure"), movenum("U-turn"), movenum("Shadow Claw"), movenum("Air Slash"), movenum("Sleep Talk"), movenum("Light Screen"), movenum("Dazzling Gleam"), movenum("Poison Jab"), movenum("Rest"), movenum("Taunt"), movenum("Swords Dance"), movenum("Dark Pulse"), movenum("Fly"), movenum("Gunk Shot"), movenum("Substitute"), movenum("Tailwind"), movenum("Shadow Ball"), movenum("Heat Wave"), movenum("Play Rough"), movenum("Calm Mind"), movenum("Nasty Plot"), movenum("Sludge Bomb"), movenum("Giga Impact"), movenum("Hurricane"), movenum("Hyper Beam"), movenum("Brave Bird"), movenum("Tera Blast"), movenum("Toxic"), movenum("Spite"), movenum("Uproar"), movenum("Dual Wingbeat"), movenum("Lash Out")]
         },
         "1017": {
             "types": ["Grass", "???"],
@@ -5659,7 +5659,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.2,
             "weight": 39.8,
-            "moves": []
+            "moves": [movenum("Vine Whip"), movenum("Leech Seed"), movenum("Quick Attack"), movenum("Follow Me"), movenum("Double Kick"), movenum("Counter"), movenum("Retaliate"), movenum("Horn Leech"), movenum("Focus Energy"), movenum("Growth"), movenum("Slam"), movenum("Low Sweep"), movenum("Ivy Cudgel"), movenum("Throat Chop"), movenum("Synthesis"), movenum("Spiky Shield"), movenum("Power Whip"), movenum("Superpower"), movenum("Wood Hammer"), movenum("Take Down"), movenum("Charm"), movenum("Scary Face"), movenum("Protect"), movenum("Low Kick"), movenum("Trailblaze"), movenum("Facade"), movenum("Magical Leaf"), movenum("Rock Tomb"), movenum("Fling"), movenum("Endure"), movenum("Sunny Day"), movenum("Rain Dance"), movenum("Sandstorm"), movenum("False Swipe"), movenum("Brick Break"), movenum("Zen Headbutt"), movenum("U-turn"), movenum("Sleep Talk"), movenum("Seed Bomb"), movenum("Grass Knot"), movenum("Stomping Tantrum"), movenum("Rest"), movenum("Taunt"), movenum("Swords Dance"), movenum("Spikes"), movenum("Substitute"), movenum("Giga Drain"), movenum("Energy Ball"), movenum("Encore"), movenum("Play Rough"), movenum("Helping Hand"), movenum("Reversal"), movenum("Grassy Terrain"), movenum("Giga Impact"), movenum("Leaf Storm"), movenum("Solar Beam"), movenum("Tera Blast"), movenum("Knock Off"), movenum("Solar Blade"), movenum("Grassy Glide"), movenum("Lash Out")]
         },
         "66553": {
             "types": ["Grass", "Water"],
@@ -5669,7 +5669,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.2,
             "weight": 39.8,
-            "moves": []
+            "moves": [movenum("Vine Whip"), movenum("Leech Seed"), movenum("Quick Attack"), movenum("Follow Me"), movenum("Double Kick"), movenum("Counter"), movenum("Retaliate"), movenum("Horn Leech"), movenum("Focus Energy"), movenum("Growth"), movenum("Slam"), movenum("Low Sweep"), movenum("Ivy Cudgel"), movenum("Throat Chop"), movenum("Synthesis"), movenum("Spiky Shield"), movenum("Power Whip"), movenum("Superpower"), movenum("Wood Hammer"), movenum("Take Down"), movenum("Charm"), movenum("Scary Face"), movenum("Protect"), movenum("Low Kick"), movenum("Trailblaze"), movenum("Facade"), movenum("Magical Leaf"), movenum("Rock Tomb"), movenum("Fling"), movenum("Endure"), movenum("Sunny Day"), movenum("Rain Dance"), movenum("Sandstorm"), movenum("False Swipe"), movenum("Brick Break"), movenum("Zen Headbutt"), movenum("U-turn"), movenum("Sleep Talk"), movenum("Seed Bomb"), movenum("Grass Knot"), movenum("Stomping Tantrum"), movenum("Rest"), movenum("Taunt"), movenum("Swords Dance"), movenum("Spikes"), movenum("Substitute"), movenum("Giga Drain"), movenum("Energy Ball"), movenum("Encore"), movenum("Play Rough"), movenum("Helping Hand"), movenum("Reversal"), movenum("Grassy Terrain"), movenum("Giga Impact"), movenum("Leaf Storm"), movenum("Solar Beam"), movenum("Tera Blast"), movenum("Knock Off"), movenum("Solar Blade"), movenum("Grassy Glide"), movenum("Lash Out")]
         },
         "132089": {
             "types": ["Grass", "Fire"],
@@ -5679,7 +5679,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.2,
             "weight": 39.8,
-            "moves": []
+            "moves": [movenum("Vine Whip"), movenum("Leech Seed"), movenum("Quick Attack"), movenum("Follow Me"), movenum("Double Kick"), movenum("Counter"), movenum("Retaliate"), movenum("Horn Leech"), movenum("Focus Energy"), movenum("Growth"), movenum("Slam"), movenum("Low Sweep"), movenum("Ivy Cudgel"), movenum("Throat Chop"), movenum("Synthesis"), movenum("Spiky Shield"), movenum("Power Whip"), movenum("Superpower"), movenum("Wood Hammer"), movenum("Take Down"), movenum("Charm"), movenum("Scary Face"), movenum("Protect"), movenum("Low Kick"), movenum("Trailblaze"), movenum("Facade"), movenum("Magical Leaf"), movenum("Rock Tomb"), movenum("Fling"), movenum("Endure"), movenum("Sunny Day"), movenum("Rain Dance"), movenum("Sandstorm"), movenum("False Swipe"), movenum("Brick Break"), movenum("Zen Headbutt"), movenum("U-turn"), movenum("Sleep Talk"), movenum("Seed Bomb"), movenum("Grass Knot"), movenum("Stomping Tantrum"), movenum("Rest"), movenum("Taunt"), movenum("Swords Dance"), movenum("Spikes"), movenum("Substitute"), movenum("Giga Drain"), movenum("Energy Ball"), movenum("Encore"), movenum("Play Rough"), movenum("Helping Hand"), movenum("Reversal"), movenum("Grassy Terrain"), movenum("Giga Impact"), movenum("Leaf Storm"), movenum("Solar Beam"), movenum("Tera Blast"), movenum("Knock Off"), movenum("Solar Blade"), movenum("Grassy Glide"), movenum("Lash Out")]
         },
         "197625": {
             "types": ["Grass", "Rock"],
@@ -5689,7 +5689,7 @@ function Safari() {
             "tier": "SM OU",
             "height": 1.2,
             "weight": 39.8,
-            "moves": []
+            "moves": [movenum("Vine Whip"), movenum("Leech Seed"), movenum("Quick Attack"), movenum("Follow Me"), movenum("Double Kick"), movenum("Counter"), movenum("Retaliate"), movenum("Horn Leech"), movenum("Focus Energy"), movenum("Growth"), movenum("Slam"), movenum("Low Sweep"), movenum("Ivy Cudgel"), movenum("Throat Chop"), movenum("Synthesis"), movenum("Spiky Shield"), movenum("Power Whip"), movenum("Superpower"), movenum("Wood Hammer"), movenum("Take Down"), movenum("Charm"), movenum("Scary Face"), movenum("Protect"), movenum("Low Kick"), movenum("Trailblaze"), movenum("Facade"), movenum("Magical Leaf"), movenum("Rock Tomb"), movenum("Fling"), movenum("Endure"), movenum("Sunny Day"), movenum("Rain Dance"), movenum("Sandstorm"), movenum("False Swipe"), movenum("Brick Break"), movenum("Zen Headbutt"), movenum("U-turn"), movenum("Sleep Talk"), movenum("Seed Bomb"), movenum("Grass Knot"), movenum("Stomping Tantrum"), movenum("Rest"), movenum("Taunt"), movenum("Swords Dance"), movenum("Spikes"), movenum("Substitute"), movenum("Giga Drain"), movenum("Energy Ball"), movenum("Encore"), movenum("Play Rough"), movenum("Helping Hand"), movenum("Reversal"), movenum("Grassy Terrain"), movenum("Giga Impact"), movenum("Leaf Storm"), movenum("Solar Beam"), movenum("Tera Blast"), movenum("Knock Off"), movenum("Solar Blade"), movenum("Grassy Glide"), movenum("Lash Out")]
         }
         /*"": {
             "types": ["Steel", "Dragon"],
