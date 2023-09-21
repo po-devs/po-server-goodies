@@ -7243,7 +7243,9 @@ function Safari() {
     };
     var updatedAbilities = {
         "109": [26, 256, 1], // Koffing and Weezing get new abilities in Gen 8
-        "110": [26, 256, 1]
+        "110": [26, 256, 1],
+        "275": [34, 273, 124], // Shiftry gets Wind Rider > Early Bird in Gen 9
+        "395": [67, 181] // Empoleon gets Competitive > Defiant in Gen 9
     };
     var updatedStats = {
         "65708": [20, 40, 15, 35, 35, 60], // Pichu-Spiky Eared's stats are incorrect on PO
