@@ -5613,7 +5613,7 @@ function Safari() {
         },
         "66549": {
             "types": ["Grass", "Ghost"],
-            "name": "Sinistcha-Artisan",
+            "name": "Sinistcha-Masterpiece",
             "stats": [71, 60, 106, 121, 80, 70],
             "abilities": ["Hospitality", "Heatproof"],
             "tier": "SM OU",
