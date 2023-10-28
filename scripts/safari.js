@@ -5586,7 +5586,7 @@ function Safari() {
             "name": "Poltchageist",
             "stats": [40, 45, 45, 74, 54, 50],
             "abilities": ["Hospitality", "Heatproof"],
-            "tier": "SM OU",
+            "tier": "SM LC",
             "height": 0.1,
             "weight": 1.1,
             "moves": [movenum("Astonish"), movenum("Withdraw"), movenum("Stun Spore"), movenum("Absorb"), movenum("Life Dew"), movenum("Foul Play"), movenum("Mega Drain"), movenum("Hex"), movenum("Rage Powder"), movenum("Giga Drain"), movenum("Shadow Ball"), movenum("Memento"), movenum("Leaf Storm"), movenum("Protect"), movenum("Magical Leaf"), movenum("Night Shade"), movenum("Endure"), movenum("Sleep Talk"), movenum("Reflect"), movenum("Rest"), movenum("Imprison"), movenum("Substitute"), movenum("Iron Defense"), movenum("Energy Ball"), movenum("Calm Mind"), movenum("Grassy Terrain"), movenum("Nasty Plot"), movenum("Phantom Force"), movenum("Trick Room"), movenum("Solar Beam"), movenum("Tera Blast"), movenum("Spite"), movenum("Scald"), movenum("Uproar"), movenum("Poltergeist")]
@@ -5596,7 +5596,7 @@ function Safari() {
             "name": "Poltchageist-Artisan",
             "stats": [40, 45, 45, 74, 54, 50],
             "abilities": ["Hospitality", "Heatproof"],
-            "tier": "SM OU",
+            "tier": "SM LC",
             "height": 0.1,
             "weight": 1.1,
             "moves": [movenum("Astonish"), movenum("Withdraw"), movenum("Stun Spore"), movenum("Absorb"), movenum("Life Dew"), movenum("Foul Play"), movenum("Mega Drain"), movenum("Hex"), movenum("Rage Powder"), movenum("Giga Drain"), movenum("Shadow Ball"), movenum("Memento"), movenum("Leaf Storm"), movenum("Protect"), movenum("Magical Leaf"), movenum("Night Shade"), movenum("Endure"), movenum("Sleep Talk"), movenum("Reflect"), movenum("Rest"), movenum("Imprison"), movenum("Substitute"), movenum("Iron Defense"), movenum("Energy Ball"), movenum("Calm Mind"), movenum("Grassy Terrain"), movenum("Nasty Plot"), movenum("Phantom Force"), movenum("Trick Room"), movenum("Solar Beam"), movenum("Tera Blast"), movenum("Spite"), movenum("Scald"), movenum("Uproar"), movenum("Poltergeist")]
