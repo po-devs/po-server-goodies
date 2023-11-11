@@ -13303,7 +13303,7 @@ function Safari() {
                 rafflePlayers.add(player.id, player.balls.entry);
                 rafflePlayers.save();
             } else if (ball !== "spirit") {
-                if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
+                if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"") && evolutions[currentPokemon].evo !== -1) {
                     var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
                     player.pokemon.push(evolved);
                     sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
