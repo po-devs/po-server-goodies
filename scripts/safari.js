@@ -1149,10 +1149,10 @@ function Safari() {
                 "showAmt": "inver"
             },
             "cherish": {
-                "reward": "2@cherish",
+                "reward": "@cherish",
                 "ingredients": {
-                    "pnkapricorn": 40,
-                    "ldew": 10
+                    "pnkapricorn": 20,
+                    "ldew": 5
                 },
                 "showAmt": "cherish"
             }
