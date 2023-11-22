@@ -9576,7 +9576,7 @@ function Safari() {
             ret = 8;
         } else if (isHisuianForm(pokeNum) || [66019, 66020].contains(pokeNum)) { // Dialga & Palkia Origin
             ret = 4;
-            useAlt = true;
+            useAlt = !excludeAlts;
         } else if (isPaldeanForm(pokeNum)) {
             ret = 9;
         } else if (pokeNum == 66437) { // Ursaluna-Bloodmoon is from Kitakami
@@ -15131,6 +15131,8 @@ function Safari() {
                 }
             }
             if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid"])) {
+                safari.addPendingActive(player.id, "manageParty", "add:" + info.name, ["auction", "battle", "event", "pyramid"]);
+                safaribot.sendMessage(src, "Your " + poke(getInputPokemon(info.name).num + (info.shiny ? "" : 0), true) + " will be added to your party at the next opportunity!", safchan);
                 return;
             }
             if (player.party.length >= 6) {
@@ -15291,9 +15293,6 @@ function Safari() {
             safaribot.sendMessage(src, "Deleted saved party at slot " + targetId + "!", safchan);
             this.saveGame(player);
         } else if (action === "load") {
-            if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid", "tutorial"])) {
-                return;
-            }
             var num = targetId - 1;
             if (num < 0) {
                 num = 0;
@@ -15306,7 +15305,11 @@ function Safari() {
                 safaribot.sendMessage(src, "You have no party saved on that slot!", safchan);
                 return;
             }
-
+            if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid", "tutorial"])) {
+                safari.addPendingActive(player.id, "manageParty", "load:" + (num+1), ["auction", "battle", "event", "pyramid", "tutorial"]);
+                safaribot.sendMessage(src, "Your " + getOrdinal(num+1) + " saved party will be loaded at the next opportunity!", safchan);
+                return;
+            }
             var toLoad = player.savedParties[num].slice(0);
 
             for (var p = toLoad.length - 1; p >= 0; p--) {
@@ -15365,9 +15368,6 @@ function Safari() {
         if (!validPlayers("self", src)) {
             return;
         }
-        if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid", "tutorial"])) {
-            return;
-        }
         var player = getAvatar(src);
         data = data.replace(/\,[\s]/gi, ",").split(",");
         var firstInParty = player.party[0];
@@ -15381,7 +15381,11 @@ function Safari() {
                 invalid.push(data[p]);
             }
         }
-        if (invalid.length > 0) {
+        if (invalid.length === data.length) {
+            safaribot.sendMessage(src, "No valid Pokémon specified!", safchan);
+            return;
+        }
+        else if (invalid.length > 0) {
             safaribot.sendMessage(src, "Cannot load invalid Pokémon " + readable(invalid) + "!", safchan);
         }
         for (p = toLoad.length - 1; p >= 0; p--) {
@@ -15397,7 +15401,11 @@ function Safari() {
                 toLoad.splice(p, 1);
             }
         }
-        
+        if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid", "tutorial"])) { // contest and wild has its own separate check below due to the need to check if player has forfeited contest
+            safari.addPendingActive(player.id, "quickLoadParty", data.join(","), ["auction", "battle", "event", "pyramid", "tutorial"]);
+            safaribot.sendMessage(src, "Your party will be changed to " + readable(toLoad.map(poke), "and") + " at the next opportunity!", safchan);
+            return;
+        }
         if (contestCount > 0 || currentPokemon) {
             if (!(contestCount > 0 && contestForfeited.contains(player.idnum))) {
                 safari.addPendingActive(player.id, "quickLoadParty", data.join(","), ["auction", "battle", "event", "tutorial", "pyramid", "wild", "contest", "baking"]);
