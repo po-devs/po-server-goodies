@@ -14087,7 +14087,7 @@ function Safari() {
             var keepMsg = "";
             wildBallThrows[ball].push(player.id);
             cooldown = cooldown * (1 - this.getFortune(player, "soothe", 0));
-            if (!canHaveAbility(trueLeader, abilitynum("Skill Link"))) {
+            if (!canHaveAbility(trueLeader, abilitynum("Skill Link")) && !wildEvent && !wildTera) {
                 player.consecutiveCombo = 0;
             }
             if (ball == "ultra" && this.hasCostumeSkill(player, "lowUltraCD")) {
