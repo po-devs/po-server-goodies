@@ -44585,15 +44585,12 @@ function Safari() {
                 val = 0;
                 eggval = 0;
                 bst = getBST(mon.num);
-                if (ultraBeasts.concat([892, 66428, 898]).contains(mon.num) || paradoxPokemon.contains(mon.num)) { // [urshifu, urshifu-rapid strike, calyrex]
+                if (ultraBeasts.concat([892, 66428, 898, 1024]).contains(mon.num) || paradoxPokemon.contains(mon.num)) { // [urshifu, urshifu-rapid strike, calyrex, terapagos]
                     bst = 600;
                 }
                 if (regionalEvos.concat([789, 891]).contains(mon.num)) { // [cosmog, kubfu]
                     bst = Math.max(bst, 510);
                     rareForm = true;
-                }
-                if (num === 1024) { // Terapagos
-                    bst = 630;
                 }
                 if ((legendaries.contains(mon.num)) || ultraBeasts.contains(mon.num) || paradoxPokemon.contains(mon.num)) {
                     if (bst >= 650) {
