@@ -39049,6 +39049,9 @@ function Safari() {
                     function getWeaknesses(t1, t2, resists) {
                         var hit = [], value;
                         for (var x in effectiveness) {
+                            if (x == "Stellar") {
+                                continue;
+                            }
                             value = 1;
                             if (effectiveness[x].hasOwnProperty(t1)) {
                                 value *= effectiveness[x][t1];
@@ -39078,9 +39081,9 @@ function Safari() {
                     }
 
                     if (l == 1) {                    
-                        outText = "{0} has 1 " + (res ? "resistance/immunity" : "weakness") + " in common with {1}.";
+                        outText = "{0} has 1 " + (res ? "resistance/immunity" : "weakness") + " in common with {1} (excluding Stellar type).";
                     } else {
-                        outText = "{0} has " + l + " " + (res ? "resistances/immunities" : "weaknesses") + " in common with {1}.";
+                        outText = "{0} has " + l + " " + (res ? "resistances/immunities" : "weaknesses") + " in common with {1} (excluding Stellar type).";
                     }
                     strength = 23;
                     
