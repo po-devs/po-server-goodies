@@ -1584,8 +1584,11 @@ function Hangman() {
     
     this.getNextSunday = function() {
         var date = new Date();
-        
-        return new Date(new Date(date.getFullYear(), date.getUTCMonth(), date.getUTCDate() + (8 - date.getUTCDay()) % 9).setUTCHours(0, 0, 0, 0)).getTime();
+        var ret = new Date(new Date(date.getFullYear(), date.getUTCMonth(), date.getUTCDate() + (8 - date.getUTCDay()) % 9).setUTCHours(0, 0, 0, 0)).getTime();
+        if (date.getTime() >= ret) {
+            ret = new Date(new Date(date.getFullYear() + 1, date.getUTCMonth(), date.getUTCDate() + (8 - date.getUTCDay()) % 9).setUTCHours(0, 0, 0, 0)).getTime();
+        }
+        return ret;
     };
 
     this.resetLB = function() {
