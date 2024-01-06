@@ -5580,7 +5580,7 @@ function Safari() {
             "name": "Dipplin",
             "stats": [80, 80, 110, 95, 80, 40],
             "abilities": ["Supersweet Syrup", "Gluttony", "Sticky Hold"],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.4,
             "weight": 4.4,
             "moves": [movenum("Recycle"), movenum("Withdraw"), movenum("Astonish"), movenum("Sweet Scent"), movenum("Infestation"), movenum("Double Hit"), movenum("Dragon Tail"), movenum("Growth"), movenum("Dragon Breath"), movenum("Protect"), movenum("Bullet Seed"), movenum("Syrup Bomb"), movenum("Dragon Pulse"), movenum("Recover"), movenum("Energy Ball"), movenum("Substitute"), movenum("Take Down"), movenum("Pounce"), movenum("Facade"), movenum("Endure"), movenum("Sunny Day"), movenum("Body Slam"), movenum("Sleep Talk"), movenum("Seed Bomb"), movenum("Reflect"), movenum("Grass Knot"), movenum("Rest"), movenum("Giga Drain"), movenum("Pollen Puff"), movenum("Grassy Terrain"), movenum("Giga Impact"), movenum("Outrage"), movenum("Leaf Storm"), movenum("Hyper Beam"), movenum("Solar Beam"), movenum("Draco Meteor"), movenum("Tera Blast"), movenum("Gyro Ball"), movenum("Bug Bite"), movenum("Grassy Glide"), movenum("Defense Curl"), movenum("Rollout"), movenum("Sucker Punch")]

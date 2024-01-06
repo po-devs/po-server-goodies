@@ -1585,7 +1585,7 @@ function Hangman() {
     this.getNextSunday = function() {
         var date = new Date();
         var ret = new Date(new Date(date.getFullYear(), date.getUTCMonth(), date.getUTCDate() + (8 - date.getUTCDay()) % 9).setUTCHours(0, 0, 0, 0)).getTime();
-        if (date.getTime() >= ret) {
+        if (date.getTime() >= ret) { // for year rollover
             ret = new Date(new Date(date.getFullYear() + 1, date.getUTCMonth(), date.getUTCDate() + (8 - date.getUTCDay()) % 9).setUTCHours(0, 0, 0, 0)).getTime();
         }
         return ret;
