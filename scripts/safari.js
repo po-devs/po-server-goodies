@@ -18619,6 +18619,7 @@ function Safari() {
                                     teraItems = true;
                                 }
                                 player.teraActive = false;
+                                sys.appendToFile(mythLog, now() + "|||" + sys.name(src) + "::used their Tera Orb and " + (teraSuccess ? "succeeded" : "failed") + "::\n");
                             }
                             var where = player.mushroomDeadline > 0 ? player.mushroomTheme : null;
                             safari.createWild(null, teraSuccess, 1, null, safari.getEffectiveLead(player, true), player, null, golden ? "golden" : "bait", where);
@@ -45989,7 +45990,7 @@ function Safari() {
     }
     BlockedRoom.prototype = new PyramidRoom();
     BlockedRoom.prototype.midturn = function() {
-        var known = this.revealedTypes.concat().map(typeIcon);
+        var known = this.revealedTypes.concat().map(function(e) { return typeIcon(e) });
         while (known.length < this.types.length) {
             known.push("???");
         }
@@ -46053,7 +46054,7 @@ function Safari() {
 
             var pointsRange = [52 + 32 * this.level, 32 + 20 * this.level, 15 + 6 * this.level, 3 + 2 * this.level, -3 - 5 * this.level, -7 - 9 * this.level];
             var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)];
-            this.sendAll("The {0}-type statue's HP dropped to 0! The statue was destroyed! Points gained: {1}".format(this.types.map(typeIcon).join(" / "), plural(points, "Point")));
+            this.sendAll("The {0}-type statue's HP dropped to 0! The statue was destroyed! Points gained: {1}".format(this.types.map(function(e) { return typeIcon(e) }).join(" / "), plural(points, "Point")));
             if (totalDealt >= this.treasureGoal && bestAttacker) {
                 var reward = randomSampleObj(this.treasures);
                 this.sendAll("<b>{0}</b> found something stuck to a fragment of the statue! {0} received {1}!".format(addFlashTag(bestAttacker.toCorrectCase()), toColor(treasureName(reward), "blue")), true);
@@ -46065,7 +46066,7 @@ function Safari() {
             var rt = this.revealedTypes.length;
             if ((rt < this.types.length) && (rt < 2)) {
                 this.revealedTypes.push(this.types[rt]);
-                this.sendAll("The statue's {0} type is revealed to be <b>{1}</b>! You now know the statue is {2}-type!".format(getOrdinal(rt+1), typeIcon(this.types[rt]), toColor(this.revealedTypes.map(typeIcon).join(" / "), "blue")));
+                this.sendAll("The statue's {0} type is revealed to be <b>{1}</b>! You now know the statue is {2}-type!".format(getOrdinal(rt+1), typeIcon(this.types[rt]), toColor(this.revealedTypes.map(function(e) { return typeIcon(e) }).join(" / "), "blue")));
             }
 
             var staminaStr = [], members = this.pyr.names, id;
@@ -46828,7 +46829,7 @@ function Safari() {
             this.bonusTypesObj[this.bonusTypes[i]] = this.bonusTypesHeal[i];
         }
 
-        this.midmsg = "Choose a Pokémon to defend from the next attack (Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(typeIcon), "or") + " will heal you and give bonus points!)!";
+        this.midmsg = "Choose a Pokémon to defend from the next attack (Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(function(e) { return typeIcon(e) }), "or") + " will heal you and give bonus points!)!";
 
         var self = this;
         this.sendAll("");
@@ -46896,7 +46897,7 @@ function Safari() {
                     }
                 }
                 if (bonusUsed.length > 0) {
-                    bonusMsg.push(p.toCorrectCase() + " defended with " + bonusUsed.map(typeIcon).join("/") + "-type Pokémon and healed +" + healamt + " stamina");
+                    bonusMsg.push(p.toCorrectCase() + " defended with " + bonusUsed.map(function(e) { return typeIcon(e) }).join("/") + "-type Pokémon and healed +" + healamt + " stamina");
                     if (!(stamina[p])) {
                         stamina[p] = 0;
                     }
