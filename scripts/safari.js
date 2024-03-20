@@ -7919,6 +7919,7 @@ function Safari() {
 
     /* Pokemon Variables */
     var effectiveness = {
+        "Stellar": { "Normal": 1.2, "Fighting": 1.2, "Flying": 1.2, "Poison": 1.2, "Ground": 1.2, "Rock": 1.2, "Bug": 1.2, "Ghost": 1.2, "Steel": 1.2, "Fire": 1.2, "Water": 1.2, "Grass": 1.2, "Electric": 1.2, "Psychic": 1.2, "Ice": 1.2, "Dragon": 1.2, "Dark": 1.2, "Fairy": 1.2 },
         "Normal": { "Rock": 0.5, "Ghost": 0, "Steel": 0.5 },
         "Fighting": { "Normal": 2, "Flying": 0.5, "Poison": 0.5, "Rock": 2, "Bug": 0.5, "Ghost": 0, "Steel": 2, "Psychic": 0.5, "Ice": 2, "Dark": 2, "Fairy": 0.5, "Stellar": 2 },
         "Flying": { "Fighting": 2, "Rock": 0.5, "Bug": 2, "Steel": 0.5, "Grass": 2, "Electric": 0.5 },
@@ -7936,8 +7937,7 @@ function Safari() {
         "Ice": { "Flying": 2, "Ground": 2, "Steel": 0.5, "Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 0.5, "Dragon": 2 },
         "Dragon": { "Steel": 0.5, "Dragon": 2, "Fairy": 0 },
         "Dark": { "Fighting": 0.5, "Ghost": 2, "Psychic": 2, "Dark": 0.5, "Fairy": 0.5 },
-        "Fairy": { "Fighting": 2, "Poison": 0.5, "Steel": 0.5, "Fire": 0.5, "Dragon": 2, "Dark": 2 },
-        "Stellar": { "Normal": 1.2, "Fighting": 1.2, "Flying": 1.2, "Poison": 1.2, "Ground": 1.2, "Rock": 1.2, "Bug": 1.2, "Ghost": 1.2, "Steel": 1.2, "Fire": 1.2, "Water": 1.2, "Grass": 1.2, "Electric": 1.2, "Psychic": 1.2, "Ice": 1.2, "Dragon": 1.2, "Dark": 1.2, "Fairy": 1.2 }
+        "Fairy": { "Fighting": 2, "Poison": 0.5, "Steel": 0.5, "Fire": 0.5, "Dragon": 2, "Dark": 2 }
     };
     var immuneMultiplier = 0.15;
     var pokeInfo = {
@@ -46552,7 +46552,7 @@ function Safari() {
 
         this.trainerTeam = [];
         var num, bst = 285 + 25 * level, maxLegend = Math.floor((level-1)/3) + 1;
-        var main = this.inverted ? Object.keys(effectiveness).slice(1).random() : Object.keys(effectiveness).random();
+        var main = this.inverted ? Object.keys(effectiveness).slice(2).random() : Object.keys(effectiveness).slice(1).random();
         var m = 6, wildcard = 0;
         while (this.trainerTeam.length < m - 1) {
             num = sys.rand(1, highestDexNum);
@@ -47444,7 +47444,7 @@ function Safari() {
             this.sendAll("All hazards have been cleared, so nothing could stop you from going forward!");
         }
         else if (perc <= 20) {
-            this.sendAll("You cleared most of the hazards, so reaching the door was piece of cake!");
+            this.sendAll("You cleared most of the hazards, so reaching the door was a piece of cake!");
         }
         else if (perc <= 50) {
             this.sendAll("Some of the hazards haven't been cleared, so you struggled to reach the door!");
