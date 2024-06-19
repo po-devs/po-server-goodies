@@ -21700,7 +21700,7 @@ function Safari() {
                 changeOption(dataInput, "useWatmel", [
                     "Your party will now consume Watmel Berries when hatching Eggs and Bright Eggs!",
                     "Your party will no longer consume Watmel Berries when hatching Eggs and Bright Eggs!",
-                    ["consuming Watmel Berries", "not consuming Watmel Berries"],
+                    ["not consuming Watmel Berries", "consuming Watmel Berries"],
                     data
                 ]);
                 break;
