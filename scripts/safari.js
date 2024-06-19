@@ -20680,7 +20680,7 @@ function Safari() {
 
                 player.balls.egg -= 1;
                 pulled -= 1;
-                this.updateShop(player, "egg");
+                
                 sys.sendMessage(src, "", safchan);
                 player.records.eggsHatched += 1;
                 this.missionProgress(player, "hatch", id, 1 + (twins ? 1 : 0), {});
@@ -20691,8 +20691,9 @@ function Safari() {
                     safaribot.sendHtmlAll("<b>Wow!</b> {0} hatched <b>{1}</b> from {2}!".format(sys.name(src), pokeInfo.icon(id, shiny) + " " + poke(id, true) + (twins ? " TWINS" : ""), an(finishName("egg"))), safchan);
                     sys.sendAll("", safchan);
                 }
-                this.saveGame(player);
             }
+            this.updateShop(player, "egg");
+            this.saveGame(player);
             safaribot.sendMessage(src, itemsLeft(player, "egg"), safchan);
             return;
         }
@@ -20752,7 +20753,7 @@ function Safari() {
                 player.pokemon.push(id);
                 player.balls.bright -= 1;
                 pulled -= 1;
-                this.updateShop(player, "bright");
+                
                 sys.sendMessage(src, "", safchan);
                 player.records.brightEggsHatched += 1;
                 this.missionProgress(player, "hatch", id, 1, {});
@@ -20763,8 +20764,9 @@ function Safari() {
                     safaribot.sendHtmlAll("<b>Wow!</b> {0} hatched <b>{1}</b> from {2}!".format(sys.name(src), pokeInfo.icon(id, shiny) + " " + poke(id, true), an(finishName("bright"))), safchan);
                     sys.sendAll("", safchan);
                 }
-                this.saveGame(player);
             }
+            this.updateShop(player, "bright");
+            this.saveGame(player);
             safaribot.sendMessage(src, itemsLeft(player, "bright"), safchan);
             return;
         }
