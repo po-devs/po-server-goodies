@@ -20656,6 +20656,7 @@ function Safari() {
                                 shinyChanceFinal *= itemData.watmel.rate;
                                 player.balls.watmel -= 1;
                                 safaribot.sendMessage(src, poke(player.party[e], true) + " consumed a Watmel Berry!", safchan);
+                                safaribot.sendMessage(src, itemsLeft(player, "watmel"), safchan);
                                 break;
                             }
                         }
@@ -20730,6 +20731,7 @@ function Safari() {
                                 shinyChanceFinal *= itemData.watmel.rate;
                                 player.balls.watmel -= 1;
                                 safaribot.sendMessage(src, poke(player.party[e], true) + " consumed a Watmel Berry!", safchan);
+                                safaribot.sendMessage(src, itemsLeft(player, "watmel"), safchan);
                                 break;
                             }
                         }
