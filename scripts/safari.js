@@ -20633,7 +20633,7 @@ function Safari() {
                 pulled = Math.min(100, Math.max(1, parseInt(info.target)));
             }
             else {
-                safaribot.sendMessage(src, "Type /use egg or /use egg:[amount] (e.g. /use egg:10), to hatch your " + es(finishName("gem")) + "!", safchan);
+                safaribot.sendMessage(src, "Type /use egg or /use egg:[amount] (e.g. /use egg:10), to hatch your " + es(finishName("egg")) + "!", safchan);
                 return;
             }
             while (pulled > 0 && player.balls.egg > 0) {
