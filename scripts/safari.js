@@ -990,7 +990,8 @@ function Safari() {
             showConsecutiveCombo: true,
             flashRares: true,
             textViewOnly: false,
-            baitScramble: true
+            baitScramble: true,
+            useWatmel: false
         },
         spawnlessThrows: 0,
         burningAura: false,
@@ -20648,16 +20649,15 @@ function Safari() {
                     id = sys.rand(1, highestDexNum);
                 } while (isRare(id));
 
-                for (var e = 0; e < player.party.length; e++) {
-                    if (e >= player.helds.length) {
-                        break;
-                    }
-                    if (player.helds[e] == 10) {
-                        if (hasCommonEggGroup(id, parseInt(player.party[e], 10))) {
-                            shinyChanceFinal *= itemData.watmel.rate;
-                            player.helds[e] = -1;
-                            safaribot.sendMessage(src, poke(player.party[e], true) + "'s Watmel Berry was consumed!", safchan);
-                            break;
+                if (player.options.useWatmel) {
+                    for (var e = 0; e < player.party.length; e++) {
+                        if (player.balls.watmel > 0) {
+                            if (hasCommonEggGroup(id, parseInt(player.party[e], 10))) {
+                                shinyChanceFinal *= itemData.watmel.rate;
+                                player.balls.watmel -= 1;
+                                safaribot.sendMessage(src, poke(player.party[e], true) + " consumed a Watmel Berry!", safchan);
+                                break;
+                            }
                         }
                     }
                 }
@@ -20723,16 +20723,15 @@ function Safari() {
                         id = sys.rand(1, highestDexNum);
                     } while (isRare(id));
                 }
-                for (var e = 0; e < player.party.length; e++) {
-                    if (e >= player.helds.length) {
-                        break;
-                    }
-                    if (player.helds[e] == 10) {
-                        if (hasCommonEggGroup(id, parseInt(player.party[e], 10))) {
-                            shinyChanceFinal *= itemData.watmel.rate;
-                            player.helds[e] = -1;
-                            safaribot.sendMessage(src, poke(player.party[e], true) + "'s Watmel Berry was consumed!", safchan);
-                            break;
+                if (player.options.useWatmel) {
+                    for (var e = 0; e < player.party.length; e++) {
+                        if (player.balls.watmel > 0) {
+                            if (hasCommonEggGroup(id, parseInt(player.party[e], 10))) {
+                                shinyChanceFinal *= itemData.watmel.rate;
+                                player.balls.watmel -= 1;
+                                safaribot.sendMessage(src, poke(player.party[e], true) + " consumed a Watmel Berry!", safchan);
+                                break;
+                            }
                         }
                     }
                 }
@@ -21695,6 +21694,14 @@ function Safari() {
             case "showlead": case "leadmessage": case "showleadmessage":
                 safari.setShowLeadMessage(src, dataInput);
                 break;
+            case "usewatmel": case "watmel": case "autowatmel":
+                changeOption(dataInput, "useWatmel", [
+                    "Your party will now consume Watmel Berries when hatching Eggs and Bright Eggs!",
+                    "Your party will no longer consume Watmel Berries when hatching Eggs and Bright Eggs!",
+                    ["consuming Watmel Berries", "not consuming Watmel Berries"],
+                    data
+                ]);
+                break;
             default:
                 sys.sendMessage(src, "", safchan);
                 if (data === "2") {
@@ -21715,6 +21722,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "Offset Android Input Lag: " + link("/options androidlag:", player.options.androidTextFlow ? "Receive Continuous Server Messages" : "Do Not Receive Continuous Server Messages"), safchan);
                     safaribot.sendHtmlMessage(src, "Text-Only Bag: " + link("/options textonly:", player.options.textViewOnly ? "View Text Version of Bag by Default" : "View Full Version of Bag by Default"), safchan);
                     safaribot.sendHtmlMessage(src, "Bait Scramble: " + link("/options baitscramble:", player.options.baitScramble ? "Automatically Throw a Ball When Someone Baits Before You" : "Do Not Throw a Ball When Someone Baits Before You"), safchan);
+                    safaribot.sendHtmlMessage(src, "Watmel Berries: " + link("/options usewatmel:", player.options.useWatmel ? "Consume Watmel Berries" : "Do Not Consume Watmel Berries"), safchan);
                     var dexOptions = ["stats", "effectiveness", "trivia"];
                     safaribot.sendHtmlMessage(src, "Dex Options: " + dexOptions.map(function(e) {
                         return player.options.dexOptional.contains(e) ? link("/options hidedex:" + e, cap(e)) + " <b>[Enabled]</b>" : link("/options showdex:" + e, cap(e)) + " <b>[Disabled]</b>";
