@@ -4116,7 +4116,7 @@ function Safari() {
             "moves": [movenum("Quick Attack"), movenum("Aerial Ace"), movenum("Twister"), movenum("Slash"), movenum("Air Slash"), movenum("Esper Wing"), movenum("Roost"), movenum("Double-Edge"), movenum("Brave Bird"), movenum("Hurricane"), movenum("Rock Smash"), movenum("Swift"), movenum("Ominous Wind"), movenum("Power Shift"), movenum("Bulk Up"), movenum("Rest"), movenum("Zen Headbutt"), movenum("Rock Slide"), movenum("Shadow Claw"), movenum("Mystical Fire"), movenum("Dazzling Gleam"), movenum("Giga Impact"), movenum("Hyper Beam"), movenum("Psychic")]
         },
         "66241": {
-            "types": ["Dragon", "Steel"],
+            "types": ["Steel", "Dragon"],
             "name": "Hisuian Sliggoo",
             "stats": [58, 75, 83, 83, 113, 40],
             "abilities": [ "Sap Sipper", "Shell Armor", "Gooey" ],
@@ -4126,7 +4126,7 @@ function Safari() {
             "moves": [movenum("Bubble"), movenum("Acid Spray"), movenum("Acid Armor"), movenum("Water Pulse"), movenum("Iron Head"), movenum("Dragon Pulse"), movenum("Shelter"), movenum("Hydro Pump"), movenum("Rest"), movenum("Rock Slide"), movenum("Iron Tail"), movenum("Sludge Bomb"), movenum("Outrage"), movenum("Thunderbolt"), movenum("Ice Beam"), movenum("Draco Meteor"), movenum("Steel Beam")]
         },
         "66242": {
-            "types": ["Dragon", "Steel"],
+            "types": ["Steel", "Dragon"],
             "name": "Hisuian Goodra",
             "stats": [80, 100, 100, 110, 150, 60],
             "abilities": [ "Sap Sipper", "Shell Armor", "Gooey" ],
