@@ -66121,7 +66121,7 @@ function Safari() {
                             spiritSpawn = false;
                             safari.createWild(null, null, amt, null, null, null, null, false, false, false, true);
                         }
-                        else if (chance(0.01 * Math.ceil(3 * (contestCombo - 5) * (contestCombo / 100))) && canSpawnTera) {
+                        else if (chance(0.02 * Math.ceil(4 * (contestCombo - 5) * (contestCombo / 100))) && canSpawnTera) {
                             canSpawnTera = false;
                             safari.createWild(null, null, 1, null, null, null, null, false, false, false, false, true);
                         }
