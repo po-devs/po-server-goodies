@@ -11618,6 +11618,9 @@ function Safari() {
 
         contestantsCount = {};
         contestantsWild = [];
+        restrictedThrowers = [];
+        restrictedThrows = 0;
+        restrictedThrowTime = 0;
         wildEvent = false;
         currentBaiter = null;
         nextRules = null;
@@ -13321,7 +13324,7 @@ function Safari() {
             return;
         }
         if (restrictedThrowers.length && !restrictedThrowers.contains(player.id)) {
-            safaribot.sendHtmMessage(src, "<b>Only {0} can throw the next {1}, or until {2} is up!</b>".format(
+            safaribot.sendHtmlMessage(src, "<b>Only {0} can throw the next {1}, or until {2} is up!</b>".format(
                 readable(restrictedThrowers.map(function(e) {
                     return e.toCorrectCase();
                 })),
