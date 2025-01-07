@@ -23055,7 +23055,7 @@ function Safari() {
             return;
         }
 
-        input = getInput(product);
+        input = getInput(product.replace("%25", "%")); // po:setmsg and html escape turns Zygarde-10% into Zygarde-10%25
         if (input.type === "item" && itemData[input.id].invisible) {
             input = null;
         }
