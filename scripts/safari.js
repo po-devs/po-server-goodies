@@ -9844,6 +9844,9 @@ function Safari() {
         }
         return false;
     }
+    function hasStellarLead(player) {
+        return hasType(safari.getEffectiveLead(player, true), "Stellar");
+    }
     function getPossibleEvo(id, data) {
         var num = parseInt(id, 10);
         
@@ -12703,6 +12706,7 @@ function Safari() {
         var flowerGirlBonus = 1;
         var cherishBonus = Math.min(countDuplicates(pokeInfo.species(getInputPokemon(poke(leader)).num)), 10);
         var scaleColor = player.scaleDeadline >= now() ? player.scaleColor : null;
+        var stellarCooldown = hasStellarLead(player) && !wildEvent && !wildTera && currentThrowers.contains(player.id);
 
         var costumeBonus = 1;
         var costumeBoost = function(player, half) {
@@ -12813,6 +12817,10 @@ function Safari() {
         if (currentTypeOverride) {
             wType1 = currentTypeOverride;
             wType2 = "???";
+        }
+        if (stellarCooldown) { // stellar matchup works once per spawn except against tera and events
+            pType1 = "Normal";
+            pType2 = "???";
         }
         var inverse = currentThemeEffect == "distortion" || (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0) || (canHaveAbility(usingPokemon, abilitynum("Contrary")) && !ignoresWildAbilities(player));
         var select = {
@@ -13063,10 +13071,16 @@ function Safari() {
             costumeMod += this.getFortune(player, "preschooler", 0);
         }
 
+        /* 
+            hacky but if stellar on cooldown, feed a pure normal type into the hasType function instead (in this case rattata) for calculations with premier ball.
+            this is done for compatibility with hasType without having to modify that function which could cause issues elsewhere,
+            and without overwriting the leader variable for the rest of the function
+        */
+        var typeLeader = stellarCooldown ? 19 : leader;
         if (ball === "premier") {
-            if (hasType(leader, "Normal") && player.costume !== "inver") {
-                ballBonus = hasType(leader, "???") ? itemData.premier.maxBonus : itemData.premier.bonusRate;
-            } else if (hasType(leader, "???")) {
+            if (hasType(typeLeader, "Normal") && player.costume !== "inver") {
+                ballBonus = hasType(typeLeader, "???") ? itemData.premier.maxBonus : itemData.premier.bonusRate;
+            } else if (hasType(typeLeader, "???")) {
                 ballBonus = itemData.premier.bonusRate;
             }
             if (this.hasCostumeSkill(player, "premierBallBoost")) {
@@ -14236,6 +14250,9 @@ function Safari() {
         safari.pendingNotifications(player.id);
         if (currentPokemonCount > 0 && !currentThrowers.contains(player.id)) {
             currentThrowers.push(player.id);
+            if (hasStellarLead(player) && !wildEvent && !wildTera) {
+                safaribot.sendMessage(src, poke(this.getEffectiveLead(player, true)) + "'s Stellar-type needs to recharge!", safchan);
+            }
         }
         if (contestCount > 0 && !contestActivity[player.id].contains(lastWild)) {
             contestActivity[player.id].push(lastWild);
