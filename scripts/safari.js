@@ -1884,7 +1884,8 @@ function Safari() {
         "Dark" : { name: "Darkinium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" },
         
         //specials
-        "GuardianDeity": { name: "Guardian of Alola", special: [785, 786, 787, 788], effect: "golden", chance: 1, npcBuff: 0.12, description: "increase the likelihood of high BST Pokémon appearing from Golden Baits " },
+        "Stellar": { name: "Stellarium Z", effect: "evolution", chance: 0.2, npcBuff: 0.12 description: "have a {0}% chance to automatically evolve a Pokémon caught" },
+        "GuardianDeity": { name: "Guardian of Alola", special: [785, 786, 787, 788], effect: "golden", chance: 1, npcBuff: 0.12, description: "increase the likelihood of high BST Pokémon appearing from Golden Baits" }
     };
     var abilityEffects = {
         "237": "[Lead] Any failed Ball throws are instantly refunded to you at a 100% chance.", // Ball Fetch
@@ -21203,7 +21204,7 @@ function Safari() {
             
             this.saveGame(player);
             sys.sendAll("", safchan);
-            safaribot.sendAll(sys.name(src) + " used " + an(cName) + "! Their " + poke(active, true) + " surrounded itself with its Z-Power!", safchan);
+            //safaribot.sendAll(sys.name(src) + " used " + an(cName) + "! Their " + poke(active, true) + " surrounded itself with its Z-Power!", safchan);
             safaribot.sendMessage(src, "You used " + an(finishName("crystal")) + " on your " + poke(active, true) + "! You will " + buffDesc + " for " + plural(Math.floor(finalDuration), "minute") + " (only if " + poke(active, true) + " is your active Pokémon)!", safchan);
             this.updateShop(player, "crystal");
             safaribot.sendMessage(src, itemsLeft(player, "crystal"), safchan);
@@ -40806,10 +40807,10 @@ function Safari() {
                         ["pearl", 10],
                         ["bigpearl", 10],
                         ["dew", 20],
-                        [["pack", 10], ["miracle", 2]],
+                        ["pack", 15],
                         ["dew", 40],
                         ["nugget", 2],
-                        [["pack", 20], ["miracle", 4]],
+                        ["miracle", 3],
                         ["bignugget", 2],
                         ["mega", 3],
                         ["bright", 2],
