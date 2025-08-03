@@ -1884,7 +1884,7 @@ function Safari() {
         "Dark" : { name: "Darkinium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" },
         
         //specials
-        "Stellar": { name: "Stellarium Z", effect: "evolution", chance: 0.2, npcBuff: 0.12 description: "have a {0}% chance to automatically evolve a Pokémon caught" },
+        "Stellar": { name: "Stellarium Z", effect: "evolution", chance: 0.2, npcBuff: 0.12, description: "have a {0}% chance to automatically evolve a Pokémon caught" },
         "GuardianDeity": { name: "Guardian of Alola", special: [785, 786, 787, 788], effect: "golden", chance: 1, npcBuff: 0.12, description: "increase the likelihood of high BST Pokémon appearing from Golden Baits" }
     };
     var abilityEffects = {
