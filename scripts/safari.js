@@ -21203,12 +21203,9 @@ function Safari() {
             player.records.crystalsUsed += 1;
             
             this.saveGame(player);
-            sys.sendAll("", safchan);
-            //safaribot.sendAll(sys.name(src) + " used " + an(cName) + "! Their " + poke(active, true) + " surrounded itself with its Z-Power!", safchan);
             safaribot.sendMessage(src, "You used " + an(finishName("crystal")) + " on your " + poke(active, true) + "! You will " + buffDesc + " for " + plural(Math.floor(finalDuration), "minute") + " (only if " + poke(active, true) + " is your active Pokémon)!", safchan);
             this.updateShop(player, "crystal");
             safaribot.sendMessage(src, itemsLeft(player, "crystal"), safchan);
-            sys.sendAll("", safchan);
             return;
         }
         if (item === "mushroom") {
