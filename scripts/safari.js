@@ -10358,8 +10358,6 @@ function Safari() {
                 } else if (amt < 0) {
                     out.push("-$" + addComma(-amt));
                 }
-            } else if (s == "@expup") {
-                out.push("EXP Up");
             } else if (s[0] === "@" || (allItems.contains(itemAlias(s, true)))) {
                 asset = s;
                 if (asset[0] === "@") {
@@ -10386,6 +10384,16 @@ function Safari() {
         if (stuff === "@expup") {
             out.gained.push((350 + (safari.getCostumeLevel(player) * 50) + " Costume Exp"));
             safari.costumeEXP(player, "alchemy", 350 + (safari.getCostumeLevel(player) * 50));
+            return out;
+        }
+        if (stuff === "@expmax") {
+            var expTotal = 0;
+            for (var i = 0; i < 22; i++) {
+                var expGain = 350 + (safari.getCostumeLevel(player) * 50);
+                safari.costumeEXP(player, "alchemy", expGain);
+                expTotal += expGain;
+            }
+            out.gained.push(addComma(expTotal) + " Costume Exp");
             return out;
         }
         if (typeof stuff === "string") {
@@ -40224,11 +40232,17 @@ function Safari() {
         if (player.costume && costumeData[player.costume].expItem && player.costumeInfo[player.costume].level < 20) {
             var ing = {"dust": 300};
             ing[costumeData[player.costume].expItem] = 1;
-            recipes["exp up"] = {ingredients: ing, reward: "@expup", immediate: true, failChance: 0, cooldown: 6}
+            recipes["exp up"] = {ingredients: ing, reward: "@expup", immediate: true, failChance: 0, cooldown: 0};
+            var ing2 = {"dust": 6600};
+            ing2[costumeData[player.costume].expItem] = 22;
+            recipes["exp max"] = {ingredients: ing2, reward: "@expmax", immediate: true, failChance: 0, cooldown: 0};
         }
         else {
             if (recipes["exp up"]) {
                 delete recipes["exp up"];
+            }
+            if (recipes["exp max"]) {
+                delete recipes["exp max"];
             }
         }
         var validItems = Object.keys(recipes);
@@ -40257,6 +40271,12 @@ function Safari() {
         var colors = ["#FF6347", "#0000FF", "#006400", "#9932CC"];
         var cc = 0;
         var possibleRewards = Array.isArray(rec.reward) ? rec.reward.map(function(x){ return translateStuff(x, true); }) : [translateStuff(rec.reward, true)];
+        if (item === "exp up") {
+            possibleRewards = [costumeData[player.costume].fullName + " Costume EXP Up"];
+        }
+        else if (item === "exp max") {
+            possibleRewards = [costumeData[player.costume].fullName + " Costume EXP Max"];
+        }
         var coloredRewards = possibleRewards.map(function(x) { cc++; return toColor(x, colors[cc % colors.length]);});
         possibleRewards = readable(possibleRewards, "or");
 
@@ -40275,13 +40295,13 @@ function Safari() {
                 req = rec.ingredients[e] + " " +  asset.name;
             }
             if (val < rec.ingredients[e]) {
-                lacking.push(asset.type === "money" ? "$" + addComma(val) + "/$" + addComma(req) : val + "/" + req);
+                lacking.push(asset.type === "money" ? "$" + addComma(val) + "/$" + addComma(req) : addComma(val) + "/" + req);
                 canMake = false;
             }
             if (asset.type === "money") {
                 progress.push("$" + addComma(val) + "/$" + addComma(req));
             } else {
-                progress.push(val + "/" + req);
+                progress.push(addComma(val) + "/" + req);
             }
         }
         if (!data[1] || data[1].toLowerCase() !== "finish") {
