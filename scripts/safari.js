@@ -16253,6 +16253,9 @@ function Safari() {
                 if (isRare(p)) {
                     continue;
                 }
+                if (player.tradeBlacklist.contains(poke(p))) { // sell function already checks for tradeblock, but we check and exclude them here to reduce the length of the final multisell command
+                    continue;
+                }
                 toTurbo.push(p+"");
             }
             safaribot.sendHtmlMessage(src, link("/multisell " + toTurbo.join(",") + ":confirm", "«Sell All»"), safchan);
@@ -40272,10 +40275,10 @@ function Safari() {
         var cc = 0;
         var possibleRewards = Array.isArray(rec.reward) ? rec.reward.map(function(x){ return translateStuff(x, true); }) : [translateStuff(rec.reward, true)];
         if (item === "exp up") {
-            possibleRewards = [costumeData[player.costume].fullName + " Costume EXP Up"];
+            possibleRewards = [costumeData[player.costume].fullName + " Costume Exp Up"];
         }
         else if (item === "exp max") {
-            possibleRewards = [costumeData[player.costume].fullName + " Costume EXP Max"];
+            possibleRewards = [costumeData[player.costume].fullName + " Costume Exp Max"];
         }
         var coloredRewards = possibleRewards.map(function(x) { cc++; return toColor(x, colors[cc % colors.length]);});
         possibleRewards = readable(possibleRewards, "or");

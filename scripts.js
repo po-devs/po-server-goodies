@@ -1839,11 +1839,11 @@ beforeChatMessage: function(src, message, chan) {
 
     var throttleMsg = false;
     if (script.isOfficialChan(chan)) {
-        if ((!SESSION.channels(channel).isChannelOperator(src) && message.length > 750)
-         || (!SESSION.channels(channel).isChannelAdmin(src) && message.length > 3000)) {
+        if ((!SESSION.channels(channel).isChannelOperator(src) && message.length > 3000)
+         || (!SESSION.channels(channel).isChannelAdmin(src) && message.length > 3500)) {
             throttleMsg = true;
         }
-    } else if (message.length > 3000 && sys.auth(src) < 2) {
+    } else if (message.length > 3500 && sys.auth(src) < 2) {
         throttleMsg = true;
     }
     if (throttleMsg) {
