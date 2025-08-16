@@ -11053,7 +11053,7 @@ function Safari() {
             displayId = "Spirit Realm " + displayId;
         }
         if (wildTera) { // don't overwrite the shiny text colour because it looks pretty awful
-            displayId = shiny ? "Terastallized " + displayId : "<b><font color='#55a4a2'>Terastallized " + displayId + "</font></b>"
+            displayId = shiny ? "Terastallized " + currentTypeOverride + "-type " + displayId : "<b><font color='#55a4a2'>Terastallized " + currentTypeOverride + "-type " + displayId + "</font></b>";
         }
         var appmsg;
         if (customMessage) {
