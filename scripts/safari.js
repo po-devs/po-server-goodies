@@ -1876,8 +1876,8 @@ function Safari() {
         "Steel" : { name: "Steelium Z", effect: "silver", chance: 0.48, rate: [1, 4], description: "have a {0}% chance to gain some Silver Coins when successfully catching a Pokémon" },
         "Ghost" : { name: "Ghostium Z", effect: "photo", chance: 0.9, description: "have a {0}% chance to automatically take a photo when throwing balls" },
         "Fire" : { name: "Firium Z", effect: "photo", chance: 0.9, description: "have a {0}% chance to automatically take a photo when throwing balls" },
-        "Grass" : { name: "Grassium Z", effect: "cooldown", chance: 0.9, rate: 0.5, description: "have a {0}% chance of having half cooldown after throwing balls" },
-        "Psychic" : { name: "Psychium Z", effect: "cooldown", chance: 0.9, rate: 0.5, description: "have a {0}% chance of having half cooldown after throwing balls" },
+        "Grass" : { name: "Grassium Z", effect: "cooldown", chance: 0.6, rate: 0.5, description: "have a {0}% chance of having half cooldown after throwing balls" },
+        "Psychic" : { name: "Psychium Z", effect: "cooldown", chance: 0.6, rate: 0.5, description: "have a {0}% chance of having half cooldown after throwing balls" },
         "Water" : { name: "Waterium Z", effect: "fisherman", chance: 0.85, description: "have a {0}% chance to retrieve the ball you threw if it fails to catch" },
         "Ice" : { name: "Icium Z", effect: "fisherman", chance: 0.85, description: "have a {0}% chance to retrieve the ball you threw if it fails to catch" },
         "Dragon" : { name: "Dragonium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" },
@@ -13350,6 +13350,10 @@ function Safari() {
         }
         if (wildSpirit && ball !== "spirit") {
             safaribot.sendMessage(src, "This is a Spirit Pokémon, you can only use " + es(finishName("spirit")) + "!", safchan);
+            return;
+        }
+        if (ball === "cherish" && getCherished(currentDisplay, name) >= 10) {
+            safaribot.sendMessage(src, "You cannot Cherish this Pokémon any further!", safchan);
             return;
         }
         if (currentRules && currentRules.excludeBalls && currentRules.excludeBalls.contains(ball) && ball !== "spirit") {
@@ -30683,24 +30687,28 @@ function Safari() {
             if (!this.fullNPC && this.npcBattle && !((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost))) {
                 for (var i = 0 ; i < self.team1.length; i++) { // looping through b/c if there are multiple pokemon with this skill, each of them will activate it individually
                     var pokeObj = self.team1[i];
-                    if (pokeObj.damagingUsed > 0 && pokeObj.damagingUsed % 4 === 0 && pokeObj.boosts["atk"] < 6) {
-                        var intrepidSwordSkill = safari.pokeSkillActivated(self.name1, pokeObj, "intrepidSword");
-                        if (intrepidSwordSkill) {
-                            pokeObj.boosts["atk"] += intrepidSwordSkill.rate;
-                            pokeObj.boosts["atk"] = Math.min(6, pokeObj.boosts["atk"]);
-                            pokeObj.damagingUsed = 0;
-                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s ATK increased by {3}!".format(poke(intrepidSwordSkill.id), intrepidSwordSkill.name, poke(pokeObj.id), plural(intrepidSwordSkill.rate, "stage")), "#55E"));
+                    if (pokeObj.damagingUsed > 0 && pokeObj.damagingUsed % 4 === 0) {
+                        pokeObj.damagingUsed = 0;
+                        if (pokeObj.boosts["atk"] < 6) {
+                            var intrepidSwordSkill = safari.pokeSkillActivated(self.name1, pokeObj, "intrepidSword");
+                            if (intrepidSwordSkill) {
+                                pokeObj.boosts["atk"] += intrepidSwordSkill.rate;
+                                pokeObj.boosts["atk"] = Math.min(6, pokeObj.boosts["atk"]);
+                                this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s ATK increased by {3}!".format(poke(intrepidSwordSkill.id), intrepidSwordSkill.name, poke(pokeObj.id), plural(intrepidSwordSkill.rate, "stage")), "#55E"));
+                            }
                         }
                     }
-                    if (pokeObj.nonDamagingUsed > 0 && pokeObj.nonDamagingUsed % 4 === 0 && (pokeObj.boosts["def"] < 6 || pokeObj.boosts["sdef"] < 6)) {
-                        var dauntlessShieldSkill = safari.pokeSkillActivated(self.name1, pokeObj, "dauntlessShield");
-                        if (dauntlessShieldSkill) {
-                            pokeObj.boosts["def"] += dauntlessShieldSkill.rate;
-                            pokeObj.boosts["sdef"] += dauntlessShieldSkill.rate;
-                            pokeObj.boosts["def"] = Math.min(6, pokeObj.boosts["def"]);
-                            pokeObj.boosts["sdef"] = Math.min(6, pokeObj.boosts["sdef"]);
-                            pokeObj.nonDamagingUsed = 0;
-                            this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s DEF and SDEF increased by {3}!".format(poke(dauntlessShieldSkill.id), dauntlessShieldSkill.name, poke(pokeObj.id), plural(dauntlessShieldSkill.rate, "stage")), "#55E"));
+                    if (pokeObj.nonDamagingUsed > 0 && pokeObj.nonDamagingUsed % 4 === 0) {
+                        pokeObj.nonDamagingUsed = 0;
+                        if (pokeObj.boosts["def"] < 6 || pokeObj.boosts["sdef"] < 6) {
+                            var dauntlessShieldSkill = safari.pokeSkillActivated(self.name1, pokeObj, "dauntlessShield");
+                            if (dauntlessShieldSkill) {
+                                pokeObj.boosts["def"] += dauntlessShieldSkill.rate;
+                                pokeObj.boosts["sdef"] += dauntlessShieldSkill.rate;
+                                pokeObj.boosts["def"] = Math.min(6, pokeObj.boosts["def"]);
+                                pokeObj.boosts["sdef"] = Math.min(6, pokeObj.boosts["sdef"]);
+                                this.sendToViewers(toColor("<b>[{0}'s {1}]</b> {2}'s DEF and SDEF increased by {3}!".format(poke(dauntlessShieldSkill.id), dauntlessShieldSkill.name, poke(pokeObj.id), plural(dauntlessShieldSkill.rate, "stage")), "#55E"));
+                            }
                         }
                     }
                 }
