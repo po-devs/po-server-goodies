@@ -12277,7 +12277,7 @@ function Safari() {
         
         return themeList;
     };
-    this.getAllRaresInTheme = function(theme) {
+    this.getAllRaresInTheme = function(theme, raw, textOnly) {
         if (!contestThemes.hasOwnProperty(theme)) {
             return null;
         }
@@ -12289,7 +12289,7 @@ function Safari() {
             return !contestThemes[theme].exclude.contains(e);
         };
         var finalFormat = function(pokeId) {
-            return pokeInfo.icon(pokeId) + " " + link("/bst " + pokeId, poke(pokeId));
+            return textOnly? poke(pokeId) : pokeInfo.icon(pokeId) + " " + link("/bst " + pokeId, poke(pokeId));
         };
         var ret = {},
             include = contestThemes[theme].include.slice(0).sort(ascendingSpecies).filter(notExcluded),
@@ -12365,11 +12365,14 @@ function Safari() {
         }
 
         for (var arr in ret) {
-            ret[arr] = removeDuplicates(ret[arr], true).sort(ascendingSpecies).map(finalFormat);
+            ret[arr] = removeDuplicates(ret[arr], true).sort(ascendingSpecies);
+            if (!raw) {
+                ret[arr] = ret[arr].map(finalFormat);
+            }
         }
         return ret;
     };
-    this.getAllSpawnsInTheme = function(theme, raw) {
+    this.getAllSpawnsInTheme = function(theme, raw, textOnly) {
         if (!contestThemes.hasOwnProperty(theme)) {
             return null;
         }
@@ -12381,7 +12384,7 @@ function Safari() {
             return !contestThemes[theme].exclude.contains(e);
         };
         var finalFormat = function(pokeId) {
-            return pokeInfo.icon(pokeId) + " " + link("/bst " + pokeId, poke(pokeId));
+            return textOnly? poke(pokeId) : pokeInfo.icon(pokeId) + " " + link("/bst " + pokeId, poke(pokeId));
         };
         var ret = {},
             include = contestThemes[theme].include.slice(0).sort(ascendingSpecies).filter(notExcluded),
@@ -12493,16 +12496,17 @@ function Safari() {
 
         return null;
     };
-    this.showThemeRares = function(src, theme) {
+    this.showThemeRares = function(src, theme, textOnly) {
         var themeKey = safari.getThemeKeyByName(theme);
  
         if (!themeKey || themeKey === "none") {
             var valid = getAllThemeNames("themerares");
             safaribot.sendHtmlMessage(src, "Valid theme inputs are: " + readable(valid) + ".", safchan);
+            safaribot.sendHtmlMessage(src, "Use " + link("/themerarest ", "themerarest", true) + " instead for text-only output.", safchan);
             return;
         }
 
-       var themeRares = safari.getAllRaresInTheme(themeKey);
+       var themeRares = safari.getAllRaresInTheme(themeKey, false, textOnly);
        
        sys.sendMessage(src, "", safchan);
        safaribot.sendHtmlMessage(src, "<u>Rare Pokémon that appear in the following themes</u>:", safchan);
@@ -12513,16 +12517,17 @@ function Safari() {
 
        sys.sendMessage(src, "", safchan);
     };
-    this.showThemeSpawns = function(src, theme) {
+    this.showThemeSpawns = function(src, theme, textOnly) {
         var themeKey = safari.getThemeKeyByName(theme);
  
         if (!themeKey || themeKey === "none") {
             var valid = getAllThemeNames("themespawns");
             safaribot.sendHtmlMessage(src, "Valid theme inputs are: " + readable(valid) + ".", safchan);
+            safaribot.sendHtmlMessage(src, "Use " + link("/themespawnst ", "themespawnst", true) + " instead for text-only output.", safchan);
             return;
         }
 
-       var themeSpawns = safari.getAllSpawnsInTheme(themeKey);
+       var themeSpawns = safari.getAllSpawnsInTheme(themeKey, false, textOnly);
        
        sys.sendMessage(src, "", safchan);
        safaribot.sendHtmlMessage(src, "<u>Pokémon that appear in the following themes</u>:", safchan);
@@ -59481,8 +59486,8 @@ function Safari() {
             "/view: To view another player's party. If no player is specified, all of your data will show up. Use /viewt for a text-only version of your data (excluding party).",
             "/mail [Name]։[Message]: To send a message to another player's inbox. Requires a Mail.",
             "/changealt: To pass your Safari data to another alt.",
-            "/themespawns: Show Pokémon that appear in a specified theme.",
-            "/themerares: Show rare Pokémon that appear in a specified theme.",
+            "/themespawns: Show Pokémon that appear in a specified theme. Use /themespawnst for a text-only version.",
+            "/themerares: Show rare Pokémon that appear in a specified theme. Use /themerarest for a text-only version.",
             "/abilityref [ability]: Shows Safari-specific effects for the specified Ability. If no Ability is specified, all Abilities that have effects will be listed.",
             "/options: View and set miscellaneous settings and options for Safari",
             "/contestforfeit: Allows you to withdraw from any ongoing Contest.",
@@ -59937,12 +59942,12 @@ function Safari() {
                 safari.changeAlt(src, commandData);
                 return true;
             }
-            if (command === "themespawn" || command === "themespawns") {
-                safari.showThemeSpawns(src, commandData);
+            if (["themespawn", "themespawns", "themespawnt", "themespawnst", "themespawnstext"].contains(command)) {
+                safari.showThemeSpawns(src, commandData, !["themespawn", "themespawns"].contains(command));
                 return true;
             }
-            if (command === "themerare" || command === "themerares") {
-                safari.showThemeRares(src, commandData);
+            if (["themerare", "themerares", "themeraret", "themerarest", "themerarestext", "themeraretext"].contains(command)) {
+                safari.showThemeRares(src, commandData, !["themerare", "themerares"].contains(command));
                 return true;
             }
             if (["abilityreference", "abilityref", "abref", "abreference"].contains(command)) {
