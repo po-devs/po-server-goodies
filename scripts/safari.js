@@ -7411,6 +7411,266 @@ function Safari() {
             "height": 0.3,
             "weight": 0.3,
             "moves": [movenum("Smog"), movenum("Poison Gas"), movenum("Memento"), movenum("Astonish"), movenum("Defense Curl"), movenum("Rollout"), movenum("Mean Look"), movenum("Withdraw"), movenum("Destiny Bond"), movenum("Fake Tears"), movenum("Parting Shot"), movenum("Shadow Ball"), movenum("Malignant Chain"), movenum("Toxic"), movenum("Nasty Plot"), movenum("Recover"), movenum("Protect"), movenum("Acid Spray"), movenum("Hex"), movenum("Night Shade"), movenum("Venoshock"), movenum("Endure"), movenum("Foul Play"), movenum("Sleep Talk"), movenum("Rest"), movenum("Imprison"), movenum("Gunk Shot"), movenum("Substitute"), movenum("Sludge Bomb"), movenum("Phantom Force"), movenum("Tera Blast"), movenum("Spite"), movenum("Poltergeist"), movenum("Sludge Wave"), movenum("Curse")]
+        },
+        "65572": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "65607": {
+            "types": ["", ""],
+            "name": "Mega Victreebel",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "65657": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "65685": {
+            "types": ["", ""],
+            "name": "Mega Dragonite",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "65690": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "65696": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "65763": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66014": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66036": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66066": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66081": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66096": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66140": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66145": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66188": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66191": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "197266": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66204": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "393886": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66223": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66225": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66227": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66237": {
+            "types": ["", ""],
+            "name": "Mega Hawlucha",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "197326": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66316": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "66406": {
+            "types": ["", ""],
+            "name": "",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
         }
         /* template
         "": {
