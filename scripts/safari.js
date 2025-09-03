@@ -7412,7 +7412,7 @@ function Safari() {
             "weight": 0.3,
             "moves": [movenum("Smog"), movenum("Poison Gas"), movenum("Memento"), movenum("Astonish"), movenum("Defense Curl"), movenum("Rollout"), movenum("Mean Look"), movenum("Withdraw"), movenum("Destiny Bond"), movenum("Fake Tears"), movenum("Parting Shot"), movenum("Shadow Ball"), movenum("Malignant Chain"), movenum("Toxic"), movenum("Nasty Plot"), movenum("Recover"), movenum("Protect"), movenum("Acid Spray"), movenum("Hex"), movenum("Night Shade"), movenum("Venoshock"), movenum("Endure"), movenum("Foul Play"), movenum("Sleep Talk"), movenum("Rest"), movenum("Imprison"), movenum("Gunk Shot"), movenum("Substitute"), movenum("Sludge Bomb"), movenum("Phantom Force"), movenum("Tera Blast"), movenum("Spite"), movenum("Poltergeist"), movenum("Sludge Wave"), movenum("Curse")]
         },
-        "65572": {
+        /*"65572": {
             "types": ["", ""],
             "name": "",
             "stats": [],
@@ -7671,7 +7671,7 @@ function Safari() {
             "height": 0,
             "weight": 0,
             "moves": []
-        }
+        }*/
         /* template
         "": {
             "types": ["", ""],
