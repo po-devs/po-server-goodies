@@ -16450,6 +16450,7 @@ function Safari() {
             safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
             safaribot.sendMessage(src, "For Move: Type any move. e.g.: /find move tackle (will show all Pokémon that can learn Tackle)", safchan);
             safaribot.sendMessage(src, "For Ability: Type any ability. e.g.: /find ability overgrow (will show all Pokémon that can have Overgrow)", safchan);
+            safaribot.sendMessage(src, "For Egg Group: Type any Egg Group (including Undiscovered). e.g.: /find egg amorphous (will show all Pokémon with the Amorphous Egg Group)", safchan);
             safaribot.sendMessage(src, "For Duplicate: Type a number. e.g.: /find duplicate 3 (will display all Pokémon that you have exactly 3 copies of)", safchan);
             safaribot.sendMessage(src, "For Duplicate+: Type a number greater than 1. e.g.: /find duplicate+ 3 (will display all Pokémon that you have at least 3 copies of)", safchan);
             safaribot.sendMessage(src, "For Region: Select any valid region (" +  readable(generations.slice(1, generations.length), "or") + ") to display all currently owned Pokémon from that region", safchan);
@@ -16476,7 +16477,7 @@ function Safari() {
         var sets = commandData.split(" or ");
         var multi;
         var str, info, crit, val, m, def, title = [], finalTitle = [], list, current = player.pokemon.concat(), finalList = [];
-        var spacedVal = ["move","learn","canlearn", "tier", "ability", "hasability", "theme"];
+        var spacedVal = ["move","learn", "canlearn", "tier", "ability", "hasability", "theme", "egg", "egggroup"];
 
         for (var i = 0; i < sets.length; i++) {
             multi = sets[i].split("&&");
@@ -16622,6 +16623,10 @@ function Safari() {
                 case "tier":
                     crit = "tier";
                     break;
+                case "egg":
+                case "egggroup":
+                    crit = "egg";
+                    break;
                 default:
                     crit = "abc";
             }
@@ -16725,6 +16730,23 @@ function Safari() {
                 }
             });
             return "that can learn " + moveOff(val);
+        }
+        else if (crit == "egg") {
+            var valid = ["mineral", "amorphous", "grass", "water3", "water2", "water1", "bug", "dragon", "flying", "field", "humanlike", "fairy", "monster", "undiscovered", "none"];
+            var prepareStr = function (val) { return val.toLowerCase(). replace(" ", "").replace("-", "") };
+            var group = prepareStr(val);
+
+            if (!valid.contains(group)) {
+                safaribot.sendMessage(src, val + " is not a valid Egg Group!", safchan);
+                return false;
+            }
+            current.forEach(function(x) {
+                var groups = getEggGroups(x).map(prepareStr);
+                if (groups.contains(group)) {
+                    list.push(x);
+                }
+            });
+            return "with the " + val + " Egg Group";
         }
         else if (crit == "shiny") {
             current.forEach(function(x){
