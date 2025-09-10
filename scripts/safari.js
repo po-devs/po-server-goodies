@@ -1172,7 +1172,7 @@ function Safari() {
         "7": "pinap",
         "8": "nanab",
         "9": "petaya",
-        "10": "watmel",
+        //"10": "watmel",
         "11": "miracle",
         "12": "platinum"
     };
@@ -7604,7 +7604,7 @@ function Safari() {
         },
         "66223": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Malamar",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -59144,6 +59144,11 @@ function Safari() {
             if (player.helds.length > player.party.length) {
                 player.helds = player.helds.slice(0, player.party.length);
             }
+            for (var i = 0; i < player.helds.length; i++) {
+                if (!heldCodes.hasOwnProperty(player.helds[i])) {
+                    player.helds[i] = -1;
+                }
+            }
             if (player.records.medalsWon === 0 && player.medals.length > 0) {
                 player.records.medalsWon = player.medals.length;
             }
@@ -65915,6 +65920,8 @@ function Safari() {
             }
             if (p.options.androidTextFlow && sys.playersOfChannel(sys.channelId("Safari Android Spam")).contains(pid)) {
                 var spamChan = sys.channelId("Safari Android Spam") || safchan;
+                sys.sendMessage(pid, "", spamChan);
+                sys.sendMessage(pid, "", spamChan);
                 sys.sendMessage(pid, "", spamChan);
             }
             if (p.auraExpiry > 0 && p.auraExpiry <= now()) {
