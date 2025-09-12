@@ -7412,9 +7412,29 @@ function Safari() {
             "weight": 0.3,
             "moves": [movenum("Smog"), movenum("Poison Gas"), movenum("Memento"), movenum("Astonish"), movenum("Defense Curl"), movenum("Rollout"), movenum("Mean Look"), movenum("Withdraw"), movenum("Destiny Bond"), movenum("Fake Tears"), movenum("Parting Shot"), movenum("Shadow Ball"), movenum("Malignant Chain"), movenum("Toxic"), movenum("Nasty Plot"), movenum("Recover"), movenum("Protect"), movenum("Acid Spray"), movenum("Hex"), movenum("Night Shade"), movenum("Venoshock"), movenum("Endure"), movenum("Foul Play"), movenum("Sleep Talk"), movenum("Rest"), movenum("Imprison"), movenum("Gunk Shot"), movenum("Substitute"), movenum("Sludge Bomb"), movenum("Phantom Force"), movenum("Tera Blast"), movenum("Spite"), movenum("Poltergeist"), movenum("Sludge Wave"), movenum("Curse")]
         },
-        /*"65572": {
+        /*"131098": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Raichu X",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "196634": {
+            "types": ["", ""],
+            "name": "Mega Raichu Y",
+            "stats": [],
+            "abilities": [],
+            "tier": "SM OU",
+            "height": 0,
+            "weight": 0,
+            "moves": []
+        },
+        "65572": {
+            "types": ["", ""],
+            "name": "Mega Clefable",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7434,7 +7454,7 @@ function Safari() {
         },
         "65657": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Starmie",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7454,7 +7474,7 @@ function Safari() {
         },
         "65690": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Meganium",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7464,7 +7484,7 @@ function Safari() {
         },
         "65696": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Feraligatr",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7474,7 +7494,7 @@ function Safari() {
         },
         "65763": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Skarmory",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7484,7 +7504,7 @@ function Safari() {
         },
         "66014": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Froslass",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7494,7 +7514,7 @@ function Safari() {
         },
         "66036": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Emboar",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7504,7 +7524,7 @@ function Safari() {
         },
         "66066": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Excadrill",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7514,7 +7534,7 @@ function Safari() {
         },
         "66081": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Scolipede",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7524,7 +7544,7 @@ function Safari() {
         },
         "66096": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Scrafty",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7534,7 +7554,7 @@ function Safari() {
         },
         "66140": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Eelektross",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7544,7 +7564,7 @@ function Safari() {
         },
         "66145": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Chandelure",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7554,7 +7574,7 @@ function Safari() {
         },
         "66188": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Chesnaught",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7564,7 +7584,7 @@ function Safari() {
         },
         "66191": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Delphox",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7574,7 +7594,7 @@ function Safari() {
         },
         "197266": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Greninja",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7584,7 +7604,7 @@ function Safari() {
         },
         "66204": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Pyroar",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7594,7 +7614,7 @@ function Safari() {
         },
         "393886": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Floette-Eternal",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7614,7 +7634,7 @@ function Safari() {
         },
         "66225": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Barbaracle",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7624,7 +7644,7 @@ function Safari() {
         },
         "66227": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Dragalge",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7644,7 +7664,7 @@ function Safari() {
         },
         "197326": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Zygarde",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7654,7 +7674,7 @@ function Safari() {
         },
         "66316": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Drampa",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
@@ -7664,7 +7684,7 @@ function Safari() {
         },
         "66406": {
             "types": ["", ""],
-            "name": "",
+            "name": "Mega Falinks",
             "stats": [],
             "abilities": [],
             "tier": "SM OU",
