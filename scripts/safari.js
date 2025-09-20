@@ -14512,6 +14512,7 @@ function Safari() {
             var wildWeight = getWeight(wild);
             var mult = Math.min((1.33 - ((wildWeight-60)/300)), 1);
             cooldown *= mult;
+            cooldown = Math.max(cooldown, 2000);
         }
         if (this.hasCostumeSkill(player, "reducedCatchFailCD")) {
             cooldown *= (1 - ((this.getCostumeLevel(player)-5)/75))
@@ -40339,20 +40340,20 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Available Recipes:" + validItems.map(function(x) {
                 return " " + link("/quest arborist:" + x, finishName(x));
             }), safchan);
-            safaribot.sendHtmlMessage(src, "Arborist: I've always got lotsa Apricorns myself, so lemme know if you're interested in {0}!".format(link("/quest arborist:trade", "trading")), safchan);
+            safaribot.sendHtmlMessage(src, "Arborist: I've always got lotsa spare supplies myself, so lemme know if you're interested in trading {0} or {1}!".format(link("/quest arborist:tradeapricorn", "Apricorns"), link("/quest arborist:tradedew", "Dew")), safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
 
         var item = data[0].toLowerCase();
 
-        if (item === "trade") {
+        if (item === "tradeapricorn") {
             var validTrades = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn"];
             var tradeCooldown = 2; // hours
             var exchangeCap = 100,
                 tradeRatio = 3;
             if (player.quests.arborist.cooldown >= now()) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Ooh hold up a moment, I'm still sortin' out all those Apricorns ya gave me! Come back in {0} if ya wanna trade somemore okay? But I can still make some Poké Balls if ya want!".format(timeLeftString(player.quests.arborist.cooldown)), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Ooh hold up a moment, I'm still sortin' out all those supplies ya gave me! Come back in {0} if ya wanna trade somemore okay? But I can still make some Poké Balls if ya want!".format(timeLeftString(player.quests.arborist.cooldown)), safchan);
                 return;
             }
 
@@ -40360,7 +40361,7 @@ function Safari() {
             if (!data[1] || !validTrades.contains(offer)) {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Up for trading then? If you've got too many Apricorns to spare, let's swap! (Cooldown: {0})".format(plural(tradeCooldown, "hour")), safchan);
                 safaribot.sendHtmlMessage(src, "Available Trades:" + validTrades.map(function(e) {
-                    return " " + link("/quest arborist:trade:" + e, finishName(e));
+                    return " " + link("/quest arborist:tradeapricorn:" + e, finishName(e));
                 }), safchan);
                 safaribot.sendHtmlMessage(src, "Arborist: I'll exchange every {0} of the Apricorn yer offerin' for a random 1 of mine! Don't worry, I'm not gonna end up givin' back the exact same type ya gave me though, and I'll try to pick a color that ya have enough space to hold. {1}".format(tradeRatio, toColor("But if ya end up having to discard some of 'em anyway, no take-backsies!", "red")), safchan);
                 return;
@@ -40368,7 +40369,7 @@ function Safari() {
 
             var amt = data[2];
             if (!amt || isNaN(amt)) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Wanna trade me your {0}? Type {1} to do so! Remember to offer in multiples of {2}! Also, I can only accept a max of {3} Apricorns at once. (You have {4})".format(es(finishName(offer)), link("/quest arborist:trade:" + offer + ":", "/quest arborist:trade:" + offer + ":[Amount to Trade]", true), tradeRatio, tradeRatio * exchangeCap, plural(player.balls[offer], finishName(offer))), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Wanna trade me your {0}? Type {1} to do so! Remember to offer in multiples of {2}! Also, I can only accept a max of {3} Apricorns at once. (You have {4})".format(es(finishName(offer)), link("/quest arborist:tradeapricorn:" + offer + ":", "/quest arborist:tradeapricorn:" + offer + ":[Amount to Trade]", true), tradeRatio, tradeRatio * exchangeCap, plural(player.balls[offer], finishName(offer))), safchan);
                 return;
             }
 
@@ -40379,7 +40380,7 @@ function Safari() {
                     closest = amt - amt % tradeRatio;
                 }
                 closest = Math.min(Math.max(tradeRatio, closest), tradeRatio * exchangeCap);
-                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: That's not a valid amount! I need a multiple of {0}! Try again would ya? (Closest amount: {1})".format(tradeRatio, link("/quest arborist:trade:" + offer + ":" + closest, plural(closest, offer))), safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: That's not a valid amount! I need a multiple of {0}! Try again would ya? (Closest amount: {1})".format(tradeRatio, link("/quest arborist:tradeapricorn:" + offer + ":" + closest, plural(closest, offer))), safchan);
                 return;
             }
             if (amt > (tradeRatio * exchangeCap)) {
@@ -40417,9 +40418,84 @@ function Safari() {
             player.balls[offer] -= amt;
             safaribot.sendMessage(src, "You " + rew + ".", safchan);
             safari.toRecentQuests(player, "arborist");
-            player.quests.arborist.cooldown = now() + hours(tradeCooldown);
+            player.quests.arborist.cooldown = now() + (hours(tradeCooldown) * (1 - safari.getAuraEffect(player, "questcd", 0)));
             player.notificationData.arboristWaiting = true;
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arborist|||Gave " + plural(amt, finishName(offer)) + "|||" + cap(rew) + "\n");
+            safari.pendingNotifications(player.id);
+            this.saveGame(player);
+        }
+        else if (item === "tradedew") {
+            var validTrades = ["dew", "hdew"];
+            var tradeCooldown = 2; // hours
+            var tradeInterval = 10;
+            var exchangeCap = 50;
+            var silverCost = 20;
+            if (player.quests.arborist.cooldown >= now()) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Ooh hold up a moment, I'm still sortin' out all those supplies ya gave me! Come back in {0} if ya wanna trade somemore okay? But I can still make some Poké Balls if ya want!".format(timeLeftString(player.quests.arborist.cooldown)), safchan);
+                return;
+            }
+
+            var offer = itemAlias(data[1] || "");
+            if (!data[1] || !validTrades.contains(offer)) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Up for trading then? If you've got too much Dew to spare, let's swap! (Cooldown: {0}~{1})".format(tradeCooldown, plural(tradeCooldown * (exchangeCap/tradeInterval), "hour")), safchan);
+                safaribot.sendHtmlMessage(src, "Available Trades:" + validTrades.map(function(e) {
+                    return " " + link("/quest arborist:tradedew:" + e, finishName(e));
+                }), safchan);
+                safaribot.sendHtmlMessage(src, "Arborist: I'll exchange your Dew in multiples of {0}! I'll also charge a small fee of {1} of per {0} Dew yer offerin'! Sorry, labour ain't cheap!".format(tradeInterval, plural(silverCost, "silver")), safchan);
+                return;
+            }
+
+            var amt = data[2];
+            if (!amt || isNaN(amt)) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Wanna trade me your {0}? Type {1} to do so! Also, I can only accept a max of {2} Dew at once. (You have {3})".format(es(finishName(offer)), link("/quest arborist:tradedew:" + offer + ":", "/quest arborist:tradedew:" + offer + ":[Amount to Trade]", true), exchangeCap, plural(player.balls[offer], finishName(offer))), safchan);
+                return;
+            }
+
+            amt = parseInt(amt);
+            if (amt <= 0 || amt % tradeInterval !== 0) {
+                var closest = Math.round(amt / tradeInterval) * tradeInterval;
+                if (closest > player.balls[offer]) {
+                    closest = Math.round(player.balls[offer] / tradeInterval) * tradeInterval;
+                }
+                closest = Math.min(Math.max(tradeInterval, closest), exchangeCap);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: That's not a valid amount! I need a multiple of {0}! Try again would ya? (Closest amount: {1})".format(tradeInterval, link("/quest arborist:tradedew:" + offer + ":" + closest, plural(closest, offer))), safchan);
+                return;
+            }
+            if (amt > exchangeCap) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Oops, that's way too many! I can only accept a max of {0} Dew at once. Try again would ya?".format(exchangeCap), safchan);
+                return;
+            }
+            if (player.balls[offer] < amt) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Hey hey, ya don't have that many {0}!".format(es(finishName(offer))), safchan);
+                return;
+            }
+
+            var finalSilverCost = silverCost * (amt / tradeInterval);
+            var finalCooldown = tradeCooldown * (amt / tradeInterval);
+            var reward = validTrades[0] === offer ? validTrades[1] : validTrades[0];
+            var confirm = data[3];
+            if (data[3] !== "confirm") {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Exchanging {0} for {1} will cost ya {2}, type {3} if you're sure ya wanna trade!".format(plural(amt, offer), plural(amt, reward), plural(finalSilverCost, "silver"), link("/quest arborist:tradedew:" + offer + ":" + amt + ":confirm", false, true)), safchan);
+                return;
+            }
+            if (player.balls.silver < finalSilverCost) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Hey hey, ya don't have enough {0}!".format(es(finishName("silver"))), safchan);
+                return;
+            }
+            if (player.balls[reward] + amt > getCap(reward)) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Hey hey, ya don't have enough room to hold {0}!".format(plural(amt, reward)), safchan);
+                return;
+            }
+
+            var rew = giveStuff(player, toStuffObj(amt + "@" + reward));
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Alright, in exchange for your {0} and {1}, I'm gonna give ya {2}! Here ya go!".format(plural(amt, finishName(offer)), plural(finalSilverCost, "silver"), plural(amt, finishName(reward))), safchan);
+            player.balls[offer] -= amt;
+            player.balls.silver -= finalSilverCost;
+            safaribot.sendMessage(src, "You " + rew + ".", safchan);
+            safari.toRecentQuests(player, "arborist");
+            player.quests.arborist.cooldown = now() + (hours(finalCooldown) * (1 - safari.getAuraEffect(player, "questcd", 0)));
+            player.notificationData.arboristWaiting = true;
+            sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arborist|||Gave " + plural(amt, finishName(offer)) + " and " + plural(finalSilverCost, "silver") + "|||" + cap(rew) + "\n");
             safari.pendingNotifications(player.id);
             this.saveGame(player);
         }
