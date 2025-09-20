@@ -40473,7 +40473,6 @@ function Safari() {
             var finalSilverCost = silverCost * (amt / tradeInterval);
             var finalCooldown = tradeCooldown * (amt / tradeInterval);
             var reward = validTrades[0] === offer ? validTrades[1] : validTrades[0];
-            var confirm = data[3];
             if (data[3] !== "confirm") {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Exchanging {0} for {1} will cost ya {2}, type {3} if you're sure ya wanna trade!".format(plural(amt, offer), plural(amt, reward), plural(finalSilverCost, "silver"), link("/quest arborist:tradedew:" + offer + ":" + amt + ":confirm", false, true)), safchan);
                 return;
