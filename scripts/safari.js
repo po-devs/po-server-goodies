@@ -20188,6 +20188,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "<b>Beeee<font size=2>eeeee</font><font size=1>eeeeep...</font></b> A strange fog rolls in as your Itemfinder gives out. Wandering, you come across a mysterious exhumed grave. All that's left inside are some burned and defaced photos, and a conspicuous " + finishName(reward) + "...", safchan);
                     this.costumeEXP(player, "findrare");
                 }
+                break;
                 case "scale": {
                     amount = parseInt(randomSample({ 1: 15, 2: 3, 3: 1}));
                     safaribot.sendHtmlMessage(src, "<b>Belelele WHOOP!</b> Your Itemfinder is reacting to... your " + poke(player.party[0]) + "!? " + poke(player.party[0]) + " glows faintly and sheds a handful of " + es(finishName(reward)) + "!", safchan);
