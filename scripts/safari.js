@@ -755,7 +755,7 @@ function Safari() {
             detective: 0,
             buyFromPlayer: 0
         },
-        cherished: [],
+        cherished: {},
         freebaits: 0,
         celebrityRegion: "kanto",
         shop: {},
@@ -9751,7 +9751,11 @@ function Safari() {
         if (!getAvatarOff(player)) {
             return 0;
         }
-        return (Math.min(countDuplicates(getAvatarOff(player).cherished, pokeInfo.species(getInputPokemon(poke(mon)).num)), 10));
+        var species = pokeInfo.species(getInputPokemon(poke(mon)).num);
+        if (!getAvatarOff(player).cherished.hasOwnProperty(species)) {
+            return 0;
+        }
+        return (Math.min(getAvatarOff(player).cherished[species], 10));
     }
     function removeDuplicates(arr, onlyNumbers) {
         if (onlyNumbers) {
@@ -13561,7 +13565,7 @@ function Safari() {
         var spiritMonBonus = wildSpirit ? 0.50 : 1;
         var teraChance = wildTera && !wildEvent ? (contestComboPlayers.contains(player.idnum) ? 1.5 : 0.8) : 1;
         var flowerGirlBonus = 1;
-        var cherishBonus = Math.min(countDuplicates(pokeInfo.species(getInputPokemon(poke(leader)).num)), 10);
+        var cherishBonus = getCherished(getInputPokemon(poke(leader)).num, sys.name(src));
         var scaleColor = player.scaleDeadline >= now() ? player.scaleColor : null;
         var stellarCooldown = hasStellarLead(player) && !wildEvent && !wildTera && currentThrowers.contains(player.id);
 
@@ -14323,7 +14327,7 @@ function Safari() {
             var ch = "";
             var catchingMon = leader;
             var finalCatch = currentPokemon;
-            if (player.cherished.indexOf(pokeInfo.species(getInputPokemon(poke(catchingMon)).num)) !== -1) {
+            if (getCherished(getInputPokemon(poke(catchingMon)).num, sys.name(src))) {
                 if (!player.options.cherishOff) {
                     ch = "Cherished ";
                 }
@@ -14602,7 +14606,13 @@ function Safari() {
             safari.detectiveClue(player.idnum, "catch:" + (parseInt(currentPokemon, 10) % 65536), src);
             if (ball === "cherish") {
                 player.records.catchCherish += 1;
-                player.cherished.push(pokeInfo.species(getInputPokemon(poke(currentPokemon)).num));
+                var species = pokeInfo.species(getInputPokemon(poke(currentPokemon)).num);
+                if (player.cherished.hasOwnProperty(species)) {
+                    player.cherished[species]++;
+                }
+                else {
+                    player.cherished[species] = 1;
+                }
             }
             if (ball === "myth") {
                 player.records.catchMyth += 1;
@@ -15997,13 +16007,47 @@ function Safari() {
         var isAndroid = (sys.os(src) === "android");
         sys.sendHtmlMessage(src, this.showBox(player, (data === "*" ? 1 : data), isAndroid, textOnly, shopLink), safchan);
     };
-    this.viewCherished = function(src, textOnly) {
+    this.viewCherished = function(src, commandData) {
         if (!validPlayers("self", src)) {
             return;
         }
         var player = getAvatar(src);
-        var isAndroid = (sys.os(src) === "android");
-        sys.sendHtmlMessage(src, this.showCherished(player, isAndroid, textOnly), safchan);
+        var toShow = null, showPage;
+        if (commandData !== "*") {
+            var split = commandData.split(":");
+            if (split[0]) {
+                var mon = getInputPokemon(split[0]);
+                if (!mon.num) {
+                    safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
+                    return;
+                }
+                var species = pokeInfo.species(mon.num);
+                if (!player.cherished.hasOwnProperty(species)) {
+                    safaribot.sendMessage(src, "You don't have " + poke(species) + " in your Cherished list!", safchan);
+                    return;
+                }
+                toShow = species;
+            }
+            if (split[1]) {
+                showPage = Math.abs(parseInt(split[1]));
+            }
+        }
+        var keys = toShow ? [toShow] : Object.keys(player.cherished).sort();
+        var displayLimit = 10,
+            pageNum = showPage || 0;
+        var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
+        
+        for (var i = 0; i < page.length; i++) {
+            var count = Math.min(player.cherished[page[i]], 10);
+            safaribot.sendHtmlMessage(src, "{0} <b>{1}: <font color='{3}'>{2}/10 Cherished</b></font>".format(pokeInfo.icon(page[i]), poke(pokeInfo.species(page[i])), count, count === 10 ? "green" : "black"), safchan);
+            if (i === page.length-1) {
+                var pageControls = (page.contains(keys[0]) ? "" : link("/cherish :" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/cherish :" + (pageNum+1), "«Next Page»"));
+                if (pageControls) {
+                    sys.sendMessage(src, "", safchan);
+                    safaribot.sendHtmlMessage(src, pageControls, safchan);
+                }
+            }
+        }
     };
     this.giveItem = function(src, item, slot) {
         var player = getAvatar(src);
@@ -16708,21 +16752,6 @@ function Safari() {
                     out += " ";
                 }
                 out += "[<a href='po:send//box" + (shopLink ? "s" : (textOnly? "t" : "" )) + " " + (page + 1) + "'>" + utilities.html_escape("Box " + (page + 1) + " >") + "</a>]";
-            }
-        }
-        return out;
-    };
-    this.showCherished = function(player, isAndroid, textOnly) {
-        var out = "";
-        var list = player.cherished;
-
-        var label = "Cherished (" + player.cherished.length + "/120)";
-        if (textOnly) {
-            out += this.listPokemonText(list, label);
-        } else {
-            out += this.listPokemon(list, label, player.options.smallBox);
-            if (isAndroid) {
-                out += "<br />";
             }
         }
         return out;
@@ -18021,23 +18050,56 @@ function Safari() {
             }
         }
     };
-    this.showMegaTimers = function(src) {
+    this.showMegaTimers = function(src, commandData) {
         var player = getAvatar(src);
         if (!player) {
             return;
         }
         if (player.megaTimers.length === 0) {
-            safaribot.sendMessage(src, "You don't have any current Mega Pokémon!", safchan);
+            safaribot.sendMessage(src, "You don't have any current Mega-Evolved Pokémon!", safchan);
             return;
         }
-        var displayCap = 10;
-        for (var i = 0; i < Math.min(player.megaTimers.length, displayCap); i++) {
-            var timerObj = player.megaTimers[i];
+        var toShow = null, showPage;
+        if (commandData !== "*") {
+            var split = commandData.split(":");
+            if (split[0]) {
+                var mon = getInputPokemon(split[0]);
+                if (!mon.num) {
+                    safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
+                    return;
+                }
+                var species = pokeInfo.species(mon.num);
+                toShow = player.megaTimers.filter(function(e) { return pokeInfo.species(e.id) === species });
+                if (toShow.length === 0) {
+                    safaribot.sendMessage(src, "You don't have any current Mega-Evolved " + poke(species) + "!", safchan);
+                    return;
+                }
+            }
+            if (split[1]) {
+                showPage = Math.abs(parseInt(split[1]));
+            }
+        }
+        var keys = toShow ? toShow : player.megaTimers;
+        keys.sort(function(a, b) { return a.expires - b.expires });
+
+        var displayLimit = 10,
+            pageNum = showPage || 0;
+        var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
+        
+        for (var i = 0; i < page.length; i++) {
+            var timerObj = page[i];
             var diff = timerObj.expires - now();
             var diffString = (diff < 0 ? (currentTheme ? "After this Contest" : "After the next Contest") : timeString(Math.round(diff / 1000), true));
-            
+
             var out = "{0} <b>{1}</b>: {2}".format(pokeInfo.icon(timerObj.id, typeof timerObj.id === "string"), getInputPokemon(timerObj.id + (typeof timerObj.id === "string" ? "*" : "")).name, diffString);
             safaribot.sendHtmlMessage(src, out, safchan);
+            if (i === page.length-1) {
+                var pageControls = (page.contains(keys[0]) ? "" : link("/showmegas :" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/showmegas :" + (pageNum+1), "«Next Page»"));
+                if (pageControls) {
+                    sys.sendMessage(src, "", safchan);
+                    safaribot.sendHtmlMessage(src, pageControls, safchan);
+                }
+            }
         }
     };
     this.setFavoriteBall = function(src, commandData) {
@@ -20474,6 +20536,9 @@ function Safari() {
         player.records.megaEvolutions += 1;
         this.updateShop(player, "mega");
         var duration = (itemData.mega.duration * 24 + this.getFortune(player, "extramega", 0)) * this.getAuraEffect(player, "extramega", 1);
+        if ([131431, 131517, 131520].contains(parseInt(evolveTo))) { // Z Megas
+            duration *= 0.5;
+        }
         duration = Math.round(duration);
 
         this.evolvePokemon(src, info, evolvedId, "Mega Evolved into", true);
@@ -59722,7 +59787,7 @@ function Safari() {
                     }
                     delete obj[prop];
                 } else if (!Array.isArray(obj[prop]) && typeof obj[prop] == "object" && typeof template[prop] == "object") {
-                    if (!["shop", "decorations", "secretBase", "nextSpawn", "pokeskills", "trackedRequests", "offlineSales"].contains(prop)) {
+                    if (!["shop", "decorations", "secretBase", "nextSpawn", "pokeskills", "trackedRequests", "offlineSales", "cherished"].contains(prop)) {
                         for (p in obj[prop]) {
                             removeInvalid(obj[prop], p, template[prop]);
                         }
@@ -60896,8 +60961,8 @@ function Safari() {
                 safari.viewBox(src, commandData, (command === "boxt" || command === "boxs"), command === "boxs");
                 return true;
             }
-            if (command === "cherish" || command === "cherisht" || command === "cherished") {
-                safari.viewCherished(src, command === "cherisht");
+            if (command === "cherish" || command === "cherished" || command === "showcherish" || command === "showcherished") {
+                safari.viewCherished(src, commandData);
                 return true;
             }
             if (command === "album") {
@@ -61934,7 +61999,7 @@ function Safari() {
                 return true;
             }
             if (command === "showmega" || command === "showmegas") {
-                safari.showMegaTimers(src);
+                safari.showMegaTimers(src, commandData);
                 return true;
             }
             if (["economy", "showeconomy", "economydata", "stonks"].contains(command)) {
@@ -64571,22 +64636,22 @@ function Safari() {
                 if (cmd.length > 2) {
                     num = parseInt(cmd[2], 10) || 1;
                 }
-                var i;
-                if (num === -1) {
-                    i = player.cherished.indexOf(data.num);
-                    if (i === -1) {
-                        safaribot.sendMessage( src,player.id + " doesn't have that Cherished Pokémon!",safchan );
-                        return true;
-                    }
-                    player.cherished.splice(i, 1);
-                    safari.saveGame(player);
-                    safaribot.sendMessage( src,"You took away a " + data.name + " from " + player.id + "'s Cherished List.",safchan );
+                var i = player.cherished.hasOwnProperty(data.num);
+                if (!i && num <= 0) {
+                    safaribot.sendMessage(src, player.id.toCorrectCase() + " doesn't have that Cherished Pokémon!", safchan);
+                    return true;
+                }
+                if (i) {
+                    player.cherished[data.num] += num;
                 }
                 else {
-                    player.cherished.push(data.num);
-                    safari.saveGame(player);
-                    safaribot.sendMessage( src,"You added " + data.name + " to " + player.id + "'s Cherished List.",safchan );
-                };
+                    player.cherished[data.num] = num;
+                }
+                if (player.cherished[data.num] <= 0) {
+                    delete player.cherished[data.num];
+                }
+                safari.saveGame(player);
+                safaribot.sendMessage(src, "You " + (num < 0 ? "took away " : "added ") + num + " " + data.name + (num < 0 ? "from " : "to ") + player.id.toCorrectCase() + "'s Cherished List.", safchan);
                 return true;
             }
             if (command === "vbdebug") {
@@ -64599,7 +64664,7 @@ function Safari() {
                     safaribot.sendMessage(src, "No such player!", safchan);
                     return true;
                 }
-                player.cherished = [];
+                player.cherished = {};
                 this.saveGame(player);
                 return true;
             }
