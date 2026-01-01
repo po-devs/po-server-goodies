@@ -18059,7 +18059,7 @@ function Safari() {
             safaribot.sendMessage(src, "You don't have any current Mega-Evolved Pokémon!", safchan);
             return;
         }
-        var toShow = null, showPage;
+        var toShow = null, showPage, showMon = "";
         if (commandData !== "*") {
             var split = commandData.split(":");
             if (split[0]) {
@@ -18074,6 +18074,7 @@ function Safari() {
                     safaribot.sendMessage(src, "You don't have any current Mega-Evolved " + poke(species) + "!", safchan);
                     return;
                 }
+                showMon = species;
             }
             if (split[1]) {
                 showPage = Math.abs(parseInt(split[1]));
@@ -18094,7 +18095,7 @@ function Safari() {
             var out = "{0} <b>{1}</b>: {2}".format(pokeInfo.icon(timerObj.id, typeof timerObj.id === "string"), getInputPokemon(timerObj.id + (typeof timerObj.id === "string" ? "*" : "")).name, diffString);
             safaribot.sendHtmlMessage(src, out, safchan);
             if (i === page.length-1) {
-                var pageControls = (page.contains(keys[0]) ? "" : link("/showmegas :" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/showmegas :" + (pageNum+1), "«Next Page»"));
+                var pageControls = (page.contains(keys[0]) ? "" : link("/showmegas " + showMon + ":" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/showmegas " + showMon + ":" + (pageNum+1), "«Next Page»"));
                 if (pageControls) {
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendHtmlMessage(src, pageControls, safchan);
@@ -34168,7 +34169,7 @@ function Safari() {
             }
             stats = getStats(p);
             if (cherished) {
-                ch = Math.min(countRepeated(cherished, pokeInfo.species(p)), 10);
+                ch = getCherished(pokeInfo.species(p), owner);
             }
             h = Math.round(((stats[0] + ch) * 2 + 110) * boost);
             info = {
@@ -60470,8 +60471,9 @@ function Safari() {
             "/records: To view your records. Use \"/records earnings\" to show a break down of earnings by source.",
             "/leaderboard [type]: View the Safari Leaderboards. Type \"/leaderboard list\" to see all existing leaderboards.",
             "/trials: Shows you your current trials missions. Only works while trials is in session.",
-            "/showmegas: Shows your currently Mega-Evolved Pokémon and their remaining Mega Evolution time.",
+            "/showmegas [Pokémon]: Shows your currently Mega-Evolved Pokémon and their remaining Mega Evolution time. Input a Pokémon name to view Megas for that Pokémon only.",
             "/economy [days ago]: Shows recent Safari economy statistics, up to the last 14 days. Defaults to today.",
+            "/cherish [Pokémon]: Shows your Cherished Pokémon. Input a Pokémon name to view that specific Pokémon's Cherished status only.",
             "*** Action Commands ***",
             "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
