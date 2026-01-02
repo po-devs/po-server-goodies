@@ -1986,6 +1986,9 @@ function Safari() {
         "167": "[Misc] When growing Berries in the Daycare, a Pokémon with this Ability will produce 20% fewer Berries, but in 55% less time than usual." // Cheek Pouch
     };
     var ultraAbilities = {
+        "196": {
+            "name": "Soul-Heart" // sys.abilityNum does NOT work on this ability for some reason despite being a Gen 7 S/M ability. sys.ability("196") does return Soul-Heart though so idk what is happening. declaring it here so abilitynum returns 196 properly.
+        },
         "233": {
             "name": "Neuroforce"
         },
