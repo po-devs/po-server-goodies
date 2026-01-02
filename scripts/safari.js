@@ -10339,6 +10339,7 @@ function Safari() {
             if (typeof moves === "undefined" || moves.length === 0) {
                 if (getInputPokemon(""+id).name === "Missingno") {
                     moves = [33]; // Tackle
+                    safaribot.sendAll("No moves found in fetchNum with parameter: " + num, staffchannel);
                 }
                 else
                     moves = fetchMoves(species);
@@ -16032,14 +16033,14 @@ function Safari() {
                 showPage = Math.abs(parseInt(split[1]));
             }
         }
-        var keys = toShow ? [toShow] : Object.keys(player.cherished).sort();
+        var keys = toShow ? [toShow] : Object.keys(player.cherished).sort(function(a, b) { return parseInt(a) - parseInt(b) });
         var displayLimit = 10,
             pageNum = showPage || 0;
         var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
         
         for (var i = 0; i < page.length; i++) {
             var count = Math.min(player.cherished[page[i]], 10);
-            safaribot.sendHtmlMessage(src, "{0} <b>{1}: <font color='{3}'>{2}/10 Cherished</b></font>".format(pokeInfo.icon(page[i]), poke(pokeInfo.species(page[i])), count, count === 10 ? "green" : "black"), safchan);
+            safaribot.sendHtmlMessage(src, "{0} <b>{1}: <font color='{3}'>{2}/10 Cherished</b></font>".format(pokeInfo.icon(parseInt(page[i])), poke(pokeInfo.species(page[i])), count, count === 10 ? "green" : "black"), safchan);
             if (i === page.length-1) {
                 var pageControls = (page.contains(keys[0]) ? "" : link("/cherish :" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/cherish :" + (pageNum+1), "«Next Page»"));
                 if (pageControls) {
