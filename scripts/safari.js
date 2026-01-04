@@ -41768,7 +41768,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Announcer: Hmm, I wonder if you'll be able " + link("/quest celebrity:getmedal", "clear each difficulty of Celebrity battles at least once") + "?", safchan);
             safaribot.sendHtmlMessage(src, "Announcer: I'd also like to see someone be able to " + link("/quest celebrity:getmedal2", "clear Celebrity battles on Super Expert or above with their Idol skills disabled") + ", just like the good old days!", safchan);
             safaribot.sendHtmlMessage(src, "Announcer: And is there anyone who can prove they're the best trainer in all the lands by " + link("/quest celebrity:getmedal3", "clearing Celebrity battles for every region on Expert difficulty or above") + "?", safchan);
-            safaribot.sendHtmlMessage(src, "Announcer: Or is there perhaps a trainer devoted enough to " + link("/quest celebrity:getmedal4", "clear Celebrity battles on Hard difficulty or above with only one species of Pokémon") + "?", safchan);
+            safaribot.sendHtmlMessage(src, "Announcer: Or is there perhaps a trainer devoted enough to " + link("/quest celebrity:getmedal4", "clear Celebrity battles on Normal difficulty or above with only one species of Pokémon") + "?", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
