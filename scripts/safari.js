@@ -173,10 +173,13 @@ function Safari() {
         "battleMemoryRibbon": "data:image/png;base64,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",
         "battleMemoryRibbonGold": "data:image/png;base64,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",
         "spiritDuelsChampion": "data:image/png;base64,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",
-        "spiritDuelsSupporter": "data:image/png;base64,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"
+        "spiritDuelsSupporter": "data:image/png;base64,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",
+        "twinklingStarRibbon": "data:image/png;base64,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",
+        "masterRankRibbon": "data:image/png;base64,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",
+        "bestFriendsRibbon": "data:image/png;base64,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",
     };
     
-    var medalCap = 40;
+    var medalCap = 60;
     var medalIcons = {
         // Spring Open Tag Battle Tournament, Best Catcher #1~3
         "300": base64Ribbons.pairAbilityRibbon,
@@ -222,13 +225,17 @@ function Safari() {
         "17": base64Ribbons.battleMemoryRibbonGold,
         "37": base64Ribbons.battleMemoryRibbon,
         
-        // Celebrity Easy ~ Abyssal
+        // Celebrity Easy ~ Abyssal + Bonus
         "253": base64Ribbons.coolnessMasterRibbon,
         "252": base64Ribbons.beautyMasterRibbon,
         "251": base64Ribbons.cutenessMasterRibbon,
         "249": base64Ribbons.clevernessMasterRibbon,
         "258": base64Ribbons.toughnessMasterRibbon,
         "255": base64Ribbons.contestStarRibbon,
+        "259": base64Ribbons.twinklingStarRibbon,
+        "260": base64Ribbons.legendRibbon,
+        "261": base64Ribbons.masterRankRibbon,
+        "262": base64Ribbons.bestFriendsRibbon,
         
         // League
         "248": base64Ribbons.galarLeagueChampionRibbon,
@@ -239,9 +246,6 @@ function Safari() {
         // Halloween/Summertime Trials
         "173": base64Ribbons.earthRibbon,
         "256": base64Ribbons.earthRibbon,
-
-        // unused
-        "999": base64Ribbons.legendRibbon
     };
     var playerTemplate = { // when adding any object that has variable keys, remember to exclude them from sanitisation!
         id: "",
@@ -814,6 +818,13 @@ function Safari() {
             detective: {
                 cooldown: 0,
                 lastGuesses: []
+            },
+            celebrity: {
+                achievements: {
+                    noIdolRun: false,
+                    clearedExpertRegions: [],
+                    singleSpeciesClear: 0
+                }
             }
         },
         altTimeline: {
@@ -1001,7 +1012,7 @@ function Safari() {
         offlineSales: {},
         consecutiveCombo: 0,
         pokeFlashList: [],
-        teraActive: false
+        teraActive: false,
     }; // template end
 
     /* Item Variables */
@@ -3644,6 +3655,7 @@ function Safari() {
         "65615": [55,60,127,828,138,130],
         "80": [60,408,377,127,118,828,246,130,161],
         "131152": [55,60,92,9,7,38,390,377,127,118,441,828,491,246,138,130],
+        "83": [664,827,13],
         "65619": [332,206,163,297,97,129,19,369,231,646,13,410],
         "92": [93,425,417,441,87,491],
         "93": [93,425,578,417,390,118,441,87,491],
@@ -3877,7 +3889,7 @@ function Safari() {
         "66214": [100,572,33,203,352,414,827,466,161],
         "679": [29],
         "680": [29,203,428,458,530,13],
-        "681": [,29,203,428,466,458,530,13],
+        "681": [29,203,428,466,458,530,13],
         "682": [60,377,95,203],
         "683": [60,377,95,203,318,466],
         "684": [14,203,120],
@@ -3906,8 +3918,8 @@ function Safari() {
         "706": [204,36,337,202,282,828,503],
         "66242": [715,33,71,334,55,204,225,182,341,36,174,34,484,57,482,337,92,203,317,126,282,89,430,164,59,87,263,828,246,443,330],
         "707": [232,129,203,248,443],
-        "708": [,203,377,827],
-        "709": [,203,377,827,325],
+        "708": [203,377,827],
+        "709": [203,377,827,325],
         "710": [33,664,95,438,203,120,83],
         "711": [33,95,203,120,421,83,318,466],
         "712": [34,203,523,828],
@@ -3917,9 +3929,10 @@ function Safari() {
         "715": [34,203,766],
         "716": [203,827,318,402,80,630],
         "717": [203,377,466,410],
-        "718": [,622,203,442,305,665,443,161,90],
+        "718": [622,203,442,305,665,443,161,90],
         "719": [611,129,34,203,430,191,318,443,758],
-        "720": [129,203,317,248,377,318,325,466,665,621],
+        "720": [129,203,317,248,377,318,325,466,665],
+        "66256": [621,129,203,317,248,377,318,325,466,665],
         "721": [613,424,91,203,317,528,269],
         "739": [106,36,183,129,91,34,203,282,341,668,269,441,4,828,259,646],
         "740": [106,36,183,129,91,34,203,63,282,341,668,269,441,4,828,259,646,333,329],
@@ -3945,6 +3958,7 @@ function Safari() {
         "852": [418,183,282,458,250,4,828,409,530,480,410],
         "853": [418,183,282,458,4,828,530,480,410],
         "863": [39,44,95,36,204,102,200,29,86,280,339,332,129,446,352,282,196,668,404,430,191,377,118,828,827,206,530,130],
+        "865": [332,206,163,297,97,129,19,369,231,13,130,410],
         "866": [54,108,114,33,138,571,446,29,9,377,4,828,259,443,451,524,207,646,329],
         "867": [93,109,571,473,600,86,202,282,341,120,196,377,325,466,138,90],
         "870": [34,282,4,490,827,402,458,252,130],
@@ -14718,7 +14732,7 @@ function Safari() {
                     player.balls.uturn += 1;
                     safaribot.sendMessage(src, "Your {0}'s Regenerator restored your {1}!".format(poke(trueLeader, true), finishName("uturn")), safchan);
                     this.updateShop(player, "uturn");
-                } 
+                }
                 var oldLead = trueLeader;
                 player.party = player.party.slice(1).concat([oldLead]);
                 if (currentThemeEffect == "past") {
@@ -24778,7 +24792,7 @@ function Safari() {
         return "<img src='" + (medalIcons.hasOwnProperty(icon + "") ? medalIcons[icon] : "item:" + icon) + "' title='" + desc + "'>";
     };
     /* Medals */
-    this.viewMedals = function(src, target) {
+    this.viewMedals = function(src, target, pageNum) {
         var out = [], m;
         var player;
         if (target) {
@@ -24787,11 +24801,10 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "No such player!", safchan);
                 return;
             }
-            out.push("<b>" + player.id + "'s Medals: </b>");
+            safaribot.sendHtmlMessage(src, "<b>" + player.id + "'s Medals: </b>", safchan);
         } else {
             player = getAvatarOff(sys.name(src));
-            out.push("<b>Your Medals: </b>(" + player.medals.length + "/" + medalCap + ")");
-            out.push("<b>" + toColor("Note:", "red") + "</b> Your top 6 medals are featured in your party. Once you reach " + medalCap + " medals, you cannot receive any more until you discard some.");
+            safaribot.sendHtmlMessage(src, "<b>Your Medals: </b>(" + player.medals.length + "/" + medalCap + ")", safchan);
         }
         if (!player) {
             safaribot.sendMessage(src, "Player not found!", safchan);
@@ -24801,15 +24814,25 @@ function Safari() {
             safaribot.sendMessage(src, "You do not have any medals!", safchan);
             return;
         }
-
-        for (var i = 0; i < player.medals.length; i++) {
-            m = player.medals[i];
-            out.push("#" + (i + 1) + ": " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + " [" + link("/featuremedal " + (i + 1), "Feature") + "] [" + link("/removemedal " + (i + 1), "Permanently Discard") + "]");
-        }
-
+        safaribot.sendHtmlMessage(src, "<b>" + toColor("Note:", "red") + "</b> Your top 6 medals are featured in your party. Once you reach " + medalCap + " medals, you cannot receive any more until you discard some.", safchan);
+        pageNum = parseInt(pageNum) || 0;
+        pageNum = Math.abs(pageNum);
+        var keys = player.medals;
+        var displayLimit = 10,
+            page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
         sys.sendMessage(src, "", safchan);
-        for (var o in out) {
-            safaribot.sendHtmlMessage(src, out[o], safchan);
+        for (var i = 0; i < page.length; i++) {
+            var m = page[i];
+            var medalIndex = (i + 1) + (pageNum * displayLimit);
+            var out = "#" + medalIndex + ": " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + " [" + link("/featuremedal " + medalIndex, "Feature") + "] [" + link("/removemedal " + medalIndex, "Permanently Discard") + "]";
+            safaribot.sendHtmlMessage(src, out, safchan);
+            if (i === page.length-1) {
+                var pageControls = (page.contains(keys[0]) ? "" : link("/medals " + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/medals " + (pageNum+1), "«Next Page»"));
+                if (pageControls) {
+                    sys.sendMessage(src, "", safchan);
+                    safaribot.sendHtmlMessage(src, pageControls, safchan);
+                }
+            }
         }
         sys.sendMessage(src, "", safchan);
         return true;
@@ -24836,6 +24859,8 @@ function Safari() {
         ls.unshift(m);
         safaribot.sendHtmlMessage(src, "You featured your medal: " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + "! It will now appear on your trainer screen!", safchan);
         this.saveGame(player);
+        sys.sendMessage(src, "", safchan);
+        this.viewMedals(src);
         return true;
     };
     this.removeMedal = function(src, name, data) {
@@ -24870,7 +24895,8 @@ function Safari() {
         
         //band-aid fix since im not sure what causes this yet, but it just happened and i can't replicate it
         player.medals = player.medals.filter(function(e) { return e !== null });
-        //this.viewMedals(src);
+        this.viewMedals(src);
+        sys.sendMessage(src, "", safchan);
         this.saveGame(player);
         return true;
     };
@@ -36021,7 +36047,7 @@ function Safari() {
             else {
                 this.postArgs.defeated = Math.max(0, 3 - this.team2.filter(function(e) { return e.hp > 0 }).length);
             }
-
+            this.postArgs.usedTeams.push(this.team1.map(function(e) { return e.id }));
             this.postBattle(this.name1, winnerID === this.idnum1, this.getHpPercent(this.idnum1), this.postArgs, this.viewers, extraArgs);
         }
         this.finished = true;
@@ -36082,6 +36108,7 @@ function Safari() {
             else {
                 this.postArgs.defeated = Math.max(0, 3 - this.team2.filter(function(e) { return e.hp > 0 }).length);
             }
+            this.postArgs.usedTeams.push(this.team1.map(function(e) { return e.id }));
             this.postBattle(this.name1, winnerID === this.idnum1, this.getHpPercent(this.idnum1), this.postArgs, this.viewers, extraArgs);
         }
         this.finished = true;
@@ -41729,14 +41756,142 @@ function Safari() {
         var opt3 = data.length > 2 ? data[2].toLowerCase() : "*";
         var opt4 = data.length > 3 ? data[3].toLowerCase() : "*";
         
-        if (opt !== "start") {
+        if (opt === "askmedal") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Oh, you heard that? Yes... back in the day, she was an invincible trainer whose legendary skill made her shine brighter than any celebrity.", safchan);
+            safaribot.sendHtmlMessage(src, "Announcer: She suddenly retired from battling one day, saying she wished to help train the next generation of superstars instead. Perhaps you've even trained under her? You may know her as... the Idol.", safchan);
+            safaribot.sendHtmlMessage(src, "Announcer: To this day, it's been my greatest wish to see someone else be able to accomplish some of her " + link("/quest celebrity:askmedal2", "legendary feats") + ".", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        else if (opt === "askmedal2") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Maybe you'll be the one to fulfill my wish? Show me what you're made of, and I'll recognise you as a legend yourself. Non-reward runs are counted too!", safchan);
+            safaribot.sendHtmlMessage(src, "Announcer: Hmm, I wonder if you'll be able " + link("/quest celebrity:getmedal", "clear each difficulty of Celebrity battles at least once") + "?", safchan);
+            safaribot.sendHtmlMessage(src, "Announcer: I'd also like to see someone be able to " + link("/quest celebrity:getmedal2", "clear Celebrity battles on Super Expert or above with their Idol skills disabled") + ", just like the good old days!", safchan);
+            safaribot.sendHtmlMessage(src, "Announcer: And is there anyone who can prove they're the best trainer in all the lands by " + link("/quest celebrity:getmedal3", "clearing Celebrity battles for every region on Expert difficulty or above") + "?", safchan);
+            safaribot.sendHtmlMessage(src, "Announcer: Or is there perhaps a trainer devoted enough to " + link("/quest celebrity:getmedal4", "clear Celebrity battles on Hard difficulty or above with only one species of Pokémon") + "?", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        else if (opt === "getmedal") {
+            var condition = [player.records.celebrityScore, player.records.celebrityScoreEasy, player.records.celebrityScoreHard, player.records.celebrityScoreExpert, player.records.celebrityScoreSuperExpert, player.records.celebrityScoreAbyssal].filter(function(e) {
+                return e !== 13;
+            });
+            if (condition.length === 0) {
+                var description = "Cleared every difficulty of Celebrity at least once (" + new Date(now()).toUTCString() + ")";
+                var icon = 259;
+                var hasMedal = player.medals.filter(function(e) { return e.icon == icon }).length > 0;
+                if (!hasMedal) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Wow, you really managed to clear each difficulty of Celebrity battles at least once!?", safchan);
+                    safaribot.sendHtmlMessage(src, "Announcer: In recognition of your achievement, I present you with this one-of-a-kind medal! " + safari.getMedalSprite(icon, description), safchan);
+                    safari.awardMedal(
+                        player,
+                        {
+                            desc: description,
+                            icon: icon
+                        }
+                    );
+                    safaribot.sendHtmlMessage(src, "Announcer: Don't worry if you lose it, I have plenty of these! So just come back and I'll give you a new one!", safchan);
+                }
+                else {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: That medal looks good on you!", safchan);
+                }
+            }
+            else {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: This one's tough, huh? The region doesn't matter for this feat, so pick the one you like! You can check which difficulties you've cleared in your " + link("/records 2", "/records") + ".", safchan);
+            }
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        else if (opt === "getmedal2") {
+            if (player.quests.celebrity.achievements.noIdolRun) {
+                var description = "Cleared Celebrity battles on Super Expert or above without Idol skills (" + new Date(now()).toUTCString() + ")";
+                var icon = 260;
+                var hasMedal = player.medals.filter(function(e) { return e.icon == icon }).length > 0;
+                if (!hasMedal) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Wow, you really managed to clear Celebrity battles on Super Expert or above without Idol skills!?", safchan);
+                    safaribot.sendHtmlMessage(src, "Announcer: In recognition of your achievement, I present you with this one-of-a-kind medal! " + safari.getMedalSprite(icon, description), safchan);
+                    safari.awardMedal(
+                        player,
+                        {
+                            desc: description,
+                            icon: icon
+                        }
+                    );
+                    safaribot.sendHtmlMessage(src, "Announcer: Don't worry if you lose it, I have plenty of these! So just come back and I'll give you a new one!", safchan);
+                }
+                else {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: That medal looks good on you!", safchan);
+                }
+            }
+            else {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Hey, this is important! This feat won't be counted unless you " + link("/quest idol:toggle", "speak to the Idol and disable your skills") + "!", safchan);
+            }
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        else if (opt === "getmedal3") {
+            if (player.quests.celebrity.achievements.clearedExpertRegions.length >= 6) {
+                var description = "Cleared Celebrity battles in many regions on Expert or above (" + new Date(now()).toUTCString() + ")";
+                var icon = 261;
+                var hasMedal = player.medals.filter(function(e) { return e.icon == icon }).length > 0;
+                if (!hasMedal) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Wow, you really managed to clear Celebrity battles for every region on Expert difficulty or above!?", safchan);
+                    safaribot.sendHtmlMessage(src, "Announcer: In recognition of your achievement, I present you with this one-of-a-kind medal! " + safari.getMedalSprite(icon, description), safchan);
+                    safari.awardMedal(
+                        player,
+                        {
+                            desc: description,
+                            icon: icon
+                        }
+                    );
+                    safaribot.sendHtmlMessage(src, "Announcer: Don't worry if you lose it, I have plenty of these! So just come back and I'll give you a new one!", safchan);
+                }
+                else {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: That medal looks good on you!", safchan);
+                }
+            }
+            else {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Some regions seem a lot harder than others, don't they? Being the best in the world takes some perseverance!" + (player.quests.celebrity.achievements.clearedExpertRegions.length > 0 ? " So far, it looks like you've cleared " + readable(player.quests.celebrity.achievements.clearedExpertRegions.map(cap)) + "." : ""), safchan);
+            }
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        else if (opt === "getmedal4") {
+            if (player.quests.celebrity.achievements.singleSpeciesClear) {
+                var mon = poke(player.quests.celebrity.achievements.singleSpeciesClear);
+                var description = "Cleared Celebrity battles on Normal or above with only " + mon + " (" + new Date(now()).toUTCString() + ")";
+                var icon = 262;
+                var hasMedal = player.medals.filter(function(e) { return e.icon == icon }).length > 0;
+                if (!hasMedal) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Wow, you really managed to clear Celebrity battles on Normal difficulty or above with only " + mon + "!?", safchan);
+                    safaribot.sendHtmlMessage(src, "Announcer: In recognition of your achievement, I present you with this one-of-a-kind medal! " + safari.getMedalSprite(icon, description), safchan);
+                    safari.awardMedal(
+                        player,
+                        {
+                            desc: description,
+                            icon: icon
+                        }
+                    );
+                    safaribot.sendHtmlMessage(src, "Announcer: Don't worry if you lose it, I have plenty of these! So just come back and I'll give you a new one!", safchan);
+                }
+                else {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: That medal looks good on you!", safchan);
+                }
+            }
+            else {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Hey this is important! You only need to pick all of the same species of Pokémon for every battle, it doesn't matter if they're different formes. Also, your other unpicked party members can be any species you want!", safchan);
+            }
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        else if (opt !== "start") {
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Welcome to Celebrity Battles! I am your host, the Announcer!", safchan);
             safaribot.sendMessage(src, "Announcer: Fight famous trainers from across the " + cap(player.celebrityRegion) + " region! Win prizes on your first attempt daily!", safchan);
-            safaribot.sendMessage(src, "Announcer: You must fight all  of the trainers in succession. No backing out once you're in!", safchan);
-            safaribot.sendHtmlMessage(src, "Type " + link("/quest celebrity:start") + " to begin your challenge!", safchan);
+            safaribot.sendHtmlMessage(src, "Announcer: You must fight all of the trainers in succession. No backing out once you're in, only the best of the best will prevail! <font size='2'>I wonder if anyone here will ever be able to " + link("/quest celebrity:askmedal", "match her brilliance...") + "?)</font>", safchan);
+            safaribot.sendHtmlMessage(src, "Announcer: Type " + link("/quest celebrity:start") + " to begin your challenge!", safchan);
             if (player.firstCelebrityRun || player.ticketCelebrityRun) {
-                safaribot.sendHtmlMessage(src, "Let me check your registration... Yep! You are eligible to win prizes! You have {0} and {1} remaining.".format(plural(player.firstCelebrityRun ? 1 : 0, "free reward run"), plural(player.ticketCelebrityRun ? 1 : 0, finishName("celebrityTicket") + " reward run")), safchan);
+                safaribot.sendHtmlMessage(src, "Announcer: Let me check your registration... Yep! You are eligible to win prizes! You have {0} and {1} remaining.".format(plural(player.firstCelebrityRun ? 1 : 0, "free reward run"), plural(player.ticketCelebrityRun ? 1 : 0, finishName("celebrityTicket") + " reward run")), safchan);
             }
             sys.sendMessage(src, "", safchan);
             return;
@@ -41959,7 +42114,7 @@ function Safari() {
                     sys.sendAll("", safchan);
                     safaribot.sendHtmlAll("<b>Announcer: " + name + " has defeated all 13 Celebrity Trainers (Difficulty: " + level + ")! Please congratulate our Champion!</b>", safchan);
                     sys.sendAll("", safchan);
-                    sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + level + "|||Challenged with " + readable(player.party.map(poke)) + " (Region: " + cap(player.celebrityRegion) + ")|||Defeated all " + next + " Trainers and " + (args.canReward ? " received " + plural(reward[1], reward[0]) : " was not eligible for prizes") + "\n");
+                    sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + level + "|||Challenged with " + readable(player.party.map(poke)) + " (Region: " + cap(player.celebrityRegion) + ")|||Defeated all " + next + " Trainers and " + (args.canReward ? " received " + plural(reward[1], reward[0]) : " was not eligible for prizes.") + " (Idol Skills: " + (player.options.pokeskillsDisabled ? "Disabled" : "Enabled") + ")\n");
                     var description = "Cleared " + cap(player.celebrityRegion) + " Celebrities on " + level + " (" + new Date(now()).toUTCString() + ")";
                     var ic = [253, 252, 251, 249, 258, 255][args.difficulty+1];
                     safari.awardMedal(
@@ -41969,6 +42124,18 @@ function Safari() {
                             icon: ic
                         }
                     );
+                    if (args.difficulty >= 3 && player.options.pokeskillsDisabled) { // Super Expert+
+                        player.quests.celebrity.achievements.noIdolRun = true;
+                    }
+                    if (args.difficulty >= 2 && !player.quests.celebrity.achievements.clearedExpertRegions.contains(player.celebrityRegion)) { // Expert+
+                        player.quests.celebrity.achievements.clearedExpertRegions.push(player.celebrityRegion);
+                    }
+                    if (args.difficulty >= 0) { // Normal+
+                        var species = pokeInfo.species(args.usedTeams[0][0]);
+                        if (args.usedTeams.every(function(e) { return e.every(function(i) { return pokeInfo.species(i) == species }); })) {
+                            player.quests.celebrity.achievements.singleSpeciesClear = species;
+                        }
+                    }
                     if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
                         player.zcrystalUser = false; //remove crystal effect after battle
                     }
@@ -42077,7 +42244,8 @@ function Safari() {
                         difficulty: difficultyLevel,
                         canReward: canReward,
                         defeated: 0,
-                        delayAnnounce: true
+                        delayAnnounce: true,
+                        usedTeams: args.usedTeams
                     };
                     if (trainer.sprite) {
                         safaribot.sendHtmlMessage(id, "<img src='icon:" + trainer.sprite + "'>", safchan);
@@ -42299,7 +42467,8 @@ function Safari() {
             celebs: celebs,
             canReward: canReward,
             defeated: 0,
-            delayAnnounce: true
+            delayAnnounce: true,
+            usedTeams: []
         };
 
         npc.desc = desc + " Celebrity NPC";
@@ -59210,12 +59379,13 @@ function Safari() {
         /*if (currentThemeEffect == "distortion" && !contestForfeited.contains(player.idnum)) {
             leader = player.party[player.party.length-1];
         }*/
-        if (currentThemeEffect == "past" && player.altTimeline.lead !== 0) {
-            leader = player.altTimeline.lead;
-        }
+
         if (!trueSpecies) { // after position manipulation, anything that makes leader count as something else while still internally being the original leader species should go here
             if (canHaveAbility(leader, abilitynum("Imposter")) && currentDisplay && !canHaveAbility(currentDisplay, abilitynum("Imposter"))) {
                 leader = currentDisplay;
+            }
+            if (currentThemeEffect == "past" && player.altTimeline.lead !== 0) {
+                leader = player.altTimeline.lead;
             }
         }
         return leader;
@@ -61275,7 +61445,7 @@ function Safari() {
                 return true;
             }
             if (command === "medals" || command === "feathers" || command === "viewmedals" || command === "viewfeathers") {
-                safari.viewMedals(src);
+                safari.viewMedals(src, false, commandData);
                 return true;
             }
             if (command === "featuremedal" || command === "featurefeather") {
