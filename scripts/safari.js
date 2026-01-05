@@ -43064,7 +43064,8 @@ function Safari() {
                         name: npc.name,
                         gym: args.gym,
                         heal: 0.15 + safari.getFortune(player, "leagueheal", 0, null, true),
-                        index: next
+                        index: next,
+                        usedTeams: args.usedTeams
                     };
                     
                     var battle = new Battle2(id, npc, {
@@ -43107,7 +43108,8 @@ function Safari() {
             name: npc.name,
             gym: gym,
             heal: 0.15 + safari.getFortune(player, "leagueheal", 0, null, true),
-            index: 0
+            index: 0,
+            usedTeams: []
         };
 
         safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: So you are aiming for the " + gym.badge + "? Then please proceed to your first battle against " + npc.name + "!", safchan);
@@ -43192,7 +43194,8 @@ function Safari() {
                         name: npc.name,
                         elite: args.elite,
                         heal: 0.2 + safari.getFortune(player, "eliteheal", 0, null, true),
-                        index: next
+                        index: next,
+                        usedTeams: args.usedTeams
                     };
                     
                     var battle = new Battle2(id, npc, {
@@ -43236,7 +43239,8 @@ function Safari() {
             name: npc.name,
             elite: eliteData,
             heal: 0.2 + safari.getFortune(player, "eliteheal", 0, null, true),
-            index: 0
+            index: 0,
+            usedTeams: []
         };
 
         safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: Everything is ready for your Elite Four challenge! Your first battle will be against " + npc.name + "! Good Luck!", safchan);
