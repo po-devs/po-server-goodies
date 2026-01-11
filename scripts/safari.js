@@ -1314,7 +1314,7 @@ function Safari() {
             battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 2000, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], tradable: true},
             eviolite: {name: "eviolite", fullName: "Eviolite", type: "perk", icon: 233, price: 2000, bonusRate: 8, maxRate: 80, threshold: 420, aliases:["eviolite"], tradable: true},
             lens: {name: "lens", fullName: "Zoom Lens", type: "perk", icon: 41, price: 30000, cooldown: 10000, bonusRate: 1, maxRate: 10, threshold: 2000, aliases:["lens", "zoom lens", "zoom", "zoomlens"], tradable: false },
-            box: {name: "box", fullName: "Box", type: "perk", icon: 175, price: [0, 0, 0, 0, 100000, 200000, 400000, 600000, 800000, 1000000], bonusRate: 120, aliases:["box", "boxes"], tradable: false},
+            box: {name: "box", fullName: "Box", type: "perk", icon: 175, price: [0, 0, 0, 0, 100000, 200000, 400000, 600000, 800000, 1000000], bonusRate: 120, aliases:["box", "boxes"], tradable: false, cap: 120},
 
             //Valuables
             pearl: {name: "pearl", fullName: "Pearl", type: "valuables", icon: 111, price: 500, aliases:["pearl"], tradable: true},
@@ -13417,8 +13417,15 @@ function Safari() {
         }
         else {
             var keys = Object.keys(abilityEffects).sort(function(a, b) { return abilityOff(a) < abilityOff(b) ? -1 : 1 });
-            var displayLimit = 10,
+            var displayLimit = 10;
+            var lastPage = Math.ceil(keys.length / displayLimit) - 1;
+            if (pageNum === "last") {
+                pageNum = lastPage;
+            }
+            else {
                 pageNum = Math.abs(parseInt(pageNum)) || 0;
+                pageNum = Math.min(lastPage, pageNum);
+            }
             var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
             for (var i = 0; i < page.length; i++) {
                 ability = page[i];
@@ -13432,7 +13439,8 @@ function Safari() {
                 );
                 safaribot.sendHtmlMessage(src, "-" + pageContent, safchan);
                 if (i === page.length-1) {
-                    var pageControls = (page.contains(keys[0]) ? "" : link("/abref 0:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/abref 0:" + (pageNum+1), "«Next Page»"));
+                    var pageControls = (pageNum === 0 ? "" : link("/abref 0:0", "«First»") + " " + link("/abref 0:" + (pageNum-1), "«Previous»"))
+                        + (pageNum === lastPage ? "" : " " + link("/abref 0:" + (pageNum+1), "«Next»") + " " + link("/abref 0:" + lastPage, "«Last»"));
                     if (pageControls) {
                         sys.sendMessage(src, "", safchan);
                         safaribot.sendHtmlMessage(src, pageControls, safchan);
@@ -16030,7 +16038,7 @@ function Safari() {
             return;
         }
         var player = getAvatar(src);
-        var toShow = null, showPage;
+        var toShow = null, pageNum;
         if (commandData !== "*") {
             var split = commandData.split(":");
             if (split[0]) {
@@ -16047,19 +16055,27 @@ function Safari() {
                 toShow = species;
             }
             if (split[1]) {
-                showPage = Math.abs(parseInt(split[1]));
+                pageNum = split[1];
             }
         }
         var keys = toShow ? [toShow] : Object.keys(player.cherished).sort(function(a, b) { return parseInt(a) - parseInt(b) });
-        var displayLimit = 10,
-            pageNum = showPage || 0;
+        var displayLimit = 10;
+        var lastPage = Math.ceil(keys.length / displayLimit) - 1;
+        if (pageNum === "last") {
+            pageNum = lastPage;
+        }
+        else {
+            pageNum = Math.abs(parseInt(pageNum)) || 0;
+            pageNum = Math.min(lastPage, pageNum);
+        }
         var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
         
         for (var i = 0; i < page.length; i++) {
             var count = Math.min(player.cherished[page[i]], 10);
             safaribot.sendHtmlMessage(src, "{0} <b>{1}: <font color='{3}'>{2}/10 Cherished</b></font>".format(pokeInfo.icon(parseInt(page[i])), poke(pokeInfo.species(page[i])), count, count === 10 ? "green" : "black"), safchan);
             if (i === page.length-1) {
-                var pageControls = (page.contains(keys[0]) ? "" : link("/cherish :" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/cherish :" + (pageNum+1), "«Next Page»"));
+                var pageControls = (pageNum === 0 ? "" : link("/cherish :0", "«First»") + " " + link("/cherish :" + (pageNum-1), "«Previous»"))
+                    + (pageNum === lastPage ? "" : " " + link("/cherish :" + (pageNum+1), "«Next»") + " " + link("/cherish :" + lastPage, "«Last»"));
                 if (pageControls) {
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendHtmlMessage(src, pageControls, safchan);
@@ -18077,7 +18093,7 @@ function Safari() {
             safaribot.sendMessage(src, "You don't have any current Mega-Evolved Pokémon!", safchan);
             return;
         }
-        var toShow = null, showPage, showMon = "";
+        var toShow = null, pageNum, showMon = "";
         if (commandData !== "*") {
             var split = commandData.split(":");
             if (split[0]) {
@@ -18095,14 +18111,20 @@ function Safari() {
                 showMon = species;
             }
             if (split[1]) {
-                showPage = Math.abs(parseInt(split[1]));
+                pageNum = split[1];
             }
         }
         var keys = toShow ? toShow : player.megaTimers;
         keys.sort(function(a, b) { return a.expires - b.expires });
-
-        var displayLimit = 10,
-            pageNum = showPage || 0;
+        var displayLimit = 10;
+        var lastPage = Math.ceil(keys.length / displayLimit) - 1;
+        if (pageNum === "last") {
+            pageNum = lastPage;
+        }
+        else {
+            pageNum = Math.abs(parseInt(pageNum)) || 0;
+            pageNum = Math.min(lastPage, pageNum);
+        }
         var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
         
         for (var i = 0; i < page.length; i++) {
@@ -18113,7 +18135,8 @@ function Safari() {
             var out = "{0} <b>{1}</b>: {2}".format(pokeInfo.icon(timerObj.id, typeof timerObj.id === "string"), getInputPokemon(timerObj.id + (typeof timerObj.id === "string" ? "*" : "")).name, diffString);
             safaribot.sendHtmlMessage(src, out, safchan);
             if (i === page.length-1) {
-                var pageControls = (page.contains(keys[0]) ? "" : link("/showmegas " + showMon + ":" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/showmegas " + showMon + ":" + (pageNum+1), "«Next Page»"));
+                var pageControls = (pageNum === 0 ? "" : link("/showmegas " + showMon + ":0", "«First»") + " " + link("/showmegas " + showMon + ":" + (pageNum-1), "«Previous»"))
+                    + (page.contains(keys[keys.length-1]) ? "" : " " + link("/showmegas " + showMon + ":" + (pageNum+1), "«Next»") + " " + link("/showmegas " + showMon + ":" + lastPage, "«Last»"));
                 if (pageControls) {
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendHtmlMessage(src, pageControls, safchan);
@@ -24815,11 +24838,18 @@ function Safari() {
             return;
         }
         safaribot.sendHtmlMessage(src, "<b>" + toColor("Note:", "red") + "</b> Your top 6 medals are featured in your party. Once you reach " + medalCap + " medals, you cannot receive any more until you discard some.", safchan);
-        pageNum = parseInt(pageNum) || 0;
-        pageNum = Math.abs(pageNum);
+
         var keys = player.medals;
-        var displayLimit = 10,
-            page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
+        var displayLimit = 10;
+        var lastPage = Math.ceil(keys.length / displayLimit) - 1;
+        if (pageNum === "last") {
+            pageNum = lastPage;
+        }
+        else {
+            pageNum = Math.abs(parseInt(pageNum)) || 0;
+            pageNum = Math.min(lastPage, pageNum);
+        }
+        page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
         sys.sendMessage(src, "", safchan);
         for (var i = 0; i < page.length; i++) {
             var m = page[i];
@@ -24827,7 +24857,8 @@ function Safari() {
             var out = "#" + medalIndex + ": " + this.getMedalSprite(m.icon, m.desc) + " " + m.desc + " [" + link("/featuremedal " + medalIndex, "Feature") + "] [" + link("/removemedal " + medalIndex, "Permanently Discard") + "]";
             safaribot.sendHtmlMessage(src, out, safchan);
             if (i === page.length-1) {
-                var pageControls = (page.contains(keys[0]) ? "" : link("/medals " + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/medals " + (pageNum+1), "«Next Page»"));
+                var pageControls = (pageNum === 0 ? "" : link("/medals 0", "«First»") + " " + link("/medals " + (pageNum-1), "«Previous»"))
+                    + (pageNum === lastPage ? "" : " " + link("/medals " + (pageNum+1), "«Next»") + " " + link("/medals " + lastPage, "«Last»"));
                 if (pageControls) {
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendHtmlMessage(src, pageControls, safchan);
@@ -24895,8 +24926,7 @@ function Safari() {
         
         //band-aid fix since im not sure what causes this yet, but it just happened and i can't replicate it
         player.medals = player.medals.filter(function(e) { return e !== null });
-        this.viewMedals(src);
-        sys.sendMessage(src, "", safchan);
+        this.viewMedals(src, false, Math.ceil((index-1) / 10) - 1);
         this.saveGame(player);
         return true;
     };
@@ -37784,7 +37814,7 @@ function Safari() {
                 "Water": "what percentage of {0}'s body is composed of water",
                 "Grass": "how the photosynthesis process works for {0}",
                 "Electric": "how many houses a {0} could provide energy to",
-                "Psychic": "if a {0} can read an human's mind",
+                "Psychic": "if a {0} can read a human's mind",
                 "Ice": "{0}'s minimum body temperature",
                 "Dragon": "how tough a {0}'s fang is",
                 "Dark": "if a {0} becomes stronger during the night",
@@ -37803,7 +37833,7 @@ function Safari() {
                 "Ground": "their ability to level the ground",
                 "Rock": "how many different minerals can be found in their body",
                 "Bug": "in which environments they can camouflage themselves better",
-                "Ghost": "if they can possess an human",
+                "Ghost": "if they can possess a human",
                 "Steel": "what they eat since they are made of steel",
                 "Fire": "how able they are to adapt to colder environments",
                 "Water": "how deep they can dive into the sea",
@@ -40623,10 +40653,17 @@ function Safari() {
             if (d2 === "all") {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Check out all the Pokémon you've unlocked skills for already!", safchan);
                 var keys = Object.keys(skillUnlocks[pid]).sort(function(a, b) { return parseInt(pokeInfo.species(a)) - parseInt(pokeInfo.species(b)) });
-                var displayLimit = 10,
+                var displayLimit = 10;
+                var lastPage = Math.ceil(keys.length / displayLimit) - 1;
+                if (pageNum === "last") {
+                    pageNum = lastPage;
+                }
+                else {
                     pageNum = Math.abs(parseInt(d3)) || 0;
+                    pageNum = Math.min(lastPage, pageNum);
+                }
                 var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit); // maybe turn this whole thing into a function
-                
+
                 for (var i = 0; i < page.length; i++) {
                     var activeSkills = getActiveSkills(page[i], player);
                     activeSkills = activeSkills.map(function(e) {
@@ -40635,7 +40672,8 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "-" + link("/quest idol:showunlocks:" + page[i], poke(parseInt(page[i]))) + (activeSkills.length > 0 ? " [Active: " + readable(activeSkills) + "]" : ""), safchan);
                     
                     if (i === page.length-1) {
-                        var pageControls = (page.contains(keys[0]) ? "" : link("/quest idol:showunlocks:all:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest idol:showunlocks:all:" + (pageNum+1), "«Next Page»"));
+                        var pageControls = (pageNum === 0 ? "" : link("/quest idol:showunlocks:all:0", "«First»") + " " + link("/quest idol:showunlocks:all:" + (pageNum-1), "«Previous»"))
+                            + (pageNum === lastPage ? "" : " " + link("/quest idol:showunlocks:all:" + (pageNum+1), "«Next»") + " " + link("/quest idol:showunlocks:all:" + lastPage, "«Last»"));
                         if (pageControls) {
                             sys.sendMessage(src, "", safchan);
                             safaribot.sendHtmlMessage(src, pageControls, safchan);
@@ -40703,7 +40741,8 @@ function Safari() {
             for (i = 0; i < monListSlice.length; i++) {
                 safaribot.sendHtmlMessage(src, "-<b>" + poke(parseInt(monListSlice[i])) + "'s</b> " + retSkillData(monListSlice[i], specialSkillsSlice[i], "unlock"), safchan);
                 if (i === monListSlice.length-1) {
-                    var pageControls = (firstPage ? "" : link("/quest idol:showallspecial:" + (pageNum-1), "«Previous Page»")) + (lastPage ? "" : " " + link("/quest idol:showallspecial:" + (pageNum+1), "«Next Page»"));
+                    var pageControls = (firstPage ? "" : link("/quest idol:showallspecial:0", "«First»") + " " + link("/quest idol:showallspecial:" + (pageNum-1), "«Previous»"))
+                        + (lastPage ? "" : " " + link("/quest idol:showallspecial:" + (pageNum+1), "«Next»") + " " + link("/quest idol:showallspecial:" + (Math.ceil(monList.length / displayLimit) - 1), "«Last»"));
                     if (pageControls) {
                         sys.sendMessage(src, "", safchan);
                         safaribot.sendHtmlMessage(src, pageControls, safchan);
@@ -41543,11 +41582,17 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Alchemist: So that's the thing, I'm eager to play around with those things. With those I believe I can completely reshape some Pokémon!", safchan);
             
             if (data[0] === "page") {
-                var displayLimit = 10,
-                    pageNum = Math.abs(parseInt(data[1])) || 0;
+                var displayLimit = 10, pageNum = data[1];
                 var keys = Object.keys(eligible).sort(function(a, b) { return parseInt(a) - parseInt(b) });
+                var lastPage = Math.ceil(keys.length / displayLimit) - 1;
+                if (pageNum === "last") {
+                    pageNum = lastPage;
+                }
+                else {
+                    pageNum = Math.abs(parseInt(pageNum)) || 0;
+                    pageNum = Math.min(lastPage, pageNum);
+                }
                 var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
-                
                 if (page.length === 0) {
                     safaribot.sendHtmlMessage(src, "Alchemist: " + link("/quest philosopher:page:0", "Check out a list of the Pokémon I can try to transform!"), safchan);
                     return;
@@ -41566,7 +41611,8 @@ function Safari() {
                     }
                     safaribot.sendHtmlMessage(src, "-" + readable(listForms), safchan);
                     if (pk === page.length-1) {
-                        var pageControls = (page.contains(keys[0]) ? "" : link("/quest philosopher:page:" + (pageNum-1), "«Previous Page»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest philosopher:page:" + (pageNum+1), "«Next Page»"));
+                        var pageControls = (pageNum === 0 ? "" : link("/quest philosopher:page:0", "«First»") + " " + link("/quest philosopher:page:" + (pageNum-1), "«Previous»"))
+                            + (pageNum === lastPage ? "" : " " + link("/quest philosopher:page:" + (pageNum+1), "«Next»") + " " + link("/quest philosopher:page:" + lastPage, "«Last»"));
                         if (pageControls) {
                             sys.sendMessage(src, "", safchan);
                             safaribot.sendHtmlMessage(src, pageControls, safchan);
@@ -64831,7 +64877,7 @@ function Safari() {
                     delete player.cherished[data.num];
                 }
                 safari.saveGame(player);
-                safaribot.sendMessage(src, "You " + (num < 0 ? "took away " : "added ") + num + " " + data.name + (num < 0 ? "from " : "to ") + player.id.toCorrectCase() + "'s Cherished List.", safchan);
+                safaribot.sendMessage(src, "You " + (num < 0 ? "took away " : "added ") + num + " " + data.name + (num < 0 ? " from " : " to ") + player.id.toCorrectCase() + "'s Cherished List.", safchan);
                 return true;
             }
             if (command === "vbdebug") {
