@@ -14952,7 +14952,25 @@ function Safari() {
                     }
                     else {
                         sys.sendAll("", safchan);
-                        safaribot.sendHtmlAll("The wild " + poke(currentPokemon, true) + "'s Burning Aura dissipated...", safchan);
+                        var bounceTargets = sys.playersOfChannel(safchan).filter(function(e) {
+                            var p = getAvatar(e);
+                            if (!p) {
+                                return false;
+                            }
+                            return !p.burningAura && !p.brilliantAura;
+                        });
+                        var rand = bounceTargets.random();
+                        var target = getAvatar(rand);
+                        if (target) {
+                            safaribot.sendHtmlAll("The <a href='po:send//burn " + sys.name(rand) + "'>" + typeIcon("Fire", "Burning Aura") + "</a>" + " flew off and latched itself onto " + sys.name(rand) + "!", safchan);
+                            target.burningAura = true;
+                            target.auraExpiry = now() + hours(auraHours);
+                            safaribot.sendHtmlMessage(rand, "The Burning Aura granted you the following bonuses: " + safari.describeAuraEffects(target) + "!", safchan);
+                            sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||caught the Pokémon-of-the-Day (" + poke(currentPokemon) + "), Aura bounced onto " + sys.name(rand) + "\n");
+                        }
+                        else {
+                            safaribot.sendHtmlAll("The wild " + poke(currentPokemon, true) + "'s Burning Aura dissipated...", safchan);
+                        }
                         if (amt > 1) {
                             sys.sendAll("", safchan);
                         }
