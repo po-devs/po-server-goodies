@@ -14957,7 +14957,7 @@ function Safari() {
                             if (!p) {
                                 return false;
                             }
-                            return !p.burningAura && !p.brilliantAura;
+                            return !p.burningAura && !p.brilliantAura && !p.excludeFromEconomy; // exclude test accounts i.e. me
                         });
                         var rand = bounceTargets.random();
                         var target = getAvatar(rand);
@@ -29115,6 +29115,9 @@ function Safari() {
         if (this.turn < 0) {
             this.turn++;
             this.sendToViewers("Preparations complete, battle will start soon!");
+            return;
+        }
+        if (this.npcBattle && !sys.id(this.name1) && (now() - this.startTime <= 300000)) { // about 5 minutes grace period
             return;
         }
         var p1Poke = this.team1[this.turn];
