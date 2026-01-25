@@ -177,6 +177,15 @@ function Safari() {
         "twinklingStarRibbon": "data:image/png;base64,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",
         "masterRankRibbon": "data:image/png;base64,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",
         "bestFriendsRibbon": "data:image/png;base64,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",
+        "battleChampionRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAGNElEQVRIS5VVe0xTVxj/9XHb3hakgLwKrIBMBJWpiOJ7jPigNdO5DF/b4gxxzjjjnJm6ZGbhDx+bg2hFF3VzkE0z0KhzitPMKSAg2o0pEBDEgqCIaEt7e1va3nZfURL+0MhO8uXcc853fr/vea4ILx8KlUq1RCSSBHOc9QSp9ZD4nquLadao1eolgiDct9lsZbR2vghK9DL8oKCgpStXrizSarXykpKS20ajcQ3p1pD472TNnj1777Jly1Kqqqq4c+fOrTCbzWf/F4FGoykpLi5+LyEhAY2Njd7NmzeXNTU1fUQgQnp6+tmdO3dmjBo1SlxeXo7t27cfbG9vXzdcgrDg4ODtkZGRuTt27FCMGTMGLpcLBw4c8Bw7dswkk8m8q1atSiQR00BlZSUMhn19JlNHIcfZdhCJfSjR0BCNpYNsqVQ6Y8+ePQt0Op2irKwMDMPA4/Ggu7sbNnsdxCIlgtXjEBYWBj8B6SMjIwNHjhxx7t+//wTlxEg450ha/ESDBKNjYmKKyNU0t9vNkOvwh+bSpUsICAgYALtxswwL9Br099tRfsWBCamZ4DgOPM9j6tSpuHr1ql/P19vb69qyZWud1dq3mPC7Bwl0ubm5P+Xn54f5LT116hSam5uRmpoKSibOnv0Vby8ah5SUaHh9FlRUluNOUyimT9Pj4sWLqK+vB+UFer0e5AG2bt36hDB0RFA7SBBBHhw3GAyZSUlJA1aVlpZi4UI9bhovYs6c15CcEgG7owNiCQdG6sH163dwqy4Ss2bkDOjm5OQMhKy6uhrbtm37w2q1LiWCvqE5SKGwXNi0aVOs33VKMsyWFsybF4f4BBm86EPrvRqKuQTaWC3dZdHSDFyr8MHtUkKhUMBiseDQoUMNJpNJTwrtQ3MwmHj/zeK8vLyZXl+POFsfhpSxanD8EyLrwhNzG3w+L6LC06AekYJA1ThcuVKBtlYPGho6hcLCwvN0/xOSrkHAFzXaZ+s3zN+lWySRTZsyg0IiQueDBgJ/QG3MUBUFQiIORHhoGmKiJlNlNaK65hpOljzki46W5RLw8ZeV6eD+2r2GufnvLI1nWXkIFHI5lakCbe0tcDrcEIkYBAVqKUyTKebd6OOaaVbgu10V3De7//qAQE6/iuDjFSsnFBi+z2R5h4DgoGT4hHAiuEkNZycvXGBZGWI11AcSByxWM1RsCBbOP85VV7e9T+BnXkmQ9kZmgeFQHButVUAdMBdyJgZ9tlaolEq4vSbwjjaoVHK43f1w9DthrLFj2+f3uaaW8uERZM1aXxAV08Pm7Y6l6pEhJGgSlEoRPEIrfCILvakCrJwVdjs1mo1FwS6g9Y6Lu1ZbPDyCuXM2FkSFJ7LRCXexZt0sSJgO9HvuQSZzUIgEOJ085DIW/TyLwnwrzD3pMHUYucraouERLNbnFUSEJrKdD24hNJzH9JkaxMY/QlAwEficoNcA7XfluHzJAinSEBoSh7aOWu7Pq/uGRbB2xbuG/Pi4KaypvZYSy1PnMhR7MVnPDeRPDCUkIhGeWjoRoxmPiIgk1DeWcb9dyPuQjk+9LMkyRixfrVAFfZud9UVAUuIcPHrcQp0rB6sIpl5wULlSmdJthpEgIpzFo54GREaMhpKqqK7+NMqrfujlHZZPBcFVSmrC0E6W02LLzIzVX6VPzJGa+7oIzAWHsw+ayGQqVS16nrD0kHkHjJMxQIjaRaVbObAWkTeMVIERgRGorDlqN/57YgttHyTxDnZy1tjk+cWLdXkahiz2Dxv3GBXVhzE+RYfoqAlEoKT4P1OXSgWqrH40Np+nDjdhyqTl5IV64MztduDHX1bdf/ioOZuWDYME8YDkSOastdPJAwWrGIGOzr+9J3//0jpp/CL5xNQc1mb3/2DYZ+H1ceRFt6/qxmFHZ9dt9yLd14GayLFiG9frq6ot4mtu/nyFtPz5eDr0LQqUSJjlCXEZG8a8/mYyudpgtnRuJKWYQFX4W9HRs7PCR07SCF4Xeh4b73Z1XbvMO5/6gWzRUeMKyLCEf26fudF5v65QgFBC+66hOXhmmb9AgGSlQr2Ud1ou0HfV8/0AmrUsOzLb63E5+91W/5n/xXSQ+I2cr1SGTOP5p0fpu4PkWbJo/Afq6Jc3BanwqgAAAABJRU5ErkJggg==",
+        "footprintRibbon": "data:image/png;base64,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",
+        "gorgeousRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAEfElEQVRIS9WUfUzUdRzH3/c7uOPWHQ/nHXInTSEOLxABeQgmRAlmFCBklDVMLB5KccuRY5m1IktntdnMNZPWXOR60BAEBgqyAI1HGRoH8WzeAfIMek/c3e/6HEUztmu38p++23u/3+/7/Xzer32/n+/vw4HjQ8DjcbdZFgd+pDSjI6kcO0Eimg8ijZBukaykPdufiz88PaXiXKwd3U3fX/+Z60dPKamdZFjuZw9wIjjYJ1WjmdJNTs7/Skn1SmXAi58ff2H93bmf8OrexlbNqKEc4Dwmk0nWuLnBpadn4iTFFToKqP++eGdsZGQomtpuouxCO3zW+CE7UwKzaQofH2uC1uiPbWkJCFlnRElJCfYVNJwl83RHAYWv7Hjk7ffeSYUzzwIWerCsFQzHBB7PC1brCpr3IFg/5ua78Xp+Fcoq1DlkfspRQIjPanFH+bmXsELKkKEJeoMLWM5DcOKKIBDwwOeNw2Dsx+DAMHZkXjQNDGm9yXzcEYAzBa2SSkSdRSeecg2PkJKREFP6LWjr42PBNI/wtX2QiQchcLGitlqFggMN/SNj+k2UN0oy3wtZXmS6ik5vREUpc5KeVHgnPiGHVCrD2B0+mvviYeQp0dRrhJjTgvSoOgQrAqC+OYzyyhZUVvVpGq/2fcSyrO2YdEuQ5QDvuBjFjf37otwjIrzh7OQJk1mCgelRXLj2PAQiT3Sr9dBODyM3vhQbA9bByvbDYBhHR8cw3j/S2vNzszqRzIftAYQMw5xKiPPbmr0rTBATuwVCNxmudFThh/Z06JyVMBrNkHJvIDmoArFhXhgf6yVzFU591a+7VDf+LRnnk2btAWzzHqQU2UrXk2dOZ/NDN/hgZGIATV2u6L6tpF0xCPT6BWEKLTzcgJqadhQcbJlSa/R7KY/+Ddz5pxosrQWuWS3urK/N4wrdzTBzjLg7747JCao/q8VKyQLdJBYWswHdqiHszK7V3VLr5ZQ858gtssUU5GQ9euTQoSiwXBOsFiGc2EC48DgwW4YWz5y16BcbiFY7h9y8y6irH8ugvG8cAdgKX/1dceZm+SoWXV0TUKkMkHmKkJERSv/ENM6ea8PUzAIClCIofF1RWT2Adz/sspnbIH8b9npRaUiQPGV2TgfvtYmQKWLAnWtAZjpDRzOLE6cfAFcch5G+yxgbvASGy0F3z3wROWc7ChBSYIyt2JvS3swNjE5iPNEF4+1SgDsBkXwPNEZfqFqrLDVnP7A1uSpSDYnOzbEdLEW9lfzyscKQ2GeZpzcA3S0V1JNYKCOTUN3JQWfjeUtpUd4BCj663Hjp294R/QXYmvVZ4fqNqUxaNB/+cv5iYXs0RpS1GHD9arnl/Bev3R/AM9EuCFGICWzFtd5plDb/HwESwR89bFwnuH87SMk6XqgIeZwxqyssZ778ZMZkMll37T4o5so3c/uvX/nPNch/ODz5sF43M/1bb3MxazYV0wZYxsk580FF5HahUCLpai3dT3Of/ttb5AswKeRZRwa999xzAb3701oCrZ2j92F7gN8BmFvoKIkBzlYAAAAASUVORK5CYII=",
+        "royalRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAE80lEQVRIS62Wf2xTVRTHv+17Xdeta0fXsR/d3CgbEJBtyPg1FwaCQWRsyI+pkQgmIygoQRhOIEOjUgQHM0MNCgomIImIDhwMgyBsEAYqvzfGqpTRX1u7DvqD9r3X9169TSCSZcOq3OT88e79nvPJPfece58EkQ85RVGzAEEmCNhH3NhIXCWRiIhGTtN0Rdm8JyuFoIXeX2cy8Ly4hcz7/8m/P4CMOGYRMxFjiJXPnVNYXblikpoPWrGh+rin/nDHB6KIj8haWJtBzNzXrvoDbEtJiVssipJulhWa09LUz+7YNl+akp6KoOCApf0KKqvOorXNe1ARTedT0lCKvctXTwAlvXfUH2Dv1s1TXsjLG4F2owvDhqmRmD4Qp2MdcARseMY3AJ5ONy630hgxXI+WK79j6YqjJ0jwyZECyp+bOWh77eaFUMZlQhC9YHkHGn1tYHgOU1XZkFHxiJZnw+d1YdXqrdi7r7WSBN8UCSCKiJaMGZ1a8+3uhdBo9OCCXfAzt+HmGIREFpqYFMSr8kFRsbBZmrBo6Zc42WheKwLVxJd7ENI7RVE0LX2jpGRc1epVRer0FDUoOgiW8+APXoF2pRuO4C3kuDUo0E4muxDg95thtt3EltoL/u/2X1xHquszAgjch/QGlM+ZPb66YvkEVWamTnJdtKOHsSNXkoQ/lekQ4lW4xByHzBZAcdQQmCgvIOExXBILu7U7tKnmsueHuktrSXV92idAo4np+PyT6Y8VFuSDpwOo542wB30oCyShRZOMYLwMt+62grXeQTGBNulCkN7xolg+FIqQHGebr2LZymMOi9Wd1CdAJsOiKRN1hoo3x2mzhuhgDwUhIhppsmQcYi7CqeLBMgxUThaz1FnooThIIYeO1sJ88wYMmxrvHGu0fBgIiBv7S5FMLpcueyIv8d3NhiJlpj4HcXHDEApF47RpP06EOhAMiShkVRibNhhRUUrwPA27xYjKdb+wp87Y32cYsebBDu+rD6REsH7C2KS3d3/1GpJTJ0AQenDXZ4S1q500GgddYjLkMQMglSjR47ThrbXf48Chjq/DHU+Mf1gV3V9bUDJDv2vb1qVQkEAc1wlW4sN56V04yaE/JdFDSROAVE76wAnDxgPYvuvqBuK8JpI+CGu+qdlY+GLBmEG4bryN7GwZtLpkHKG74WUDKKNGw2q6DpfLBf2gAWg+14VXl5/8lfiNIxaKZAc7Jxakljl9gjx9vI6iu91YsyQP+szRpLlUaGk5h5odp8EkqNB13izotHK24aj1t3tXBem3v0d/d1EikczMHqNbM++9osEUQ4Nr7ELpzFRSRTzqDtqgKEqCTCvFnspjbTfO28MH+xOxjkhTFNYl5Dyt//nlj6flDVSTq+HMUBxqqEXAH0Bp6Ur4C01wMZ3YUV7ffPXkzblEb+0dPPz9sAcnIXda1tEFtdNG6bQZmBSYj/a2VnLgHEbk5qJJsRd29y1sf+XH5isnTHNILNv/AhTLlsDjcZPKkSBGqcQR/otHCxhumY6qd9aRphOxYb0BLakNjwbwUvXUUZxTDO15vanzWus1QzitI3Mer5q3pSBBmS6T7lx8+D+nSJMxMulwRm5y/oUGY73X5Q8/Jmfv1XmhKjG2Ir94yAxjs/WU+ZrjeTLf+W/PgKaiqNmCICggIPzeunoF0IJCKfmV8QicUEfWgn0B/gJUoRQ3pxcb4wAAAABJRU5ErkJggg==",
+        "gorgeousRoyalRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAFOUlEQVRIS52WC0xTVxjH//dRSl/UUtopoLwKKBUUfABinI/MaJy4RY3O16bodBINxi1u0ekydXNKspiwqHFA1GWic0bma7JNxjATRRRxgLYUtDxcSwuFQQu9vbc7XZhhDLPOk5zc5N7v//3O+X/nfvdS8H+wEgmT6fVC2tfHnyEyzh8p5U/QQMzCVSvTCkRMh7jwpGEtuXeeTO9/6Z8HkBFhEJm/DySRT54cf2r/nimZYpGdenfnnSt3qtrfIs9sAwAlubrJdA0FDgdgRSLmxwkTIqY/bXPUcR6cdzi67m1Yl35m2+YEsYgScDCvnMsvbFirUCrUASJ6hUolTm5sajc4nZ50AugZDBkOIJJK2OuVv2ZPd/eH4v4DIyqrqoRX5oTRMTYxXLZe2JICcfGKlU+eMI5JToqBXN6KjJnHjR0Od4o/AN8CDh49PPO92fIk8Ew3pNPk8PIucK1uUB4WISkRoOgQdNwww2Pz4Lb3PlZu+Ok00a3wxyJfTMbCBTHlh3JepqynDIjclQCeCwTtDQPNSBAo90Cm1OJudgHCstKxt7DYW3Dit6VE960/gBiappdmTIvad/jQFEajVoIXQsGbFXDXNqHb0ABaFwrtgvEI0WphtRmwJee88H1J7T6PR/iKABoGn66hNchMTIzbuzErPX5ikls8OkwO3kPBax8LiUMDd/MTdJSWoberC9LliQidFw+FjEVT42PcqvyDyzty01Bd/fAAAfhAf43BgOmTUqLL8z5fhPBRveiqsBPPPQhaFIGeq+1gTQJ4Vx/cbXaIwIAbK4U2ZwqcxY/Bq3mMnBMOU5MbO3ZeQ+nPdfNI7mtDARFRkdLDizNHz8tcoBNrA2QQC0EQRSnIqq3oOW1EgJdBQIAYshEq9E+SQvpaCJgWN/ooJxyUC+cu1HPFl5tKHz7qyR6w6h878AHVKpVoiVol2jV/bnh49uaZGBMxHqaau2g/boKEJFPKlaCj1OifD4xJjoLlaSsKTlTiwsVmq93e97G9k/MV2veC/suiwQfgpeiokCfXr20Va2ShcLNAi+km+msdYEhN2AQRNJFaUE4KXf09WJn1HV9ZZR1HEhj9OUW+mNXbt716ctMMHRxlZuh3LwMYF+zmenA9nQiOVkPgvTDlPoB80kgUNxrx/oe/7CS6T/wFFJVczVmmV0eA83bCxrVBqQqC51I7HOanGLEhDG2tFkQER0IMYpNgROqML2/xPNL8AQSqVNKKHy4vT6q8WYea8g5KFjQRE2cJmJ06Gm6nC2V3zTDc06CloQwJaTIkp4Zh/TsVzebm7mQCsA+GDNeLaNLs1isVbEq8eMSSNfE6tX7FahipRqRNJTUgirJyBnpVBh4eP4pTBlPP7U7rOTfnreY44QhJ7uuqz8bz2jVNIka9Hh1Zuk4fF5v4djbqIcDl/AbgO8CK30SKZhQe5H6KwjqD5WxD0xwSX0+m4I9Ff8dol+iibmTp42MTN21BwDg9DmxZC6erG7u/+Bpshx33P9uL/FqDpchoepmIHg1NPvRFG/r8GSBp81YET05FSU42qYET8/OOwUXaRvX+j5BfZ3xxwGLfDhLiYhM2ZiMgLgFNufvhcbmg+2APeJsVj4hF+cSiImPji+/gjbiY2GPNll5VdDS/RkIrWEFAkSDqraupEXboxgSdNTa+OGCqVlMOigq8bbHuYBiGnhsemitjWeklc8v2Po6zJKmDD0pYRnnL0j6L+Gv4vzUIDGSYVR6er/UAFUTMko6RzpCfgX6gZOA4jhfTdEa/IPi+Zt3DAf4ESu4WN45apvMAAAAASUVORK5CYII=",
+        "trainingRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAFg0lEQVRIS7VWeVCVVRT/vf17vMUH7yHLY5FFEFlSKMVYlDHAMsyUbNxSGx1B0ywamxqzP6xpSseSpqHENEmd1NKxMUZx1BRERY0dQWWT7cnyePL2vfMhOOQyTdN4Z35z79xz7vmd5Z77fRw848F5xvYxlmAtkb1E2EGoILj/IzlrawZhI+E84Qf2/CgBl9blc+NSpt9ovzk0YNQV2h2OXbTXQ3D8C5GA5L5CLn+jSu6VG6MOk5TUX66kvfixBOz6y1fjUjbHBETgZk8L6rubO1r6On9yuVyHSNb4FJIIPpe/IkTlvyTKP2wCGUd1RyP+qCn7ivQ/fJRgUbz3+MPb0rJQ6xBDazahvuu27ULT9Q6D1Vw1Eq2TZj6BjdgpFjLPpU+eHhjpFypUiSWI5xuw5cIpXL2nWUDy42MJgqV87vHCxOip2f5KDHCkKHOMR+ngENqcFVj2lghCAUNFYcvigtvtgm7QgqNH7YgQJSLFU4ZUXj88YcDhrj6svXqz3uBwZZJyF1sDT7VYtOeT2NB5q0N8We+Gx6DNgf3aPkxcyUH6/Awwklgqey9BS1IThrT3cPl8A+oK3FjhrYKXkC3Fg7G3rce5tbrlV43FtoEj4nLX50UF7/woKkgo5rGRPxh9FhuOGXoQlStH4uw3wHj4k/PXSWKGy+2GXqdD1ZU7uLFTj8VKNXwY4cOzFpcLn9a1WQuaOvI4PCB7Vbj65y/jQplxgocBQGOx4oRBg0m5MkybmQCxh5K818BotKCxuh1cPh82iwnFhzRYpA1EtEz6kGDI7sB7VXdMB1p6VrEpYmR8/ucbIgPWbY0OYfgjF7fPYsdBfR/ClrgQEqGAiGFIlQOzyYrgiXOgUIpg1tfiYGEF0q4rESqQDBPYKbptDe22XY3tO40O12ejfaCS8HlFW2JCXv4gIhD9kKLU7onT2iZk55iRkJRChTWT+fsY6O2HUChHUJg3RWDE/t2VUP4Vh1k8C7yoyDuaOrGttrXE5HQuJj7t2E7OTlerj+YlZaLa4YEhmxW3tTVYkmNA8qznIRLziEAPGxW/t2cAPn5KmCldRftuQVc3AwqBAgl8I7aXn0FJZ+dj15SNLj87fvaGKHU4mjRt6NfrECh0wiu8E0vXq+EhVZDKgytqs5rJewsunNGhulyCbq0UXhIFJvlNQENXM45Xnssn5XdZo6MRsHfs4vIXsxKvNte67mo1nAVTZ3IyZA5U6RuQ820kAsKTqcitRGCHw2ZHR/Nd7N7UjWh5FC4a+ThW+afbT+Htnuwfyi2uKWUbM4H1aGyKCmgjlVA3PSzuldcnvyCdab+FYs1dBC/lQTaOCw6XBR2hfrs/QCQHXMhUB+GSIBxHaiuM11rr9tD5OAL7tKwbGwG7phsLlbfM67tF0zIXLFSKOEloQ69ThK09QvxyraTGbLcWk45bImSyFk5Ji/ki0AkVz45L7iCc0DndB8pPHqKH8h3S0Y3e2Ue/B7GJobFl8+OS5atF7VBQx3ZCie/1CuSfOVhosls2sQRyRrJ7TerCZRs9jVBjAFpIsNcajN+qLg5ea6vLIB22I4fHPwgYgXDfvClpK1dOUCOD0zwsrkQAjgwJ8E1JUYHd5XyfJfAQMAVrZmWvWu4JTCEX2JydRjh+pLqcqi3dZ7JZ3n4iAY/Ly48cHzR3tooJSh7H4yd4ydAojsZZnQ1flxSx34fNrDVWLzftzZw5SikiTbWoHNSj7L7DWdJnbW0e6Pzd7rDnPS1FbL/7UDEifRlRllTAf00q8/GVy1Wc840V7Bv/8UjU21MjEjYZDYNuvV7TbXQ6T2pM1hP0ljeRnF5E6rgnpWh0c8wspnUaIZ1wmHBlRJZEM9tMZwnnCJYnnH28Bk9T+j/7z/yv4m94siYpk+TFHQAAAABJRU5ErkJggg==",
+        "worldChampionRibbon": "data:image/png;base64,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",
+        "partnerRibbon": "data:image/png;base64,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",
+        "wonderTradeRibbon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAFjUlEQVRIS62VCUxTdxzHf++9XpRWgdoWymUpUFQoKqAoyhCvRZziAcQzEp0mupEtcU6j2aLuSDxYtpkdiTqPCIOBUTCbRzxABBQw1iJSrrYcbWlLy9HS4/W9t4eLTiMQR/bLe3nv/Y/f5/1/v9//+0dgbGOkJkRlB4p8kzAmEwDlAIqygSQ9AKQbgMLpdxIsFvuD2w/brtBuvKO5QsbyHwLgk71jzplF703dwOVNBoQRBMAMBIroB8B7aXdWcLlccP2m5mzxhfo8usXxnwD0YHTh4uijMelh+9l8FkoT6CaMvin6GvlZEnAnTjwr135ZVdX67YuGUWzMFYyMTVujODhz07QjEeGRyHRBIlJnvAcURcJcSTo0WeopraGdqD2l3Pfg5vPvxorE+IB1ioNZu7OPrE7ahrpJX7C7WwFDMPBlyejnIHVNeZ649FXBxAHbc7MP7f/iyOGnXib6sNdCbZHLgCAppKClHeaJRJA4CfXuzdv9edEff+ZPaAW7tm85ELsh92gDgY4EHxgYRtGlg3gpOg+0LeCy8Ts/nthbUFz6w4QAcXFxCf5Jc/OD0han+ojpKnrNhvU9YKy8W2GquPNxc0eHakIAehISTFvQ9BnHp2ZtyOGFS1/kbLCtldKVXy4w1dft67JY9OPsJRg3yS8nKuRiqShSrhQtWctDMAT0ZYV6W0f3oicd3a3jOR/peydAenxIcOKCiDJffvBMyusEm9VQ8Vhp3HS/QWf4PwCITCJaPSVCekAYOjWBojdab7umytrZdQx3OtUom5mMAkQAQrGAQHSU03lN63AYX4LHXYFcLpf6iYNPzVyTtSJ8tgIIggQvvV9N/TjoGhqgp6oEJEuCSULEpLwohQ0PusHxqNs2WG3M0PX01IwbIplMJpqevqxQsSIjbZbYjIaxDbRCIEChvuClNanW4g/XG61gqyzucw+2/4aIWBJBfNA6nmQyu+Wn+uKWmqacUQGSgIDQ0JjYQySCpKTs+ihmeVQnJuOZ4YouFrrxKeAiEJBwvLAxlgc1nf1wptKIm65ePODVNxUFZidcEyaFxjceu3+p9Unr5tEAzIyt2/NnrcvaXVP6O5K57QNkqbABTjfFA4fNhhThABAoD0p1PsBj4JA3ewhOKPlQd76wq7/50ZKwVdH3UCZT0Pbzg5WdVuuttwBCoZD3/o49hT7iwAxL/zASOXsaLf12GMB9YU+0GgRsFjC4fqC1ueB4uwQk2DDYgAtd1bXQryqtFM+PTDZUdnzfePfpvlGTLAHgJu7cc47tF7BeHmVH/ENEtDKwgM9iwupQFnD9wmhRNoKjXwtFWjbY3ASwaBExqjXQajTAgNFR1lut3qnRmOjj4R97o4qSUtNy4jI3XtRW3xuUpvAFYYoQwL0eGPa4YIdsBoh5HopyNSPtVi+cNbiAQijAMA7o67uB48cBc5ulXH2hNrdnaKjvLUBYQMCM+Ts/qWAJhGhTybkPeVHcX5dtXShYLo2DkpYngFIeiOczabFzIEo7Tn+7YW0IBkXdGNSVqSF8aQzVUq46p77RnGc2m+1vAebMW5ifvP+bT7vr7j9Wnj2VyQ2dlDttc9LhzDkpMDcoAC6pHoLSYgUGfbAlBzBgZSgCVSaAG8+c8LxEqWfx2aohXd9nzao3he9ViFZk5VwQ5+RtsagbXT23r5zEXe6bHClx2m+eOGpplBQyI/yAjzqAIu1g9+DwV5cHlIMcUn1VeUN/qzlXY/o37q/LxyuAQqFYL1218RdPUKTA7XYDZdaDs88Ajt56khfNJiVRYkbYFB9gMzAw9nnA0jXkMKt6LpvqtV9rNHr1u8g1MzE1NdbN4GaQJBGOIQhOH17tuNn4GPEnKAZKrvHxZcsZDIxy2l0qj4csNzQZntpstoHxBO9vm2xlNxxe/JAAAAAASUVORK5CYII=",
     };
     
     var medalCap = 60;
@@ -236,12 +245,14 @@ function Safari() {
         "260": base64Ribbons.legendRibbon,
         "261": base64Ribbons.masterRankRibbon,
         "262": base64Ribbons.bestFriendsRibbon,
+        "263": base64Ribbons.worldChampionRibbon,
+        "264": base64Ribbons.partnerRibbon,
         
         // League
         "248": base64Ribbons.galarLeagueChampionRibbon,
         
         // Monotation Battle Event
-        "243": base64Ribbons.towerMasterRibbon,
+        "243": base64Ribbons.battleChampionRibbon,
         
         // Halloween/Summertime Trials
         "173": base64Ribbons.earthRibbon,
@@ -15185,7 +15196,7 @@ function Safari() {
         }
         this.saveGame(player);
     };
-    this.pokemonFlee = function(customFlee, skipLog) {
+    this.pokemonFlee = function(customFlee, skipLog, skipEscape) {
         var pokeName = poke(currentPokemon, true);
         var runmsgs = [
             "The wild {0} got spooked and fled!",
@@ -15232,7 +15243,7 @@ function Safari() {
         if (customFlee) {
             runmsgs = [customFlee];
         }
-        if (lastEscapedMons) {
+        if (lastEscapedMons && !skipEscape) {
             var bst = getBST(currentPokemon);
             if ((bst >= 450 || isRare(currentPokemon)) && bst <= 600) {
                 lastEscapedMons.push({
@@ -15545,7 +15556,7 @@ function Safari() {
         if (safari.hasCostumeSkill(player, "permanentStealthThrow")) {
             playerDisplayName = "Some stealthy ninja";
         }
-        safari.pokemonFlee("{0} threw {1} at the wild {2}, causing {3} to flee!".format(playerDisplayName, an(finishName("rock")), poke(currentPokemon, true), currentPokemonCount > 1 ? "them" : "it"));
+        safari.pokemonFlee("{0} threw {1} at the wild {2}, causing {3} to flee!".format(playerDisplayName, an(finishName("rock")), poke(currentPokemon, true), currentPokemonCount > 1 ? "them" : "it"), false, true);
         safaribot.sendMessage(src, itemsLeft(player, "rock"), safchan);
         this.saveGame(player);
         if (contestCount > 0) {
@@ -28833,7 +28844,7 @@ function Safari() {
         if (cantBecause(src, reason, ["auction", "battle", "event", "pyramid"])) {
             return;
         }
-        if (isRotation && stopQuests.league) {
+        if (isRotation && (stopQuests.league || stopQuests.celebrity)) {
             safaribot.sendMessage(src, "Rotation Battle challenges are temporarily disabled!", safchan);
             return;
         }
@@ -32865,7 +32876,7 @@ function Safari() {
                     if (self.select.iceshield) {
                         if (["Water", "Ice"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Ice Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP + "]");
+                            out.push("The foe's Ice Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP.toFixed(2) + "]");
                         } else {
                             if (move.type == "Fire") {
                                 sdmg *= 1.5;
@@ -32879,7 +32890,7 @@ function Safari() {
                             }
                             self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Ice Shield sustained damage! [Shield HP: " + self.selectData.shieldHP + "]");
+                                out.push("The foe's Ice Shield sustained damage! [Shield HP: " + self.selectData.shieldHP.toFixed(2) + "]");
                             } else {
                                 out.push("The foe's Ice Shield shattered!");
                             }
@@ -32888,7 +32899,7 @@ function Safari() {
                     if (self.select.sludgeshield) {
                         if (["Poison", "Steel"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Sludge Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP + "]");
+                            out.push("The foe's Sludge Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP.toFixed(2) + "]");
                         } else {
                             if (move.type == "Water") {
                                 sdmg *= 1.5;
@@ -32902,7 +32913,7 @@ function Safari() {
                             }
                             self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Sludge Shield sustained damage! [Shield HP: " + self.selectData.shieldHP + "]");
+                                out.push("The foe's Sludge Shield sustained damage! [Shield HP: " + self.selectData.shieldHP.toFixed(2) + "]");
                             } else {
                                 out.push("The foe's Sludge Shield shattered!");
                             }
@@ -32911,7 +32922,7 @@ function Safari() {
                     if (self.select.metalshield) {
                         if (["Rock", "Steel"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Metal Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP + "]");
+                            out.push("The foe's Metal Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP.toFixed(2) + "]");
                         } else {
                             if (move.type == "Fighting") {
                                 sdmg *= 1.5;
@@ -32925,7 +32936,7 @@ function Safari() {
                             }
                             self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Metal Shield sustained damage! [Shield HP: " + self.selectData.shieldHP + "]");
+                                out.push("The foe's Metal Shield sustained damage! [Shield HP: " + self.selectData.shieldHP.toFixed(2) + "]");
                             } else {
                                 out.push("The foe's Metal Shield shattered!");
                             }
@@ -32934,7 +32945,7 @@ function Safari() {
                     if (self.select.dracoshield) {
                         if (["Dragon"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Draco Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP + "]");
+                            out.push("The foe's Draco Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP.toFixed(2) + "]");
                         } else {
                             if (move.type == "Fairy") {
                                 sdmg *= 1.5;
@@ -32948,7 +32959,7 @@ function Safari() {
                             }
                             self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Draco Shield sustained damage! [Shield HP: " + self.selectData.shieldHP + "]");
+                                out.push("The foe's Draco Shield sustained damage! [Shield HP: " + self.selectData.shieldHP.toFixed(2) + "]");
                             } else {
                                 out.push("The foe's Draco Shield shattered!");
                             }
@@ -32957,7 +32968,7 @@ function Safari() {
                     if (self.select.electroshield) {
                         if (["Electric", "Ghost"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Electro Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP + "]");
+                            out.push("The foe's Electro Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP.toFixed(2) + "]");
                         } else {
                             if (move.type == "Ground") {
                                 sdmg *= 1.5;
@@ -32971,7 +32982,7 @@ function Safari() {
                             }
                             self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Electro Shield sustained damage! [Shield HP: " + self.selectData.shieldHP + "]");
+                                out.push("The foe's Electro Shield sustained damage! [Shield HP: " + self.selectData.shieldHP.toFixed(2) + "]");
                             } else {
                                 out.push("The foe's Electro Shield shattered!");
                             }
@@ -32980,7 +32991,7 @@ function Safari() {
                     if (self.select.genesisshield) {
                         if (["Dragon"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Genesis Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP + "]");
+                            out.push("The foe's Genesis Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP.toFixed(2) + "]");
                         } else {
                             if (move.type == "Psychic") {
                                 sdmg *= 1.5;
@@ -32994,7 +33005,7 @@ function Safari() {
                             }
                             self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Genesis Shield sustained damage! [Shield HP: " + self.selectData.shieldHP + "]");
+                                out.push("The foe's Genesis Shield sustained damage! [Shield HP: " + self.selectData.shieldHP.toFixed(2) + "]");
                             } else {
                                 out.push("The foe's Genesis Shield shattered!");
                             }
@@ -33010,14 +33021,14 @@ function Safari() {
                     if (self.select2.iceshield) {
                         if (["Water", "Ice"].contains(move.type)) {
                             self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Ice Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP + "]");
+                            out.push("The foe's Ice Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP.toFixed(2) + "]");
                         } else {
                             if (move.type == "Fire") {
                                 sdmg *= 1.5;
                             }
                             self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - sdmg, 0);
                             if (self.selectData2.shieldHP > 0) {
-                                out.push("The foe's Ice Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP + "]");
+                                out.push("The foe's Ice Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP.toFixed(2) + "]");
                             } else {
                                 out.push("The foe's Ice Shield shattered!");
                             }
@@ -33026,14 +33037,14 @@ function Safari() {
                     if (self.select2.sludgeshield) {
                         if (["Poison", "Steel"].contains(move.type)) {
                             self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Sludge Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP + "]");
+                            out.push("The foe's Sludge Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP.toFixed(2) + "]");
                         } else {
                             if (move.type == "Water") {
                                 sdmg *= 1.5;
                             }
                             self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - sdmg, 0);
                             if (self.selectData2.shieldHP > 0) {
-                                out.push("The foe's Sludge Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP + "]");
+                                out.push("The foe's Sludge Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP.toFixed(2) + "]");
                             } else {
                                 out.push("The foe's Sludge Shield shattered!");
                             }
@@ -33042,14 +33053,14 @@ function Safari() {
                     if (self.select2.dracoshield) {
                         if (["Dragon"].contains(move.type)) {
                             self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Draco Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP + "]");
+                            out.push("The foe's Draco Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP.toFixed(2) + "]");
                         } else {
                             if (move.type == "Fairy") {
                                 sdmg *= 1.5;
                             }
                             self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - sdmg, 0);
                             if (self.selectData2.shieldHP > 0) {
-                                out.push("The foe's Draco Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP + "]");
+                                out.push("The foe's Draco Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP.toFixed(2) + "]");
                             } else {
                                 out.push("The foe's Draco Shield shattered!");
                             }
@@ -33058,14 +33069,14 @@ function Safari() {
                     if (self.select2.electroshield) {
                         if (["Electric", "Ghost"].contains(move.type)) {
                             self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Electro Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP + "]");
+                            out.push("The foe's Electro Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP.toFixed(2) + "]");
                         } else {
                             if (move.type == "Ground") {
                                 sdmg *= 1.5;
                             }
                             self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - sdmg, 0);
                             if (self.selectData2.shieldHP > 0) {
-                                out.push("The foe's Electro Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP + "]");
+                                out.push("The foe's Electro Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP.toFixed(2) + "]");
                             } else {
                                 out.push("The foe's Electro Shield shattered!");
                             }
@@ -33074,14 +33085,14 @@ function Safari() {
                     if (self.select2.genesisshield) {
                         if (["Dragon"].contains(move.type)) {
                             self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Genesis Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP + "]");
+                            out.push("The foe's Genesis Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP.toFixed(2) + "]");
                         } else {
                             if (move.type == "Psychic") {
                                 sdmg *= 1.5;
                             }
                             self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - sdmg, 0);
                             if (self.selectData2.shieldHP > 0) {
-                                out.push("The foe's Genesis Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP + "]");
+                                out.push("The foe's Genesis Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP.toFixed(2) + "]");
                             } else {
                                 out.push("The foe's Genesis Shield shattered!");
                             }
@@ -41872,7 +41883,7 @@ function Safari() {
         else if (opt === "getmedal2") {
             if (player.quests.celebrity.achievements.noIdolRun) {
                 var description = "Cleared Celebrity battles on Super Expert or above without Idol skills (" + new Date(now()).toUTCString() + ")";
-                var icon = 260;
+                var icon = 261;
                 var hasMedal = player.medals.filter(function(e) { return e.icon == icon }).length > 0;
                 if (!hasMedal) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Wow, you really managed to clear Celebrity battles on Super Expert or above without Idol skills!?", safchan);
@@ -41899,7 +41910,7 @@ function Safari() {
         else if (opt === "getmedal3") {
             if (player.quests.celebrity.achievements.clearedExpertRegions.length >= 6) {
                 var description = "Cleared Celebrity battles in many regions on Expert or above (" + new Date(now()).toUTCString() + ")";
-                var icon = 261;
+                var icon = 263;
                 var hasMedal = player.medals.filter(function(e) { return e.icon == icon }).length > 0;
                 if (!hasMedal) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Wow, you really managed to clear Celebrity battles for every region on Expert difficulty or above!?", safchan);
@@ -41927,7 +41938,7 @@ function Safari() {
             if (player.quests.celebrity.achievements.singleSpeciesClear) {
                 var mon = poke(player.quests.celebrity.achievements.singleSpeciesClear);
                 var description = "Cleared Celebrity battles on Normal or above with only " + mon + " (" + new Date(now()).toUTCString() + ")";
-                var icon = 262;
+                var icon = 264;
                 var hasMedal = player.medals.filter(function(e) { return e.icon == icon }).length > 0;
                 if (!hasMedal) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Announcer: Wow, you really managed to clear Celebrity battles on Normal difficulty or above with only " + mon + "!?", safchan);
@@ -60748,7 +60759,8 @@ function Safari() {
             "/shopadd: To add items or Pokémon to your personal shop. Use /shopremove to something from your shop, /shopclose to remove all items at once or /shopclean to remove all items out of stock.",
             "/price [Item/Pokémon]: To find an online shop selling the specified Item or Pokémon.",
             "/auction: To start an auction.",
-            "/challenge: To challenge another player to a battle. Use /challenge2 for a Rotation Battle.",
+            "/challenge: To challenge another player to an Auto Battle. Use /challengeself to challenge your own party.",
+            "/challenge2: To challenge another player to a Rotation Battle. Use /challenge2self to challenge your own party. Use /challenge2sun, /challenge2rain, /challenge2hail or /challenge2sandstorm to battle with specific weather conditions.",
             "/forfeit: To forfeit during a normal or rotation battle.",
             "/watch: To watch someone else's battle.",
             "/watchpyr: To watch someone else's Pyramid run",
@@ -61369,6 +61381,26 @@ function Safari() {
                 safari.challengePlayer(src, commandData, true, {hail: true}, command);
                 return true;
             }
+            if (command === "challenge2self" || command === "challengeself") {
+                var player = getAvatar(src);
+                var isRotation = command === "challenge2self";
+                if (cantBecause(src, "start a battle", ["tutorial", "auction", "battle", "event", "pyramid"])) {
+                    return true;
+                }
+                if (isRotation && (stopQuests.league || stopQuests.celebrity)) {
+                    safaribot.sendMessage(src, "Rotation Battle challenges are temporarily disabled!", safchan);
+                    return true;
+                }
+                var clone = {
+                    party: player.party,
+                    name: sys.name(src) + "?",
+                    desc: "Clone Battle",
+                    postArgs: {}
+                }
+                var battle = isRotation ? new Battle2(src, clone, {}, false, false) : new Battle(src, clone);
+                currentBattles.push(battle);
+                return true;
+            }
             if (command === "challenge3" || command === "challengetag") {
                 safari.challengePlayerTag(src, commandData);
                 return true;
@@ -61939,7 +61971,7 @@ function Safari() {
                 }
                 safaribot.sendMessage(src, "Current Time: " + time + " (" + period + ")", safchan);
                 safari.showNextContest(src);
-                safaribot.sendHtmlMessage(src, "Pokémon-of-the-Day: " + link("/active " + pokePlain(dailyBoost.pokemon), pokePlain(dailyBoost.pokemon)) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active, and wild " + pokePlain(dailyBoost.pokemon) + " have double the chance to be Shiny).", safchan);
+                safaribot.sendHtmlMessage(src, "Pokémon-of-the-Day: " + link("/active " + pokePlain(dailyBoost.pokemon), pokePlain(dailyBoost.pokemon), true) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active, and wild " + pokePlain(dailyBoost.pokemon) + " have double the chance to be Shiny).", safchan);
                 safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + " Tickets.", safchan);
                 if (rafflePrizeObj) {
                     var total = 0;
@@ -63401,6 +63433,39 @@ function Safari() {
                 sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Number of " + mon.name + ":</b> ", "black") + addComma(monTotal) + " (" + addComma(usersChecked) + " users checked)", safchan);
                 sys.sendHtmlMessage(src, toColor("<timestamp/><b>Average Number of " + mon.name + ":</b> ", "black") + addComma(monAverage), safchan);
                 sys.sendHtmlMessage(src, toColor("<timestamp/><b>Top 10 Players with Most Number of " + mon.name + ":</b> ", "black") + userTallies.slice(0, 10).map(function(e) { return e[0] + " (" + addComma(e[1]) + ")" }).join(", "), safchan);
+                sys.sendMessage(src, "", safchan);
+                return true;
+            }
+            if (["money", "mstats", "moneystatsrecent", "moneystatsr", "mstatsr", "mstatsrecent", "richies", "richiesrecent", "richiesr"].contains(command)) {
+                var recent = false;
+                if (["moneystatsrecent", "moneystatsr", "mstatsr", "mstatsrecent", "richiesrecent", "richiesr"].contains(command)) {
+                    recent = true;
+                }
+                var moneyTotal = 0, usersChecked = 0, userTallies = [], moneyAverage = 0;
+                for (var e in rawPlayers.hash) {
+                    if (rawPlayers.hash.hasOwnProperty(e)) {
+                        var player = getAvatarOff(e);
+                        if (recent && getDay(now()) - player.lastLogin > 30) {
+                            continue;
+                        }
+                        if (player.excludeFromEconomy) {
+                            continue;
+                        }
+
+                        usersChecked += 1;
+                        moneyTotal += player.money;
+                        userTallies.push([player.casedName, player.money]);
+                    }
+                }
+                moneyAverage = moneyTotal / usersChecked;
+                userTallies.sort(function(a, b) {
+                    return b[1] - a[1];
+                });
+                sys.sendMessage(src, "", safchan);
+                sys.sendMessage(src, (recent ? "Recent " : "") + "Richy Stats for Safari:", safchan);
+                sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money:</b> ", "black") + "$" + addComma(moneyTotal) + " (" + addComma(usersChecked) + " users checked)", safchan);
+                sys.sendHtmlMessage(src, toColor("<timestamp/><b>Average Amount of Money:</b> ", "black") + "$" + addComma(moneyAverage), safchan);
+                sys.sendHtmlMessage(src, toColor("<timestamp/><b>Top 10 Players with Most Amount of Money:</b> ", "black") + userTallies.slice(0, 10).map(function(e) { return e[0] + " ($" + addComma(e[1]) + ")" }).join(", "), safchan);
                 sys.sendMessage(src, "", safchan);
                 return true;
             }
