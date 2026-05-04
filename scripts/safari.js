@@ -14051,7 +14051,7 @@ function Safari() {
         }
         var auraBoost = safari.getAuraEffect(player, "catchrate", 1);
         // safeguard against potential negative tierChance+statsBonus
-        var finalChance = Math.max((tierChance + statsBonus > 0 ? tierChance + statsBonus : 0.01) * timelinemod * typeBonus * shinyMultiplier * legendaryChance * teraChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff * abilityBoost * auraBoost + anyballbuff, 0.01) * eventChance;
+        var finalChance = Math.max((tierChance + statsBonus > catchTierChance[catchTierChance.length-1] ? tierChance + statsBonus : catchTierChance[catchTierChance.length-1]) * timelinemod * typeBonus * shinyMultiplier * legendaryChance * teraChance * spiritMonBonus * dailyBonus * rulesMod[0] * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff * abilityBoost * auraBoost + anyballbuff, 0.01) * eventChance;
         if (rulesMod[1] == true && !theory) {
             if (player.helds.length > 0 && player.helds[0] == 2 && !needsPechaCleared.contains(player.id.toLowerCase())) {
                 player.berries.pecha = true;
