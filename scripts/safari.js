@@ -1975,6 +1975,7 @@ function Safari() {
         "197": 97,
         "298": 35, // Supersweet Syrup
         "305": 12, // Teraform Zero
+        "307": "[Lead] Increases your catch rate by 1.3x during any variant of Weather Institute Contests.", // Mega Sol
 
         "16": "[Wild] The wild Pokémon's type changes into your lead Pokémon's type whenever it breaks out of a Ball. If your lead Pokémon has two types, one is chosen at random. If it breaks out of a Spy Ball, the type will be listed as unknown.", // Color Change
         "126": "[Wild] The wild Pokémon's catch rate is calculated using inverted type effectiveness. This does not stack with the Inver costume, Inver Balls, or the Inverted Type Matchup Contest rule.", // Contrary
@@ -2232,6 +2233,18 @@ function Safari() {
         },
         "306": {
             "name": "Poison Puppeteer"
+        },
+        "307": {
+            "name": "Mega Sol"
+        },
+        "308": {
+            "name": "Dragonize"
+        },
+        "309": {
+            "name": "Piercing Drill"
+        },
+        "310": {
+            "name": "Spicy Spray"
         }
     }
     var ultraMoves = {
@@ -3433,7 +3446,7 @@ function Safari() {
         },
         "837": {
             "name": "Aqua Cutter",
-            "learned": [475, 912, 913, 914, 932],
+            "learned": [475, 912, 913, 914, 501, 502, 503, 66039, 845],
             "type": "Water",
             "power": 70
         },
@@ -7840,7 +7853,7 @@ function Safari() {
             "types": ["Fairy", "Flying"],
             "name": "Mega Clefable",
             "stats": [95, 80, 93, 135, 110, 70],
-            "abilities": ["Cute Charm", "Magic Guard", "Unaware"],
+            "abilities": ["Magic Bounce"],
             "tier": "SM OU",
             "height": 1.7,
             "weight": 42.3
@@ -7849,7 +7862,7 @@ function Safari() {
             "types": ["Grass", "Poison"],
             "name": "Mega Victreebel",
             "stats": [80, 125, 85, 135, 95, 70],
-            "abilities": ["Chlorophyll", "Gluttony"],
+            "abilities": ["Innards Out"],
             "tier": "SM OU",
             "height": 4.5,
             "weight": 125.5
@@ -7858,7 +7871,7 @@ function Safari() {
             "types": ["Water", "Psychic"],
             "name": "Mega Starmie",
             "stats": [60, 100, 105, 130, 105, 120],
-            "abilities": ["Pure Power"],
+            "abilities": ["Huge Power"],
             "tier": "SM OU",
             "height": 2.3,
             "weight": 80
@@ -7867,7 +7880,7 @@ function Safari() {
             "types": ["Dragon", "Flying"],
             "name": "Mega Dragonite",
             "stats": [91, 124, 115, 145, 125, 100],
-            "abilities": ["Inner Focus", "Multiscale"],
+            "abilities": ["Multiscale"],
             "tier": "SM OU",
             "height": 2.2,
             "weight": 290
@@ -7876,7 +7889,7 @@ function Safari() {
             "types": ["Grass", "Fairy"],
             "name": "Mega Meganium",
             "stats": [80, 92, 115, 143, 115, 80],
-            "abilities": ["Overgrow", "Leaf Guard"],
+            "abilities": ["Mega Sol"],
             "tier": "SM OU",
             "height": 2.4,
             "weight": 201
@@ -7885,7 +7898,7 @@ function Safari() {
             "types": ["Water", "Dragon"],
             "name": "Mega Feraligatr",
             "stats": [85, 160, 125, 89, 93, 78],
-            "abilities": ["Torrent", "Sheer Force"],
+            "abilities": ["Dragonize"],
             "tier": "SM OU",
             "height": 2.3,
             "weight": 108.8
@@ -7894,7 +7907,7 @@ function Safari() {
             "types": ["Steel", "Flying"],
             "name": "Mega Skarmory",
             "stats": [65, 140, 110, 40, 100, 110],
-            "abilities": ["Keen Eye", "Sturdy", "Weak Armor"],
+            "abilities": ["Stalwart"],
             "tier": "SM OU",
             "height": 1.7,
             "weight": 40.4
@@ -7903,7 +7916,7 @@ function Safari() {
             "types": ["Ice", "Ghost"],
             "name": "Mega Froslass",
             "stats": [70, 80, 70, 140, 100, 120],
-            "abilities": ["Snow Cloak", "Cursed Body"],
+            "abilities": ["Snow Warning"],
             "tier": "SM OU",
             "height": 2.6,
             "weight": 29.6
@@ -7912,7 +7925,7 @@ function Safari() {
             "types": ["Fire", "Fighting"],
             "name": "Mega Emboar",
             "stats": [110, 148, 75, 110, 110, 75],
-            "abilities": ["Blaze", "Reckless"],
+            "abilities": ["Mold Breaker"],
             "tier": "SM OU",
             "height": 1.8,
             "weight": 180.3
@@ -7921,7 +7934,7 @@ function Safari() {
             "types": ["Ground", "Steel"],
             "name": "Mega Excadrill",
             "stats": [110, 165, 100, 65, 65, 103],
-            "abilities": ["Sand Rush", "Sand Force", "Mold Breaker"],
+            "abilities": ["Piercing Drill"],
             "tier": "SM OU",
             "height": 0.9,
             "weight": 60
@@ -7957,7 +7970,7 @@ function Safari() {
             "types": ["Ghost", "Fire"],
             "name": "Mega Chandelure",
             "stats": [60, 75, 110, 175, 110, 90],
-            "abilities": ["Flash Fire", "Flame Body", "Infiltrator"],
+            "abilities": ["Infiltrator"],
             "tier": "SM OU",
             "height": 2.5,
             "weight": 69.6
@@ -7966,7 +7979,7 @@ function Safari() {
             "types": ["Grass", "Fighting"],
             "name": "Mega Chesnaught",
             "stats": [88, 137, 172, 74, 115, 44],
-            "abilities": ["Overgrow", "Bulletproof"],
+            "abilities": ["Bulletproof"],
             "tier": "SM OU",
             "height": 1.6,
             "weight": 90
@@ -7975,7 +7988,7 @@ function Safari() {
             "types": ["Fire", "Psychic"],
             "name": "Mega Delphox",
             "stats": [75, 69, 72, 159, 125, 134],
-            "abilities": ["Blaze", "Magician"],
+            "abilities": ["Levitate"],
             "tier": "SM OU",
             "height": 1.5,
             "weight": 39
@@ -7984,7 +7997,7 @@ function Safari() {
             "types": ["Water", "Dark"],
             "name": "Mega Greninja",
             "stats": [72, 125, 77, 133, 81, 142],
-            "abilities": ["Torrent", "Protean"],
+            "abilities": ["Protean"],
             "tier": "SM OU",
             "height": 1.5,
             "weight": 40
@@ -8002,7 +8015,7 @@ function Safari() {
             "types": ["Fairy", "???"],
             "name": "Mega Floette",
             "stats": [74, 85, 87, 155, 148, 102],
-            "abilities": ["Flower Veil", "Symbiosis"],
+            "abilities": ["Fairy Aura"],
             "tier": "SM OU",
             "height": 0.2,
             "weight": 0.9
@@ -8056,7 +8069,7 @@ function Safari() {
             "types": ["Normal", "Dragon"],
             "name": "Mega Drampa",
             "stats": [78, 85, 110, 160, 116, 36],
-            "abilities": ["Berserk", "Sap Sipper", "Cloud Nine"],
+            "abilities": ["Berserk"],
             "tier": "SM OU",
             "height": 3,
             "weight": 240.5
@@ -8155,7 +8168,7 @@ function Safari() {
             "types": ["Ground", "Ghost"],
             "name": "Mega Golurk",
             "stats": [89, 159, 105, 70, 105, 55],
-            "abilities": ["Iron Fist", "Klutz", "No Guard"],
+            "abilities": ["Unseen Fist"],
             "tier": "SM OU",
             "height": 4,
             "weight": 330
@@ -8164,7 +8177,7 @@ function Safari() {
             "types": ["Psychic", "???"],
             "name": "Mega Meowstic",
             "stats": [74, 48, 76, 143, 101, 124],
-            "abilities": ["Keen Eye", "Infiltrator"],
+            "abilities": ["Trace"],
             "tier": "SM OU",
             "height": 0.8,
             "weight": 10.1
@@ -8173,7 +8186,7 @@ function Safari() {
             "types": ["Fighting", "Ice"],
             "name": "Mega Crabominable",
             "stats": [97, 157, 122, 62, 107, 33],
-            "abilities": ["Hyper Cutter", "Iron Fist", "Anger Point"],
+            "abilities": ["Iron Fist"],
             "tier": "SM OU",
             "height": 2.6,
             "weight": 252.8
@@ -8218,7 +8231,7 @@ function Safari() {
             "types": ["Grass", "Fire"],
             "name": "Mega Scovillain",
             "stats": [65, 138, 85, 138, 85, 75],
-            "abilities": ["Chlorophyll", "Insomnia", "Moody"],
+            "abilities": ["Spicy Spray"],
             "tier": "SM OU",
             "height": 1.2,
             "weight": 22
@@ -8227,7 +8240,7 @@ function Safari() {
             "types": ["Rock", "Poison"],
             "name": "Mega Glimmora",
             "stats": [83, 90, 105, 150, 96, 101],
-            "abilities": ["Toxic Debris", "Corrosion"],
+            "abilities": ["Adaptability"],
             "tier": "SM OU",
             "height": 2.8,
             "weight": 77
@@ -12247,14 +12260,17 @@ function Safari() {
                 }
 
                 var abilBoosted = [];
-                if (currentThemeEffect == "rain") {
-                    abilBoosted = [abilitynum("Swift Swim"), abilitynum("Hydration"), abilitynum("Rain Dish"), abilitynum("Dry Skin"), abilitynum("Quark Drive"), abilitynum("Hadron Engine")];
-                } else if (currentThemeEffect == "sunny") {
-                    abilBoosted = [abilitynum("Chlorophyll"), abilitynum("Solar Power"), abilitynum("Flower Gift"), abilitynum("Leaf Guard"), abilitynum("Protosynthesis"), abilitynum("Orichalcum Pulse")];
-                } else if (currentThemeEffect == "sandstorm") {
-                    abilBoosted = [abilitynum("Sand Rush"), abilitynum("Sand Veil"), abilitynum("Sand Force")];
-                } else if (currentThemeEffect == "hail") {
-                    abilBoosted = [abilitynum("Slush Rush"), abilitynum("Snow Cloak"), abilitynum("Ice Body"), abilitynum("Ice Face")];
+                if (["rain", "sunny", "sandstorm", "hail"].contains(currentThemeEffect)) {
+                    if (currentThemeEffect == "rain") {
+                        abilBoosted = [abilitynum("Swift Swim"), abilitynum("Hydration"), abilitynum("Rain Dish"), abilitynum("Dry Skin"), abilitynum("Quark Drive"), abilitynum("Hadron Engine")];
+                    } else if (currentThemeEffect == "sunny") {
+                        abilBoosted = [abilitynum("Chlorophyll"), abilitynum("Solar Power"), abilitynum("Flower Gift"), abilitynum("Leaf Guard"), abilitynum("Protosynthesis"), abilitynum("Orichalcum Pulse")];
+                    } else if (currentThemeEffect == "sandstorm") {
+                        abilBoosted = [abilitynum("Sand Rush"), abilitynum("Sand Veil"), abilitynum("Sand Force")];
+                    } else if (currentThemeEffect == "hail") {
+                        abilBoosted = [abilitynum("Slush Rush"), abilitynum("Snow Cloak"), abilitynum("Ice Body"), abilitynum("Ice Face")];
+                    }
+                    abilBoosted.push(307); // Mega Sol
                 }
                 for (var i = 0; i < abilBoosted.length; i++) {
                     if (canHaveAbility(leader, abilBoosted[i])) {
@@ -14021,14 +14037,17 @@ function Safari() {
         var abilityBoost = 1;
         if (currentThemeEffect) {
             var abilBoosted = [];
-            if (currentThemeEffect == "rain") {
-                abilBoosted = [abilitynum("Swift Swim"), abilitynum("Hydration"), abilitynum("Rain Dish"), abilitynum("Dry Skin"), abilitynum("Quark Drive"), abilitynum("Hadron Engine")];
-            } else if (currentThemeEffect == "sunny") {
-                abilBoosted = [abilitynum("Chlorophyll"), abilitynum("Solar Power"), abilitynum("Flower Gift"), abilitynum("Leaf Guard"), abilitynum("Protosynthesis"), abilitynum("Orichalcum Pulse")];
-            } else if (currentThemeEffect == "sandstorm") {
-                abilBoosted = [abilitynum("Sand Rush"), abilitynum("Sand Veil"), abilitynum("Sand Force")];
-            } else if (currentThemeEffect == "hail") {
-                abilBoosted = [abilitynum("Slush Rush"), abilitynum("Snow Cloak"), abilitynum("Ice Body"), abilitynum("Ice Face")];
+            if (["rain", "sunny", "sandstorm", "hail"].contains(currentThemeEffect)) {
+                if (currentThemeEffect == "rain") {
+                    abilBoosted = [abilitynum("Swift Swim"), abilitynum("Hydration"), abilitynum("Rain Dish"), abilitynum("Dry Skin"), abilitynum("Quark Drive"), abilitynum("Hadron Engine")];
+                } else if (currentThemeEffect == "sunny") {
+                    abilBoosted = [abilitynum("Chlorophyll"), abilitynum("Solar Power"), abilitynum("Flower Gift"), abilitynum("Leaf Guard"), abilitynum("Protosynthesis"), abilitynum("Orichalcum Pulse")];
+                } else if (currentThemeEffect == "sandstorm") {
+                    abilBoosted = [abilitynum("Sand Rush"), abilitynum("Sand Veil"), abilitynum("Sand Force")];
+                } else if (currentThemeEffect == "hail") {
+                    abilBoosted = [abilitynum("Slush Rush"), abilitynum("Snow Cloak"), abilitynum("Ice Body"), abilitynum("Ice Face")];
+                }
+                abilBoosted.push(307); // Mega Sol
             }
             for (var i = 0; i < abilBoosted.length; i++) {
                 if (canHaveAbility(trueLeader, abilBoosted[i])) {
@@ -37701,6 +37720,14 @@ function Safari() {
                         return;
                     }
                 }
+                if (contestCount > 0)
+                    for (var i = 0; i < quest.requests.length; i++) {
+                        var id = quest.requests[i];
+                        if (safari.getEffectiveLead(player, true) === id && countRepeated(player.pokemon, id) === 1) {
+                            safaribot.sendHtmlMessage(src, trainerSprite + "Collector: I can't take your lead Pokémon during a Contest!", safchan);
+                            return;
+                        }
+                    }
                 var payout = Math.floor(quest.reward * (player.costume === "pokefan" ? costumeData.pokefan.rate : 1));
                 payout = Math.floor(payout * (1 + this.getFortune(player, "pokefan", 0)));
                 var costumed;
@@ -39011,7 +39038,20 @@ function Safari() {
         }
         safaribot.sendHtmlMessage(src, trainerSprite + "Wonder Trade Operator: So you want to try the Wonder Trade? Please give me the $" + addComma(fee) + " and your " + input.name + "!", safchan);
 
-        var receivedId, receivedBST, pickedForm, isShiny = sys.rand(0, shinyChance) < (input.shiny ? 16 : 1);
+        var shinyMod = 0;
+        if (isRare(input.num)) {
+            if (isLegendary(input.id)) {
+                shinyMod += 6;
+            }
+            if (input.shiny) {
+                shinyMod += 16;
+            }
+            else {
+                shinyMod += 3;
+            }
+        }
+        shinyMod = shinyMod || 1;
+        var receivedId, receivedBST, pickedForm, isShiny = sys.rand(0, shinyChance) < shinyMod;
         // Kills spawns that aren't supposed to appear in the wild due to edited BST
         var defTheme = contestThemes.hasOwnProperty("none") ? contestThemes.none : {"name":"Default","types":[],"excludeTypes":[],"include":[],"exclude":[],"editBST":{},"floorBST":300,"ceilBST":600,"icon":0};
         do {
@@ -61394,7 +61434,7 @@ function Safari() {
                 var clone = {
                     party: player.party,
                     name: sys.name(src) + "?",
-                    desc: "Clone Battle",
+                    desc: "Clone " + (isRotation ? "Rotation " : " ") + "Battle",
                     postArgs: {}
                 }
                 var battle = isRotation ? new Battle2(src, clone, {}, false, false) : new Battle(src, clone);
