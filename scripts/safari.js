@@ -1043,7 +1043,7 @@ function Safari() {
         return (
         {
             "luxury": {
-                "reward": "20@luxury",
+                "reward": {"@luxury": 20},
                 "ingredients": {
                     "blkapricorn": 10,
                     "pnkapricorn": 20,
@@ -1052,7 +1052,7 @@ function Safari() {
                 "showAmt": "luxury"
             },
             "mono": {
-                "reward": "20@mono",
+                "reward": {"@mono": 20},
                 "ingredients": {
                     "blkapricorn": 20,
                     "whtapricorn": 20
@@ -1060,7 +1060,7 @@ function Safari() {
                 "showAmt": "mono"
             },
             "myth": {
-                "reward": "20@myth",
+                "reward": {"@myth": 20},
                 "ingredients": {
                     "redapricorn": 5,
                     "pnkapricorn": 20,
@@ -1069,7 +1069,7 @@ function Safari() {
                 "showAmt": "myth"
             },
             "quick": {
-                "reward": "20@quick",
+                "reward": {"@quick": 20},
                 "ingredients": {
                     "bluapricorn": 20,
                     "ylwapricorn": 20
@@ -1077,7 +1077,7 @@ function Safari() {
                 "showAmt": "quick"
             },
             "clone": {
-                "reward": "20@clone",
+                "reward": {"@clone": 20},
                 "ingredients": {
                     "whtapricorn": 10,
                     "blkapricorn": 10,
@@ -1087,7 +1087,7 @@ function Safari() {
                 "showAmt": "clone"
             },
             "level": {
-                "reward": "20@level",
+                "reward": {"@level": 20},
                 "ingredients": {
                     "whtapricorn": 15,
                     "grnapricorn": 15,
@@ -1096,7 +1096,7 @@ function Safari() {
                 "showAmt": "level"
             },
             "spy": {
-                "reward": "20@spy",
+                "reward": {"@spy": 20},
                 "ingredients": {
                     "whtapricorn": 5,
                     "bluapricorn": 20,
@@ -1105,7 +1105,7 @@ function Safari() {
                 "showAmt": "spy"
             },
             "love": {
-                "reward": "20@love",
+                "reward": {"@love": 20},
                 "ingredients": {
                     "pnkapricorn": 20,
                     "bluapricorn": 10,
@@ -1114,7 +1114,7 @@ function Safari() {
                 "showAmt": "love"
             },
             "lightning": {
-                "reward": "20@lightning",
+                "reward": {"@lightning": 20},
                 "ingredients": {
                     "ylwapricorn": 20,
                     "whtapricorn": 20,
@@ -1123,7 +1123,7 @@ function Safari() {
                 "showAmt": "lightning"
             },
             "heavy": {
-                "reward": "20@heavy",
+                "reward": {"@heavy": 20},
                 "ingredients": {
                     "blkapricorn": 20,
                     "bluapricorn": 10,
@@ -1133,7 +1133,7 @@ function Safari() {
                 "showAmt": "heavy"
             },
             "photo": {
-                "reward": "20@photo",
+                "reward": {"@photo": 20},
                 "ingredients": {
                     "redapricorn": 20,
                     "whtapricorn": 10,
@@ -1143,7 +1143,7 @@ function Safari() {
                 "showAmt": "photo"
             },
             "mirror": {
-                "reward": "20@mirror",
+                "reward": {"@mirror": 20},
                 "ingredients": {
                     "bluapricorn": 20,
                     "ylwapricorn": 10,
@@ -1153,7 +1153,7 @@ function Safari() {
                 "showAmt": "mirror"
             },
             "uturn": {
-                "reward": "20@uturn",
+                "reward": {"@uturn": 20},
                 "ingredients": {
                     "redapricorn": 5,
                     "grnapricorn": 20,
@@ -1164,7 +1164,7 @@ function Safari() {
                 "showAmt": "uturn"
             },
             "inver": {
-                "reward": "20@inver",
+                "reward": {"@inver": 20},
                 "ingredients": {
                     "bluapricorn": 20,
                     "redapricorn": 20,
@@ -1174,7 +1174,7 @@ function Safari() {
                 "showAmt": "inver"
             },
             "cherish": {
-                "reward": "@cherish",
+                "reward": {"@cherish": 1},
                 "ingredients": {
                     "pnkapricorn": 20,
                     "ldew": 5
@@ -4475,7 +4475,7 @@ function Safari() {
             "tier": "SM LC",
             "abilities": [ "Swarm", "Compound Eyes", "Telepathy" ],
             "types": [ "Bug", "???" ],
-            "height": 4,
+            "height": 0.4,
             "weight": 8,
             "moves": [ 571, 105, 605, 522, 48 ]
         },
@@ -41385,7 +41385,7 @@ function Safari() {
                 }
             }
             giveStuff(player, ingUsed, true);
-            var rew = giveStuff(player, toStuffObj(reward), true);
+            var rew = giveStuff(player, reward, true);
             safaribot.sendMessage(src, "The arborist works in a flurry, and before you know it, you received " + readable(rew.gained) + "!", safchan);
             safaribot.sendMessage(src, "You now have " + plural(player.balls[rec.showAmt], rec.showAmt) + ".", safchan);
             if (rec.records) {
@@ -48143,7 +48143,7 @@ function Safari() {
 
         do {
             this.opponent = sys.rand(1, highestDexNum);
-        } while ([10, 11, 13, 14, 129, 132, 201, 202, 265, 266, 268, 360, 374, 401, 412, 602, 664, 665, 771, 789, 790].contains(this.opponent));
+        } while ([10, 11, 13, 14, 129, 132, 201, 202, 265, 266, 268, 360, 374, 401, 412, 602, 664, 665, 771, 789, 790, 824].contains(this.opponent));
 
         var moves = fetchMoves(this.opponent), damaging = [], m;
         damaging = moves.filter(function(x) {return getMoveBP(x) !== "---"});
